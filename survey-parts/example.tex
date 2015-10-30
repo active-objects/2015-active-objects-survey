@@ -1,0 +1,87 @@
+\subsection{Overview of actors and active objects}\label{overview}
+The principle of active objects is to associate a thread to an object, or to a set of
+objects. We call \emph{activity} this notion: a thread and the objects
+managed by this thread.  Two objects in different activities 
+communicate by remote method invocation: when an object invokes a
+method on an object in another activity, this creates a
+\emph{request}; the invoker continues its execution while the invoked
+object will serve the request in an asynchronous manner. Requests wait for execution in a \emph{request queue}. Like in any
+object-oriented language, method invocations can return results. In
+order to allow the invoker to continue its execution, a placeholder
+for the expected result must be created. \emph{Futures} play this
+role: a future is an empty object that will later be filled by the
+result of a request. We say that a future is \emph{resolved} when its
+value is known.
+ Overall, the active object paradigm makes programming of distributed
+ applications more natural, especially when applications are made of
+computational entities that may have a state like objects, and that
+execute in a decoupled manner because they are distributed.
+While all active object models rely on the previously introduced notions, their
+detailed characteristics vary in practice, which we present below:
+
+\subsubsection{How are objects associated to activities?}\label{sec:activity}
+We distinguish three different ways to map objects to threads/activities: 
+\begin{description}
+\item \textit{Uniform Object Model.}  All objects are active objects
+  with their own request queue and their own private execution thread.
+  In consequence, all communications between objects occur by posting
+  a request. This model is simple to formalise but its implementation
+  is more difficult as it must rely on the creation of logical thread
+  to allow scalability.
+\item \textit{Non Uniform Object Model.}  Some of the objects are not
+  active, in which case they are only accessible by a single active
+  object, they are part of its state. 
+An activity contains one active and several passive objects.
+Non-uniform active object models
+  are much more efficient as they require less communications and
+  less concurrent threads than models where each object would be
+  active. Reducing the number of activities also reduces the number of
+  references that are globally accessible in the system, and thus enables the
+  instantiation of a large number of objects.
+\item \textit{Object Group Model.}
+In this model, an activity is made of a set of objects sharing a
+request queue and an execution thread, but all
+objects can be invoked from another activity. This
+approach improves scalability as it reduces the number of threads, but
+it is still difficult to create a lot of objects as all of them must
+be registered so that they are accessible from any other activity.
+\end{description}
+
+\subsubsection{How are requests scheduled?}
+We distinguish three  threading models in active object languages.
+\begin{description}
+\item \textit{Single-threaded.} 
+Within an active object, requests are executed sequentially without
+interleaving possibilities. 
+\item \textit{Cooperative scheduling.}
+A running request can explicitly release the execution thread to let
+another request run. Requests are not processed in parallel but they
+might interleave. Data-races are avoided.
+\item \textit{Multi-threaded.}
+Within an active object, requests are executed in parallel using
+different threads, without pausing nor yielding.
+Some data-races inside the activity is possible. This is
+called a \emph{multiactive object} model.
+\end{description}
+
+\subsubsection{Is the programmer aware of distributed aspects?}
+Some active object languages use a specific syntax for asynchronous
+method calls: a different operator is used to distinguish them from
+synchronous method calls. This makes the programmer aware of the
+places where futures are created. Generally, when asynchronous
+invocation is explicit, there exists a special type for future objects.
+Additionally, the futures, when they are statically identified, can be
+accessed explicitly or implicitly. In case of explicit access,
+operations like \emph{claim}, \emph{get} and \emph{touch} are used to
+access the future. This is particularly convenient for releasing the
+current thread if a future is not available in case of cooperative
+scheduling (\emph{await} statement). For implicit access, operations that need the real
+value of an object (\emph{blocking} operations) automatically trigger
+synchronisation with the future update operation.
+Implicit future creation allows transparency of distributed aspects:
+there is almost no difference between a distributed program and usual
+objects, whereas explicit manipulation of futures allows the
+programmer to better control its execution, but requires from him a
+better expertise. We say that futures
+are \emph{first class} if future references can be transmitted between
+remote entities without requiring the future to be resolved.
