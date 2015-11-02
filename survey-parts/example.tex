@@ -1,3 +1,60 @@
+\section{About actors and active objects}
+The active object model is  derived from the Actors
+model \cite{DBLP:conf/birthday/AghaT04,agha97foundation,Agha86-book}. Actors and active objects share
+a lot of concerns and advantages. A great part of the mechanisms
+designed for one programming paradigm can be applied, almost
+straightforwardly, to the other.
+
+
+The principle of active objects is very simple: An object is said to be
+active if it can be deployed on a remote machine. As a consequence,
+every call to such an object will be a remote method invocation; we
+call such an invocation a \emph{request}. An active object is thus an
+object that treats the requests it receives, it is an object together
+with a thread.
+
+To decouple the invocation object from the invoked object, contrarily
+to a classical remote invocation, the invoker is not blocked waiting
+for the result instead a future object is created and represents the
+result of the remote invocation.
+
+Futures, first introduced in Multilisp \cite{Halstead85} and ABCL/f~\cite{ABCL1994}
+are used as constructs for concurrency and data
+flow synchronisation. Futures are language constructs that improve
+concurrency in a natural and transparent way. A future represents a
+result that has not been computed yet. When the result is available it
+can be retrieved (automatically or manually), we then say that the
+future is \emph{resolved}.
+Frameworks that make use
+of explicit constructs for creating futures include
+Multilisp~\cite{Halstead85}, $\lambda$-calculus \cite{jlambda-fut06}, Creol
+\cite{Elinar2006}, SafeFuture API \cite{SafeFutures05}, and ABCL/f
+\cite{ABCL1994}. In contrast, futures are created implicitly in
+frameworks like  ASP \cite{CHS-IC2008}, \cite{CHSPOPL04},
+\cite{CH-book},
+AmbientTalk~\cite{DedeckerCMDM-ecoop06},
+ProActive~\cite{CDD:CMST06}. In  ASPfun \cite{HKL:SCP11},
+\cite{HK:FOCLASA09} we also chose to provide implicit
+futures. Usually, in those object-oriented languages,
+implicit creation corresponds to asynchronous method invocation. A key
+benefit of the implicit creation is that no distinction is made
+between synchronous and asynchronous operations in the program.
+This way, when a method invocation is local, usual method invocation
+is performed, whether when the accessed object is remote, a future is
+immediately obtained.
+
+Additionally, the futures can be accessed explicitly or implicitly. In
+case of explicit access, operations like \emph{claim} and \emph{get},
+\emph{touch} are used to access the future \cite{Elinar2006,ABCL1994}.
+For implicit access, operations that need the real value of an object
+(\emph{blocking} operations) automatically trigger synchronisation
+with the future update operation. We say that futures are \emph{first
+	class} if future references can be transmitted between remote
+entities without requiring the future to be resolved.
+
+
+
+
 \subsection{Overview of actors and active objects}\label{overview}
 The principle of active objects is to associate a thread to an object, or to a set of
 objects. We call \emph{activity} this notion: a thread and the objects
@@ -85,3 +142,460 @@ programmer to better control its execution, but requires from him a
 better expertise. We say that futures
 are \emph{first class} if future references can be transmitted between
 remote entities without requiring the future to be resolved.
+
+
+\section{Overview of  languages for active objects and futures}\label{sec:overview}
+Several programming languages or models rely on some form of active
+objects, we review the main ones below. Especially focusing on
+languages which have a formalised semantics. But before focusing on
+active objects, let us first review the main works on formalisation of
+futures in the context of functional languages.
+Indeed, Futures
+were first introduced in Multilisp \cite{Halstead85}, and thus lead to
+a lot of work on their formalisation in the context of 
+functional languages. We will then review main active object languages
+and finish by a couple of languages that are not pure active objects
+but also strongly relate the notions of distribution and concurrency to
+the notion of objects.
+
+
+
+\subsection{Futures in functional languages}
+To our knowledge, the first work on formalisation by semantic rules of
+Futures appeared in \cite{FlanaganFelleisen99,FlanaganFelleisen1995} and was intended at
+program optimisation. This work focuses on the futures  of MultiLisp,
+that are explicitly created. The authors ``compile'' a program with
+futures into a low-level program that does explicit touch operations
+for resolving the future, and then optimise the number of necessary touch operations.
+
+In a similar vein,
+$\lambda(fut)$ is a concurrent lambda calculus with futures.
+It features non determinism primitives (cells and handles). In
+\cite{jlambda-fut06}, the authors define a semantics for this calculus,
+and two type systems. They use
+futures with explicit creation point in the context of $\lambda$-calculus; much in
+the same spirit as in Multilisp. Alice~\cite{Niehren:Sabel:Schmidt-Schauss:Schwinghammer:06} is an
+ML-like language that can be considered as an implementation of
+$\lambda(fut)$.
+
+
+
+\subsection{Asynchronous Sequential Processes}
+The ASP calculus we have defined~\cite{CH-book} is a distributed active object calculus with futures;  the
+ProActive library \cite{CDD:CMST06} can be considered as its reference
+implementation.  The ASP calculus formalises the
+following characteristics of active objects:
+\begin{itemize}
+	\item \emph{asynchronous communications}, by a request-reply mechanism;
+	\item \emph{futures}; in ASP, futures are transparent
+	objects: their creation and access is implicit, futures are also
+	\emph{first-class}: they can replace
+	transparently any other objects and can be communicated as 
+	result or parameter of remote method invocations;
+	\item \emph{sequential execution} within each process, each object
+	is manipulated by a single thread;
+	\item \emph{imperative objects}, i.e. each object has a state and
+	there is an operation for updating it.
+\end{itemize}
+
+ASP's active objects are quite similar to actors and ensure the
+absence of sharing: objects live in disjoint activities. An activity
+is a set of objects managed by a unique process and a unique
+active object.  Active objects are accessible through global/distant
+references.  They communicate through asynchronous method calls with
+futures. 
+ASP is a non-uniform active object model: some of the objects are
+not active, in which case they are only accessible by a single active
+object, they are part of its state. Non-uniform active object models
+are much more efficient as they require much less communications and
+much less concurrent threads than models where each object would be
+active.
+
+Our main result consists in a confluence property and its
+application to the identification of a set of programs behaving
+deterministically.  This property can be summarised as follows:
+\begin{itemize}
+	\item 
+	Future updates can occur at any time without any consequence on the
+	result of the computation,
+	\item Execution is only characterised by the order of requests, and
+	even more precisely by the order of request senders: To characterise
+	uniquely an execution,
+	it is sufficient to consider, for each activity, the ordered list
+	of identifiers of the activities that have sent a request to this activity.
+	\item Consequently, programs communicating over trees are deterministic.
+\end{itemize}
+
+
+The code snippet shown in Figure~\ref{fig:pasniplet} gives a typical
+example of a simple ProActive piece of code. It
+creates a new active object of type \code{A} on the JVM identified
+by \code{Node1}. All calls to that remote object will be
+asynchronous, and the access to the result might be subject to \emph{wait-by-necessity}.
+% \begin{small}
+\begin{figure*}[t]
+	\begin{lstlisting}[frame=single]
+	A a = (A) ProActive.newActive("A", params, Node1); // active object creation
+	v = a.bar (...);   // Asynchronous call, no wait, v gets a future
+	o.gee (v);         // No wait, even if o is a remote active object and v is still awaited
+	...
+	v.f (...);        // Wait-by-necessity: wait until v gets its value
+	\end{lstlisting}  % \end{verbatim}
+	\caption{Typical ProActive code}
+	\label{fig:pasniplet}
+\end{figure*}% \end{small}
+
+\smallskip
+
+The main advantage of ASP is that most code can be written without
+caring about distribution and concurrency.  Futures are automatically
+and transparently created upon method invocation on an active object.
+Synchronisation is due to wait-by-necessity that occurs
+upon access to a future that has not been resolved yet.
+This synchronisation is performed transparently, i.e. 
+there is no  construct for explicitly waiting the result of
+a request. Wait-by-necessity is always
+performed at the last moment, i.e. when a value is really needed.
+Futures are also transparently sent between activities. This
+way simple programs can be written extremely easily and rapidly.
+
+Unfortunately, as active object are purely mono-threaded,
+ASP's active objects can easily deadlock: most recursive
+\emph{asynchronous} method calls lead to a deadlock, which is
+difficult to avoid when two active objects are involved in a mutually
+recursive invocation. 
+
+
+\subsection{AmbientTalk}
+In AmbientTalk \cite{DedeckerCMDM-ecoop06}, active objects behave
+similarly to ASP's active objects. However, there is one major difference
+between the two models: in AmbientTalk the future access is a
+non-blocking operation, it is an asynchronous call that returns
+another future.  There is no wait-by-necessity upon a method call on a
+future, instead the method call will be performed when the future
+becomes available, in the meantime a future represents the result of
+this method invocation.  This differs from the approach adopted in
+other frameworks where access to a future is blocking.  This approach
+avoids the possibility of a deadlock as there is no synchronisation,
+but programming can become tricky as there is, according to the
+programming model specification, no way to synchronise two processes
+or to know whether a computation has finished.
+
+
+
+\subsection{Creol}
+Creol \cite{Johnsen2006a,Elinar2006} is an active object language that executes
+several requests at the same time, with only one active at a given
+time. This is some form of \emph{collaborative multi-threading} based
+on an \emph{await} operation that releases the active thread so that
+another request can continue its execution. Typically, one would do an
+\emph{await} when accessing a future so that if the future is not yet
+available another thread can continue its execution. In Creol
+\cite{Johnsen2006a} future creation and access is explicit, in
+particular a specific syntax exists for asynchronous method
+invocation. Creol is a uniform active object model where each object
+is an active one able to receive remote method invocations.  Creol
+also ensures the absence of data races,
+even if
+request execution can be interleaved, and the result of computation is
+less predictable than in ASP. 
+
+
+De Boer et al.   \cite{SDE:BoerCJ07}  provided 
+the semantics of an
+object-oriented language based on Creol; it features
+active objects, asynchronous method calls, and futures. This semantics
+extends Creol in the sense that it
+supports first-class futures, although the future access is  still
+explicit (using \emph{get} and \emph{await}). 
+In the same paper, the authors also provide a proof system for proving properties
+related to concurrency. 
+
+The Creol model has the advantage of having less deadlocks than ASP,
+because in ASP a request must be finished before addressing the next one.
+Indeed, when the result of a request is necessary in order to finish another
+one, the Creol programmer can release the service thread, which is 
+impossible in ASP.  While no data race
+condition is possible, interleaving of the different request
+services triggered by the different release points makes the behaviour
+more difficult to predict (in particular the determinism properties of
+ASP cannot be proven in Creol).
+
+
+\smallskip
+
+Overall, explicit future access,
+explicit release points, and explicit asynchronous calls make the Creol
+programming model richer than ASP, but also more difficult to program.
+Finding a good compromise between expressiveness and safe program
+execution is a crucial aspect in the design of programming
+languages;  we will provide in
+Section~\ref{mao} another extension of the active object model
+providing a different tradeoff between expressiveness, efficiency, and
+ease of programming.
+
+
+
+\subsection{JCoBox}
+JCoBox \cite{schafer2010jcobox} is an active object programming model
+implemented in a language based on Java.  It integrates asynchronous
+and synchronous communications as different operators, and partitions the
+object space into ``coboxes'', corresponding to ASP's
+activities. Each cobox is responsible for controlling the local
+concurrency and maintaining its invariants. 
+%Like in Creol, in each cobox, a single
+Similarly to Creol, in each cobox a single thread is active at a time, but this thread can be released and coboxes
+support collaborative multi-threading.
+
+
+In Creol \cite{Johnsen2006a} all objects are active, whereas ASP
+and JCoBox are non-uniform active object models: some objects are active and are invoked by asynchronous
+remote requests, other objects are passive and are accessible by a
+single activity (or cobox), they are transmitted by value.  References
+from a cobox to an active object of another cobox are called ``far
+references''. Far references can only be used to perform asynchronous
+calls (\code{reference!method()}), which return futures.  Futures are
+explicitly created and explicitly accessed, just as in Creol.
+\code{await} performs a cooperative wait on the future, whereas
+\code{get} blocks until the value of the future is received.  In
+JCoBox, contrary to ASP, a cobox may contain multiple active objects.
+
+Cooperative multi-threading is similar and leads to the same
+advantages and drawbacks as  in Creol. 
+
+
+Figure~\ref{jcobox_await_problem} shows explicit future creation, and
+explicit future accesses in JCoBox.
+When inside an active object a single thread is active at a time, accessing futures can lead to deadlock in case of re-entrant
+requests. The solution proposed by ASP and ProActive is ``first-class
+futures'': since futures are implicitly created and transparently
+transmitted as method parameters and results, the deadlock only occurs
+if the future is really needed.  Alternatively, Creol and JCoBox
+provide explicit futures and allow the active thread to suspend itself
+until a result is returned. Consider the method \code{foo} of
+Figure~\ref{jcobox_await_problem}, if one replaces the
+\code{await} statement by a \code{get}, the active object would deadlock waiting for
+\code{bar} to be executed. It might seem a safe programming guideline
+to systematically perform an \code{await} instead of a \code{get}.
+However, this might lead to unexpected non-determinism or unexpected
+results. In JCoBox, ready threads (i.e. threads that can execute but
+are suspended) are dequeued in a FIFO order. In the
+example, the \code{bar} and the second \code{foo} request will then be executed
+in an unpredictable order. Depending on when the second
+\code{foo} is received, the final result returned by the first
+\code{foo} may be '2'. This happens because 'x' can be modified by
+the second \code{foo} request before the return statement of the
+first.
+
+\smallskip
+
+For the moment, no programming model for distribution
+and concurrency that would be easy to program in all conditions, and
+each programming model has its own drawbacks. The great advantage of Creol and JCobox
+is that these programming models prevent race-conditions. They allow
+interleaving inside an active object so that some deadlocks
+can be avoided, but this interleaving is difficult to control. The concurrency model is powerful enough and easier to
+handle than basic threads and locking mechanisms. It is more
+complicated than ASP, but also more powerful.
+We will provide one
+alternative programming model featuring multi-threading for active
+object in Section~\ref{mao}) featuring another kind of tradeoff
+between expressiveness, deadlock prevention, race-condition
+prevention, and ease of programming. 
+
+
+
+\begin{figure}[t]
+	\begin{small}
+		\begin{lstlisting}[frame=single]
+		@CoBox class SomeClass { //declaring a cobox
+		int x;
+		
+		int bar() {
+		return 0;
+		}
+		
+		//sets value of x, 
+		//  but may release the thread 
+		int foo(int v) {
+		x=v;
+		Fut<int> z=this!bar();  
+		//async. call on itself
+		...
+		int res=z.await(); 
+		//allows another request to progress
+		return x+res; 
+		}
+		}
+		
+		//in some other class 
+		//   (s instance of SomeClass)
+		a=s!foo(1);
+		b=s!foo(2);
+		print(a.get()+' '+b.get());
+		//the output could be either '1 2' or '2 2'!
+		\end{lstlisting}
+	\end{small}
+	\caption{Thread interleaving  in JCoBox may lead to unexpected outcomes}
+	\label{jcobox_await_problem}
+\end{figure}
+
+\subsection{JAC}
+
+JAC \cite{lohr2006jac}  is an extension of Java that introduces a
+higher level of concurrency and separates thread synchronisation from
+application logic in a declarative fashion. JAC relies on a custom
+pre-compiler and declarative annotations, in the form of Javadoc
+comments placed before method headers or inside the code. Objects are
+annotated as \code{controlled} when their threads are managed and
+synchronised according to JAC's annotations. JAC relies on
+compatibility annotations stating whether two methods can be executed
+at the same time; two methods should be compatible if they do not
+access the same variables (or if the access to those variables has
+been protected by some locking mechanism).  For example, the following
+code states that \code{isEmpty} can be safely executed concurrently
+with \code{lookup} and with itself:
+\begin{lstlisting}
+/** @compatible lookup(Object), isEmpty() */
+public boolean isEmpty() {.....}
+\end{lstlisting} 
+
+This way methods that can safely be run concurrently will
+automatically be. Additional annotations are given for finer grain or
+easier control of concurrency and synchronisation (e.g. to wait for a
+guard to be verified before executing a method).  Exhaustive case
+study of annotation effect, in particular in relation with inheritance
+is also described in \cite{lohr2006jac}.
+
+JAC's \emph{async} annotation provides some form of
+active object behaviour: an asynchronous method is executed
+independently of others in a separate thread. The main difference with
+classical active objects is that classical active objects act as a unit of
+concurrency: they are manipulated with a single thread and enforce the
+absence of shared memory between active objects. Stating that all
+methods of a class are asynchronous and mutually exclusive would
+create some form of active objects, but without the absence of shared
+memory enforcement. For example, in ASP and JCoBox, non-active objects
+are called passive and are deeply copied when passed between
+activities in order to guarantee the absence of sharing.
+
+\smallskip We think JAC is a well designed model for declaring simply
+powerful concurrency rules, but unfortunately it is not particularly
+adapted to a distributed environment. Classical active objects on the
+contrary provide a better encapsulation of data and concurrency but do
+not provide concurrency abstractions as powerful as JAC annotations.
+We thus think ASP's programming model is simpler to program, has
+stronger properties and is more adapted to distribution. We will see
+in Section~\ref{mao} that we designed also a multi-active object
+programming model with annotations similar but simpler than the ones
+featured by JAC.
+
+% \begin{figure*}[t]
+% \begin{lstlisting}[frame=single]
+% public class Peer {
+% ...
+% /** @when !runningAdd
+% */
+% public JoinResponse join(Peer other) { 
+%   runningJoin = true;
+%   //do logic
+%   runningJoin = false;
+% }
+
+% /** @compatible add(Key, Serializable), join(Peer)
+%     @when !runningJoin || !inSplittingZone(k)
+% */
+% public void add(Key k, Serializable value) { 
+%   runningAdd = true;
+%   // do logic
+%   runningAdd = false;
+% }
+
+% private boolean inSplittingZone(Key k){ ... }
+
+% }
+% \end{lstlisting}
+%  \caption{The CAN Peer implemented in JAC \TODO{CHECK: what happens if
+%    the setting of flags interleaves??? is this example even possible
+%    in JAC without side effects in guards or scheduler?? hOW???}}
+%  \label{jac_can_peer}
+% \end{figure*}
+
+% In  our opinion multi-active objects 
+% offer a simpler annotation system and a higher synchronization logic encapsulation 
+% for the  programmer. On the other hand, JAC's inheritance model is
+% well designed and resembles the  way our
+% annotations are inherited on from class to class.
+
+
+
+\smallskip\noindent\textbf{ABS.}\label{abs}
+ABS~\cite{ref:abs} is an object-oriented programming language based on active objects that targets
+modelling of distributed applications. ABS syntax is based on classes.
+ABS has an object group model
+based on the notion of concurrent object
+group (hereafter named COG). 
+%Object fields can only be accessed within the object methods. 
+Asynchronous method calls and futures are explicit as in the following example:
+%, and there is not yet support for first class futures.
+% The following example is an asynchronous call that returns a future of
+%parametric type \code{V}:
+\lstset{frame=single} 
+\begin{lstlisting}
+Fut<V> future = object!method();
+\end{lstlisting}
+
+Requests are scheduled in a cooperative manner once again thanks to the \code{await} keyword, used as follows:
+% that can be followed by a future or a condition, as in the two following examples:
+\lstset{frame=single,
+	morekeywords={await}}
+\begin{lstlisting}
+await future?;
+await a > 2 && b < 3;
+\end{lstlisting}
+In those examples, the execution thread is released if the future is not resolved or if the condition is not fulfilled. 
+%In those cases, the execution thread is handed over to another ready request. 
+%A paused request is ready to resume when the future is resolved (in \code{case ~1}) or when the condition is fulfilled (in \code{case ~2}).
+ABS also features a \code{get} accessor to retrieve a future's value; it blocks the execution thread until the future
+is resolved: 
+\lstset{frame=single,
+	morekeywords={get}}
+\begin{lstlisting}
+V v = future.get;
+\end{lstlisting}	
+%The \code{get} accessor  % (and does not release the execution thread until then).
+The ABS tool
+suite\footnote{http://tools.hats-project.eu/} provides a wide variety of static verification engines that help
+designing safe distributed and concurrent applications. Those engines
+include a deadlock analyser \cite{CGM:SoSym2014}, a resource and cost analyser for cloud environments 
+\cite{SACO:TACAS14,ABSresourcescost}, and general program properties verification with the ABS-Key tool~\cite{ref:key,ref:noc-abs-key}.
+The ABS tool suite also includes a frontend
+compiler and several backend translators into various programming
+languages (Java, Haskell, Maude). 
+The Java backend for ABS translates ABS programs into Java programs but is not able to
+generate code that runs in a distributed manner.
+%, neither in the ABS language itself nor in any of the existing backend.
+
+
+
+\subsection{X10}
+X10 \cite{charles2005x10} is a programming language that adopts a
+fairly new model, called partitioned global address space (PGAS). In
+this model, computations are performed in multiple places (possibly on
+various computational units) simultaneously. Data in one place is
+accessible remotely, and is not movable once created. Computations
+inside places are locally synchronous, but inter-place activities are
+asynchronous. This decouples places and ensures global parallelism.
+While this model seems fundamentally different from active objects,
+both can be used to express the same kind of applications, but more
+importantly in X10 like in ProActive, a special care has been put to
+offer to the programmer a wide set of so called \emph{technical
+	services}. Technical services are non-functional features that are
+crucial to deploy and run large-scale applications, they typically
+include fault-tolerance, security, code migration, deployment on a
+wide set of architectures, support for several communication
+protocols, etc. Next section will focus on some of the technical
+services featured by ProActive (the ones in which formal background
+play a major role).  Also note that X10 places can host multiple
+activities, resulting in a similar service to what
+multi-active objects offer.
