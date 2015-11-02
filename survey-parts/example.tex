@@ -56,6 +56,7 @@ entities without requiring the future to be resolved.
 
 
 \subsection{Overview of actors and active objects}\label{overview}
+\cite{2013-Henrio}
 The principle of active objects is to associate a thread to an object, or to a set of
 objects. We call \emph{activity} this notion: a thread and the objects
 managed by this thread.  Two objects in different activities 
@@ -78,7 +79,7 @@ detailed characteristics vary in practice, which we present below:
 
 \subsubsection{How are objects associated to activities?}\label{sec:activity}
 We distinguish three different ways to map objects to threads/activities: 
-\begin{description}
+\begin{itemize}
 \item \textit{Uniform Object Model.}  All objects are active objects
   with their own request queue and their own private execution thread.
   In consequence, all communications between objects occur by posting
@@ -88,8 +89,7 @@ We distinguish three different ways to map objects to threads/activities:
 \item \textit{Non Uniform Object Model.}  Some of the objects are not
   active, in which case they are only accessible by a single active
   object, they are part of its state. 
-An activity contains one active and several passive objects.
-Non-uniform active object models
+An activity contains one active and several passive objects. Non-uniform active object models
   are much more efficient as they require less communications and
   less concurrent threads than models where each object would be
   active. Reducing the number of activities also reduces the number of
@@ -102,7 +102,7 @@ objects can be invoked from another activity. This
 approach improves scalability as it reduces the number of threads, but
 it is still difficult to create a lot of objects as all of them must
 be registered so that they are accessible from any other activity.
-\end{description}
+\end{itemize}
 
 \subsubsection{How are requests scheduled?}
 We distinguish three  threading models in active object languages.
