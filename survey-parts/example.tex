@@ -1,4 +1,8 @@
-\section{About actors and active objects}
+
+\section{Generalities about actors and active objects}
+\emph{We should probably start by  a section giving the common principles of actor and 
+active object languages, giving also the vocabulary}
+
 The active object model is  derived from the Actors
 model \cite{DBLP:conf/birthday/AghaT04,agha97foundation,Agha86-book}. Actors and active objects share
 a lot of concerns and advantages. A great part of the mechanisms
@@ -54,9 +58,11 @@ entities without requiring the future to be resolved.
 
 
 
+\section{Criteria for comparison}
+\emph{Here we suggest to summarise the points of comparison between different active 
+object languages}
 
-\subsection{Overview of actors and active objects}\label{overview}
-\cite{2013-Henrio}
+
 The principle of active objects is to associate a thread to an object, or to a set of
 objects. We call \emph{activity} this notion: a thread and the objects
 managed by this thread.  Two objects in different activities 
@@ -70,8 +76,8 @@ for the expected result must be created. \emph{Futures} play this
 role: a future is an empty object that will later be filled by the
 result of a request. We say that a future is \emph{resolved} when its
 value is known.
- Overall, the active object paradigm makes programming of distributed
- applications more natural, especially when applications are made of
+Overall, the active object paradigm makes programming of distributed
+applications more natural, especially when applications are made of
 computational entities that may have a state like objects, and that
 execute in a decoupled manner because they are distributed.
 While all active object models rely on the previously introduced notions, their
@@ -80,45 +86,45 @@ detailed characteristics vary in practice, which we present below:
 \subsubsection{How are objects associated to activities?}\label{sec:activity}
 We distinguish three different ways to map objects to threads/activities: 
 \begin{itemize}
-\item \textit{Uniform Object Model.}  All objects are active objects
-  with their own request queue and their own private execution thread.
-  In consequence, all communications between objects occur by posting
-  a request. This model is simple to formalise but its implementation
-  is more difficult as it must rely on the creation of logical thread
-  to allow scalability.
-\item \textit{Non Uniform Object Model.}  Some of the objects are not
-  active, in which case they are only accessible by a single active
-  object, they are part of its state. 
-An activity contains one active and several passive objects. Non-uniform active object models
-  are much more efficient as they require less communications and
-  less concurrent threads than models where each object would be
-  active. Reducing the number of activities also reduces the number of
-  references that are globally accessible in the system, and thus enables the
-  instantiation of a large number of objects.
-\item \textit{Object Group Model.}
-In this model, an activity is made of a set of objects sharing a
-request queue and an execution thread, but all
-objects can be invoked from another activity. This
-approach improves scalability as it reduces the number of threads, but
-it is still difficult to create a lot of objects as all of them must
-be registered so that they are accessible from any other activity.
+	\item \textit{Uniform Object Model.}  All objects are active objects
+	with their own request queue and their own private execution thread.
+	In consequence, all communications between objects occur by posting
+	a request. This model is simple to formalise but its implementation
+	is more difficult as it must rely on the creation of logical thread
+	to allow scalability.
+	\item \textit{Non Uniform Object Model.}  Some of the objects are not
+	active, in which case they are only accessible by a single active
+	object, they are part of its state. 
+	An activity contains one active and several passive objects. Non-uniform active object models
+	are much more efficient as they require less communications and
+	less concurrent threads than models where each object would be
+	active. Reducing the number of activities also reduces the number of
+	references that are globally accessible in the system, and thus enables the
+	instantiation of a large number of objects.
+	\item \textit{Object Group Model.}
+	In this model, an activity is made of a set of objects sharing a
+	request queue and an execution thread, but all
+	objects can be invoked from another activity. This
+	approach improves scalability as it reduces the number of threads, but
+	it is still difficult to create a lot of objects as all of them must
+	be registered so that they are accessible from any other activity.
 \end{itemize}
 
 \subsubsection{How are requests scheduled?}
 We distinguish three  threading models in active object languages.
 \begin{description}
-\item \textit{Single-threaded.} 
-Within an active object, requests are executed sequentially without
-interleaving possibilities. 
-\item \textit{Cooperative scheduling.}
-A running request can explicitly release the execution thread to let
-another request run. Requests are not processed in parallel but they
-might interleave. Data-races are avoided.
-\item \textit{Multi-threaded.}
-Within an active object, requests are executed in parallel using
-different threads, without pausing nor yielding.
-Some data-races inside the activity is possible. This is
-called a \emph{multiactive object} model.
+	\item \textit{Single-threaded.} 
+	Within an active object, requests are executed sequentially without
+	interleaving possibilities. 
+	\item \textit{Cooperative scheduling.}
+	A running request can explicitly release the execution thread to let
+	another request run. Requests are not processed in parallel but they
+	might interleave. Data-races are avoided.
+	\item \textit{Multi-threaded.}
+	Within an active object, requests are executed in parallel using
+	different threads, without pausing nor yielding.
+	Some data-races inside the activity is possible. This is
+	called a \emph{multiactive object} model.
 \end{description}
 
 \subsubsection{Is the programmer aware of distributed aspects?}
@@ -144,7 +150,13 @@ are \emph{first class} if future references can be transmitted between
 remote entities without requiring the future to be resolved.
 
 
-\section{Overview of  languages for active objects and futures}\label{sec:overview}
+
+
+
+\section{Active object and Actor languages}\label{sec:overview}
+\emph{Here we suggest to have a list of active object languages referring to the 
+preceding classification}
+
 Several programming languages or models rely on some form of active
 objects, we review the main ones below. Especially focusing on
 languages which have a formalised semantics. But before focusing on
@@ -277,9 +289,10 @@ becomes available, in the meantime a future represents the result of
 this method invocation.  This differs from the approach adopted in
 other frameworks where access to a future is blocking.  This approach
 avoids the possibility of a deadlock as there is no synchronisation,
-but programming can become tricky as there is, according to the
-programming model specification, no way to synchronise two processes
-or to know whether a computation has finished.
+but programming can become tricky.
+Overall, two activities can only coordinate through  callbacks.  This
+inversion of control has the advantage to avoid deadlocks but breaks the program into
+independent procedures where sequences of instructions are difficult to enforce.
 
 
 
@@ -578,24 +591,34 @@ generate code that runs in a distributed manner.
 
 
 
-\subsection{X10}
+\subsection{X10} 
 X10 \cite{charles2005x10} is a programming language that adopts a
-fairly new model, called partitioned global address space (PGAS). In
-this model, computations are performed in multiple places (possibly on
-various computational units) simultaneously. Data in one place is
-accessible remotely, and is not movable once created. Computations
-inside places are locally synchronous, but inter-place activities are
-asynchronous. This decouples places and ensures global parallelism.
-While this model seems fundamentally different from active objects,
-both can be used to express the same kind of applications, but more
-importantly in X10 like in ProActive, a special care has been put to
-offer to the programmer a wide set of so called \emph{technical
-	services}. Technical services are non-functional features that are
-crucial to deploy and run large-scale applications, they typically
-include fault-tolerance, security, code migration, deployment on a
-wide set of architectures, support for several communication
-protocols, etc. Next section will focus on some of the technical
-services featured by ProActive (the ones in which formal background
-play a major role).  Also note that X10 places can host multiple
-activities, resulting in a similar service to what
-multi-active objects offer.
+fairly new model, called partitioned global address space (PGAS). In this model,
+computations are performed in multiple places (possibly on various computational units)
+simultaneously. Data in one place is accessible remotely, and is not movable once
+created. Computations inside places are locally synchronous, but inter-place activities
+are asynchronous. This decouples places and ensures global parallelism. While this model
+seems fundamentally different from active objects, both can be used to express the same
+kind of applications, but more importantly in X10 like in ProActive, a special care has
+been put to offer to the programmer a wide set of so called \emph{technical services}.
+Technical services are non-functional features that are crucial to deploy and run
+large-scale applications, they typically include fault-tolerance, security, code
+migration, deployment on a wide set of architectures, support for several communication
+protocols, etc. Next section will focus on some of the technical services featured by
+ProActive (the ones in which formal background play a major role).  Also note that X10
+places can host multiple activities, resulting in a similar service to what multi-active
+objects offer.
+
+\subsection{Encore}
+To be written
+
+\section{Comparing languages} 
+
+\emph{Here we should speak about point-to-point comparisons and every point of
+	comparison that was not mentioned in the preceding section. Translation from ABS to 
+	ASP is a typical example of what we want to put in this section.}
+
+\section{Lessons learned and Perspectives}
+\emph{Here it would be interesting to have a higher view of lessons learned, on what AO 
+language to use to do what. As a perspective perhaps give the characteristics of the 
+ideal active object language (can we mix some of them to make a better one?)}
