@@ -34,12 +34,10 @@ of explicit constructs for creating futures include
 Multilisp~\cite{Halstead85}, $\lambda$-calculus \cite{jlambda-fut06}, Creol
 \cite{Elinar2006}, SafeFuture API \cite{SafeFutures05}, and ABCL/f
 \cite{ABCL1994}. In contrast, futures are created implicitly in
-frameworks like  ASP \cite{CHS-IC2008}, \cite{CHSPOPL04},
+frameworks like  ASP \cite{CHS:POPL04}, \cite{CHS-IC2008},
 \cite{CH-book},
 AmbientTalk~\cite{DedeckerCMDM-ecoop06},
-ProActive~\cite{CDD:CMST06}. In  ASPfun \cite{HKL:SCP11},
-\cite{HK:FOCLASA09} we also chose to provide implicit
-futures. Usually, in those object-oriented languages,
+ProActive~\cite{CDD:CMST06}.  Usually, in those object-oriented languages,
 implicit creation corresponds to asynchronous method invocation. A key
 benefit of the implicit creation is that no distinction is made
 between synchronous and asynchronous operations in the program.
@@ -271,17 +269,82 @@ performed at the last moment, i.e. when a value is really needed.
 Futures are also transparently sent between activities. This
 way simple programs can be written extremely easily and rapidly.
 
-Unfortunately, as active object are purely mono-threaded,
-ASP's active objects can easily deadlock: most recursive
-\emph{asynchronous} method calls lead to a deadlock, which is
-difficult to avoid when two active objects are involved in a mutually
-recursive invocation. 
+
+Recent works tend to introduce local concurrency either at the actor
+level
+\cite{Scholliers:2014:PAM:2563745.2564410,ref:spec-actors} or at the
+active object level, in particular with multiactive objects
+\cite{ref:mao}.
+Multiactive objects avoid deadlocks that are likely to arise
+%when doing reentrant calls 
+with mono-threaded active objects, and take
+advantage of multi-core architectures.  
+%The principle of multiactive objects is to execute
+%multiple requests of an active object in parallel, while controlling
+%the concurrency.
+%The multiactive object model has been implemented as an extension of ProActive. This 
+%extension comes as a small metalanguage to allow 
+In practice, a programmer declares which requests of an active object can safely be
+executed in parallel, namely which requests are \emph{compatible}. An implementation of 
+multiactive objects is available in the latest version of ProActive; 
+%The
+%metalanguage to do that in ProActive 
+it is based on the Java annotation
+mechanism:
+% A programmer can use these annotations on top of a class so that all objects of this 
+%class are automatically multiactive objects when instanciated with the \code{newActive} 
+%ProActive primitive\footnote{if there is no annotation, then objects crerated with the 
+%\code{newActive} primitive remain basic active objects}. 
+%Request compatibility can be specified following three steps:
+%\begin{itemize}
+%\item A programmer first uses the \code{@Group} annotation on top of a class to define a 
+%group of requests. A group is meant to gather requests that have the same concerns 
+%and/or 
+%the same compatibility requirements. 
+%\item Then, a programmer uses the \code{@MemberOf} annotation on top of a method 
+%definition to make this method belong to a particular group (previously defined).
+%\item Finally a programmer uses the \code{@Compatible} annotation to specify which group 
+%is compatible with which other group, so, in extension, to specify which requests can be 
+%run in parallel safely. 
+%\end{itemize}
+%Below is an example of an annotated
+%class \code{MyClass}:
+%\ttfamily\scriptsize
+\setlength\abovecaptionskip{0.25mm}
+\lstset{
+	morekeywords={@DefineGroups,@Compatible,@DefineRules,@Group,@MemberOf},
+} 
+\begin{lstlisting}
+@Group(name="group1", selfCompatible=true)
+@Group(name="group2", selfCompatible=false)
+@Compatible({"group1", "group2"})
+public class MyClass {
+...
+@MemberOf("group1")   public ... method1(...) { ... }
+@MemberOf("group2")   public ... method2(...) { ... }
+}
+\end{lstlisting}
+In this example, groups of requests are defined with \code{@Group} and filled with
+\code{@MemberOf}. Group compatibilities are specified with
+\code{@Compatible}. Parameter \code{selfCompatible} defines
+whether two different requests of the same group are allowed to run in
+parallel.  Upon execution, a ready request is executed if it is
+compatible with requests that are executing and with older
+requests in the queue to avoid starvation.  
+
+
+It is also possible to set a limit on the number of threads running in
+parallel~\cite{henrio:hal-00916293}.  The limit can be applied in two ways: a hard limit
+restrains the overall number of threads whereas a soft limit only counts threads that are
+not in wait-by-necessity.  Additionally, threads can be limited per group.
+
+Multiactive objects enable high-level implementation of scheduling policies. We use their 
+features to implement the ProActive backend for ABS.
 
 
 \subsection{AmbientTalk}
-In AmbientTalk \cite{DedeckerCMDM-ecoop06}, active objects behave
-similarly to ASP's active objects. However, there is one major difference
-between the two models: in AmbientTalk the future access is a
+In AmbientTalk \cite{DedeckerCMDM-ecoop06}, there is one major difference compared to the 
+other active-object models presented above: in AmbientTalk the future access is a
 non-blocking operation, it is an asynchronous call that returns
 another future.  There is no wait-by-necessity upon a method call on a
 future, instead the method call will be performed when the future
@@ -296,22 +359,18 @@ independent procedures where sequences of instructions are difficult to enforce.
 
 
 
-\subsection{Creol}
-Creol \cite{Johnsen2006a,Elinar2006} is an active object language that executes
-several requests at the same time, with only one active at a given
-time. This is some form of \emph{collaborative multi-threading} based
-on an \emph{await} operation that releases the active thread so that
-another request can continue its execution. Typically, one would do an
-\emph{await} when accessing a future so that if the future is not yet
-available another thread can continue its execution. In Creol
-\cite{Johnsen2006a} future creation and access is explicit, in
-particular a specific syntax exists for asynchronous method
-invocation. Creol is a uniform active object model where each object
-is an active one able to receive remote method invocations.  Creol
-also ensures the absence of data races,
-even if
-request execution can be interleaved, and the result of computation is
-less predictable than in ASP. 
+\subsection{Creol} Creol \cite{Johnsen2006a,Elinar2006} is an active object language
+that executes several requests at the same time, with only one active at a given time.
+This is some form of \emph{collaborative multi-threading} based on an \emph{await}
+operation that releases the active thread so that another request can continue its
+execution. Typically, one would do an \emph{await} when accessing a future so that if
+the future is not yet available another thread can continue its execution. In Creol
+\cite{Johnsen2006a} future creation and access is explicit, in particular a specific
+syntax exists for asynchronous method invocation. Creol is a uniform active object model
+where each object is an active one able to receive remote method invocations.  Creol
+also ensures the absence of data races, even if request execution can be interleaved,
+and the result of computation is less predictable than in pure mono-threaded active
+object models.
 
 
 De Boer et al.   \cite{SDE:BoerCJ07}  provided 
@@ -324,36 +383,38 @@ explicit (using \emph{get} and \emph{await}).
 In the same paper, the authors also provide a proof system for proving properties
 related to concurrency. 
 
-The Creol model has the advantage of having less deadlocks than ASP,
-because in ASP a request must be finished before addressing the next one.
-Indeed, when the result of a request is necessary in order to finish another
-one, the Creol programmer can release the service thread, which is 
-impossible in ASP.  While no data race
-condition is possible, interleaving of the different request
-services triggered by the different release points makes the behaviour
-more difficult to predict (in particular the determinism properties of
-ASP cannot be proven in Creol).
-
-
 \smallskip
+
 
 Overall, explicit future access,
 explicit release points, and explicit asynchronous calls make the Creol
-programming model richer than ASP, but also more difficult to program.
-Finding a good compromise between expressiveness and safe program
-execution is a crucial aspect in the design of programming
-languages;  we will provide in
-Section~\ref{mao} another extension of the active object model
-providing a different tradeoff between expressiveness, efficiency, and
-ease of programming.
+programming model rich, but also requires more expertise from the programmer than the 
+languages featuring more transparency. 
 
 
+\TODO{probably move next paragraph} The cooperative multithreading model has the
+advantage of having less deadlocks than mono-threaded active objects, because in
+mono-threaded models like ASP a request must be finished before addressing the next one.
+Indeed, when the result of a request is necessary in order to finish another one, the
+Creol programmer can release the service thread, which is impossible in mono-threaded
+models. In particular, accessing futures can lead to deadlock in case of re-entrant
+requests. While no data race condition is possible, interleaving of the different
+request services triggered by the different release points makes the behaviour more
+difficult to predict (in particular the determinism properties of ASP cannot be proven
+in Creol).
+ The partial solution proposed by ASP and ProActive is ``first-class
+futures'': since futures are implicitly created and transparently
+transmitted as method parameters and results, the deadlock only occurs
+if the future is really needed.  Alternatively, Creol, ABS, and JCoBox
+provide explicit futures and allow the active thread to suspend itself
+until a result is returned. Multi-active objects also allow an object to serve a 
+re-entrant request provided it is compatible with the other ones.
 
 \subsection{JCoBox}
 JCoBox \cite{schafer2010jcobox} is an active object programming model
 implemented in a language based on Java.  It integrates asynchronous
 and synchronous communications as different operators, and partitions the
-object space into ``coboxes'', corresponding to ASP's
+object space into ``coboxes'', similar to ASP's
 activities. Each cobox is responsible for controlling the local
 concurrency and maintaining its invariants. 
 %Like in Creol, in each cobox, a single
@@ -371,87 +432,15 @@ calls (\code{reference!method()}), which return futures.  Futures are
 explicitly created and explicitly accessed, just as in Creol.
 \code{await} performs a cooperative wait on the future, whereas
 \code{get} blocks until the value of the future is received.  In
-JCoBox, contrary to ASP, a cobox may contain multiple active objects.
+JCoBox,  a cobox may contain multiple active objects.
 
 Cooperative multi-threading is similar and leads to the same
 advantages and drawbacks as  in Creol. 
 
 
-Figure~\ref{jcobox_await_problem} shows explicit future creation, and
-explicit future accesses in JCoBox.
-When inside an active object a single thread is active at a time, accessing futures can lead to deadlock in case of re-entrant
-requests. The solution proposed by ASP and ProActive is ``first-class
-futures'': since futures are implicitly created and transparently
-transmitted as method parameters and results, the deadlock only occurs
-if the future is really needed.  Alternatively, Creol and JCoBox
-provide explicit futures and allow the active thread to suspend itself
-until a result is returned. Consider the method \code{foo} of
-Figure~\ref{jcobox_await_problem}, if one replaces the
-\code{await} statement by a \code{get}, the active object would deadlock waiting for
-\code{bar} to be executed. It might seem a safe programming guideline
-to systematically perform an \code{await} instead of a \code{get}.
-However, this might lead to unexpected non-determinism or unexpected
-results. In JCoBox, ready threads (i.e. threads that can execute but
-are suspended) are dequeued in a FIFO order. In the
-example, the \code{bar} and the second \code{foo} request will then be executed
-in an unpredictable order. Depending on when the second
-\code{foo} is received, the final result returned by the first
-\code{foo} may be '2'. This happens because 'x' can be modified by
-the second \code{foo} request before the return statement of the
-first.
-
-\smallskip
-
-For the moment, no programming model for distribution
-and concurrency that would be easy to program in all conditions, and
-each programming model has its own drawbacks. The great advantage of Creol and JCobox
-is that these programming models prevent race-conditions. They allow
-interleaving inside an active object so that some deadlocks
-can be avoided, but this interleaving is difficult to control. The concurrency model is powerful enough and easier to
-handle than basic threads and locking mechanisms. It is more
-complicated than ASP, but also more powerful.
-We will provide one
-alternative programming model featuring multi-threading for active
-object in Section~\ref{mao}) featuring another kind of tradeoff
-between expressiveness, deadlock prevention, race-condition
-prevention, and ease of programming. 
+ 
 
 
-
-\begin{figure}[t]
-	\begin{small}
-		\begin{lstlisting}[frame=single]
-		@CoBox class SomeClass { //declaring a cobox
-		int x;
-		
-		int bar() {
-		return 0;
-		}
-		
-		//sets value of x, 
-		//  but may release the thread 
-		int foo(int v) {
-		x=v;
-		Fut<int> z=this!bar();  
-		//async. call on itself
-		...
-		int res=z.await(); 
-		//allows another request to progress
-		return x+res; 
-		}
-		}
-		
-		//in some other class 
-		//   (s instance of SomeClass)
-		a=s!foo(1);
-		b=s!foo(2);
-		print(a.get()+' '+b.get());
-		//the output could be either '1 2' or '2 2'!
-		\end{lstlisting}
-	\end{small}
-	\caption{Thread interleaving  in JCoBox may lead to unexpected outcomes}
-	\label{jcobox_await_problem}
-\end{figure}
 
 \subsection{JAC}
 
@@ -497,11 +486,9 @@ powerful concurrency rules, but unfortunately it is not particularly
 adapted to a distributed environment. Classical active objects on the
 contrary provide a better encapsulation of data and concurrency but do
 not provide concurrency abstractions as powerful as JAC annotations.
-We thus think ASP's programming model is simpler to program, has
-stronger properties and is more adapted to distribution. We will see
-in Section~\ref{mao} that we designed also a multi-active object
-programming model with annotations similar but simpler than the ones
-featured by JAC.
+This way to annotate programs for concurrency is quite similar to multi-active objects 
+featured by ASP, but the fact that ASP annotations are restricted to compatibility of 
+requests makes it much less expressive but much simpler to use.
 
 % \begin{figure*}[t]
 % \begin{lstlisting}[frame=single]
@@ -604,10 +591,7 @@ been put to offer to the programmer a wide set of so called \emph{technical serv
 Technical services are non-functional features that are crucial to deploy and run
 large-scale applications, they typically include fault-tolerance, security, code
 migration, deployment on a wide set of architectures, support for several communication
-protocols, etc. Next section will focus on some of the technical services featured by
-ProActive (the ones in which formal background play a major role).  Also note that X10
-places can host multiple activities, resulting in a similar service to what multi-active
-objects offer.
+protocols, etc. 
 
 \subsection{Encore}
 To be written
@@ -617,6 +601,10 @@ To be written
 \emph{Here we should speak about point-to-point comparisons and every point of
 	comparison that was not mentioned in the preceding section. Translation from ABS to 
 	ASP is a typical example of what we want to put in this section.}
+
+\TODO{Perhaps also fit some usecases here especially if they have been implemented using 
+different models}
+
 
 \section{Lessons learned and Perspectives}
 \emph{Here it would be interesting to have a higher view of lessons learned, on what AO 
