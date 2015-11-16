@@ -6,3 +6,5 @@
 2015-active-objects-survey.pdf
 2015-active-objects-survey.synctex.gz
 survey-parts/*.aux
+*.aux
+*.toc

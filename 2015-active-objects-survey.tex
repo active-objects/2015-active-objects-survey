@@ -71,8 +71,10 @@ To fill
 % NOTE! Affiliations placed here should be for the institution where the
 %       BULK of the research was done. If the author has gone to a new
 %       institution, before publication, the (above) affiliation should NOT be changed.
-%       The authors 'current' address may be given in the "Author's addresses:" block (below).
-%       So for example, Mr. Abdelzaher, the bulk of the research was done at UIUC, and he is
+%       The authors 'current' address may be given in the "Author's addresses:" block 
+%(below).
+%       So for example, Mr. Abdelzaher, the bulk of the research was done at UIUC, and he 
+%is
 %       currently affiliated with NASA.
 
 \begin{abstract}
@@ -131,12 +133,14 @@ the abstract
 % IMPORTANT:
 % Full first names whenever they are known, surname last, followed by a period.
 % In the case of two authors, 'and' is placed between them.
-% In the case of three or more authors, the serial comma is used, that is, all author names
+% In the case of three or more authors, the serial comma is used, that is, all author 
+%names
 % except the last one but including the penultimate author's name are followed by a comma,
 % and then 'and' is placed before the final author's name.
 % If only first and middle initials are known, then each initial
 % is followed by a period and they are separated by a space.
-% The remaining information (journal title, volume, article number, date, etc.) is 'auto-generated'.
+% The remaining information (journal title, volume, article number, date, etc.) is 
+%'auto-generated'.
 
 %\begin{bottomstuff}
 %This work is supported by the National Science Foundation, under
@@ -152,9 +156,83 @@ the abstract
 
 \maketitle
 
-\input{survey-parts/introduction.tex}
-\input{survey-parts/example.tex}
-\input{survey-parts/conclusion.tex}
+
+\TODO{TODO LIST}
+
+Ask Marjan -- LUDO (17/11)
+
+list dimensions -- all: complete the list or remove or merge
+
+describe ABS -- Reiner and Cristal, Vlad and Frank (by 27/11)
+
+describe proactive -- Justine and Ludo (by 27/11)
+
+use PA and ABS as a template to describe Encore -- Kiko? 
+
+use PA and ABS as a template to describe Rebecca -- Marjan? 
+
+
+
+
+\section{Introduction}
+
+A global introduction to the common problems in programming distributed systems. Safety 
+issues, common bugs and efficiency issues. A first overview of the families of 
+programming models for concurrent and distributed systems. What is difficult? What 
+features are important in concurrent? in distributed systems?
+
+Definitions of the important notions like what is an actor or what is a future from a 
+(old) historical point of view
+
+\section{Active object Languages}
+
+\subsection{An historical view of Actor and active-object languages}
+Actors, Creol \cite{JOY06:creol}, JCobox, 
+
+Plus a small (or bigger) note on : JAC, 
+AmbientTalk, E programming language, Erlang, Kilim
+
+Where do we put more modern languages like Akka?
+
+	Requirements in the design of those languages
+
+
+\subsection{Dimensions of Comparison between Languages}
+\begin{itemize}
+	\item Target (what for?)  / Objective of the language
+	\item Degree of synchronisation (from Rebecca to ProActive) from only asynchronus 
+	interactions to strong synchronisation primitives (cooperative scheduling is probably 
+	an intermediate feature here)
+	\item Degree of transparency: how much is the user exposed to ….
+	\item How much data sharing? Under which condition? extremes are probably ABS and 
+ProActive/Rebecca
+	\item Formal support and  formal semantics
+	\item \TODO{[Added by Justine and Ludo]} Implementation and programming and execution 
+	support.
+\end{itemize}
+
+\subsection{A Focus on Some Active-object Languages}
+\subsubsection{Rebecca}
+\subsubsection{ABS}
+\subsubsection{ProActive/ASP}
+\subsubsection{Encore}
+
+\section{Implementation of active objects}
+A comparison of Active object language implementations based on a set of comparison 
+criteria including at least:
+
+efficient implementation of the threading model (eg for cooperative scheduling)
+comparie with: old java backend;
+Encore explicit bytecode operations; haskell; new java backend; ProActive?
+
+	
+
+
+\section{Lessons Learned and Conclusion}
+
+%\input{survey-parts/introduction.tex}
+%\input{survey-parts/example.tex}
+%\input{survey-parts/conclusion.tex}
 
 % Appendix
 %\appendix
