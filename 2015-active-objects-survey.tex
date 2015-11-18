@@ -220,6 +220,109 @@ ProActive/Rebecca
 \subsubsection{Rebecca}
 \subsubsection{ABS}
 \subsubsection{ProActive/ASP}
+ASP~\cite{ref:asp} is an active object programming language especially designed 
+for programming distributed systems. In ASP, active objects coexist with objects 
+that are not active. Only active objects are accessible between activities. The 
+objects that are not active are only accessible within an activity; if those 
+objects need to be exchanged between activities, they are copied. Based on this 
+clear separation, the activity is the unit of distribution. ASP features mono-threaded 
+request processing per activity: the execution of requests cannot interleave. 
+The language is transparent: method calls are automatically turned into asynchronous 
+requests if the targeted object is a remote active object. Similarly, futures are 
+implicitly created upon asynchronous calls. Futures are also transparently manipulated: 
+a wait-by-necessity is automatically triggered upon an access to an unresolved future. 
+In ASP, futures are first-class: they can be passed between activities. In this case, 
+when the future is resolved, the result is automatically updated at all locations.
+
+ProActive is the implementation of ASP in the Java programming language, as a 
+standard Java library. Basically, ProActive offers an API to create active objects, 
+and a runtime for handling ASP features. The following is an example of ProActive program:
+\lstset{
+	emph={parameters,node}, 
+	emphstyle=\itshape
+} 
+\begin{lstlisting}
+T t = PAActiveObject.newActive(T.class, parameters, node);
+V v = t.bar(); 	// implicit asynchronous method call
+o.foo(v); 	// non-blocking operation
+v.foobar(); 	// potential wait-by-necessity
+\end{lstlisting}
+%%% THE FOLLOWING MIGHT BE TOO DETAILLED %%%
+% An active object is created using \code{newActive}, instead of the \code{new} of Java.
+% The \code{newActive} primitive takes the class to instantiate, the parameters of the
+% constructor, and the node on which the active object will be deployed.
+% The variable \code{v} is the result of an asynchronous call; it is an
+% implicit future.
+% The dynamic type of \code{v} is a future that is a dynamically created subtype of \code{V}. 
+% When the future value is needed to continue execution, such as in \code{v.foobar()}, 
+% a wait-by necessity automatically occurs if the future is not resolved.
+% In ProActive, when an active object is created, it is registered in the
+% RMI registry delivered with Java. A local reference to this active object is also created: 
+% a proxy that delegates invocations to the active object.
+ProActive is intended for distribution; it is a middleware that supports application 
+deployment on distributed infrastructures such as clusters, grids and clouds.
+% The deployment specification of ProActive is based on the concept of virtual nodes: 
+% a virtual node is an aggregation of physical machines that are declared in configuration 
+% files (XML files). Such virtual nodes can be used in the code via their identifiers in order 
+% to choose a specific machine on which to deploy an active object.
+
+Recently, in order to adapt to the multi-core era, ASP was lately enhanced with local 
+concurrency, namely, with multiactive objects~\cite{ref:mao}. The resulting programming 
+language is called MultiASP. Besides taking advantage of multi-core architectures, 
+multiactive objects avoid possible deadlocks in mono-threaded active objects. The principle 
+of the multiactive object programming model is to execute multiple requests of an active 
+object in parallel, while controlling the concurrency. The latest version of ProActive also 
+implements multiactive objects. In ProActive, multiactive object features can be used through
+a metalanguage, based on Java annotations, to allow a programmer to declare which requests 
+of an active object can safely be executed in parallel. Such requests are called 
+\emph{compatible} requests. The following is an example of multiactive object annotations 
+in ProActive:
+\lstset{
+    morekeywords={@DefineGroups,@Compatible,@DefineRules,@Group,@MemberOf}
+} 
+\begin{lstlisting}
+@Group(name="group1", selfCompatible=true)
+@Group(name="group2", selfCompatible=false)
+@Compatible({"group1", "group2"})
+public class MyClass {
+  ...
+  @MemberOf("group1")   
+  public ... method1(...) { ... }
+  
+  @MemberOf("group2")   
+  public ... method2(...) { ... }
+}
+\end{lstlisting}
+In this example, two groups of requests are defined, each of them holding one method. 
+The two groups are declared to be compatible (so as their method, by extension). The 
+\code{selfCompatible} parameter defines whether two different requests of the same group 
+are allowed to run in parallel. At runtime, a ready request is automatically executed if 
+it is compatible with requests that are already executing and with older requests in the 
+queue (to avoid starvation). Programming with multiactive objects follows those principles:
+\begin{itemize}
+\item Without annotations, a multiactive object is a mono-threaded active object, without 
+	any local parallelism nor race condition.
+\item If some parallelism is desired, compatibility should be declared between requests 
+	that can be safely interleaved and for which execution order do not matter. Compatible 
+	requests should access disjoint memory locations to avoid race conditions. Possibly, 
+	the expert programmer can also protect the access to some of the variables using a 
+	lower-level synchronization mechanism and declare more methods as compatible. Generally, 
+	compatibility is statically declared but can also be decided \emph{dynamically} depending 
+	on invocation parameters or on the object's state.
+\item If even more parallelism is required, an expert programmer can also protect the access 
+	to some of the variables using a lower-level synchronization mechanism and declare more 
+	methods as compatible.
+\end{itemize}
+Other high-level specifications are available in multiactive objects~\cite{henrio:hal-00916293}, 
+such as request priority. To avoid thread explosion, it is also possible to set a limit on the 
+number of threads running in parallel.  The limit can be applied in two ways: a hard limit 
+restrains the overall number of threads whereas a soft limit only counts threads that are not 
+in wait-by-necessity.  Additionally, threads can be limited per group.
+
+As a conclusion, MultiASP and ProActive are based on the multiactive object programming model. 
+This model is well adapted to non-expert because it provides high-level features for distribution 
+and safe concurrency.
+
 \subsubsection{Encore}
 
 \section{Implementation of active objects}
