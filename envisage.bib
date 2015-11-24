@@ -1,0 +1,3563 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+          HOW TO USE THE TEX BIBLIOGRAPHY DATABASES IN HATS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+The instructions have been taken and derived from the MOBIUS bibli.bib file.
+
+
+ 0/ Please use only US-ASCII, 7-bit characters in editing this file.  Across
+    the HATS project we have partners using different, incompatible, 8-bit
+    encodings: any text that is not 7-bit clean will not survive the
+    round-trip through everyones' text editors.
+
+    Where accented characters are required in entries, use regular LaTeX
+    commands like \"u or \t{oo}.  If these appea rin authors' names, enclose
+    them in a further set of parentheses so that BibTeX recognises them as a
+    single letter: e.g., M{\"u}ller.
+
+ 1/ All the bibliography entries of the HATS project are kept in the
+    TexInputs/bibli.bib file. If you want to use the file just make a
+    symbolic link to the file from your local latex directory (often
+    ~/texmf/bibtex/bib).
+
+ 2/ Other bib files in the HATS svn directory may be deleted unless HATS
+    has warned not to do so (there must be good reason to keep a local file).
+
+ 3/ Identify HATS funded publications using the "keywords" field.  This
+    should contain the word HATS and the relevant workpackage:
+
+       (at)InProceedings{
+       ...
+           keywords = {HATS, wp3}
+       ...}
+
+    This HATS keyword is most important: it differentiates HATS project
+    publications from others, and is used to generate the publication lists
+    in our annual submissions to the EC and on the HATS website.
+
+    ENVISAGE MEMBERS, FURTHERMORE, PLEASE
+    look up the Field Ranking (over "All years") of the publication venue in
+    http://academic.research.microsoft.com/?SearchDomain=2&entitytype=2
+    and record in the keywords-section as MSR-<value>.
+      We need that for the KPIs! Yes, unfortunately the process of looking up a
+    publication in that database is painful. Please explicitly use "MSR-0" if
+    your event is not in the list or has a Field Rating below 20.
+
+ 4/ To avoid duplicate entries, each entry should use a standard key format:
+
+    * the last name of the first author,
+    * followed by the final initials of any co-authors,
+    * the final two digit of the publication,
+    * and finally "b", "c", ... to distinguish otherwise identical keys.
+
+    Example:
+        (at)InProceedings{AlbertAGP08c,
+          author =    {E. Albert and P. Arenas and S. Genaim and G. Puebla},
+          title =     {Dealing with Numeric Fields in Termination Analysis
+                       of Java-like Languages},
+          booktitle = {10th Workshop on Formal Techniques for Java-like
+                       Programs},
+          year =      2008,
+          keywords =  {HATS, wp4}
+        }
+
+ 5/ Enter author names in the form used by the authors themselves.  These do
+    not need to follow any fixed format, as BibTeX will transform them
+    according to the desired bibliography style.
+
+ 6/ There is a long list of (at)string abbreviations below for publishers,
+    workshops, conferences and journals.  Please use them, and add new ones as
+    required.  For papers at a conference or workshop, consider adding the
+    proceedings volume separately and then referring to it through the
+    crossref key.  There is already a list of conference proceedings at the
+    end of this file.
+
+ 7/ If you find duplicate entries in the bibli.bib file, then in case of
+           * identical keys: delete all duplicates
+           * different keys: for the moment: inform the mailing list about
+             the duplicate entry
+
+
+ 8/ Please keep entries sorted in the order of their keys, with
+    crossreferenced proceedings (also sorted) at the end of the file.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ Abbreviations for journals, conferences and workshops
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@STRING{AADEBUG = {Automated Debugging}}
+@STRING{ACSC = {Asian Computing Science Conference}}
+@STRING{ADL = {Workshop on Applications of Description Logics}}
+@STRING{ADS = {Workshop on Algorithms and Data Structures}}
+@STRING{AINA = {Advanced Information Networking and Applications}}
+@STRING{AJ = {Algorithmica Journal}}
+@STRING{ALC = {Workshop on Aliasing, Confinement and Ownership}}
+@STRING{ALP = {Automata, Languages and Programming}}
+@STRING{AMAST = {Algebraic Methodology and Software Technology}}
+@STRING{APAL = {Annals of Pure and Applied Logic}}
+@STRING{APLAS = {Asian Programming Languages and Systems Symposium} }
+@STRING{APLSS = {Asian Programming Languages and Systems Symposium} }
+@STRING{ARMSCC = {Adaptive Resource Management and Scheduling for Cloud Computing} }
+@STRING{AOSD = {Aspect-Oriented Software Development Conference}}
+@STRING{AVMFSS = {Automatic Verification Methods for Finite State Systems}}
+@STRING{BBE = {BlackHat Briefings Europe}}
+@STRING{BHU = {Black Hat USA}}
+@STRING{BSVAT = {Bytecode Semantics, Verification, Analysis and Transformation}}
+@STRING{BYTECODE = {Bytecode Semantics, Verification, Analysis and Transformation}}
+@STRING{CACM =   {Communications of the ACM}}
+@STRING{CADE = {Conference on Automated Deduction}}
+@STRING{CALP = {Colloquium on Automata, Languages and Programming}}
+@STRING{CALTECH = {California Institute of Technology}}
+@STRING{CARDIS = {Smart Card Research and Advanced Application} }
+@STRING{CASCR = {Conference of the Centre for Advanced Studies on Collaborative Research}}
+@STRING{CASSIS = {Construction and Analysis of Safe, Secure, and Interoperable Smart Devices}}
+@STRING{CATS = {Computing, Australasian Theory Symposium}}
+@STRING{CAV = {Conference on Computer Aided Verification}}
+@STRING{CC = {International Conference on Compiler Construction}}
+@STRING{CCPE = {Concurrency and Computation: Practice and Experience}}
+@STRING{CG = {Symposium on Computational Geometry}}
+@STRING{CHES = {Cryptographic Hardware and Embedded Systems}}
+@STRING{CJA = {Communications of the ACM}}
+@STRING{CL = {Workshop on Composition Languages}}
+@STRING{COCV  = {Compiler Optimization Meets Compiler Verification}}
+@STRING{CONCUR = {Conference on Concurrency Theory}}
+@STRING{COOTS = {USENIX Conference on Object-Oriented Technologies}}
+@STRING{CORDIE = {Symposium on Concurrency, Real-Time, and Distribution in Eiffel-like Languages}}
+@STRING{CPE = {Concurrency: Practice and Experience}}
+@STRING{CRPIT = {Conference in Research and Practice in Information Technology}}
+@STRING{CRYPTO = {Advances in Cryptology}}
+@STRING{CS = {International Conference on Supercomputing}}
+@STRING{CSFW = {Computer Security Foundations Workshop}}
+@STRING{CSL = {Computer Science Logic}}
+@STRING{CSP = {Computer Science in Perspective}}
+@STRING{DCM = {Workshop on Developments in Computational Models} }
+@STRING{DDECS = {Workshop on Design {\&} Diagnostics of Electronic Circuits {\&} Systems}}
+@STRING{DSPB = {Workshop on Design of Systems with Predictable Behaviour}}
+@STRING{EAAI = {Emerging Applications of Abstract Interpretation}}
+@STRING{EC = {Conference on Electronic Commerce}}
+@STRING{ECOOP = {European Conference on Object-Oriented Programming}}
+@STRING{ECRS = {EuroMicro Conference on Real-Time Systems}}
+@STRING{EMMCVPR = {Energy Minimization Methods in Computer Vision and Pattern Recognition}}
+@STRING{ENTCS =  {Electronic Notes in Theoretical Computer Science}}
+@STRING{ESHOL = {Empirically Successful Automated Reasoning in Higher-Order Logics}}
+@STRING{ESMART = {e-Smart}}
+@STRING{ESOP = {European Symposium on Programming}}
+@STRING{ESORICS = {European Symposium On Research In Computer Security}}
+@STRING{ESRC = {European Symposium on Research in Computer Security}}
+@STRING{EUROPAR = {EURO--PAR}}
+@STRING{EVT = {International Workshop on Electronic Voting Technologies}}
+@STRING{FAC = {Formal Aspects of Computing}}
+@STRING{FASE = {Fundamental Approaches to Software Engineering}}
+@STRING{FAST = {Workshop on Formal Aspects in Security and Trust}}
+@STRING{FDS = {Forum on specification \& Design Languages} }
+@STRING{FESCA = {Formal Foundations of Embedded Software and Component-Based Software Architectures}}
+@STRING{FLOPS = {Symposium on Functional and Logic Programming}}
+@STRING{FM = {Formal Methods}}
+@STRING{FMCAD = {Formal Methods in Computer-Aided Design}}
+@STRING{FMCIS = {Workshop on Formal Methods for Industrial Critical Systems}}
+@STRING{FMCO = {Formal Methods for Components and Objects}}
+@STRING{FME = {Formal Methods Europe}}
+@STRING{FMOODS = {International Conference on Formal Methods for Open Object-based Distributed Systems}}
+@STRING{FMT = {Workshop on Finite Model Theory}}
+@STRING{FOCLASA = {Workshop on Foundations of Coordination Languages and Software Architectures}}
+@STRING{FOPARA = {International Workshop on Foundational and Practical Aspects of Resource Analysis}}
+@STRING{FORTH-J = {Forth Journal}}
+@STRING{FOSSACS = {Foundations of Software Science and Computation Structures}}
+@STRING{FPCA = {Conference on Functional Programming Languages and Computer Architecture}}
+@STRING{FSTTCS = {Foundations of Software Technology and Theoretical Computer Science}}
+@STRING{FTCS = {Fault-Tolerant Computing Symposium}}
+@STRING{FTFJP = {Workshop on Formal Techniques for Java Programs}}
+@STRING{FUJ = {Workshop on Formal Underpinnings of Java}}
+@STRING{HBC = {Hack In The Box Conference}}
+@STRING{IC =     {Information and Computation}}
+@STRING{ICFEM = {International Conference on Formal Engineering Methods}}
+@STRING{ICFP = {International Conference on Functional Programming}}
+@STRING{ICALP = {International Colloquium on Automata, Languages and Programming}}
+@STRING{ICLP = {International Conference on Logic Programming}}
+@STRING{ICSE =  {International Conference on Software Engineering}}
+@STRING{ICTCS = {Italian Conference on Theoretical Computer Science}}
+@STRING{IJCAR = {International Joint Conference on Automated Reasoning}}
+@STRING{IJIS = {International Journal of Information Security}}
+@STRING{ISCA = {International Symposium on Computer Architecture}}
+@STRING{ISMM = {International Symposium on Memory Management}}
+@STRING{ISOLA = {International Symposium on Leveraging Applications}}
+@STRING{ISSSE = {Symposium on Secure Software Engineering}}
+@STRING{ITS = {Issues in the Theory of Security}}
+@STRING{IWACO = {International Workshop on Aliasing, Confinement and Ownership in object-oriented programming} }
+@STRING{J1 = {JavaOne Conference}}
+@STRING{JACM =   {Journal of the Association of Computing Machinery}}
+@STRING{JACMS =  {Journal of the ACM Computing Surveys}}
+@STRING{JAI =    {Acta Informatica Journal}}
+@STRING{JAR =    {Journal of Automated Reasoning}}
+@STRING{JCP = {Java Community Process}}
+@STRING{JCS =    {Journal of Computer Security}}
+@STRING{JFLA = {Journ\'ees Francophones des Languages Applicatifs} }
+@STRING{JFP = {Journal of Functional Programming} }
+@STRING{JG = {Java Grande}}
+@STRING{JH-OSC = {Higher-Order and Symbolic Computation}}
+@STRING{JIC = {Infomation and Computation}}
+@STRING{JICSLP = {Joint International Conference and Symposium on Logic Programming}}
+@STRING{JIST = {Information and Software Technology}}
+@STRING{JLAP =  {Journal of Logic and Algebraic Programming}}
+@STRING{JLAMP = {Journal of Logical and Algebraic Methods in Programming}}
+@STRING{JLC = {Journal of Logic and Computation}}
+@STRING{JLP = {Journal of Logic Programming}}
+@STRING{JLSC = {Lisp and Symbolic Computation}}
+@STRING{JOS = {Journal of systems and software}}
+@STRING{JOT = {Journal of Object Technology}}
+@STRING{JPDC = {Journal of Parallel and Distributed Computing}}
+@STRING{JPL = {Journal of Programming Languages}}
+@STRING{JPLb = {Journal of Philosophic Logic}}
+@STRING{JSC = {Journal of Symbolic Computation}}
+@STRING{JSCPS = {Java on Smart Cards: Programming and Security}}
+@STRING{JSI = {Journal of Systems Integration}}
+@STRING{JSR = {Java Specification Request}}
+@STRING{JSS = {Journal of Systems Software}}
+@STRING{JTS = {Journal of Technological Sciences}}
+@STRING{LCTES = {Conference on Languages, Compilers, Tools and Theory for Embedded Systems}}
+@STRING{LICS =   {Logic in Computer Science}}
+@STRING{LNAI = {Lecture Notes in Artificial Intelligence}}
+@STRING{LMCS =   {Logical Methods in Computer Science}}
+@STRING{LNCS =   {Lecture Notes in Computer Science}}
+@STRING{LOPSTR = {Logic-based Program Synthesis and Transformation}}
+@STRING{LOPLAS = {ACM Letters on Programming Languages and Systems}}
+@STRING{LP = {Logic Programming Symposium}}
+@STRING{LPAR = {Logic for Programming Artificial Intelligence and Reasoning}}
+@STRING{LPE = {Workshop on Logic Programming Environments}}
+@STRING{MFPS = {Mathematical Foundations of Programming Semantics}}
+@STRING{MFCS = {Mathematical Foundations of Computer Science}}
+@STRING{NFM = {NASA Symposium on Formal Methods}}
+@STRING{NGC = {New Generation Computing}}
+@STRING{NORDSEC = {Nordic Workshop on Secure IT Systems}}
+@STRING{OOPSLA = {ACM International Conference on Object-Oriented Programming, Systems, Languages and Applications}}
+@STRING{OSDI = {Operating Systems Design and Implementation}}
+@STRING{OWASP = {Open Web Application Security Project}}
+@STRING{PADL = {Symposium on Practical Aspects of Declarative Languages}}
+@STRING{PARLE = {Parallel Architectures and Languages Europe}}
+@STRING{PASTE = {Program Analysis For Software Tools and Engineering}}
+@STRING{PDCL = {Program Development in Computational Logic}}
+@STRING{PERCOM = {Pervasive Computing and Communication} }
+@STRING{PLDI = {Programming Languages Design and Implementation}}
+@STRING{PLFP = {Programming Languages and Fundamentals of Programming}}
+@STRING{PLILP = {Programming Language Implementation and Logic Programming}}
+@STRING{POPL =    {Principles of Programming Languages}}
+@STRING{PPDP = {Principle and Practice of Declarative Programming}}
+@STRING{PPPJ = {Principles and Practices of Programming in Java}}
+@STRING{PROLE = {Spanish Conference on Programming and Computer Languages}}
+@STRING{PSI = {Andrei Ershov International Conference on Perspectives of System Informatics}}
+@STRING{RDL = {Workshop on Revival of Dynamic Languages}}
+@STRING{REM = {Workshop on Run Time Enforcement for Mobile and Distributed Systems}}
+@STRING{RSA = {RSA Conference}}
+@STRING{RTA = {Rewriting Techniques and Applications}}
+@STRING{RTSS = {Real-Time Systems Symposium}}
+@STRING{SAC = {Symposium on Applied Computing}}
+@STRING{SAVCBS = {Specification and Verification of Component-Based Systems}}
+@STRING{SAS = {Static Analysis Symposium}}
+@STRING{SCP = {Science of Computer Programming}}
+@STRING{SECRET = {Workshop on Security and Rewriting Techniques}}
+@STRING{SEFM = {Software Engineering and Formal Methods}}
+@STRING{SESS = {Workshop on Software Engineering For Secure Systems} }
+@STRING{SETDQ = {Software Engineering Techniques: Design for Quality}}
+@STRING{SMARTCARD = {Workshop on Smart Card Technology}}
+@STRING{SOFSEM = {International Conference on Current Trends in Theory and Practice of Computer Science}}
+@STRING{SOS = {Workshop on Structured Operational Semantics}}
+@STRING{SOSP = {Symposium on Operating Systems Principles}}
+@STRING{SPACE = {Workshop on Semantics, Program Analysis and Computing Environments for Memory Management}}
+@STRING{SPC = {Security in Pervasive Computing}}
+@STRING{SPINW = {SPIN Workshop}}
+@STRING{SPLC = {Software Product Line Conference}}
+@STRING{SPR = {Software Practice and Experience}}
+@STRING{SQR = {Software Quality Journal}}
+@STRING{SR = {Workshop on Software Reuse}}
+@STRING{SSEN = {SIGSOFT Software Engineering Notes}}
+@STRING{SSM = {Software and System Modeling}}
+@STRING{SSP = {Symposium on Security and Privacy}}
+@STRING{STTT =   {Journal on Software Tools for Technology Transfer}}
+@STRING{SVV = {Workshop on Software Verification and Validation}}
+@STRING{SWMCS = {SPIN Workshop on Model Checking of Software}}
+@STRING{TACAS = {Tools and Algorithms for the Construction and Analysis of Systems}}
+@STRING{TAES = {Trusting Agents for trusting Electronic Societies}}
+@STRING{TAPOS =  {Theory and Practice of Object Systems}}
+@STRING{TAPSOFT = {Theory and Practice of Software Development}}
+@STRING{TASE = {IEEE and IFIP Int.\ Symp.\ on Theoretical Aspects of Software Engineering}}
+@STRING{TCS =    {Theoretical Computer Science}}
+@STRING{TGC  = {Trustworthy Global Computing}}
+@STRING{TIWDOT = {Toward the Integration of WWW and Distributed Object Technology Workshop}}
+@STRING{TLCA = {Typed Lambda Calculi and Applications}}
+@STRING{TLDI = {Types in Language Design and Implementation} }
+@STRING{TMCS = {Texts and Monographs in Computer Science}}
+@STRING{TOOLS = {Technology of Object-Oriented Languages and Systems}}
+@STRING{TOPLAS = {ACM Transactions on Programming Languages and Systems}}
+@STRING{TPHOL = {Theorem Proving in Higher-Order Logic}}
+@STRING{TV = {Multithreading in Hardware and Software: Formal Approaches to Design and Verification}}
+@STRING{UITP = {User Interfaces for Theorem Proving}}
+@STRING{USS = {USENIX Security Symposium}}
+@STRING{VAMP = {Verification and Analysis of Multi-threaded Java-like Programs}}
+@STRING{VEE = {Virtual execution environments}}
+@STRING{VMCAI = {Verification, Model Checking and Abstract Interpretation}}
+@STRING{VSTTE = {Verified Software: Theories, Tools, Experiements}}
+@STRING{WCET = {Workshop on Worst Case Execution Time Analysis}}
+@STRING{WFLP = {Workshop on Functional and (Constraint) Logic Programming}}
+@STRING{WING = {Workshop on Invariant Generation}}
+@STRING{WITS = {Workshop on Issues in the Theory of Security}}
+@STRING{WLPE = {Workshop on Logic-Based Methods in Programming Environments}}
+@STRING{WRV = {Workshop on Runtime Verification}}
+@STRING{WST = {Workshop on Termination}}
+@STRING{WWWJ =   {World Wide Web Journal}}
+
+@STRING{IEEE-COMPUTER = {IEEE Computer}}
+@STRING{IEEE-CSF = {IEEE Computer Security Foundations Symposium}}
+@STRING{IEEE-ISHPDC = {International Symposium on High Performance Distributed Computing} }
+@STRING{IEEE-JSAC ={IEEE Journal on Selected Areas in Communication}}
+@STRING{IEEE-ORDC = {IEEE Symposium on Object-oriented Real-time distributed Computing}}
+@STRING{IEEE-PS = {IEEE Pervasive Computing}}
+@STRING{IEEE-SOFT = {IEEE Software}}
+@STRING{IEEE-SP = {IEEE Symposium on Security and Privacy}}
+@STRING{TENCON = {TENCON}}
+@STRING{IEEE-TSE = {IEEE Transactions on Software Engineering}}
+@STRING{IEEE-ICECCS = {IEEE International Conference on Engineering of Complex Computer Systems}}
+
+@STRING{ACM =    {Association of Computing Machinery}}
+@STRING{ACM-CCCS = {ACM Conference on Computer and Communications Security}}
+@STRING{ACM-CW = {ACM SIGPLAN Continuation Workshop}}
+@STRING{ACM-FOOL = {ACM Workshop on Foundations of Object-Oriented Languages}}
+@STRING{ACM-OOPSLA = {ACM Conference on Object-Oriented Programming Systems, Languages, and Applications}}
+@STRING{ACM-PEPM = {ACM SIGPLAN Workshop on Partial Evaluation and Semantics-based Program Manipulation}}
+@STRING{ACM-PODC = {ACM Symposium On Principles of Distributed Computing}}
+@STRING{ACM-PLAS = {ACM SIGPLAN Workshop on Programming Languages and Analysis for Security}}
+@STRING{ACM-PPPJ = {Principles and Practice of Programming in Java}}
+@STRING{ACM-PPOPP = {ACM SIGPLAN Symposium on Principles and Practice of Parallel Programming}}
+@STRING{ACM-SIGMETRICS = {ACL International Conference On Measurement And Modeling of Computer Systems}}
+@STRING{ACM-SN = {ACM SIGPLAN Notices}}
+@STRING{ACM-SPAA = {ACM Symposium on Parallel Algorithms and Architectures}}
+@STRING{ACM-STC = {ACM Symposium on Theory of Computing}}
+@STRING{ACM-TC = {ACM Workshop on Types in Compilation}}
+@STRING{ACM-TISSEC = {ACM Transactions Information and Systems Security}}
+@STRING{ACM-TOCL = {ACM Transactions on Computational Logic}}
+@STRING{ACM-TOCS = {ACM Transactions on Computer Systems}}
+@STRING{ACM-TPLS = {ACM Transactions on Programming Languages and Systems} }
+@STRING{ACM-TSEM = {ACM Transactions on Software Engineering Methodology} }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ Abbreviations for publishers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@string{ PUB-ACM     = {ACM Press}}
+@string{ PUB-AW      = {Addison-Wesley}}
+@string{ PUB-CUP     = {Cambridge University Press}}
+@string{ PUB-CEURWS  = {CEUR Workshop Proceedings}}
+@string{ PUB-OUP     = {Oxford University Press}}
+@string{ PUB-ELS     = {Elsevier}}
+@string{ PUB-IEEE    = {IEEE Press}}
+@string{ PUB-KLU     = {Kluwer Academic Publishing}}
+@string{ PUB-MIT     = {MIT Press}}
+@string{ PUB-OREILLY = {O'Reilly \& Associates, Inc.}}
+@string{ PUB-PH      = {Prentice Hall}}
+@string{ PUB-SV      = {Springer-Verlag}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ Individual papers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ A
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+@Manual{ABS-LangSpec,
+  title = 	 {The ABS Language Specification},
+  key =		 {ABS},
+  month =	 apr,
+  year =	 2013,
+  edition = {1.2.0},
+  note =	 {\url{http://tools.hats-project.eu/download/absrefmanual.pdf}}
+}
+
+@article{Abadi2006,
+  Author =	 {Abadi, Martin and Flanagan, Cormac and Freund, Stephen N.},
+  Issue =	 2,
+  Journal =	 TOPLAS,
+  Publisher =	 PUB-ACM,
+  Title =	 {Types for safe locking: Static race detection for {J}ava},
+  Volume =	 28,
+  Year =	 2006
+}
+
+@incollection{Albert08,
+  title={Automatic inference of upper bounds for recurrence relations in cost analysis},
+  author={Albert, Elvira and Arenas, Puri and Genaim, Samir and Puebla, Germ{\'a}n},
+  booktitle={Static Analysis},
+  pages={221--237},
+  year={2008},
+  publisher= PUB-SV
+}
+
+@inproceedings{ACPR13,
+	Author = {Elvira Albert and Jes{\'u}s Correas and Germ{\'a}n Puebla and Guillermo Rom{\'a}n-D{\'\i}ez},
+	Booktitle = {iFM'13},
+	Pages = {285--300},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {Quantified Abstractions of Distributed Systems},
+	Volume = 7940,
+	Year = {2013},
+}
+
+@incollection{AlbertBBM15,
+  title = {{A} {F}ormal, {R}esource {C}onsumption-{P}reserving {T}ranslation of {A}ctors to {H}askell},
+  author = {Elvira Albert and Nikolaos Bezirgiannis and Frank de Boer and Enrique Martin-Martin},
+  note = {Submitted to FLOPS 2016},
+}
+
+@incollection{AlbertBGHR12,
+  year =	 2012,
+  isbn =	 {978-3-642-28871-5},
+  booktitle =	 {Fundamental Approaches to Software Engineering},
+  volume =	 7212,
+  series =	 LNCS,
+  editor =	 {de Lara, Juan and Zisman, Andrea},
+  doi =		 {10.1007/978-3-642-28872-2_10},
+  title =	 {Verified Resource Guarantees for Heap Manipulating
+                  Programs},
+  url =		 {http://dx.doi.org/10.1007/978-3-642-28872-2_10},
+  publisher =	 PUB-SV,
+  author =	 {Albert, Elvira and Bubel, Richard and Genaim, Samir
+                  and H\"{a}hnle, Reiner and Rom\'{a}n-D\'{\i}ez,
+                  Guillermo},
+  pages =	 {130--145},
+}
+
+@inproceedings{AlbertBGHPR11,
+  author =	 {Albert, Elvira and Bubel, Richard and Genaim, Samir
+                  and H\"{a}hnle, Reiner and Puebla, Germ\'{a}n and
+                  Rom\'{a}n-D\'{\i}ez, Guillermo},
+  title =	 {Verified Resource Guarantees Using {COSTA} and
+                  {KeY}},
+  booktitle =	 {Proceedings of the 20th ACM SIGPLAN Workshop on
+                  Partial Evaluation and Program Manipulation},
+  series =	 {PEPM '11},
+  year =	 2011,
+  isbn =	 {978-1-4503-0485-6},
+  location =	 {Austin, Texas, USA},
+  pages =	 {73--76},
+  numpages =	 4,
+  url =		 {http://doi.acm.org/10.1145/1929501.1929513},
+  doi =		 {10.1145/1929501.1929513},
+  acmid =	 1929513,
+  publisher =	 PUB-ACM,
+  address =	 {New York, NY, USA},
+  keywords =	 {java, resource guarantees, static analysis},
+} 
+
+
+@Article {AlbertBGHPR15,
+   author = {Elvira Albert and
+   			 Richard Bubel and
+   			 Samir Genaim and 
+   			 Reiner H\"ahnle and
+   			 Germ\'{a}n Puebla and
+   			 Guillermo Rom\'an-D\'iez},
+   title = {{A} {F}ormal {V}erification {F}ramework for {S}tatic {A}nalysis},
+   journal		= {{S}oftware and {S}ystems {M}odeling}, 
+   year 		= {2015},
+   publisher 	= {Springer},
+   note			= {To appear},
+   issn 		= {1619-1366},
+   keywords = {ENVISAGE, WP3, T3.4, MSR-31}
+}
+
+
+
+
+@article{ABHJSTW13,
+  author =	 {Elvira Albert and de Boer, Frank S. and Reiner
+                  H{\"a}hnle and Einar Broch Johnsen and Rudolf
+                  Schlatte and Tapia Tarifa, Silvia Lizeth and Peter
+                  Y. H. Wong},
+  title =	 {Formal Modeling of Resource Management for Cloud
+                  Architectures: An Industrial Case Study using
+                  {R}eal-{T}ime {ABS}},
+  doi =		 {10.1007/s11761-013-0148-0},
+  publisher =	 PUB-SV,
+  journal =	 {Journal of Service-Oriented Computing and
+                  Applications},
+ year =         2014,
+  volume={8},
+  number={4},
+  pages={323--339},
+  keywords =	 {ENVISAGE, wp1, t1.1, MSR-8}
+}
+
+
+@book{Agha,
+  Author =	 {Agha, Gul},
+  Title =	 {Actors: a model of concurrent computation in distributed systems},
+  Publisher =	 PUB-MIT,
+  Address =	 {Cambridge, MA, USA},
+  Year =	 1986
+}
+	
+@article{AghaFKPPS93,
+  author =	 {Gul Agha and Svend Fr\o{}lund and Wooyoung Kim and
+                  Rajendra Panwar and Anna Patterson and Daniel Sturman},
+  title =	 {Abstraction and Modularity Mechanisms for Concurrent
+                  Computing},
+  journal =	 {IEEE Parallel and Distributed Technology: Systems
+                  and Applications},
+  year =	 1993,
+  volume =	 1,
+  pages =	 {3--21}
+}	
+
+
+
+@inproceedings{AgarwalBSS07,
+  author    = {S.~Agarwal and
+               R.~Barik and
+               V.~Sarkar and
+               R.~K.~Shyamasundar},
+  title     = {May-happen-in-parallel analysis of {X10} programs},
+  booktitle = ACM-PPOPP,
+  year      = {2007},
+  pages     = {183--193},
+}
+
+
+@inproceedings{AlbertACGGMPR15,
+  author    = {Elvira Albert and
+               Puri Arenas and
+               Jes{\'{u}}s Correas and
+               Samir Genaim and
+               Miguel G{\'{o}}mez{-}Zamalloa and
+               Enrique Martin{-}Martin and
+               Germ{\'{a}}n Puebla and
+               Guillermo Rom{\'{a}}n{-}D{\'{\i}}ez},
+  title     = {{R}esource {A}nalysis: {F}rom {S}equential to {C}oncurrent and {D}istributed {P}rograms},
+  booktitle = {{FM} 2015: Formal Methods - 20th International Symposium, Oslo, Norway,
+               June 24-26, 2015, Proceedings},
+  pages     = {3--17},
+  year      = {2015},
+  url       = {http://dx.doi.org/10.1007/978-3-319-19249-9_1},
+  doi       = {10.1007/978-3-319-19249-9_1},
+  editor    = {Nikolaj Bj{\o}rner and Frank D. de Boer},
+  series    = {Lecture Notes in Computer Science},
+  isbn      = {978-3-319-19248-2},
+  volume    = {9109},
+  publisher = {Springer}, 
+  keywords  = {ENVISAGE, WP3, T3.3, MSR-39}
+}
+
+@Article {AlbertACGGPR15,
+   author = {Elvira Albert and
+   			 Puri Arenas and
+   			 Jes{\'u}s Correas and 
+   			 Samir Genaim and 
+   			 Miguel G{\'o}mez-Zamalloa and
+   			 Germ{\'a}n Puebla and
+   			 Guillermo Rom{\'a}n-D{\'i}ez},
+   title = {{O}bject-{S}ensitive {C}ost {A}nalysis for {C}oncurrent {O}bjects},
+   journal		= {Software Testing, Verification and Reliability}, 
+   year 		= {2015},
+   publisher 	= {Wiley},
+   pages = {218--271},
+   volume = {25},
+   number = {3},
+   issn 		= {0960-0833},
+   pdf =  {http://costa.ls.fi.upm.es/papers/costa/AlbertACGGPR15.pdf},
+   doi =  {10.1002/stvr.1569},
+   keywords = {ENVISAGE, wp3, t3.3, MSR-33}
+}
+
+@inProceedings{AlbertAFGGMPR14,
+  author    = {Elvira Albert and
+               Puri Arenas and 
+               Antonio Flores-Montoya and 
+               Samir Genaim and 
+               Miguel G\'omez-Zamalloa and
+               Enrique Martin-Martin and 
+               Germ\'an Puebla and
+               Guillermo Rom\'an-D\'iez},
+  title     = {{SACO}: {S}tatic {A}nalyzer for {C}oncurrent {O}bjects},
+  booktitle = {20th International Conference on Tools and Algorithms for the Construction and Analysis of Systems (TACAS)},
+  publisher = PUB-SV,
+  year      = {2014},
+  pages     = {562-567},
+  volume    = {8413},
+  series    = lncs,
+  isbn		= {978-3-642-54861-1},
+  doi		= {10.1007/978-3-642-54862-8_46},
+  keywords  = {ENVISAGE, WP3, T3.3, MSR-57}  
+}
+
+@inProceedings{AlbertGG15,
+  author =   {Elvira Albert and Samir Genaim and Pablo Gordillo},
+  title =    {May-{H}appen-in-{P}arallel {A}nalysis for {A}synchronous {P}rograms with {I}nter-{P}rocedural {S}ynchronization},
+  booktitle     = {Static Analysis - 22nd International Symposium, {SAS} 2015. Proceedings},  
+  publisher = PUB-SV,
+  year      = {2015},
+  series 	= lncs, 
+  volume = {9291},
+  pages = {72--89},
+  isbn = {78-3-662-48287-2},
+  doi       = {10.1007/978-3-662-48288-9_5},
+  keywords  = {ENVISAGE,WP3, T3.3, MSR-46}
+ 
+}
+@InProceedings{AlbertAGGP11,
+  author    = {Elvira Albert and Puri Arenas and Samir Genaim and Miguel G\'{o}mez-Zamalloa and Germ\'an Puebla},
+  editor    = {Hongseok Yang},
+  title     = {Cost {A}nalysis of {C}oncurrent {OO} Programs},
+  booktitle = {Proceedings 9th Asian Symposium on Programming Languages and Systems (APLAS 2011)}, 
+  series    = LNCS,
+  year      = {2011}, 
+  publisher = PUB-SV,
+  pages     = {238--254},
+  volume    = {7078},
+  keywords = {HATS},
+}
+
+
+@inProceedings{AlbertAGM15,
+  author =   {Elvira Albert and Puri Arenas and Miguel G\'omez-Zamalloa},
+  title =    {Test {C}ase {G}eneration of {A}ctor {S}ystems},
+  booktitle     = {13th International Symposium on Automated Technology for Verification and Analysis, {ATVA} 2015. Proceedings},  
+  publisher = PUB-SV,
+  year      = {2015},
+  series 	= lncs, 
+  note		= {To appear},
+  pdf =      {http://costa.ls.fi.upm.es/papers/costa/AlbertAGZ15.pdf},
+  keywords = {ENVISAGE, T3.5, MSR-14}
+}
+
+
+@Article{AlbertAGPZ12,
+  author =                {Elvira Albert and Puri Arenas and Samir Genaim and Germ{\'a}n Puebla and Damiano Zanardini},
+  title =                 {Cost {A}nalysis of {O}bject-{O}riented {B}ytecode {P}rograms},
+  journal =               TCS,
+  volume =                413,
+  number =                1,
+  pages =                 {142--159},
+  year =                  {2012},
+  publisher =             PUB-ELS,
+  keywords =              {HATS}
+}
+
+
+@Article{AlbertAGP11a,
+  author =	 {Elvira Albert and Puri Arenas and Samir Genaim and
+                  Germ\'an Puebla},
+  title =	 {{C}losed-{F}orm {U}pper {B}ounds in {S}tatic {C}ost
+                  {A}nalysis},
+  journal =	 JAR,
+  year =	 2011,
+  publisher =	 PUB-SV,
+  volume =	 46,
+  number =	 2,
+  pages =	 {161--203},
+  keywords =	 {HATS},
+}
+
+@Article {AlbertAGP15,
+   author = {Elvira Albert and Puri Arenas and Samir Genaim and Germ\'{a}n Puebla},
+   title = {A {P}ractical {C}omparator of {C}ost {F}unctions and {I}ts {A}pplications},
+   journal =	 SCP,
+   year 		= {2015},
+   publisher =	 PUB-ELS,
+   pages = {483--504},
+   volume = {111},
+   number = {3},
+   pdf =  {http://costa.ls.fi.upm.es/papers/costa/AlbertAGP15.pdf},
+   issn =	 {0167-6423},
+  doi =		 {10.1016/j.scico.2014.12.001 },
+  keywords =	 {ENVISAGE, wp3, t3.3, MSR-67}
+}
+
+
+@InProceedings{AlbertGG10,
+ author    = {E. Albert and S. Genaim and M. G\'{o}mez-Zamalloa},
+ title     = {{P}arametric {I}nference of {M}emory {R}equirements for {G}arbage {C}ollected {L}anguages},
+ booktitle = {Proc. of ISMM'10},
+ year      = {2010},
+ isbn      = {978-1-4503-0054-4},
+ pages     = {121--130},
+ publisher = {ACM}
+}
+
+
+@inproceedings{AlbertBHJL13,
+  author =	 {Elvira Albert and Frank de Boer and Reiner H\"ahnle and
+                  Einar Broch Johnsen and Cosimo Laneve},
+  title =	 {Engineering Virtualized Services},
+  editor =	 {M. Ali Babar and Marlon Dumas},
+  booktitle =	 {2nd Nordic Symposium on Cloud Computing \& Internet
+                  Technologies ({NordiCloud}'13)},
+  pages =	 {59--63},
+  doi =		 {10.1145/2513534.2513545},
+  publisher =	 PUB-ACM,
+  year =	 2013,
+  keywords =	 {ENVISAGE, wp5, t5.4, MSR-0}
+}
+
+
+
+@inProceedings{AlbertCJR15,
+  author    = {Elvira Albert and
+               Jes\'us Correas and 
+               Einar Broch Johnsen and 
+               Guillermo Rom\'an-D\'iez},
+  title     = {{P}arallel {C}ost {A}nalysis of {D}istributed {S}ystems},
+  booktitle     = {Static Analysis - 22nd International Symposium, {SAS} 2015. Proceedings},  
+  publisher = PUB-SV,
+  year      = {2015},
+  series 	= LNCS, 
+  pages={275-292},
+  volume    = {9291}, 
+  doi={http://dx.doi.org/10.1007/978-3-662-48288-9_16},
+  keywords =	 {ENVISAGE, wp3, t3.3, MSR-45}
+}
+
+
+@inProceedings{AlbertCMR14,
+  crossref = "ISoLA14",
+  author =	 {Elvira Albert and Jes{\'u}s Correas and Enrique
+                  Mart{\'i}n-Mart{\'i}n and Guillermo Rom{\'a}n-D{\'i}ez},
+  title =	 {{S}tatic {I}nference of {T}ransmission {D}ata
+                  {S}izes in {D}istributed {S}ystems},
+  pages =	 {104--119},
+  year =         2014,
+  publisher = PUB-SV,
+  series 	= LNCS,
+  volume	= {8803},
+  doi		= {10.1007/978-3-662-45231-8_8},
+  keywords =	 {ENVISAGE, WP3, T3.3, MSR-0}
+}
+
+@Article {AlbertCPR14,
+  author =	 {Elvira Albert and Jes{\'u}s Correas and Germ{\'a}n
+                  Puebla and Guillermo Rom{\'a}n-D{\'i}ez},
+  title =	 {{Q}uantified {A}bstract {C}onfigurations of
+                  {D}istributed {S}ystems},
+  journal =	 FAC,
+  year =	 2015,
+  publisher =	 PUB-SV,
+  volume =       {27},
+  number =       {4},
+  pages =        {665--699},
+  issn =	 {0934-5043},
+  doi =		 {10.1007/s00165-014-0321-z},
+  keywords =	 {ENVISAGE, wp3, t3.3, MSR-56}
+}
+
+@inProceedings{AlbertCR14,
+  author    = {Elvira Albert and
+               Jes\'us Correas and 
+               Guillermo Rom\'an-D\'iez},
+  title     = {{P}eak {C}ost {A}nalysis of {D}istributed {S}ystems},
+  booktitle = {21st International Static Analysis Symposium ({SAS}'14)},
+  publisher = PUB-SV,
+  year      = {2014},
+  volume	= {8723}, 
+  series 	= LNCS,
+  pages		= {18--33},
+  keywords  = {ENVISAGE, WP3, T3.3, MSR-45},
+}
+
+
+
+
+@inproceedings{AlbertCR15,
+  author =	 {Elvira Albert and Jes{\'u}s Correas and Guillermo
+                  Rom{\'a}n-D{\'i}ez},
+  title =	 {{N}on-{C}umulative {R}esource {A}nalysis},
+  booktitle =	 {Proceedings of 21st International Conference on
+                  Tools and Algorithms for the Construction and
+                  Analysis of Systems (TACAS 2015)},
+  series =	 LNCS,
+  publisher =	 PUB-SV,
+  year =	 2015,
+	pages={85-100},
+	volume={9035},
+  keywords =	 {ENVISAGE, wp3, t3.3, MSR-57}
+}
+
+
+@inproceedings {AlbertFG12,
+   author = {Elvira Albert and Antonio Flores-Montoya and Samir Genaim},
+   affiliation = {Complutense University of Madrid, Spain},
+   title = {Analysis of May-Happen-in-Parallel in Concurrent Objects},
+   booktitle = {Formal Techniques for Distributed Systems},
+   series = LNCS,
+   editor = {Giese, Holger and Rosu, Grigore},
+   publisher = PUB-SV,
+   pages = {35--51},
+   volume = {7273},
+   year = {2012},
+   keywords = {HATS},
+}
+
+
+
+@inproceedings{AlbertFGM13,
+    author = {Elvira Albert and Antonio Flores-Montoya and Samir Genaim and Enrique Martin-Martin},
+    title = {Termination and Cost Analysis of Loops with Concurrent Interleavings},
+    booktitle = {11th International Symposium on Automated Technology for Verification and Analysis (ATVA)},
+    editor    = {Dang Van Hung and Mizuhito Ogawa},
+    pages     = {349--364},
+    volume    = {8172},
+    series    = LNCS,
+    publisher = PUB-SV,
+    month     = oct,
+    year      = {2013},
+    doi       = {10.1007/978-3-319-02444-8_25}, 
+    keywords  = {ENVISAGE, WP3, T3.3, MSR-0}
+}
+
+
+@article{AlbertFGM15,
+  author = {Elvira Albert and Antonio Flores-Montoya and Samir Genaim and Enrique Martin-Martin},
+  title = {{M}ay-{H}appen-in-{P}arallel {A}nalysis for {A}ctor-based {C}oncurrency},
+  journal = ACM-TOCL,
+  year = {2015},
+  publisher = {ACM},
+  note = {},
+  issn = {1529-3785},
+  keywords = {ENVISAGE, WP3, T3.3, MSR-38}
+}
+
+
+@inproceedings {AlbertFMG15,
+   author = {Elvira Albert and Antonio Flores-Montoya and Samir Genaim},
+   title = {May-Happen-in-Parallel Analysis with Condition Synchronization},
+   booktitle = {Foundational and Practical Aspects of Resource Analysis (FOPARA 2015)},
+   year      = {2015},
+   pdf = {http://costa.ls.fi.upm.es/papers/costa/AlbertFMG15.pdf},
+   keywords = {ENVISAGE, WP3, T3.3, MSR-0}
+}
+
+
+@inproceedings{AlbertGM13,
+    author    = {Elvira Albert  and Samir Genaim and Enrique Martin-Martin},
+    title     = {May-{H}appen-in-{P}arallel {A}nalysis for {P}riority-based {S}cheduling},
+    booktitle = {19th International Conference on Logic for Programming, Artificial Intelligence, and Reasoning (LPAR)},
+    editor    = {McMillan, Ken and Middeldorp, Aart and Voronkov, Andrei},
+    volume    = {8312},
+    series    = LNCS,
+    publisher = PUB-SV,
+    isbn      = {978-3-642-45220-8},
+    month     = dec,
+    year      = {2013},
+    pages     = {18--34},
+    doi       = {10.1007/978-3-642-45221-5_2},
+    keywords  = {ENVISAGE, WP3, T3.3, MSR-28}
+}
+
+@inproceedings{AlbertAG12,
+  author =	 {Elvira Albert and Puri Arenas and Samir Genaim and
+                  Miguel G{\'o}mez-Zamalloa and Germ{\'a}n Puebla},
+  title =	 {{COSTABS}: a cost and termination analyzer for
+                  {ABS}},
+  editor =	 {Oleg Kiselyov and Simon Thompson},
+  booktitle =	 {Proc.\ Workshop on Partial Evaluation and Program
+                  Manipulation ({PEPM}'12)},
+  publisher =	 {ACM},
+  year =	 2012,
+  pages =	 {151--154},
+}
+
+@incollection{Alonso12,
+  title={On the limits of the classical approach to cost analysis},
+  author={Alonso-Blas, Diego Esteban and Genaim, Samir},
+  booktitle={Static Analysis},
+  pages={405--421},
+  year={2012},
+  publisher={Springer}
+}
+
+@inproceedings{AlonsoAG13,
+    author = {Diego Alonso  and Puri Arenas and Samir Genaim}, 
+    title  = {Precise Cost Analysis via Local Reasoning},
+    booktitle = {11th International Symposium on Automated Technology for Verification and Analysis (ATVA)},
+    editor    = {Dang Van Hung and Mizuhito Ogawa},
+    pages     = {319--333},
+    volume    = {8172},
+    series    = LNCS,
+    publisher = PUB-SV,
+    month     = oct,
+    year      = {2013},
+    doi       = {10.1007/978-3-319-02444-8_23}, 
+    keywords  = {ENVISAGE, WP3, T3.3, MSR-0}
+}
+
+
+@article{Agarwal+10,
+  Author =	 {Rahul Agarwal and Saddek Bensalem and Eitan Farchi
+                  and Klaus Havelund and Yarden Nir-Buchbinder and
+                  Scott D. Stoller and Shmuel Ur and Liqiang Wang},
+  Bibsource =	 {DBLP, http://dblp.uni-trier.de},
+  Ee =		 {http://dx.doi.org/10.1147/JRD.2010.2060276},
+  Journal =	 {IBM Journal of Research and Development},
+  Number =	 5,
+  Pages =	 3,
+  Title =	 {Detection of deadlock potentials in multithreaded
+                  programs},
+  Volume =	 54,
+  Year =	 2010
+}
+
+@inproceedings{Antonio2013,
+	Author = {Antonio Flores-Montoya and Elvira Albert and Samir Genaim},
+	Booktitle = {Proc. FORTE/FMOODS 2013},
+	Pages = {273--288},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {May-Happen-in-parallel based Deadlock Analysis for Concurrent Objects},
+	Volume = {7892},
+	Year = {2013},
+}
+
+
+
+@article{Armbrust10,
+	Author = {Michael Armbrust and Armando Fox and Rean Griffith and Anthony D. Joseph and Randy H. Katz and Andy Konwinski and Gunho Lee and David A. Patterson and Ariel Rabkin and Ion Stoica and Matei Zaharia},
+	Bibsource = {DBLP, http://dblp.uni-trier.de},
+	Journal = {Commun. ACM},
+	Number = {4},
+	Pages = {50--58},
+	Title = {A view of cloud computing},
+	Volume = {53},
+	Year = {2010}}
+
+
+@inproceedings{AmericaPOOL,
+	Address = {New York, NY, USA},
+	Author = {America, Pierre and de Bakker, Jaco and Kok, Joost N. and Rutten, Jan J. M. M.},
+	Booktitle = {Proceedings of the 13th Principles of programming languages (POPL '86)},
+	Pages = {194--208},
+	Publisher = PUB-ACM,
+	Title = {Operational semantics of a parallel object-oriented language},
+	Year = {1986}}
+	
+@inproceedings{AhernY05,
+  	author  	= {Ahern, Alexander and Yoshida, Nobuko},
+ 	title 		= {Formalising {Java RMI} with Explicit Code Mobility},
+ 	booktitle 	= {Proceedings of the 20th Annual ACM SIGPLAN Conference on Object-oriented Programming, Systems, Languages, and Applications},
+ 	series 	= {OOPSLA '05},
+	year 		= {2005},
+ 	pages 	= {403--422},
+ 	publisher 	= PUB-ACM,
+} 
+
+@Article{AbrahamGGS09,
+  author =	 {Erika {\'A}brah{\'a}m and Immo Grabe and Andreas
+                  Gr{\"u}ner and Martin Steffen},
+  title =	 {Behavioral interface description of an
+                  object-oriented language with futures and promises},
+  journal =	 JLAP,
+  volume =	 78,
+  number =	 7,
+  year =	 2009,
+  pages =	 {491--518}
+}
+	
+@Article{AhrendtD12,
+  author =	 {Wolfgang Ahrendt and Maximilian Dylla},
+  title =	 {A System for Compositional Verification of
+                  Asynchronous Objects},
+  journal =	 SCP,
+  issue_date =	 {October, 2012},
+  volume =	 77,
+  number =	 12,
+  month =	 oct,
+  year =	 2012,
+  issn =	 {0167-6423},
+  pages =	 {1289--1309},
+  keywords =	 {Concurrency, Object-orientation, Semantics,
+                  Verification},
+  publisher =	 PUB-ELS
+}
+
+@Article{AlpernS85,
+  author =	 {B. Alpern and F. B. Schneider},
+  title =	 {Defining Liveness},
+  journal =	 {Information Processing Letters},
+  volume =	 21,
+  number =	 4,
+  pages =	 {181--185},
+  day =		 7,
+  month =	 {October},
+  year =	 1985
+}
+
+@article{albert12,
+  title={Cost analysis of object-oriented bytecode programs},
+  author={Albert, Elvira and Arenas, Puri and Genaim, Samir and Puebla, German and Zanardini, Damiano},
+  journal={Theoretical Computer Science},
+  volume={413},
+  number={1},
+  pages={142--159},
+  year={2012},
+  publisher={Elsevier}
+}
+
+
+@incollection{AlbertAGZR14,
+  author =	 {Elvira Albert and Puri Arenas and Miguel
+                  G\'omez-Zamalloa and Jose Miguel Rojas},
+  booktitle =	 {Formal Methods for Executable Software Models},
+  title =	 {Test {C}ase {G}eneration by {S}ymbolic {E}xecution:
+                  {B}asic {C}oncepts, a {CLP}-{B}ased {I}nstance, and
+                  {A}ctor-{B}ased {C}oncurrency},
+  pages =	 {263--309},
+  crossref =	 {SFM14},
+  keywords =	 {ENVISAGE, wp3, t3.5, MSR-108}
+}
+
+
+@article{AlbertCPR13-tcs,
+  author =	 {Elvira Albert and Jes\'us Correas and Germ\'{a}n
+                  Puebla and Guillermo Rom\'{a}n-D\'{i}ez},
+  title =	 {A {M}ulti-{D}omain {I}ncremental {A}nalysis {E}ngine
+                  and its {A}pplication to {I}ncremental {R}esource
+                  {A}nalysis},
+  journal =	 TCS,
+  publisher =	 PUB-ELS,
+  volume    = {585},
+  pages     = {91--114},
+  year      = {2015},
+  issn =	 {0304-3975},
+  doi =		 {10.1016/j.tcs.2015.03.002},
+  keywords =	 {ENVISAGE, wp3, t3.3, MSR-116}
+}
+
+
+@article{AlbertAGPG13,
+  author =	 {Elvira Albert and Puri Arenas and Samir Genaim and
+                  Germ\'{a}n Puebla and Guillermo Rom\'{a}n-D\'{i}ez},
+  title =	 {{C}onditional {T}ermination of {L}oops over
+                  {H}eap-allocated {D}ata},
+  journal =	 SCP,
+  publisher =	 PUB-ELS,
+  doi =		 {http://dx.doi.org/10.1016/j.scico.2013.04.006},
+  url =		 {http://dx.doi.org/10.1016/j.scico.2013.04.006},
+  issn =	 {0167-6423},
+  volume =	 92,
+  pages =	 {2 - 24},
+  year =	 2014,
+  keywords =	 {ENVISAGE, wp3, t3.3, MSR-67}
+}
+
+@inproceedings{AlbertAG14,
+  author = {Elvira Albert and
+               Puri Arenas and 
+               Miguel G\'omez-Zamalloa},
+  title = {Actor- and {T}ask-{S}election {S}trategies for {P}runing {R}edundant {S}tate-{E}xploration in {T}esting},
+  booktitle = {34th IFIP International Conference on Formal Techniques for Distributed Objects, Components and Systems (FORTE 2014)},
+  publisher = PUB-SV,
+  series = LNCS,
+  year = {2014},
+  pages = {49-65},
+  volume = {8461},
+  editor = {Erika {\'A}brah{\'a}m and Catuscia Palamidessi},
+  keywords = {ENVISAGE, wp3, t3.5, MSR-31}
+}
+
+@Book{armstrong07erlang,
+  author =	 {Joe Armstrong},
+  title =	 {Programming {E}rlang: Software for a Concurrent
+                  World},
+  publisher =	 {Pragmatic Bookshelf},
+  year =	 2007
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ B
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@INPROCEEDINGS{Battre10, 
+author={Battr\'e, D. and Brazier, F.M.T. and Clark, K.P. and Oey, M. and Papaspyrou, A. and W\"aldrich, O. and Wieder, P. and Ziegler, W.}, 
+booktitle={Grid Computing (GRID), 2010 11th IEEE/ACM International Conference on}, 
+title={A proposal for WS-Agreement Negotiation}, 
+year={2010}, 
+pages={233-241}, 
+keywords={Web services;WS-agreement negotiation;open grid forum;service level descriptions;service level requests;web services agreement specification;Computational modeling;Context;Production facilities;Proposals;Protocols;Quality of service;Web services;Negotiation Constraints;Open Grid Forum;Re-Negotiation;SLA Negotiation;WS-Agreement}, 
+doi={10.1109/GRID.2010.5697976}, 
+month={Oct},}
+
+
+@inproceedings{Barik05,
+  author    = {Rajkishore Barik},
+  title     = {Efficient Computation of May-Happen-in-Parallel Information
+               for Concurrent Java Programs},
+  editor    = {Eduard Ayguad{\'e} and
+               Gerald Baumgartner and
+               J. Ramanujam and
+               P. Sadayappan},
+  booktitle = {18th International Workshop on Languages and Compilers for Parallel Computing},
+  year      = {2005},
+  pages     = {152--169},
+  publisher = PUB-SV,
+  series    = LNCS,
+  volume    = {4339},
+}
+
+@Article{BeckertHaehnle13,
+  author = 	 {Bernhard Beckert and Reiner H\"{a}hnle},
+  title = 	 {Reasoning and Verification},
+  journal = 	 {IEEE Intelligent Systems},
+  year = 	 {2014},
+  volume = {29},
+  month = {Jan.--Feb.},
+  number = {1},
+  pages = {20--29}
+}
+
+@incollection{Behrmann04,
+  title={A tutorial on {U}ppaal},
+  author={Behrmann, Gerd and David, Alexandre and Larsen, Kim G},
+  booktitle={Formal methods for the design of real-time systems},
+  pages={200--236},
+  year={2004},
+  publisher={Springer}
+}
+
+@incollection{BezirgiannisB16,
+  title={{ABS}: a high-level modeling language for {C}loud-{A}ware {P}rogramming},
+  author={Bezirgiannis, Nikolaos and de Boer, Frank S.},
+  booktitle={Proc. {SOFSEM} '16},
+  year = {2016},
+  note = {To appear},
+  publisher={Springer}
+}
+
+@Proceedings{FMCO12,
+  title =   {International School on Formal Models for Components and Objects: Post Proceedings},
+  year =   {2013},
+  editor =    {Marcello Bonsangue and de Boer, Frank and Elena Giachino and Reiner H\"{a}hnle},
+  volume =	 {7866},
+  OPTnumber =    {},
+  series =   LNCS,
+  OPTmonth =    {},
+  publisher =   PUB-SV,
+  keywords = {HATS,wp6}
+}
+
+@article{BoehmPapaccio88,
+  author    = {B. W. Boehm and
+               P. N. Papaccio},
+  title     = {Understanding and Controlling Software Costs},
+  journal   = {IEEE Trans. SW Eng.},
+  volume    = {14},
+  number    = {10},
+  year      = {1988},
+  pages     = {1462--1477}
+}
+
+@InCollection{Brockschmidt14,
+  title =	 {Alternating runtime and size complexity analysis of
+                  integer programs},
+  author =	 {Brockschmidt, Marc and Emmes, Fabian and Falke,
+                  Stephan and Fuhs, Carsten and Giesl, J{\"u}rgen},
+  booktitle =	 {Tools and Algorithms for the Construction and
+                  Analysis of Systems},
+  pages =	 {140--155},
+  year =	 2014,
+  publisher =	 {Springer}
+}
+
+
+@InProceedings{BDHN15,
+  year =	 2015,
+  isbn =	 {978-3-319-24311-5},
+  booktitle =	 {Automated Reasoning with Analytic Tableaux and
+                  Related Methods},
+  volume =	 9323,
+  series =	 LNCS,
+  editor =	 {De Nivelle, Hans},
+  doi =		 {10.1007/978-3-319-24312-2_21},
+  title =	 {A Dynamic Logic with Traces and Coinduction},
+  url =		 {http://dx.doi.org/10.1007/978-3-319-24312-2_21},
+  publisher =	 PUB-SV,
+  author =	 {Bubel, Richard and Din, Crystal Chang and Hähnle,
+                  Reiner and Nakata, Keiko},
+  pages =	 {307-322},
+  language =	 {English}
+}
+
+
+@InProceedings{BFH14,
+  author =	 {Richard Bubel and Flores Montoya, Antonio and Reiner
+                  H{\"a}hnle},
+  title =	 {Analysis of Executable Software Models},
+  crossref = "SFM14",
+  keywords =	 {ENVISAGE, wp5, t5.4, MSR-108},
+  pages =	 {1--27}
+}
+
+@InProceedings{BHP14,
+  crossref = "ISoLA14",
+  author =	 {Richard Bubel and Reiner H{\"a}hnle and Maria
+                  Pelevina},
+  title =	 {Fully Abstract Operation Contracts},
+  pages =	 {122--136},
+  keywords =	 {ENVISAGE, wp3, t3.2, MSR-12},
+}
+
+@article{CSP,
+	Author = {Brookes, S. D. and Hoare, C. A. R. and Roscoe, A. W.},
+	Issue = {3},
+	Journal = {J. ACM},
+	Pages = {560--599},
+	Title = {A Theory of Communicating Sequential Processes},
+	Volume = {31},
+	Year = {1984}}
+
+@inproceedings{BoveD08,
+  author =	 {Ana Bove and Peter Dybjer},
+  title =	 {Dependent Types at Work},
+  booktitle =	 {LerNet ALFA Summer School},
+  year =	 2008,
+  pages =	 {57--99},
+  url =		 {http://dx.doi.org/10.1007/978-3-642-03153-3_2},
+  publisher =	 PUB-SV,
+  series =	 LNCS,
+  volume =	 5520
+}
+
+@InProceedings{BakerHH77,
+  author	= {Baker Jr., Henry. G. and Hewitt, Carl},
+  title		= {The Incremental Garbage Collection of Processes},
+  booktitle	= {Proceedings of the 1977 symposium on Artificial
+		  intelligence and programming languages},
+  year		= {1977},
+  pages		= {55--59},
+  numpages	= {5},
+  acmid		= {806932},
+  publisher	= PUB-ACM,
+  address	= {New York, NY, USA},
+  keywords	= {Eager evaluation, Garbage collection, Lazy evaluation,
+		  Multiprocessing systems, Processor scheduling}
+}
+
+@Proceedings{BeckertHS07,
+  title          = "Verification of Object-Oriented Software. The {KeY} Approach",
+  year           = 2007,
+  editor         = "Bernhard Beckert and Reiner H{\"a}hnle and Peter H. Schmitt",
+  volume         = 4334,
+  series         = LNCS,
+  publisher      = PUB-SV
+}
+
+@inproceedings{Boyapati2002,
+	Author = {Boyapati, Chandrasekhar and Lee, Robert and Rinard, Martin},
+	Booktitle = {OOPSLA},
+	Pages = {211--230},
+	Publisher = {ACM},
+	Title = {Ownership types for safe program.: preventing data races and deadlocks},
+	Year = {2002}}
+
+@Book{BroyS01,
+  author	= {Manfred Broy and Ketil St{\o}len},
+  title		= {Specification and Development of Interactive Systems},
+  publisher	= PUB-SV,
+  year	= 2001,
+  series	= {Monographs in Computer Science}
+}
+
+@article{Ben-AmramG14,
+  author =	 {Amir M. Ben-Amram and Samir Genaim},
+  title =	 {Ranking {F}unctions for {L}inear-{C}onstraint
+                  {L}oops},
+  journal =	 {Journal of the ACM},
+  volume =	 61,
+  number =	 4,
+  year =	 2014,
+  pages =	 26,
+  ee =		 {http://dx.doi.org/10.1145/2629488},
+  arxiv =	 {http://arxiv.org/abs/1208.4041},
+  keywords =	 {ENVISAGE, wp3, t3.3, MSR-178}
+}
+
+@inproceedings{Ben-AmramG15,
+ author    = {Amir M. Ben-Amram and Samir Genaim},
+  title     = {{C}omplexity of {B}radley-{M}anna-{S}ipma {L}exicographic {R}anking {F}unctions},
+  editor    = {Daniel Kroening and Corina S. Pasareanu},
+  booktitle = {27th International Conference on Computer Aided Verification (CAV 2015)},
+  year      = {2015},
+  month     = jul,
+  pages     = {304--321}, 
+  volume    = {9207},
+  series    = LNCS,
+  publisher = PUB-SV,
+  doi       = {10.1007/978-3-319-21668-3_18},
+  arxiv     = {http://arxiv.org/abs/1504.05018},
+  keywords = {ENVISAGE, wp3, t3.3, MSR-88}
+}
+
+
+@Article{burdy05jml,
+  author    = {Lilian Burdy and Yoonsik Cheon and David R. Cok and
+              Michael D. Ernst and Joseph R. Kiniry and Gary
+              T. Leavens and K. Rustan M. Leino and Erik Poll},
+  title     = {An overview of {JML} tools and applications},
+  journal   = {International Journal on Software Tools for
+              Technology Transfer},
+  year      = 2005,
+  volume    = 7,
+  number    = 3,
+  pages     = {212--232},
+  publisher = PUB-SV
+}
+
+@inproceedings{BoerGW13,
+  author    = {Frank S. de Boer and
+               Stijn de Gouw and
+               Peter Y. H. Wong},
+  title     = {Run-Time Verification of Coboxes},
+  booktitle = {Software Engineering and Formal Methods - 11th International Conference,
+               {SEFM} 2013, Madrid, Spain, September 25-27, 2013. Proceedings},
+  pages     = {259--273},
+  year      = {2013}
+}
+
+@article{BuscemiM11,
+  author    = {Maria Grazia Buscemi and
+               Ugo Montanari},
+  title     = {QoS negotiation in service composition},
+  journal   = {J. Log. Algebr. Program.},
+  volume    = {80},
+  number    = {1},
+  pages     = {13--24},
+  year      = {2011},
+  url       = {http://dx.doi.org/10.1016/j.jlap.2010.04.001},
+  doi       = {10.1016/j.jlap.2010.04.001},
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ C
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@inproceedings{tipoW-Coppo:TTPK-98,
+	Author = {Mario Coppo},
+	Booktitle = {Proc. FoSSaCS},
+	Pages = {184--198},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {{T}ype {I}nference with {R}ecursive {T}ype {E}quations},
+	Volume = {2030},
+	Year = {2001}}
+
+
+@inproceedings{Cleaveland96,
+	Author = {Rance Cleaveland and Steve Sims},
+	Booktitle = {Computer-Aided Verification (CAV '96)},
+	Pages = {394--397},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {The NCSU Concurrency Workbench},
+	Volume = {1102},
+	Year = {1996}}
+
+@inproceedings{CousotH78,
+  author    = {P. Cousot and
+               N. Halbwachs},
+  title     = {Automatic {D}iscovery of {L}inear {R}estraints {A}mong {V}ariables
+               of a {P}rogram},
+  booktitle = POPL,
+  year      = {1978},
+  publisher = PUB-ACM
+}
+
+
+@inproceedings{czajkowski98oopsla,
+	Author = {Grzegorz Czajkowski and Thorsten von Eicken},
+	Booktitle = {Proceedings of OOPSLA},
+	Pages = {21--35},
+	Title = {{JRes}: A Resource Accounting Interface for {J}ava},
+	Year = {1998}}
+
+@book{ClavelDELMMT07,
+  author         = {Manuel Clavel and
+                    Francisco Dur{\'a}n and
+                    Steven Eker and
+                    Patrick Lincoln and
+                    Narciso Mart\'{\i}-Oliet and
+                    Jos{\'e} Meseguer and
+                    Carolyn L. Talcott},
+  title          = {All About Maude - A High-Performance Logical Framework,
+                    How to Specify, Program and Verify Systems in Rewriting Logic},
+  booktitle      = {All About Maude},
+  publisher      = PUB-SV,
+  series         = LNCS,
+  volume         = {4350},
+  year           = {2007},
+}
+
+
+@incollection{ClarkeDHJSSSW11,
+year={2011},
+isbn={978-3-642-21454-7},
+booktitle={Formal Methods for Eternal Networked Software Systems},
+volume={6659},
+series={Lecture Notes in Computer Science},
+editor={Bernardo, Marco and Issarny, Valérie},
+doi={10.1007/978-3-642-21455-4_13},
+title={Modeling Spatial and Temporal Variability with the HATS Abstract Behavioral Modeling Language},
+url={http://dx.doi.org/10.1007/978-3-642-21455-4_13},
+publisher={Springer Berlin Heidelberg},
+author={Clarke, Dave and Diakov, Nikolay and Hähnle, Reiner and Johnsen, Einar Broch and Schaefer, Ina and Schäfer, Jan and Schlatte, Rudolf and Wong, PeterY.H.},
+pages={417-457},
+language={English}
+}
+
+
+@Misc{CloudGuidelines2014,
+  author =	 {Cloud Select Industry Group},
+  title =	 {Cloud Service Level Agreement Standardisation
+                  Guidelines},
+  month =	 {June},
+  year =	 2014,
+  note =	 {Developed as part of the Commission’s European Cloud
+                  Strategy. Available at
+                  \url{http://ec.europa.eu/information_society/newsroom/cf/dae/document.cfm?action=display&doc_id=6138}},
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ D
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@book{latticetheory,
+	Author = {B. A. Davey and H. A. Priestley},
+	Publisher = {Cambridge University Press},
+	Title = {Introduction to {L}attices and {O}rder},
+	Year = {2002}}
+
+@inproceedings{deBoerBGLSZ12,
+	Author = {F.S. de Boer and M. Bravetti and I. Grabe and M. Lee and M. Steffen and G. Zavattaro},
+	Booktitle = {Proc. of Formal Aspects of Component Software - 9th International Workshop, FACS 2012},
+	Pages = {110--127},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {A Petri Net Based Analysis of Deadlocks for Active Objects and Futures},
+	Volume = {7684},
+	Year = 2012}
+
+@incollection{deBoerDJ07,
+	Author = {de Boer, Frank and Clarke, Dave and Johnsen, Einar},
+	Booktitle = {Progr.~Lang.~and Systems},
+	Pages = {316--330},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {A Complete Guide to the Future},
+	Volume = {4421},
+	Year = {2007}}
+
+@inproceedings{deboer14sfm,
+  author    = {Frank S. de Boer and
+               Stijn de Gouw},
+  title     = {Combining Monitoring with Run-Time Assertion Checking},
+  pages     = {217--262},
+  crossref  = {SFM14},
+}
+
+
+@Misc{d2.1,
+  title =	 {{Behavioural Interfaces for Virtualized Services}},
+  month =	 sep,
+  year =	 2014,
+  note =	 "Deliverable D2.1 of project FP7-610582 (ENVISAGE),
+                  available at \url{http://www.envisage-project.eu}",
+  key =		 {Deliverable}
+}
+
+@Misc{d4.1,
+  title =	 {{Initial User Requirements}},
+  month =	 jan,
+  year =	 2014,
+  note =	 "Deliverable D4.1 of project FP7-610582 (ENVISAGE),
+                  available at \url{http://www.envisage-project.eu}",
+  key =		 {Deliverable}
+}
+
+@Misc{d6.1,
+  title =	 {{Project Infrastructure}},
+  month =	 nov,
+  year =	 2013,
+  note =	 "Deliverable D6.1 of project FP7-610582 (ENVISAGE),
+                  available at \url{http://www.envisage-project.eu}",
+  key =		 {Deliverable}
+}
+
+@Misc{d6.2,
+  title =	 {{Web Site and Project Presentation}},
+  month =	 nov,
+  year =	 2013,
+  note =	 "Deliverable D6.2 of project FP7-610582 (ENVISAGE),
+                  available at \url{http://www.envisage-project.eu}",
+  key =		 {Deliverable}
+}
+
+@Misc{hats-d1.2,
+  key		= {HATS},
+  title		= {{Full ABS Modeling Framework (Mar 2011)}},
+  note		= {Deliverable 1.2 of project FP7-231620 (HATS), available at
+		  \url{http://www.hats-project.eu}}
+}
+
+@inproceedings{DOB14,
+  author    = {Crystal Chang Din and Olaf Owe and Richard Bubel},
+  title     = {Runtime Assertion Checking and Theorem Proving for Concurrent and Distributed Systems},
+  booktitle = {MODELSWARD},
+  year      = {2014},
+  pages     = {480--487},
+  ee        = {http://dx.doi.org/10.5220/0004877804800487},
+  crossref  = {DBLP:conf/modelsward/2014},
+  publisher =   {{SCITEPRESS}},
+  bibsource = {DBLP, http://dblp.uni-trier.de},
+  editor    = {Lu\'{\i}s Ferreira Pires and
+               Slimane Hammoudi and
+               Joaquim Filipe and
+               Rui C{\'e}sar das Neves},
+  isbn      = {978-989-758-007-9},
+  keywords = {Envisage,wp3,t3.4}
+}
+
+@incollection{DinDO12b,
+  year =	 2012,
+  isbn =	 {978-3-642-33825-0},
+  booktitle =	 {Software Engineering and Formal Methods},
+  volume =	 7504,
+  series =	 LNCS,
+  editor =	 {Eleftherakis, George and Hinchey, Mike and Holcombe,
+                  Mike},
+  doi =		 {10.1007/978-3-642-33826-7_7},
+  title =	 {Compositional Reasoning about Shared Futures},
+  url =		 {http://dx.doi.org/10.1007/978-3-642-33826-7_7},
+  publisher =	 PUB-SV,
+  author =	 {Din, Crystal Chang and Dovland, Johan and Owe, Olaf},
+  pages =	 {94--108},
+  language =	 {English}
+}
+
+@Article{DinDJO12,
+  title		= "Observable Behavior of Distributed Systems: Component
+		  Reasoning for Concurrent Objects",
+  journal	= JLAP,
+  volume	= 81,
+  number	= 3,
+  pages		= "227--256",
+  year		= 2012,
+  issn		= "1567-8326",
+  author	= "Crystal Chang Din and Johan Dovland and Einar Broch
+		  Johnsen and Olaf Owe",
+  keywords	= "Concurrent objects"
+}
+
+@TechReport{DinDO12,
+  author        = {Crystal Chang Din and Johan Dovland and Olaf Owe},
+  title         = {An Approach to Compositional Reasoning about Concurrent Objects and Futures},
+  institution   = {Dept.\ of Informatics},
+  month         = feb,
+  year          = 2012,
+  type          = {Research Report},
+  number        = 415,
+  address       = {University of Oslo},
+  note          = {Available from \url{https://www.duo.uio.no/handle/10852/9050}},
+}
+
+@article{DinO14,
+  author =	 {Crystal Chang Din and Olaf Owe},
+  title =	 {A Sound and Complete Reasoning System for
+                  Asynchronous Communication with Shared Futures},
+  journal =	 JLAMP,
+  issn =	 {2352-2208},
+  doi =		 {http://dx.doi.org/10.1016/j.jlamp.2014.03.003},
+  keywords =	 {ENVISAGE, wp3,t3.2},
+  year =	 2014,
+  volume =	 83,
+  number =	 {5--6},
+  pages =	 {360--383},
+}
+
+@article{Din14fac,
+  author =	 {Crystal Chang Din and Olaf Owe},
+  title =	 {Compositional reasoning about active objects with
+                  shared futures},
+  journal =	 {Formal Aspects of Computing},
+  volume =	 27,
+  number =	 3,
+  pages =	 {551--572},
+  year =	 2015,
+  keywords =	 {Distributed systems; Object orientation; Concurrent
+                  objects; Asynchronous communication; Shared futures;
+                  Operational semantics; Communication history;
+                  Compositional reasoning; Dynamic logic},
+  url =		 {http://dx.doi.org/10.1007/s00165-014-0322-y},
+  doi =		 {10.1007/s00165-014-0322-y}
+}
+
+
+@InProceedings{DinBH15cade,
+  author =	 {Crystal Chang Din and Richard Bubel and Reiner
+                  H{\"a}hnle},
+  title =	 {{KeY-ABS}: A Deductive Verification Tool for the
+                  Concurrent Modelling Language {ABS}},
+  booktitle =	 {Proceedings of the 25th International Conference on
+                  Automated Deduction ({CADE} 2015)},
+  year =	 2015,
+  series        = LNCS,
+  publisher =	 PUB-SV,
+  isbn =	 {978-3-319-21400-9},
+  volume =	 9195,
+  editor =	 {Felty, Amy P. and Middeldorp, Aart},
+  doi =		 {10.1007/978-3-319-21401-6_35},
+  url =		 {http://dx.doi.org/10.1007/978-3-319-21401-6_35},
+  pages =	 {517--526}
+}
+
+@InProceedings{DinTHJ15,
+  author =	 {Crystal Chang Din and S. Lizeth {Tapia Tarifa} and Reiner
+                  H{\"a}hnle and Einar Broch Johnsen},
+  title =	 {History-Based Specification and Verification of
+                  Scalable Concurrent and Distributed Systems},
+  editor =	 {Michael Butler et al},
+  booktitle =	 {In Proceedings of the 17th International conference
+                  on Formal Engineering Methods ({ICFEM} 2015)},
+  year =	 2015,
+  month =	 nov,
+  series =	 LNCS,
+  volume =	 9407,
+  pagers =	 {1--17},
+  publisher =	 PUB-SV,
+  note =	 {to appear}
+}
+
+@InProceedings{DovlandJO05,
+  author	= {Johan Dovland and Einar Broch Johnsen and Olaf Owe},
+  title		= {Verification of Concurrent Objects with Asynchronous Method Calls},
+  booktitle	= {Proceedings of the {IEEE} International Conference on
+		  Software Science, Technology \& Engineering ({SwSTE}'05)},
+  pages		= {141--150},
+  year		= 2005,
+  month		= feb,
+  publisher	= {{IEEE} Computer Society Press}
+}
+
+@article{dovland14jlamp,
+  author =	 "Johan Dovland and Einar Broch Johnsen and Olaf Owe
+                  and Ingrid Chieh Yu",
+  title =	 "A Proof System for Adaptable Class Hierarchies",
+  journal =	 "Journal of Logical and Algebraic Methods in
+                  Programming",
+  keywords =	 {ENVISAGE, wp3, t3.2},
+  doi =		 "10.1016/j.jlamp.2014.09.001",
+  year =	 2015,
+  volume =	 84,
+  number =	 1,
+  pages =	 {37--53},
+}
+
+
+@InCollection{Dahl77,
+  author =	 {Ole-Johan Dahl},
+  title =	 {Can program Proving be made Practical?},
+  booktitle =	 {Les Fondements de la Programmation},
+  pages =	 {57--114},
+  publisher =	 {Institut de Recherche d'Informatique et
+                  d'Automatique},
+  year =	 1977,
+  editor =	 {M. Amirchahy and D. N\'{e}el},
+  address =	 {Toulouse, France},
+  month =	 dec
+}
+
+@InCollection{Dahl87,
+  author =	 {Dahl, Ole-Johan},
+  title =	 {Object-Oriented Specifications},
+  booktitle =	 {Research directions in object-oriented programming},
+  year =	 1987,
+  isbn =	 {0-262-19264-0},
+  pages =	 {561--576},
+  publisher =	 PUB-MIT,
+  address =	 {Cambridge, MA, USA}
+}
+
+@Book{Dahl92,
+  key =		 "Dahl",
+  author =	 "Ole-Johan Dahl",
+  title =	 "Verifiable Programming",
+  publisher =	 PUB-PH,
+  year =	 1992,
+  series =	 "International Series in Computer Science",
+  address =	 "New York, N.Y."
+}
+
+@TECHREPORT{DahlO98,
+  author =	 {Ole-Johan Dahl and Olaf Owe},
+  year =	 1998,
+  title =	 {Formal Methods and the {RM-ODP}},
+  number =	 {Research Report 261},
+  institution =	 {Dept. of Informatics, Univ. of Oslo},
+  urlpdf =	 {{http://folk.uio.no/olaf/Papers/ODP.OJD.rettet.pdf}},
+  note =	 {{F}ull version of a paper presented at NWPT'98:
+                  Nordic Workshop on Programming Theory, Turku},
+  pages =	 18,
+  pubcat =	 {techreport}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ E
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ F
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@inproceedings{Flanagan03,
+	Author = {Cormac Flanagan and Shaz Qadeer},
+	Booktitle = {In PLDI 03: Programming Language Design and Implementation},
+	Pages = {338--349},
+	Publisher = PUB-ACM,
+	Title = {A type and effect system for atomicity},
+	Year = {2003}}
+
+@InProceedings{FMH14,
+  author =	 {Flores Montoya, Antonio and Reiner H{\"a}hnle},
+  title =	 {Resource Analysis of Complex Programs with Cost
+                  Equations},
+  booktitle =	 {12th Asian Symposium on Programming Languages and
+                  Systems ({APLAS}'14)},
+  month =	 nov,
+  pages =	 {275--295},
+  volume =	 8858,
+  year =	 2014,
+  editor =	 {Jacques Garrigue},
+  publisher =	 {Springer},
+  keywords =	 {ENVISAGE, wp3, t3.3, MSR-42},
+  series =	 LNCS
+}
+
+@inproceedings{foster07fse,
+  Author =	 {Howard Foster and Wolfgang Emmerich and Jeff Kramer
+                  and Jeff Magee and David S. Rosenblum and
+                  Sebasti{\'a}n Uchitel},
+  Booktitle =	 {Proc.\ 6th of the European Software Engineering
+                  Conf.\ and the Symposium on Foundations of Software
+                  Engineering},
+  Pages =	 {225--234},
+  Publisher =	 PUB-ACM,
+  Title =	 {Model checking service compositions under resource
+                  constraints},
+  Year =	 2007
+}
+
+@misc{FAS,
+	Key = {FAS},
+	Month = {August},
+	Note = {Deliverable 5.1 of project FP7-231620 (HATS), available at \url{http://www.hats-project.eu/sites/default/files/Deliverable51_rev2.pdf}},
+	Title = {Requirement Elicitation},
+	Year = {2009}}
+	
+@InProceedings{FalknerCO99,
+  	author	= {Katrina E. Kerry Falkner and Paul D. Coddington and Michael J. Oudshoorn},
+ 	title		= {Implementing Asynchronous Remote Method Invocation in {Java}},
+	booktitle	= {6th Australian Conference on Parallel and Real-Time Systems},
+  	publisher	= PUB-SV,
+ 	pages	= {22--34},
+ 	year		= {1999},
+ 	location	= {Melbourne}
+}	
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ G
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+@inproceedings{GantyGLP15,
+  author    =   {Pierre Ganty and Samir Genaim and Ratan Lal and Pavithra Prabhakar},
+  title     =   {From Non-Zenoness Verification to Termination},
+  booktitle =   {Proceedings of the 13th {ACM/IEEE} International Conference on Formal Methods and Models for Codesign, {MEMOCODE}'15},
+  year      =   2015,
+  publisher =   {IEEE},
+  note      =   {to appear},
+  keywords  =   {ENVISAGE, WP3, T3.3, MSR-0}
+}
+
+
+
+@inproceedings{GarciaLL15,
+  author    = {Abel Garcia and
+               Cosimo Laneve and
+               Michael Lienhardt},
+  title = 	 {Static analysis of cloud elasticity},
+  booktitle = {Proceedings of the 17th International Symposium on Principles and
+               Practice of Declarative Programming, Siena, Italy, July 14-16, 2015},
+  pages     = {125--136},
+  year      = {2015},
+  url       = {http://doi.acm.org/10.1145/2790449.2790524},
+  doi       = {10.1145/2790449.2790524},
+  publisher = {{ACM}},
+  isbn      = {978-1-4503-3516-4},
+  keywords = {ENVISAGE, WP2, T2.2, MSR-25}
+}
+
+@article{GH05,
+	Author = {Simon Gay and Malcolm Hole},
+	Journal = {Acta Informatica},
+	Number = {2-3},
+	Pages = {191--225},
+	Title = {Subtyping for session types in the $\pi$-calculus},
+	Volume = {42},
+	Year = {2005}}
+
+@article{GentzenI35,
+author={Gentzen, Gerhard},
+title={Untersuchungen über das logische Schließen. I},
+pages={176-210},
+year={1935},
+journal={Mathematische Zeitschrift},
+volume={39},
+number={1},
+publisher={Springer-Verlag},
+issn={0025-5874},
+language={German}
+}
+
+@article{GentzenII35,
+author={Gentzen, Gerhard},
+title={Untersuchungen über das logische Schließen. II},
+pages={405-431},
+year={1935},
+journal={Mathematische Zeitschrift},
+volume={39},
+number={1},
+publisher={Springer-Verlag},
+issn={0025-5874},
+language={German}
+}
+
+
+
+@inproceedings{GiachinoLascu,
+	Author = {Elena Giachino and Tudor A. Lascu},
+	Booktitle = {Proc. 13th ICTCS},
+	Title = {{Lock Analysis for an Asynchronous Object Calculus}},
+	Year = {2012}}
+
+@inproceedings{GiachinoL13,
+	Author = {Elena Giachino and Cosimo Laneve},
+	Booktitle = {Trustworthy Global Computing - 7th International Symposium, TGC 2012, Revised Selected Papers},
+	Pages = {49--63},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {A beginner's guide to the dead{L}ock {A}nalysis {M}odel},
+	Volume = {8191},
+	Year = {2013}}
+
+@inproceedings{GiachinoL11,
+	Author = {Elena Giachino and Cosimo Laneve},
+	Booktitle = {FMOODS/FORTE},
+	Pages = {168--182},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {Analysis of Deadlocks in Object Groups},
+	Volume = {6722},
+	Year = {2011}}
+
+@inproceedings{GL2013a,
+	Author = {Elena Giachino and Carlo A. Grazia and Cosimo Laneve and Michael Lienhardt and Peter Y. H. Wong},
+	Booktitle = {iFM'13},
+	Pages = {394--411},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {Deadlock Analysis of Concurrent Objects: Theory and Practice},
+	Volume = 7940,
+	Year = {2013}}
+
+@inproceedings{GiachinoL2014,
+  Author =	 {Elena Giachino and Cosimo Laneve},
+  crossref =	 "SFM14",
+  Pages =	 {26--64},
+  Publisher =	 PUB-SV,
+  Series =	 LNCS,
+  Title =	 {Deadlock detection in linear recursive programs},
+  Volume =	 8483,
+  keywords =	 {ENVISAGE, wp2, t2.1},
+  Year =	 2014
+}
+
+@article{GiachinoLL2014,
+  Author =	 {Elena Giachino and Cosimo Laneve and Michael
+                  Lienhardt},
+  journal =	 {Software and Systems Modeling},
+  Title =	 {{A Framework for Deadlock Detection in ABS}},
+  Year =	 2014,
+  keywords =	 {ENVISAGE, wp2, t2.1},
+  Note =	 {To Appear.}
+}
+
+@inproceedings{GiachinoKL2014,
+  Author =	 {Elena Giachino and Naoki Kobayashi and Cosimo
+                  Laneve},
+  Booktitle =	 {Proceedings of CONCUR 2014},
+  Publisher =	 PUB-SV,
+  Series =	 LNCS,
+  Title =	 {Deadlock detection of unbounded process networks},
+  Volume =	 8704,
+  pages =	 {63--77},
+  Year =	 2014,
+  keywords =	 {ENVISAGE, wp2, t2.1,MSR-64},
+}
+
+@inproceedings{GiachinoL2014b,
+  crossref = "ISoLA14",
+  author =	 {Elena Giachino and Cosimo Laneve},
+  title =	 {Towards the typing of resource deployment},
+  pages =	 {90--105},
+  keywords =	 {ENVISAGE, wp2, t2.1, MSR-0},
+}
+
+
+
+@Unpublished{GiachinoJLP2015,
+  author = 	 {Elena Giachino and Einar Broch Johnsen and Cosimo Laneve and Ka I Pun},
+  title = 	 {Time complexity of concurrent programs},
+  note = 	 {To appear in Proceedings of FACS 2015},
+  keywords = 	 {ENVISAGE, WP2, T2.2, MSR-0},
+  year = 	 {2015},
+}
+
+@InProceedings{goeri14isola,
+  crossref = "ISoLA14",
+  author =	 {Georg G\"ori and Einar Broch Johnsen and Rudolf
+                  Schlatte and Volker Stolz},
+  title =	 {Erlang-style Error Recovery for Concurrent Objects
+                  with Cooperative Scheduling},
+  keywords =	 {ENVISAGE, wp1, t1.1, MSR-0},
+  pages =	 {6--22},
+}
+
+@misc{degouw15timsort-blog,
+  author =	 {Stijn de Gouw and Jurriaan Rot and Frank S. de Boer and Richard Bubel and Reiner Ha\"ahnle},
+  title =	 {Proving that Android's, Java’s and Python’s sorting algorithm is broken (and showing how to fix it)},
+  journal =	 {Envisage},
+  type =	 {Blog},
+  month =	 feb,
+  year =	 2015,
+  keywords =	 {ENVISAGE, wp4, blog, t3.2},
+  howpublished = {\url{http://envisage-project.eu}}
+}
+
+@inproceedings{GouwRBBH15,
+  author =	 {de Gouw, Stijn and Jurriaan Rot and Frank S. de
+                  Boer and Richard Bubel and Reiner H{\"{a}}hnle},
+  title =	 {OpenJDK's Java.utils.Collection.sort() Is Broken:
+                  The Good, the Bad and the Worst Case},
+  booktitle =	 {Computer Aided Verification - 27th International
+                  Conference, {CAV} 2015, San Francisco, CA, USA, July
+                  18-24, 2015, Proceedings, Part {I}},
+  pages =	 {273--289},
+  year =	 2015,
+  keywords =	 {ENVISAGE, wp4, t3.2},
+}
+
+@inproceedings{GouwLMNZ15,
+  author =	 {Stijn de Gouw and Michael Lienhardt and Jacopo Mauro
+                  and Behrooz Nobakht and Gianluigi Zavattaro},
+  title =	 {On the Integration of Automatic Deployment into the
+                  {ABS} Modeling Language},
+  editor =	 {Schahram Dustdar and Frank Leymann and Massimo
+                  Villari},
+  booktitle =	 {Service Oriented and Cloud Computing - 4th European
+                  Conference, {ESOCC} 2015, Taormina, Italy, September
+                  15-17, 2015. Proceedings},
+  pages =	 {49--64},
+  series =	 LNCS,
+  volume =	 9306,
+  publisher =	 PUB-SV,
+  year =	 2015,
+  keywords =	 {ENVISAGE, wp1, t1.3}
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ H
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@inproceedings{HofmannJ03-short,
+  author =	 {M. Hofmann and S. Jost},
+  title =	 {Static prediction of heap space usage for
+                  first-order functional programs},
+  booktitle =	 {Proc. of POPL'13},
+  pages =	 {185-197},
+  publisher =	 {ACM},
+  year =	 2003
+}
+
+
+@InProceedings{Haehnle13,
+  author =	 {Reiner H\"{a}hnle},
+  title =	 {The {A}bstract {B}ehavioral {S}pecification
+                  Language: A Tutorial Introduction},
+  booktitle =	 {International School on Formal Models for Components
+                  and Objects: Post Proceedings},
+  pages =	 {1--37},
+  year =	 2013,
+  editor =	 {Marcello Bonsangue and de Boer, Frank and Elena
+                  Giachino and Reiner H\"{a}hnle},
+  volume =	 7866,
+  series =	 LNCS,
+  publisher =	 PUB-SV,
+  keywords =	 {HATS,wp6}
+}
+
+@InProceedings{Haehnle14a,
+  crossref = "ISoLA14",
+  author = 	 {Reiner H{\"a}hnle},
+  title = 	 {Managing Change in Formal Software Analysis: Two Research Challenges},
+  pages = {509--511},
+  keywords = {MSR-0}
+}
+
+@InProceedings{HS12b,
+  author = 	 {Reiner H{\"a}hnle and Ina Schaefer},
+  title = 	 {Adaptable and Evolving Software for Eternal Systems --- (Track Summary)},
+  booktitle =	 {Leveraging Applications of Formal Methods, Verification and Validation. Technologies for Mastering Change --- 5th International Symposium, ISoLA 2012, Heraklion, Crete, Greece},
+  month = oct,
+  year =	 {2012},
+  editor =	 {Tiziana Margaria and Bernhard Steffen},
+  publisher = {Springer},
+  series = LNCS,
+  pages = {1--3},
+  volume = {7609}
+}
+
+@InProceedings{HSB13,
+  author =	 {Reiner H{\"a}hnle and Ina Schaefer and Richard
+                  Bubel},
+  title =	 {Reuse in Software Verification by Abstract Method
+                  Calls},
+  year =	 2013,
+  booktitle =	 {Proc. 24th Conference on Automated Deduction (CADE)},
+  editor =	 {Maria Paola Bonacina},
+  volume =	 7898,
+  pages =	 {300--314},
+  publisher =	 PUB-SV,
+  series =	 LNCS
+}
+
+@Article{HaehnleJohnsen14,
+  author =       {Reiner H{\"a}hnle and Einar Broch Johnsen},
+  title =        {Designing Resource-Aware Cloud Applications},
+  journal =      {{IEEE} Computer},
+  year =         {2015},
+  volume = {48},
+  number = {6},
+  pages = {72--75},
+  OPTmonth =     {},
+  keywords  = {ENVISAGE, wp5, t5.4, MSR-13}
+}
+
+@misc{haehnle15key-blog,
+  author =	 {Reiner Ha\"ahnle and Richard Bubel},
+  title =	 {KeY: Deductive Verification of Software},
+  journal =	 {Envisage},
+  type =	 {Blog},
+  month =	 mar,
+  year =	 2015,
+  keywords =	 {ENVISAGE, wp4, blog, t3.2},
+  howpublished = {\url{http://envisage-project.eu}}
+}
+
+@misc{johnsen15envisage-blog,
+  author =	 {Einar Broch Johnsen},
+  title =	 {Designing Resource-Aware Cloud Applications},
+  journal =	 {Envisage},
+  type =	 {Blog},
+  month =	 jul,
+  year =	 2015,
+  keywords =	 {ENVISAGE, wp5, blog, t5.3},
+  howpublished = {\url{http://envisage-project.eu/designing-resource-aware/}},
+}
+
+@InProceedings{HHJLSSW12,
+  author =    {Reiner H{\"a}hnle and Michiel Helvensteijn and Einar Broch Johnsen and Michael Lienhardt and Davide Sangiorgi and Ina Schaefer and Peter Y. H. Wong},
+  title =    {{HATS} Abstract Behavioral Specification: the Architectural View},
+  booktitle =   {Proc. 10th International Symposium on Formal Methods for
+                  Components and Objects ({FMCO} 2011), Torino, Italy},
+  publisher =    PUB-SV,
+  series = LNCS,
+  volume = {7542},
+  pages = {109--132},
+  year =   {2013},
+  editor =   {Bernhard Beckert and Ferruccio Damiani and de Boer, Frank and 
+              Marcello M. Bonsangue},
+}
+
+@article{Henglein:1993,
+	Address = {New York, NY, USA},
+	Author = {Henglein, Fritz},
+	Journal = {ACM Trans. Program. Lang. Syst.},
+	Month = apr,
+	Number = {2},
+	Numpages = {37},
+	Pages = {253--289},
+	Publisher = {ACM},
+	Title = {Type inference with polymorphic recursion},
+	Volume = {15},
+	Year = {1993}
+	}
+
+@inproceedings{HenrioRochas2014,
+  author =	 {Henrio, Ludovic and Rochas, Justine},
+  title =	 {Declarative Scheduling for Active Objects},
+  booktitle =	 {Proc.\ of the 29th Annual ACM Symposium on Applied
+                  Computing},
+  series =	 {SAC '14},
+  year =	 2014,
+  location =	 {Gyeongju, Republic of Korea},
+  pages =	 {1339--1344},
+  publisher =	 {ACM}
+} 
+
+@inproceedings{HofmannEsop2013,
+	Author = {Martin Hofmann and Dulma Rodriguez},
+	Booktitle = {22nd European Symposium on Programming, ESOP 2013},
+	Pages = {593--613},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {Automatic Type Inference for Amortised Heap-Space Analysis},
+	Volume = {7792},
+	Year = {2013}}
+
+@article{HofmannToplas2012,
+	Author = {Jan Hoffmann and Klaus Aehlig and Martin Hofmann},
+	Journal = TOPLAS,
+	Number = {3},
+	Pages = {14},
+	Title = {Multivariate amortized resource analysis},
+	Volume = {34},
+	Year = {2012}}
+
+
+@Article{Halstead85,
+  author	= {Halstead Jr., Robert H.},
+  title		= {{MULTILISP}: a Language for Concurrent Symbolic Computation},
+  journal	= TOPLAS,
+  issue_date	= {Oct. 1985},
+  volume	= {7},
+  number	= {4},
+  month		= oct,
+  year		= {1985},
+  issn		= {0164-0925},
+  pages		= {501--538},
+  numpages	= {38},
+  acmid		= {4478},
+  publisher	= PUB-ACM,
+  address	= {New York, NY, USA}
+}
+
+@Book{Hoare85,
+  author	= "C. A. R. Hoare",
+  title		= "Communicating Sequential Processes",
+  publisher	= PUB-PH,
+  year		= 1985,
+  series	= "International Series in Computer Science"
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ I
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@article{FJ,
+	Author = {Igarashi, Atsushi and Pierce, Benjamin C. and Wadler, Philip},
+	Issue = {3},
+	Journal = TOPLAS,
+	Pages = {396--450},
+	Publisher = PUB-ACM,
+	Title = {Featherweight {J}ava: a minimal core calculus for {J}ava and {GJ}},
+	Volume = {23},
+	Year = {2001}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ J
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@incollection{jaghoori2012composing,
+  title={Composing Real-Time Concurrent Objects Refinement, Compatibility and Schedulability},
+  author={Jaghoori, Mohammad Mahdi},
+  booktitle={Fundamentals of Software Engineering},
+  pages={96--111},
+  year={2012},
+  publisher={Springer Berlin Heidelberg}
+}
+
+@phdthesis{jaghoori2010time,
+  title={Time at your service: schedulability analysis of real-time and distributed services},
+  author={Mohammad Mahdi Jaghoori},
+  year={2010},
+  school={Leiden University}
+}
+
+@inproceedings{JHB13,
+  author =	 {Ran Ji and Reiner H\"{a}hnle and Richard Bubel},
+  title =	 {Program Transformation Based on Symbolic Execution
+                  and Deduction},
+  pages =	 {289--304},
+  editor =	 {Robert M. Hierons and Mercedes G. Merayo and Mario
+                  Bravetti},
+  booktitle =	 {Software Engineering and Formal Methods: 11th
+                  International Conference ({SEFM} 2013)},
+  publisher =	 PUB-SV,
+  series =	 LNCS,
+  volume =	 8137,
+  year =	 2013,
+}
+
+@InProceedings{HJ14,
+  crossref = "ISoLA14",
+  author =	 {Reiner H{\"a}hnle and Einar Broch Johnsen},
+  title =	 {Introduction to Track on Engineering Virtualized
+                  Services},
+  pages =	 {1--4},
+  keywords =	 {ENVISAGE, wp5, t5.4, MSR-0},
+}
+
+@InProceedings{JHSSS10,
+  author =       {Einar Broch Johnsen and Reiner H{\"a}hnle and Jan Sch{\"a}fer
+                  and Rudolf Schlatte and Martin Steffen},
+  title =        {{ABS}: A Core Language for Abstract Behavioral Specification},
+  booktitle =	 {Proc. 9th International Symposium on Formal Methods for
+                  Components and Objects ({FMCO} 2010)},
+  pages =        {142--164},
+  editor =	 {Bernhard Aichernig and Frank S. de Boer and Marcello M. Bonsangue},
+  year =         2011,
+  series =       LNCS,
+  volume =       6957,
+  publisher =    PUB-SV,
+}
+
+@InCollection{JohnsenO04,
+  author         = {Einar Broch Johnsen and Olaf Owe},
+  title          = {Object-Oriented Specification and Open Distributed
+                  Systems},
+  booktitle      = {From Object-Orientation to Formal Methods: Essays in
+                  Memory of Ole-Johan Dahl},
+  pages          = "137--164",
+  publisher      = PUB-SV,
+  year           = 2004,
+  editor         = {Olaf Owe and Stein Krogdahl and Tom Lyche},
+  volume         = 2635,
+  series         = LNCS
+}
+
+@article{johnsen07sosym,
+	Author = {Einar Broch Johnsen and Olaf Owe},
+	Journal = SSM,
+	Month = mar,
+	Number = 1,
+	Pages = {35--58},
+	Title = {An Asynchronous Communication Model for Distributed Concurrent Objects},
+	Volume = 6,
+	Year = 2007}
+
+@inproceedings{johnsen11foveoos,
+	Author = {Einar Broch Johnsen and Olaf Owe and Rudolf Schlatte and S. Lizeth {Tapia Tarifa}},
+	Booktitle = {Proc.\ of {FoVeOOS}'10},
+	Pages = {46--60},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {Validating Timed Models of Deployment Components with Parametric Concurrency},
+	Volume = 6528,
+	Year = 2011}
+
+@inproceedings{johnsen10icfem,
+	Author = {Einar Broch Johnsen and Olaf Owe and Rudolf Schlatte and S. Lizeth {Tapia Tarifa}},
+	Booktitle = {Proc.\ of {ICFEM}'10},
+	Pages = {646--661},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {Dynamic Resource Reallocation Between Deployment Components},
+	Volume = 6447,
+	Year = 2010}
+
+@article{johnsen14groups,
+  author =	 "Einar Broch Johnsen and Olaf Owe and Dave Clarke and
+                  Joakim Bj{\o}rk",
+  title =	 "A formal model of service-oriented dynamic object
+                  groups ",
+  journal =	 SCP,
+  number =	 0,
+  year =	 2014,
+  note =	 "Available online.",
+  issn =	 "0167-6423",
+  doi =		 "http://dx.doi.org/10.1016/j.scico.2014.11.014",
+}
+
+@article{johnsen15jlamp,
+  author =	 "Einar Broch Johnsen and Rudolf Schlatte and
+                  S. Lizeth {Tapia Tarifa}",
+  title =	 "Integrating deployment architectures and resource
+                  consumption in timed object-oriented models",
+  journal =	 "Journal of Logical and Algebraic Methods in Programming",
+  volume =       "84",
+  number =       "1",
+  pages =        "67--91",
+  year =         "2015",
+  doi =		 "10.1016/j.jlamp.2014.07.001",
+  keywords =	 {ENVISAGE, wp1, t1.2, t1.3},
+}
+
+@InProceedings{johnsen12icfem,
+  author =       {Einar Broch Johnsen and Rudolf Schlatte and S.\ Lizeth {Tapia Tarifa}},
+  title =        {Modeling Resource-Aware Virtualized Applications
+                  for the Cloud in {Real-Time ABS}},
+  editor =       {Toshiaki Aoki and Kenji Tagushi},
+  booktitle =    {Proc.\ 14th International Conference on Formal Engineering Methods ({ICFEM}'12)},
+  month =        nov,
+  year =         2012,
+  series =       LNCS,
+  volume =       7635,
+  pages =	 {71--86},
+  publisher =    PUB-SV,
+}
+
+@inProceedings{johnsen14isola,
+  crossref =	 "ISoLA14",
+  author =	 {Einar Broch Johnsen and Rudolf Schlatte and S. Lizeth {Tapia Tarifa}},
+  title =	 {Deployment Variability in Delta-Oriented Models},
+  pages =	 "286--301",
+  keywords =	 {ENVISAGE, WP3, T1.3, MSR-0}
+}
+
+@InCollection{JohnsenPSTC15,
+  author =	 {Einar Broch Johnsen and Ka I Pun and Martin Steffen
+                  and S. Lizeth {Tapia Tarifa} and Ingrid Chieh Yu},
+  title =	 {Meeting Deadlines, Elastically},
+  editors =	 {Luigia Petre and Emil Sekerinski},
+  booktitle =	 {From Action Systems to Distributed Systems: the
+                  Refinement Approach},
+  publisher =	 {CRC Press},
+  year =	 2015,
+  Note =	 {To Appear.}
+}
+
+@InProceedings{JeffreyR05,
+  author	= "A. S. A. Jeffrey and J. Rathke",
+  title		= "{Java Jr.}: Fully Abstract Trace Semantics for a Core
+		  {Java} Language",
+  booktitle	= "Proc. European Symposium on Programming",
+  year		= 2005,
+  pages		= "423--438",
+  series	= LNCS,
+  publisher	= PUB-SV,
+  volume	= 3444
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ K
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@ARTICLE{Kopecky2007, 
+author={Kopecky, J. and Vitvar, T. and Bournez, C. and Farrell, J.}, 
+journal={Internet Computing, IEEE}, 
+title={SAWSDL: Semantic Annotations for WSDL and XML Schema}, 
+year={2007}, 
+volume={11}, 
+number={6}, 
+pages={60-67}, 
+keywords={Web services;XML;open systems;semantic Web;software architecture;Web service description language 2.0;World Wide Web consortium;XML schema;distributed application;interoperability;semantic annotation;service reuse;service-oriented architecture;Automation;Mediation;Ontologies;Semantic Web;Service oriented architecture;Simple object access protocol;Solids;Web services;Web sites;XML;SAWSDL;Semantic Web;WSDL;Web services;semantic annotation;standards}, 
+doi={10.1109/MIC.2007.134}, 
+ISSN={1089-7801}, 
+month={Nov},}
+
+@article{KellerL03,
+  author    = {Alexander Keller and
+               Heiko Ludwig},
+  title     = {The {WSLA} Framework: Specifying and Monitoring Service Level Agreements
+               for Web Services},
+  journal   = {J. Network Syst. Manage.},
+  volume    = {11},
+  number    = {1},
+  pages     = {57--81},
+  year      = {2003},
+  url       = {http://dx.doi.org/10.1023/A:1022445108617},
+  doi       = {10.1023/A:1022445108617},
+}
+
+@article{KSW2006,
+	Author = {Naoki Kobayashi and Kohei Suenaga and Lucian Wischik},
+	Journal = {Logical Methods in Computer Science},
+	Number = {3},
+	Title = {Resource Usage Analysis for the pi-Calculus},
+	Volume = {2},
+	Year = {2006}}
+
+@article{Kobayashi1998,
+	Author = {Naoki Kobayashi},
+	Journal = {TOPLAS},
+	Number = {2},
+	Pages = {436--482},
+	Publisher = PUB-ACM,
+	Title = {A Partially Deadlock-Free Typed Process Calculus},
+	Volume = {20},
+	Year = {1998}}
+
+@article{Kobayashi2004,
+	Author = {Atsushi Igarashi and Naoki Kobayashi},
+	Journal = TCS,
+	Number = {1-3},
+	Pages = {121--163},
+	Title = {A generic type system for the Pi-calculus},
+	Volume = {311},
+	Year = {2004}}
+
+@inproceedings{Kobayashi06,
+	Author = {Naoki Kobayashi},
+	Booktitle = {Proc. CONCUR 2006},
+	Pages = {233--247},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {A New Type System for Deadlock-Free Processes},
+	Volume = {4137},
+	Year = {2006}}
+
+@unpublished{Typicaltool,
+	Author = {Naoki Kobayashi},
+	Note = {at {\tt kb.ecei.tohoku.ac.jp /\~{ }koba/typical/}},
+	Title = {Ty{P}i{C}al},
+	Year = {2007}}
+
+@article{KS10,
+	Author = {Naoki Kobayashi and Davide Sangiorgi},
+	Journal = {ACM TOPLAS},
+	Number = {5},
+	Title = {A hybrid type system for lock-freedom of mobile processes},
+	Volume = {32},
+	Year = {2010}}
+
+@article{Kobayashi02IC,
+	Author = {Naoki Kobayashi},
+	Journal = {Information and Computation},
+	Optnote = {A preliminary version appeared in Proceedings of IFIP TCS2000, Springer LNCS 1872, pp.365--389.},
+	Optnumber = 2,
+	Pages = {122--159},
+	Title = {A Type System for Lock-Free Processes},
+	Volume = 177,
+	Year = 2002}
+
+@article{KfouryTU93,
+	Author = {A. J. Kfoury and Jerzy Tiuryn and Pawel Urzyczyn},
+	Journal = {Inf. Comput.},
+	Number = {1},
+	Pages = {83--101},
+	Title = {The Undecidability of the Semi-unification Problem},
+	Volume = {102},
+	Year = {1993}}
+
+@inproceedings{KerfootMT09,
+	Author = {Eric Kerfoot and Steve McKeever and Faraz Torshizi},
+	Booktitle = {5rd International Workshop on Aliasing, Confinement and Ownership in object-oriented programming (IWACO), in conjunction with ECOOP 2009},
+	Editor = {Tobias Wrigstad},
+	Month = {July},
+	Title = {Deadlock Freedom Through Object Ownership},
+	Year = {2009}}
+
+@inproceedings{KriStolz14,
+  author = {Erlend Kristiansen and Volker Stolz},
+  title = {Search-based composed refactorings},
+  booktitle = {Norsk Informatikkonferanse (NIK 2014)},
+  year = 2014,
+  keywords = {ENVISAGE, MSR-0}
+}
+
+@inproceedings{KumarJMOSFTA02,
+  author    = {Shashi Kumar and
+               Axel Jantsch and
+               Mikael Millberg and
+               Johnny {\"{O}}berg and
+               Juha{-}Pekka Soininen and
+               Martti Forsell and
+               Kari Tiensyrj{\"{a}} and
+               Ahmed Hemani},
+  title     = {A Network on Chip Architecture and Design Methodology},
+  booktitle = {2002 {IEEE} Computer Society Annual Symposium on {VLSI} {(ISVLSI}
+               2002), 25-26 April 2002, Pittsburgh, PA, {USA}},
+  year      = {2002},
+  pages     = {117--124},
+ }
+
+@article{Knuth68,
+  author    = {Donald E. Knuth},
+  title     = {Semantics of Context-Free Languages},
+  journal   = {Mathematical Systems Theory},
+  volume    = {2},
+  number    = {2},
+  pages     = {127--145},
+  year      = {1968}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ L
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@inproceedings{LamannaSE03,
+  author    = {D. Davide Lamanna and
+               James Skene and
+               Wolfgang Emmerich},
+  title     = {SLAng: {A} Language for Defining Service Level Agreements},
+  booktitle = {9th {IEEE} International Workshop on Future Trends of Distributed
+               Computing Systems {(FTDCS} 2003), 28-30 May 2003, San Juan, Puerto
+               Rico, Proceedings},
+  publisher = {{IEEE} Computer Society},
+  isbn      = {0-7695-1910-5},
+  pages     = {100},
+  year      = {2003},
+  url       = {http://dx.doi.org/10.1109/FTDCS.2003.1204317},
+  doi       = {10.1109/FTDCS.2003.1204317},
+}
+
+@InProceedings{lanese14isola,
+  crossref = "ISoLA14",
+  author =	 {Ivan Lanese and Michael Lienhardt and Mario
+                  Bravetti and Einar Broch Johnsen and Rudolf Schlatte
+                  and Volker Stolz and Gianluigi Zavattaro},
+  title =	 {Fault Model Design Space for Cooperative
+                  Concurrency},
+  pages =	 {23--37},
+  keywords =	 {ENVISAGE, wp1, t1.1},
+}
+
+
+@inproceedings{LaneveP07,
+	Author = {Cosimo Laneve and Luca Padovani},
+	Booktitle = {Proc. CONCUR 2007},
+	Pages = {212--225},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {The {\it must} Preorder Revisited},
+	Volume = {4703},
+	Year = {2007}}
+
+@article{LP15,
+  author =	 {Cosimo Laneve and Luca Padovani},
+  title =	 {An algebraic theory for web service contracts},
+  journal =	 FAC,
+  volume =	 27,
+  number =	 4,
+  pages =	 {613--640},
+  year =	 2015,
+}
+
+@inproceedings{Liskov88,
+	Address = {New York, NY, USA},
+	Author = {Liskov, B. and Shrira, L.},
+	Booktitle = {Proceedings of Programming Language design and Implementation (PLDI '88)},
+	Pages = {260--267},
+	Publisher = PUB-ACM,
+	Title = {Promises: linguistic support for efficient asynchronous procedure calls in distributed systems},
+	Year = {1988}}
+
+@article{Lavender95,
+	Author = {Lavender, Greg R. and Schmidt, Douglas C.},
+	Journal = {Proc.Pattern Languages of Programs,},
+	Title = {{Active Object: an Object Behavioral Pattern for Concurrent Programming}},
+	Year = {1995}}
+
+@InProceedings{LeeP10,
+  author = 	 {Jonathan K. Lee and Jens Palsberg},
+  title = 	 {Featherweight {X10}: {A} {C}ore {C}alculus for {A}sync{-}{F}inish {P}arallelism},
+  booktitle = {Principles and Practice of Parallel Programming (PPoPP'10)},
+  pages = 	 {25--36},
+  year = 	 {2010},
+  publisher = PUB-ACM
+}
+
+
+@inproceedings{LiV04,
+  author    = {Lin Li and
+               Clark Verbrugge},
+  title     = {A Practical {MHP} Information Analysis for Concurrent Java
+               Programs},
+  editor    = {Rudolf Eigenmann and
+               Zhiyuan Li and
+               Samuel P. Midkiff},
+  booktitle = {17th International Workshop on Languages and Compilers for High Performance Computing},
+  year      = {2004},
+  pages     = {194--208},
+  publisher = PUB-SV,
+  series    = LNCS,
+}
+
+
+@article{luttgen06tcs,
+	Author = {Gerald L{\"u}ttgen and Walter Vogler},
+	Journal = {Theoretical Computer Science},
+	Number = {1--3},
+	Pages = {209--227},
+	Title = {Bisimulation on speed: A unified approach},
+	Volume = 360,
+	Year = 2006}
+	
+@InProceedings{LiskovS88,
+  author	= "B. H. Liskov and L. Shrira",
+  title		= "Promises: Linguistic Support for Efficient Asynchronous
+		  Procedure Calls in Distributed Systems",
+  pages		= "260--267",
+  editor	= "David S. Wise",
+  booktitle	= "Proc.\ {SIGPLAN} Conference on Programming Language Design
+		  and Implementation ({PLDI}'88)",
+  month		= jun,
+  year		= 1988,
+  publisher	= PUB-ACM
+}	
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ M
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@Book{mares14traction,
+  author =	 {Justin Mares and Gabriel Weinberg},
+  title =	 {Traction: A Startup Guide to Getting Customers},
+  publisher =	 {S-curves Publishing},
+  year =	 2014
+}
+
+@MastersThesis{Maya13,
+  author = 	 {Maya Retno Ayu Setyautami},
+  title = 	 {Applying UML Profile and Refactoring Rules to Create Software Product Line from UML Class Diagram},
+  school = 	 {Faculty of Computer Science, Universitas Indonesia},
+  year = 	 {2013}
+}
+
+@book{CCS,
+  Author =	 {Robin Milner},
+  publisher =	 PUB-SV,
+  series =	 LNCS,
+  volume =	 92,
+  Title =	 {{A} {C}alculus of {C}ommunicating {S}ystems},
+  Year =	 1980
+}
+
+@article{PIC,
+	Author = {Milner, Robin and Parrow, Joachim and Walker, David},
+	Issue = {1},
+	Journal = {Inf. and Comput.},
+	Pages = {1--77},
+	Title = {A calculus of mobile processes, {I} and {II}},
+	Volume = {100},
+	Year = {1992}}
+
+@article{MoreauQ05,
+	Author = {Luc Moreau and Christian Queinnec},
+	Journal = {ACM Trans. Program. Lang. Syst.},
+	Number = {3},
+	Pages = {441--476},
+	Title = {Resource aware programming},
+	Volume = {27},
+	Year = {2005}}
+
+@inproceedings{MontanariPistore,
+	Author = {Ugo Montanari and Marco Pistore},
+	Booktitle = {Formal Methods for the Design of Computer, Communication, and Software Systems},
+	Pages = {1--28},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {History-Dependent Automata: An Introduction},
+	Volume = {3465},
+	Year = {2005}}
+	
+@InProceedings{MorandiBM08,
+ 	 added-at	= {2011-12-26T19:00:37.000+0100},
+ 	 author	= {Morandi, Benjamin and Bauer, Sebastian S. and Meyer, Bertrand},
+   	 biburl	= {http://www.bibsonomy.org/bibtex/22e92ca123a239f428b5e43be6c14829d/gron},
+ 	 booktitle	= {Advanced Lectures on Software Engineering, LASER Summer School 2007/2008},
+  	 editor	= {M{\"u}ller, Peter},
+  	 isbn		= {978-3-642-13009-0},
+  	 keywords	= {Concurrency Contracts Eiffel},
+  	 pages	= {41--90},
+ 	 publisher	= PUB-SV,
+ 	 researchr	= {http://researchr.org/publication/MorandiBM08},
+ 	 series	= LNCS,
+  	 tags		= {object-oriented programming, programming},
+ 	 timestamp	= {2011-12-26T19:00:37.000+0100},
+  	 title		= {{SCOOP} -- A Contract-Based Concurrent Object-Oriented Programming Model},
+ 	 volume	= 6029,
+ 	 year		= 2008
+}	
+
+@Article{Meseguer92,
+  author         = {Jos{\'e} Meseguer},
+  title          = {Conditional rewriting logic as a unified model of concurrency},
+  journal        = TCS,
+  year           = 1992,
+  volume         = 96,
+  pages          = {73--155}
+}
+
+@inproceedings{meyer98a,
+  author    = {Bertrand Meyer},
+  title     = {Design by Contract: The {E}iffel Method},
+  booktitle = {TOOLS (26)},
+  year      = {1998},
+  pages     = {446},
+  ee        = {http://doi.ieeecomputersociety.org/10.1109/TOOLS.1998.711043},
+  bibsource = {DBLP, http://dblp.uni-trier.de}
+}
+
+
+@article{MartinBMMPSMSS07,
+  author    = {David L. Martin and
+               Mark H. Burstein and
+               Drew V. McDermott and
+               Sheila A. McIlraith and
+               Massimo Paolucci and
+               Katia P. Sycara and
+               Deborah L. McGuinness and
+               Evren Sirin and
+               Naveen Srinivasan},
+  title     = {Bringing Semantics to Web Services with {OWL-S}},
+  journal   = {World Wide Web},
+  volume    = {10},
+  number    = {3},
+  pages     = {243--277},
+  year      = {2007},
+  url       = {http://dx.doi.org/10.1007/s11280-007-0033-x},
+  doi       = {10.1007/s11280-007-0033-x}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ N
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@inproceedings{Naik2009,
+	Author = {Naik, M. and Chang-Seo Park and Koushik Sen and Gay, D.},
+	Booktitle = {IEEE 31st International Conference on Software Engineering, 2009. ICSE 2009.},
+	Pages = {386--396},
+	Title = {Effective static deadlock detection},
+	Year = {2009}}
+
+@article{Niehren06,
+	Author = {Niehren, J. and Schwinghammer, J. and Smolka, G.},
+	Issue = {3},
+	Journal = {Theor. Comput. Sci.},
+	Publisher = {Elsevier Science Publishers Ltd.},
+	Title = {A concurrent lambda calculus with futures},
+	Volume = {364},
+	Year = {2006}}
+
+@inproceedings{netjes05cpn,
+	Author = {Mariska Netjes and Wil~{M.P.} van der Aalst and Hajo A. Reijers},
+	Booktitle = {Proceedings of the Sixth Workshop on the Practical Use of Coloured Petri Nets and CPN Tools ({CPN} 2005)},
+	Publisher = {University of Aarhus},
+	Series = {DAIMI},
+	Title = {Analysis of Resource-Constrained Processes with {C}olored {P}etri {N}ets},
+	Volume = 576,
+	Year = 2005}
+	
+@inproceedings{Nguyen05,
+   author = {Huu Hai Nguyen and Wei-ngan Chin and Shengchao Qin and Martin Rinard},
+    title = {Memory Usage Verification for OO Programs},
+    booktitle = {In SAS 05},
+    year = {2005},
+    pages = {70--86},
+    publisher = {Springer}
+}
+
+
+@InProceedings{Nobakht14ABSAPI,
+  crossref = "ISoLA14",
+  author = {Nobakht, Behrooz and de Boer, Frank S.},
+  title = {Programming with Actors in {Java~8}},
+  keywords =   {ENVISAGE, wp2, t2.3},
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ O
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@InProceedings{owe14nik,
+   author = {Olaf Owe and Ingrid Chieh Yu},
+   title = {Deadlock detection of active objects with synchronous and asynchronous method calls},
+  booktitle = {Norsk Informatikkonferanse (NIK 2014)},
+  year = 2014,
+  keywords = {ENVISAGE, MSR-0}
+}
+
+@phdthesis{okika10phd,
+title = "Analysis and Verification of Service Contracts",
+author = "Joseph Okika",
+year = "2010",
+school = "Department of Computer Science, Aalborg University",
+}
+
+
+@Book{osterwalder10book,
+  author =	 {Alexander Osterwalder and Yves Pigneur},
+  title =	 {Business Model Generation},
+  publisher =	 {John Wiley \& Sons},
+  year =	 2010
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ P
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@inproceedings{Padovani14,
+	Author = {Luca Padovani},
+	Booktitle = {CSL-LICS'14},
+	Title = {{Deadlock and Lock Freedom in the Linear $\pi$-Calculus}},
+	pages = {1--10},
+	publisher = {ACM},
+	Year = {2014}}
+
+@inproceedings{Pratt76,
+  author    = {Vaughan R. Pratt},
+  title     = {Semantical Considerations on Floyd-Hoare Logic},
+  booktitle = {17th Annual Symposium on Foundations of Computer Science, Houston,
+               Texas, USA, 25-27 October 1976},
+  pages     = {109--121},
+  year      = {1976}
+}
+
+@article{PuntigamP01,
+	Author = {Franz Puntigam and Christof Peter},
+	Ee = {http://iospress.metapress.com/content/46u67e8fxjdw57p8/},
+	Journal = {Fundam. Inform.},
+	Number = {4},
+	Pages = {315--341},
+	Title = {Types for Active Objects with Static Deadlock Prevention},
+	Volume = {48},
+	Year = {2001}}
+
+@InProceedings{pun.steffen.stolz:effectpolymorphic,
+  author =	 "Ka I Pun and Martin Steffen and Volker Stolz",
+  title =	 "Effect-Polymorphic Behaviour Inference for Deadlock
+                  Checking",
+  crossref =	 "lncs8702",
+  pages =	 {50--64},
+  keywords =	 {ENVISAGE, MSR-18}
+}
+
+@InProceedings{pun.steffen.stolz:behaviorinference,
+  author =	 "Ka I Pun and Martin Steffen and Volker Stolz",
+  title =	 "Behaviour Inference for Deadlock Checking",
+  booktitle =	 "Proceedings of the 8th International Symposium on
+                  Theoretical Aspects of Software Engineering
+                  (TASE'14)",
+  keywords =	 {ENVISAGE, MSR-18},
+  year =	 2014,
+}
+
+@Article{pun.steffen.stolz:deadlockchecking,
+  author =	 "Ka I Pun and Martin Steffen and Volker Stolz",
+  title =	 "Deadlock Checking by Data Race Detection",
+  journal =	 "Journal of Logical and Algebraic Methods in
+                  Programming",
+  url =		 {http://dx.doi.org/10.1016/j.jlamp.2014.07.003},
+  note =	 "Available online",
+  keywords =	 {ENVISAGE, MSR-18},
+  year =	 2014,
+  volume =	 83,
+  number =	 {5--6},
+  pages =	 {400--426},
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ Q
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ R
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@TechReport{rmodp,
+  author	= "{International Telecommunication Union}",
+  title		= "{Open Distributed Processing -- Reference Model parts 1--4}",
+  institution	= "ISO/IEC",
+  address	= "Geneva",
+  month		= jul,
+  year		= 1995
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ S
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@inproceedings{SchaeferP10b,
+	Author = {Jan Sch{\"a}fer and Arnd Poetzsch-Heffter},
+	Booktitle = ECOOP # { (ECOOP'10)},
+	Keywords = {HATS, wp1},
+	Month = jun,
+	Pages = {275--299},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {{JCoBox}: Generalizing Active Objects to Concurrent Components},
+	Volume = {6183},
+	Year = 2010}
+
+@inproceedings{sgroi99dac,
+	Author = {Sgroi, Marco and Lavagno, Luciano and Watanabe, Yosinori and Sangiovanni-Vincentelli, Alberto},
+	Booktitle = {Proc.\ 36th ACM/IEEE Design Automation Conference ({DAC}'99)},
+	Numpages = 6,
+	Pages = {805--810},
+	Publisher = PUB-ACM,
+	Title = {Synthesis of embedded software using free-choice {P}etri nets},
+	Year = 1999}
+
+@incollection{Suenaga08,
+	Author = {Suenaga, Kohei},
+	Booktitle = {Programming Languages and Systems},
+	Pages = {155--170},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {Type-Based Deadlock-Freedom Verification for Non-Block-Structured Lock Primitives and Mutable References},
+	Volume = {5356},
+	Year = {2008}}
+
+@incollection{Suenaga2007,
+	Author = {Suenaga, Kohei and Kobayashi, Naoki},
+	Booktitle = {Programming Languages and Systems},
+	Pages = {490--504},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {Type-Based Analysis of Deadlock for a Concurrent Calculus with Interrupts},
+	Volume = {4421},
+	Year = {2007}}
+
+@Article{Soundararajan84c,
+  author	= {Neelam Soundararajan},
+  month		= oct,
+  year		= 1984,
+  title		= {Axiomatic Semantics of Communicating Sequential
+		  Processes},
+  journal	= TOPLAS,
+  volume	= 6,
+  number	= 4,
+  pages		= {647--662},
+  abstract	= "A simple definition of the axiomatic semantics of
+		  Communicating Sequential Processes is presented. The most
+		  important aspect of the approach is that it allows dealing
+		  with the individual processes of a program in isolation
+		  from the other processes. The axiomatic semantics is used
+		  to prove the correctness of a program for partitioning
+		  sets.",
+  keywords	= "Languages, Verification, Absence of Deadlock, Axiomatic
+		  Semantics, Communicating Processes, CSP, Distributed
+		  Termination, Partial Correctness"
+}
+
+@Article{	  soundararajan84a,
+  author	= "Neelam Soundararajan",
+  title		= "A proof technique for parallel programs",
+  journal	= TCS,
+  volume	= 31,
+  number	= "1-2",
+  pages		= "13--29",
+  month		= may,
+  year		= 1984,
+  keywords	= "axioms; parallel programming language; parallel programs;
+	1	  programming languages; proof technique; shared variables;
+		  synchronization statements"
+}
+
+@inproceedings{serbanescuPCA14a,
+  author =	 {Serbanescu, V. and Pop, F. and Cristea, V. and
+                  Antoniu, G.},
+  title =	 {Architecture of Distributed Data Aggregation
+                  Service},
+  editor =	 {Leonard Barolli and Kin Fun Li and Tomoya Enokido
+                  and Fatos Xhafa and Makoto Takizawa},
+  booktitle =	 {28th {IEEE} International Conference on Advanced
+                  Information Networking and Applications ({AINA}
+                  2014)},
+  publisher =	 {{IEEE} Computer Society},
+  year =	 2014,
+  month =	 {May},
+  pages =	 {727--734},
+  keywords =	 {envisage},
+  doi =		 {10.1109/AINA.2014.89},
+  ISSN =	 {1550-445X},
+}
+
+@incollection{serbanescuNABN14a,
+  title =	 {Towards Type-Based Optimizations in Distributed
+                  Applications Using {ABS} and {JAVA} 8},
+  author =	 {Serbanescu, Vlad and Nagarajagowda, Chetan and
+                  Azadbakht, Keyvan and de Boer, Frank and Nobakht,
+                  Behrooz},
+  keywords =	 {envisage, wp1, t1.2},
+  booktitle =	 {First International Workshop on Adaptive Resource
+                  Management and Scheduling for Cloud Computing},
+  publisher =	 PUB-SV,
+  series =	 LNCS,
+  volume =	 8907,
+  pages =	 {103--112},
+  year =	 2014,
+}
+
+@article{serbanescuPCA15a,
+  year =	 2015,
+  issn =	 {1386-145X},
+  journal =	 {World Wide Web},
+  doi =		 {10.1007/s11280-015-0334-4},
+  title =	 {A formal method for rule analysis and validation in
+                  distributed data aggregation service},
+  url =		 {http://dx.doi.org/10.1007/s11280-015-0334-4},
+  publisher =	 {Springer US},
+  keywords =	 {envisage, Data aggregation; Data management; Cloud
+                  storage; Intelligent cloud services; Distributed
+                  services; Formal methods; Rule markup language},
+  author =	 {Serbanescu, Vlad and Pop, Florin and Cristea,
+                  Valentin and Antoniu, Gabriel},
+  pages =	 {1-20},
+  language =	 {English}
+}
+
+@article {serbanescuABNN15a,
+	author = {Serbanescu, Vlad and Azadbakht, Keyvan and de Boer, Frank and Nagarajagowda, Chetan and Nobakht, Behrooz},
+	title = {A design pattern for optimizations in data intensive applications using {ABS} and {JAVA} 8},
+	journal = {Concurrency and Computation: Practice and Experience},
+	issn = {1532-0634},
+	url = {http://dx.doi.org/10.1002/cpe.3480},
+	doi = {10.1002/cpe.3480},
+	keywords = {envisage,cloud computing, programming models, distributed applications, formal methods, application-level optimization, design patterns, memory management},
+	year = {2015},
+}
+
+@article{SheibanyradGM08,
+  author =	 {Abbas Sheibanyrad and Alain Greiner and Ivan Miro
+                  Panades},
+  title =	 {Multisynchronous and Fully Asynchronous {NoC}s for
+                  {GALS} Architectures},
+  journal =	 {{IEEE} Design {\&} Test of Computers},
+  volume =	 25,
+  number =	 6,
+  pages =	 {572--580},
+  year =	 2008,
+}
+
+@misc{stolz15infrastructure-blog,
+  author =	 {Volker Stolz},
+  title =	 {{IT} Infrastructure for Research Projects},
+  journal =	 {Envisage},
+  type =	 {Blog},
+  month =	 mar,
+  year =	 2015,
+  keywords =	 {ENVISAGE, wp4, blog, t6.1},
+  howpublished = {\url{http://envisage-project.eu}}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ T
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@article{Tarjan72,
+  author    = {Robert Endre Tarjan},
+  title     = {Depth-First Search and Linear Graph Algorithms},
+  journal   = {SIAM J. Comput.},
+  volume    = {1},
+  number    = {2},
+  year      = {1972},
+  pages     = {146-160}
+}
+
+@unpublished{AsyncCTP,
+	Author = {Mads Torgersen},
+	Month = {October},
+	Publisher = {Microsoft},
+	Title = {Asyncrony in {.NET}},
+	Year = {2010}}
+
+@misc{memkitetveit2014deeplearningforeducation,
+  author =	 {Amund Tveit and Torbj{\o}rn Morland and John-Christian
+                  Andreassen and Thomas Brox R{\o}st},
+  title =	 {Deep Learning for Education},
+  journal =	 {DeepLearning.Education},
+  type =	 {Video},
+  month =	 sep,
+  year =	 2014,
+  keywords =	 {ENVISAGE, wp4, video, blog, t4.1, t4.2},
+  howpublished = {\url{http://memkite.com}}
+}
+
+@misc{envisage2014objectorientation,
+  author =	 {Amund Tveit},
+  title =	 {The World’s First Object-Oriented Program – from
+                  October 1st 1965},
+  journal =	 {Envisage},
+  type =	 {Blog},
+  year =	 2014,
+  month =	 jun,
+  keywords =	 {ENVISAGE, blog},
+  howpublished = {\url{http://envisage-project.eu/?p=919}},
+}
+
+@misc{envisage2014memkiteapp,
+  author =	 {Amund Tveit and Torbj{\o}rn Morland and Thomas Brox
+                  R{\o}st},
+  title =	 {Memkite Wikipedia Search},
+  journal =	 {Apple iTunes},
+  type =	 {Mobile App for iOS},
+  month =	 feb,
+  year =	 2014,
+  keywords =	 {ENVISAGE, wp4, app, t4.1, t4.2},
+  howpublished =
+                  {\url{https://itunes.apple.com/us/app/memkite-wikipedia-search/id791541384?mt=8}}
+}
+
+@misc{memkitetveit2014hitchiker,
+  author =	 {Amund Tveit},
+  title =	 {Technical Feasibility of Building Hitchhiker's Guide
+                  to the Galaxy, i.e. Offline Web Search - Part I},
+  journal =	 {Memkite},
+  type =	 {Blog},
+  month =	 apr,
+  year =	 2014,
+  keywords =	 {ENVISAGE, wp4, blog, t4.1, t4.2},
+  howpublished =
+                  {\url{http://memkite.com/blog/2014/04/01/technical-feasibility-of-building-hitchikers-guide-to-the-galaxy-i-e-offline-web-search-part-i/}}
+}
+
+
+
+@misc{memkitetveit2014mobileeatscloud,
+  author =	 {Amund Tveit},
+  title =	 {Mobile Eats the Cloud},
+  journal =	 {Memkite},
+  type =	 {Blog},
+  month =	 apr,
+  year =	 2014,
+  keywords =	 {ENVISAGE, wp4, blog, t4.1, t4.2},
+  howpublished =
+                  {\url{http://memkite.com/blog/2014/04/22/mobile-eats-the-cloud}}
+}
+
+
+
+@misc{tveit2014privacyefficiency,
+  author =	 {Amund Tveit},
+  title =	 {Privacy Efficiency - Measuring and Improving},
+  journal =	 {Amund Tveit\'s Blog},
+  type =	 {Blog},
+  month =	 may,
+  year =	 2014,
+  keywords =	 {ENVISAGE, wp4, blog, t4.1, t4.2},
+  howpublished =
+                  {\url{http://blog.amundtveit.com/2014/05/privacy-efficiency-measuring-and-improving/}}
+}
+
+@misc{DeepLearningBibliographyTveit,
+  author = {Amund Tveit and Torbj{\o}rn Morland and Thomas Brox R{\o}st},
+  title = {DeepLearning.University - An Annotated Deep Learning Bibliography},
+  institution = {Memkite - memkite.com},
+  type = {Bibliography},
+  month = {September},
+  year = 2014,
+  note = {version: 2014-Sep-18},
+  keywords = {ENVISAGE, wp4, blog, t4.1, t4.2},
+  howpublished = {\url{http://deeplearning.university}}
+}
+
+% new entries from Atbrox added Sep 2015
+
+@misc{SwiftMetalTVOSTveit,
+  author = {Amund Tveit},
+  title = {Swift and Metal GPU Programming on tvOS for the new Apple TV},
+  institution = {Memkite - memkite.com},
+  type = {Blog post},
+  month = {September},
+  year = 2015,
+  note = {version: 2015-Sep-9},
+  keywords = {ENVISAGE, wp4, blog, t4.1, t4.2},
+  howpublished = {\url{http://memkite.com/blog/2015/09/09/swift-and-metal-gpu-programming-on-tvos-for-the-new-apple-tv/}}
+}
+
+
+@misc{SwiftMetalTVOSTveit2,
+  author = {Amund Tveit},
+  title = {Swift and Metal GPU Programming on OSX 10.11 / El Capitan},
+  institution = {Memkite - memkite.com},
+  type = {Blog post},
+  month = {June},
+  year = 2015,
+  note = {version: 2015-Jun-10},
+  keywords = {ENVISAGE, wp4, blog, t4.1, t4.2},  
+  howpublished = {\url{http://memkite.com/blog/2015/06/10/swift-and-metal-gpu-programming-on-osx-10-11-el-capitan/}}
+}
+
+
+@misc{ContinuousIntegrationMetalTveit,
+  author =	 {Amund Tveit},
+  title =	 {Continuous Integration for testing Metal GPGPU
+                  shaders for iOS with Swig, Numpy and Python},
+  institution =	 {Memkite - memkite.com},
+  type =	 {Blog post},
+  month =	 {May},
+  year =	 2015,
+  note =	 {version: 2015-May-20},
+  keywords =	 {ENVISAGE, Continuous Integration, Software Quality,
+                  wp4, blog, t4.1, t4.2},
+  howpublished =
+                  {\url{http://memkite.com/blog/2015/05/20/continuous-integration-for-testing-metal-gpgpu-shaders-for-ios-with-swig-numpy-and-python/}}
+}
+
+
+@misc{ThreadmillDesksTveit,
+  author =	 {Amund Tveit},
+  title =	 {Threadmill Desks - the Future Software Engineer
+                  Office Rig?},
+  institution =	 {Memkite - memkite.com},
+  type =	 {Blog post},
+  month =	 {May},
+  year =	 2015,
+  note =	 {version: 2015-May-14},
+  howpublished =
+                  {\url{http://memkite.com/blog/2015/05/14/threadmill-desks-the-future-software-engineer-office-rig/}}
+}
+
+@misc{DeeplearningLisaLabsTveit,
+  author = {Amund Tveit},
+  title = {Deeplearning.University - Bibliographies from Lisa Labs (Yoshua Bengio's lab)},
+  institution = {Memkite - memkite.com},
+  type = {Blog post},
+  month = {April},
+  year = 2015,
+  note = {version: 2015-Apr-17},
+  keywords = {ENVISAGE, wp4, blog},
+  howpublished = {\url{http://memkite.com/blog/2015/04/17/deeplearning-university-bibliographies-from-lisa-labs-yoshua-bengios-lab/}}
+}
+
+@misc{MetalMemorySharingTveit,
+  author = {Amund Tveit},
+  title = {Example of Sharing Memory between GPU and CPU with Swift and Metal for iOS8},
+  institution = {Memkite - memkite.com},
+  type = {Blog post},
+  month = {December},
+  year = 2014,
+  note = {version: 2014-Dec-30},
+  keywords = {ENVISAGE, wp4, blog, t4.1, t4.2},    
+  howpublished = {\url{http://memkite.com/blog/2014/12/30/example-of-sharing-memory-between-gpu-and-cpu-with-swift-and-metal-for-ios8/}}
+}
+
+@misc{GPGPUPerformanceSwiftMetalTveit,
+  author = {Amund Tveit},
+  title = {GPGPU Performance of Swift/Metal vs Accelerate on iPhone 6 & 5S, iPad Air and iPad Mini},
+  institution = {Memkite - memkite.com},
+  type = {Blog post},
+  month = {December},
+  year = 2014,
+  note = {version: 2014-Dec-18},
+  keywords = {ENVISAGE, wp4, blog, t4.1, t4.2},    
+  howpublished = {\url{http://memkite.com/blog/2014/12/18/gpgpu-performance-of-swiftmetal-vs-accelerate-on-iphone-6-5s-ipad-air-and-ipad-mini/}}
+}
+
+@misc{DataParallelMetalTveit,
+  author = {Amund Tveit},
+  title = {Data-Parallel Programming with Metal and Swift for iPhone/iPad GPU},
+  institution = {Memkite - memkite.com},
+  type = {Blog post},
+  month = {December},
+  year = 2014,
+  note = {version: 2014-Dec-15},
+  keywords = {ENVISAGE, wp4, blog, t4.1, t4.2},    
+  howpublished = {\url{http://memkite.com/blog/2014/12/15/data-parallel-programming-with-metal-and-swift-for-iphoneipad-gpu/}}
+}
+
+@misc{MemkiteDeepLearningSearchTveit,
+  author = {Amund Tveit},
+  title = {Memkite announces Deep Learning and Search for Education},
+  institution = {Memkite - memkite.com},
+  type = {Blog post},
+  month = {September},
+  year = 2014,
+  note = {version: 2014-Sep-09},
+  keywords = {ENVISAGE, wp4, blog, t4.1, t4.2},    
+  howpublished = {\url{http://memkite.com/blog/2014/12/15/data-parallel-programming-with-metal-and-swift-for-iphoneipad-gpu/}}
+}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ U
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ V
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@inproceedings{Vasconcelos2009,
+	Author = {Vasco Thudichum Vasconcelos and Francisco Martins and Tiago Cogumbreiro},
+	Booktitle = {Proc. PLACES'09},
+	Pages = {95--109},
+	Series = {EPTCS},
+	Title = {Type Inference for Deadlock Detection in a Multithreaded Polymorphic Typed Assembly Language},
+	Volume = {17},
+	Year = {2009}}
+
+@inproceedings{MobWor,
+	Author = {Bj{\"o}rn Victor and Faron Moller},
+	Booktitle = {CAV'94: Computer Aided Verification},
+	Editor = {David Dill},
+	Pages = {428--440},
+	Publisher = PUB-SV,
+	Series = LNCS,
+	Title = {The {M}obility {W}orkbench --- A Tool for the $\pi$-Calculus},
+	Volume = {818},
+	Year = {1994}}
+
+@inproceedings{vulgarakis08compsac,
+	Author = {Aneta Vulgarakis and Cristina Cerschi Seceleanu},
+	Booktitle = {Proc.\ 32nd IEEE Intl.\ Computer Software and Applications Conference ({COMPSAC}'08)},
+	Pages = {1321--1328},
+	Publisher = {IEEE Computer Society},
+	Title = {Embedded Systems Resources: Views on Modeling and Analysis},
+	Year = 2008}
+
+@inproceedings{yarn,
+  author =	 {Vavilapalli et al.},
+  title =	 {Apache hadoop yarn: Yet another resource negotiator},
+  booktitle =	 {Proceedings of the 4th annual Symposium on Cloud Computing ({SoCC}'13)},
+  publisher =	 {ACM},
+  year =	 2013,
+  pages =        {5},
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ W
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@article{WBdBGZdGHMS14,
+  author =	 {Peter Y. H. Wong and Richard Bubel and Frank S. de
+                  Boer and Miguel G{\'{o}}mez{-}Zamalloa and Stijn de
+                  Gouw and Reiner H{\"{a}}hnle and Karl Meinke and
+                  Muddassar Azam Sindhu},
+  title =	 {Testing abstract behavioral specifications},
+  journal =	 STTT,
+  volume =	 17,
+  number =	 1,
+  pages =	 {107--119},
+  year =	 2015,
+  keywords =	 {ENVISAGE, wp3, t3.5, MSR-41},
+}
+
+
+
+@article{Wegbreit75,
+  title={Mechanical program analysis},
+  author={Wegbreit, Ben},
+  journal={Communications of the ACM},
+  volume={18},
+  number={9},
+  pages={528--539},
+  year={1975},
+  publisher={ACM}
+}
+
+@article{WongAMPSS12,
+	Author = {Peter Y. H. Wong and Elvira Albert and Radu Muschevici and Jos{\'e} Proen\c{c}a and Jan Sch{\"a}fer and Rudolf Schlatte},
+	Journal = STTT,
+	Number = {5},
+	Pages = {567--588},
+	Publisher = PUB-SV,
+	Title = {The {ABS} tool suite: modelling, executing and analysing distributed adaptable object-oriented systems},
+	Volume = {14},
+	Year = {2012}}
+
+@inproceedings{WestNM10,
+	Author = {Scott West and Sebastian Nanz and Bertrand Meyer},
+	Booktitle = {ICFEM},
+	Ee = {http://dx.doi.org/10.1007/978-3-642-16901-4_39},
+	Pages = {597--612},
+	Title = {A Modular Scheme for Deadlock Prevention in an Object-Oriented Programming Model},
+	Year = {2010}}
+
+@inproceedings{Welc05,
+	Address = {New York, NY, USA},
+	Author = {Welc, Adam and Jagannathan, Suresh and Hosking, Antony},
+	Booktitle = {Proceedings of the 20th Object-oriented programming, systems, languages, and applications (OOPSLA '05)},
+	Pages = {439--453},
+	Publisher = PUB-ACM,
+	Title = {Safe futures for Java},
+	Year = {2005}}
+
+@inproceedings{wills91ecoop,
+  author    = {Alan Wills},
+  title     = {Capsules and Types in {F}resco: Program Verification in {S}malltalk},
+  editor    = {Pierre America},
+  booktitle = ecoop,
+  year      = {1991},
+  pages     = {59--76},
+  publisher = PUB-SV,
+  series    = LNCS,
+  volume    = {512},
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ X
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ Y
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@book{YonezawaABCL,
+	Address = {Cambridge, MA, USA},
+	Editor = {Yonezawa, Akinori},
+	Publisher = {MIT Press},
+	Title = {{ABCL}: an object-oriented concurrent system},
+	Year = {1990}}
+	
+@Article{Yonezawa86,
+  author	= "Akinori Yonezawa and Jean-Pierre Briot and Etsuya
+		  Shibayama",
+  title		= "Object-Oriented Concurrent Programming in {ABCL/1}. {In
+		  {\em Conference on Object-Oriented Programming Systems,
+		  Languages and Applications (OOPSLA'86)}}",
+  journal	= "Sigplan Notices",
+  volume	= 21,
+  number	= 11,
+  pages		= "258--268",
+  editor	= "Norman Meyrowitz",
+  month		= nov,
+  year		= 1986,
+  publisher	= PUB-ACM
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ Z
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@article{ZanardiniG14,
+  author = {Damiano Zanardini and Samir Genaim},
+  title = {{I}nference of {F}ield-{S}ensitive {R}eachability and {C}yclicity},
+  journal = ACM-TOCL,
+  year = 2014,
+  publisher = {ACM},
+  volume    = {15},
+  number    = {4},
+  pages     = {1--41},
+  articleno = {33},
+  numpages  = {41},
+  doi       = {10.1145/2629478},
+  arxiv     = {http://arxiv.org/abs/1306.6526},
+  issn = {1529-3785},
+  keywords = {ENVISAGE, wp3, t3.3, MSR-38}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ Xref
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@proceedings{ISoLA14,
+  booktitle =	 {6th International Symposium On Leveraging
+                  Applications of Formal Methods, Verification and
+                  Validation (ISOLA'14)},
+  title =	 {6th International Symposium On Leveraging
+                  Applications of Formal Methods, Verification and
+                  Validation (ISOLA'14)},
+  editor =	 {Tiziana Margaria and Bernhard Steffen},
+  publisher =	 PUB-SV,
+  series =	 LNCS,
+  volume =	 8803,
+  year =	 2014,
+}
+
+
+@Proceedings{lncs8702,
+  title = 	 "Proceedings of SEFM'14",
+  booktitle = 	 "Proceedings of SEFM'14",
+  year = 	 2014,
+  month = 	 sep,
+  volume = 	 8702,
+  series = 	 lncs,
+  editor=        "Dimitra Giannakopoulou and Gwen Sala{\"u}n",
+  publisher = pub-sv}
+
+@Proceedings{SFM14,
+  title =	 {Executable Software Models: 14th International
+                  School on Formal Methods for the Design of Computer,
+                  Communication, and Software Systems, Bertinoro,
+                  Italy},
+  booktitle =	 {Executable Software Models: 14th International
+                  School on Formal Methods for the Design of Computer,
+                  Communication, and Software Systems, Bertinoro,
+                  Italy},
+  month =	 jun,
+  year =	 2014,
+  editor =	 {Marco Bernardo and Ferruccio Damiani and Reiner
+                  H{\"a}hnle and Einar Broch Johnsen and Ina Schaefer},
+  publisher =	 pub-sv,
+  volume =	 8483,
+  keywords =	 {ENVISAGE, wp5, t5.4, MSR-108},
+  series =	 LNCS
+}
+
+@proceedings{DBLP:conf/modelsward/2014,
+  editor    = {Lu{\'{\i}}s Ferreira Pires and
+               Slimane Hammoudi and
+               Joaquim Filipe and
+               Rui C{\'{e}}sar das Neves},
+  title     = {{MODELSWARD} 2014 - Proceedings of the 2nd International Conference
+               on Model-Driven Engineering and Software Development, Lisbon, Portugal,
+               7 - 9 January, 2014},
+  year      = {2014},
+  publisher = {SciTePress},
+  isbn      = {978-989-758-007-9},
+  timestamp = {Thu, 25 Sep 2014 16:08:32 +0200},
+  biburl    = {http://dblp.uni-trier.de/rec/bib/conf/modelsward/2014},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+
+@techreport{FloresHTR15,
+  author =	 {Antonio Flores-Montoya and Reiner H{\"a}hnle},
+  title =	 {Resource Consumption of Concurrent Objects over
+                  Time},
+  year =	 2015,
+  institution =	 {TUD},
+  pubkey =	 {TUD-CS-2015-1175},
+  research_area ={Formal Methods, Software Engineering},
+  abstract =	 {We present the first static resource analysis of
+                  timed concurrent object programs. Instead of
+                  measuring the total resource consumption over a
+                  complete execution, we measure the resource
+                  consumption at different moments in time, that is,
+                  the resource consumption over time.  To obtain such
+                  a measure we perform a program transformation that
+                  generates a program without time whose resource
+                  consumption corresponds to the resource consumption
+                  of the timed program during time t.  The transformed
+                  program can then be analyzed with a combination of
+                  existing tools. These provide upper bounds that
+                  safely approximate the resource consumption of all
+                  possible behaviors of the program at all possible
+                  times.  We implemented a prototype of the approach
+                  and evaluated it on a complex program to demonstrate
+                  its feasibility.},
+  note =
+                  {\url{https://www.se.tu-darmstadt.de/fileadmin/user_upload/Group_SE/Page_Content/Group_Members/Antonio_Flores-Montoya/ResourceAnalysisTime_TechReport.pdf}},
+}
+
+@INPROCEEDINGS{esocc15:sla:monitoring,
+  editor =	 {Schahram Dustdar and Schahram, Frank Leymann and
+                  Massimo Villari},
+  author =	 {Behrooz Nobakht and Stijn de Gouw and Frank S. de
+                  Boer},
+  title =	 {Formal Verification of Service Level Agreements
+                  Through Distributed Monitoring},
+  booktitle =	 {Service Oriented and Cloud Computing -- 4th European
+                  Conference, ESOCC 2015, Taormina, Italy, September
+                  15-17, 2015},
+  pages =	 {125--140},
+  year =	 2015,
+  series =	 LNCS,
+  publisher =	 PUB-SV,
+  isbn =	 {978-3-319-24071-8},
+  keywords =	 {ENVISAGE, wp2, t2.3}
+}

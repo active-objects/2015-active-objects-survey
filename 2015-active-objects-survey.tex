@@ -239,13 +239,13 @@ unbounded object creation.
 The main design goal of ABS was to create a language that permits to
 specify complex behavior of concurrent objects in a concise, natural
 manner, while keeping automated analysis of that behavior feasible and
-scalable. The central issue to achieve this goal is the concurrency
-model.
+scalable. The central issue to achieve this goal is the choice of
+concurrency model.
 
 The ABS concurrency model is characterized by cooperative
 scheduling. This means that no task in preempted (interrupted) unless
-its modeler explicitly allows to do that. There are two statements in
-ABS that explicitly release control: \lstinline{release} and
+the modeler explicitly allows it. There are two statements in ABS that
+release control explicitly: \lstinline{release} and
 \lstinline{await}. The former is unconditional while the latter has a
 Boolean argument and can be used to synchronize with another task.
 
@@ -253,22 +253,21 @@ Boolean argument and can be used to synchronize with another task.
   \centering
 \begin{lstlisting}[numbers=left,xleftmargin=4ex,escapechar=\%]
 module Services;
-export Server;
 import Data, init, modify from CustomerData;
 
 interface Server {
-  Unit process(Fut<Data> d);
+  Unit process(Fut<Data> fd);
 }
 
 class Service implements Server {
-  Unit process(Fut<Data> d) {
-    await d?;
-    Data rd = d.get;
+  Unit process(Fut<Data> fd) {
+    await fd?; %\label{abs:process:awaitd}%
+    Data rd = fd.get;
     Fut<Unit> r = rd!modify();
     await r?;
 }
 
-{
+{ // main block of %module%
 Server s = new local Service(); %\label{abs:main:begin}%
 Data d = new local Data(); 
 Fut<Data> fd = d!init(); %\label{abs:main:init}%
@@ -279,35 +278,62 @@ Unit u = s!process(fd); %\label{abs:main:end}%
   \label{fig:abs-simple}
 \end{figure}
 
-We explain the concurrency model of ABS with the code in
+We explain the concurrency model of ABS with help of the code in
 Fig.~\ref{fig:abs-simple}. The unit of distribution in ABS is a
 \emph{concurrent object group} (COG) which can be thought of as a set
 of tasks that share a common heap and a processor. Each task executes
-some code owned by an object and at most one task is active in a given
-COG at any time. New tasks are created by asynchronous method calls
-and, initially, by selecting the main block of a module. An example of
-the latter is the code in
-lines~\ref{abs:main:begin}--\ref{abs:main:end}. 
+code owned by an object and at most one task is active in a given COG
+at any time. New tasks are created by asynchronous method calls as
+well as, initially, by selecting the main block of a module. An
+example of the latter is the code in
+lines~\ref{abs:main:begin}--\ref{abs:main:end}.
 
 Line~\ref{abs:main:begin} declares and creates a new object with
 interface type \lstinline{Server} using the implementation in class
 \lstinline{Service}.  The directive \lstinline{local} places the
-object in the current COG.  The following line declares and creates a
+object in the current COG. Without \lstinline{local} a new COG is
+created together with the object. The next line declares and creates a
 data object (note that type \lstinline{Data} was explicitly imported)
 in the same COG. Hence, \lstinline{s} and \lstinline{d} share the same
-heap. Line~\ref{abs:main:init} calls an initialization method on the
-data. The notation ``\lstinline{!}'' signifies an asynchronous
-call. It creates a new task in the COG of \lstinline{d} that executes
-the code of \lstinline{init()}. Asynchronous calls do not interrupt
-the caller, the following statement is directly executed. Therefore,
+heap. Line~\ref{abs:main:init} calls an initialization method (not
+shown) on the data. The notation ``\lstinline{!}'' signifies an
+asynchronous call. Its effect is to create a new task in the COG of
+\lstinline{d} that executes the code of
+\lstinline{init()}. Asynchronous calls do not interrupt the caller, so
+the statement following the call is immediately executed. Therefore,
 we need a handle by which to retrieve the result of an asynchronous
-call once it has been computed. In ABS the type of such handles have a
-future annotation. As can be seen in the final statement in
-Line~\ref{abs:main:end}, it is possible to pass futures around.  After
-the code in the main block has finished, two tasks in the current COG
-wait for execution: \lstinline{init()} and \lstinline{process()}.
+call once its result has been computed. In ABS the type of such
+handles have a future annotation. Note that \lstinline{fd} and
+\lstinline{d} might well be aliases of each other. As can be seen in
+Line~\ref{abs:main:end}, it is possible to pass futures around. This
+makes it possible to use the result of an asynchronous call in
+different places without copying it.  
 
-Scheduler, sequence, if in different COGs, shared heap, deadlocks.
+After execution of the main block is finished, two tasks in the
+current COG wait for their execution: the calls of \lstinline{init()}
+and \lstinline{process()}. None of them could have been started while
+the main block was executing, because there was no synchronization
+statement in the latter. ABS does not determine which of
+\lstinline{init()} and \lstinline{process()} is started first. In
+fact, ABS can be parameterized with different scheduling
+strategies. The static analyzers of ABS take all possible scheduling
+sequences into account. The important point is that between explicit
+synchronisation points (\lstinline{release}, \lstinline{await}) no
+data races can occur and the computations are, therefore,
+deterministic. 
+
+A synchronisation point is reached at the first statement of
+\lstinline{process()} in Line~\ref{abs:process:awaitd} which makes
+sure that the value of the future \lstinline{fd} is available. If
+\lstinline{init()} was not scheduled before, it will be now. Once the
+value of \lstinline{fd} is available, it is retrieved with a
+\lstinline{get} statement. Attempting to retrieve a future value that
+is not yet ready, results in blockage of the whole COG until the value
+becomes available. Obviously, this can easily lead to 
+
+
+
+Data races, Scheduler, sequence, if in different COGs, shared heap, deadlocks.
 
 
 \subsubsection{ProActive and ASP}
