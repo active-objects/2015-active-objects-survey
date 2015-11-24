@@ -219,9 +219,8 @@ ProActive/Rebecca
 \subsubsection{Rebecca}
 \subsubsection{ABS}
 
-\lstset{
-    morekeywords={module,export,import, from, interface, class, implements, await, get, new, local,release}
-} 
+\lstset{ morekeywords={module,export,import, from, interface, class,
+    implements, await, get, new, local,release} }
 
 ABS (\emph{A}bstract \emph{B}ehavioral \emph{S}pecification)
 \cite{JHSSS10} is an object-oriented, concurrent modeling language: in
@@ -239,13 +238,13 @@ unbounded object creation.
 The main design goal of ABS was to create a language that permits to
 specify complex behavior of concurrent objects in a concise, natural
 manner, while keeping automated analysis of that behavior feasible and
-scalable. The central issue to achieve this goal is the choice of
-concurrency model.
+scalable. The central issue to achieve this goal is the concurrency
+model.
 
 The ABS concurrency model is characterized by cooperative
 scheduling. This means that no task in preempted (interrupted) unless
-the modeler explicitly allows it. There are two statements in ABS that
-release control explicitly: \lstinline{release} and
+its modeler explicitly allows to do that. There are two statements in
+ABS that explicitly release control: \lstinline{release} and
 \lstinline{await}. The former is unconditional while the latter has a
 Boolean argument and can be used to synchronize with another task.
 
@@ -331,10 +330,7 @@ value of \lstinline{fd} is available, it is retrieved with a
 is not yet ready, results in blockage of the whole COG until the value
 becomes available. Obviously, this can easily lead to 
 
-
-
 Data races, Scheduler, sequence, if in different COGs, shared heap, deadlocks.
-
 
 \subsubsection{ProActive and ASP}
 \paragraph{General presentation}\NOTE{including the main purpose of the language}
