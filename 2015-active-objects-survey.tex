@@ -480,6 +480,51 @@ model.
 This model is well adapted to non-expert because it provides high-level features for distribution 
 and safe concurrency.
 
+\NOTE{Below I write one paragraph on  each aspect we want to compare the language on. We 
+will see later if these paragraphs stay here or are collected in another specific section}
+
+\paragraph{Degree of synchronisation}
+In ASP the only blocking synchronisation is the wait-by-necessity on a future, but the 
+only way to have another thread running is to perform an invocation on an active object. 
+Requests run until completion. Consequently, there is a lot of potential deadlocks in 
+case of reentrant calls especially if no compatibility annotation is specified. On the 
+contrary, synchronisation only occur when the future value is indeed needed and in 
+particular future references can safely be transmitted between activities without 
+requiring any additional synchronisation.
+
+\paragraph{Degree of transparency}
+In ASP the programmer is not explicitly exposed to the notion of future or active object 
+except at active object creation. The syntax is the same as the syntax for sequential 
+programming, there is no specific construct for waiting a future value or performing an 
+asynchronous call. Very often a sequential code can be reused unchanged in a distributed 
+setting.
+
+\paragraph{Data sharing between threads and active objects}
+ASP follows a strict policy of absence of sharing between active objects.Objects that are 
+not active objects and are passed between activities (as request parameters or request 
+results) are passed by copy. Of course this also applies to objects referenced by passed 
+objects and a deep-copy mechanism is used ensuring that, when objects are transmitted 
+between activities, they are copied as well as all their dependency on the destination 
+side. This mechanism, which is the one used by RMI, slows down request invocation because 
+of the time spent to transmit data, but accelerates request treatment because there is no 
+need to contact another activity to get the value of the request parameters.
+
+There is no coherency ensured between the different copies of a passive object, thus if 
+the user wants to ensure that an object has a unique coherent state he should not 
+transmit it by copy, and for example transmit an active-object reference instead.
+
+\paragraph{Formall suport and semantics}
+\TODO{TODO: do we want to put the language semantics here ?}
+
+\TODO{add ref to semantics of ASP}
+
+\TODO{speak about formal verification and Vercors}
+
+\TODO{speak about formalisation in Isabelle/HOL of ASP fragments}
+
+\paragraph{Implementation: programming and execution support}
+
+
 \subsubsection{Encore}
 
 \section{Implementation of active objects}
