@@ -218,6 +218,101 @@ ProActive/Rebecca
 \subsection{A Focus on Some Active-object Languages}
 \subsubsection{Rebecca}
 \subsubsection{ABS}
+
+\lstset{
+    morekeywords={module,export,import, from, interface, class, implements, await, get, new, local,release}
+} 
+
+ABS (\emph{A}bstract \emph{B}ehavioral \emph{S}pecification)
+\cite{JHSSS10} is an object-oriented, concurrent modeling language: in
+contrast to design-oriented or architectural langauges, ABS code is
+fully executable. There is a simulator as well as several code
+generation backends (at the moment, for Java, Haskell, and Erlang). At
+the same time, ABS abstracts away from features that make automatic
+analysis difficult in mainstream programming languages. For example,
+ABS has an object model, but it does not support code inheritance and
+it enforces programming to interfaces as well as strong
+encapsulation. It retains, however, modeling features that are
+essential in realistic applications, for example, aliasing and
+unbounded object creation.
+
+The main design goal of ABS was to create a language that permits to
+specify complex behavior of concurrent objects in a concise, natural
+manner, while keeping automated analysis of that behavior feasible and
+scalable. The central issue to achieve this goal is the concurrency
+model.
+
+The ABS concurrency model is characterized by cooperative
+scheduling. This means that no task in preempted (interrupted) unless
+its modeler explicitly allows to do that. There are two statements in
+ABS that explicitly release control: \lstinline{release} and
+\lstinline{await}. The former is unconditional while the latter has a
+Boolean argument and can be used to synchronize with another task.
+
+\begin{figure}
+  \centering
+\begin{lstlisting}[numbers=left,xleftmargin=4ex,escapechar=\%]
+module Services;
+export Server;
+import Data, init, modify from CustomerData;
+
+interface Server {
+  Unit process(Fut<Data> d);
+}
+
+class Service implements Server {
+  Unit process(Fut<Data> d) {
+    await d?;
+    Data rd = d.get;
+    Fut<Unit> r = rd!modify();
+    await r?;
+}
+
+{
+Server s = new local Service(); %\label{abs:main:begin}%
+Data d = new local Data(); 
+Fut<Data> fd = d!init(); %\label{abs:main:init}%
+Unit u = s!process(fd); %\label{abs:main:end}%
+}
+\end{lstlisting}  
+  \caption{A simple ABS model}
+  \label{fig:abs-simple}
+\end{figure}
+
+We explain the concurrency model of ABS with the code in
+Fig.~\ref{fig:abs-simple}. The unit of distribution in ABS is a
+\emph{concurrent object group} (COG) which can be thought of as a set
+of tasks that share a common heap and a processor. Each task executes
+some code owned by an object and at most one task is active in a given
+COG at any time. New tasks are created by asynchronous method calls
+and, initially, by selecting the main block of a module. An example of
+the latter is the code in
+lines~\ref{abs:main:begin}--\ref{abs:main:end}. 
+
+Line~\ref{abs:main:begin} declares and creates a new object with
+interface type \lstinline{Server} using the implementation in class
+\lstinline{Service}.  The directive \lstinline{local} places the
+object in the current COG.  The following line declares and creates a
+data object (note that type \lstinline{Data} was explicitly imported)
+in the same COG. Hence, \lstinline{s} and \lstinline{d} share the same
+heap. Line~\ref{abs:main:init} calls an initialization method on the
+data. The notation ``\lstinline{!}'' signifies an asynchronous
+call. It creates a new task in the COG of \lstinline{d} that executes
+the code of \lstinline{init()}. Asynchronous calls do not interrupt
+the caller, the following statement is directly executed. Therefore,
+we need a handle by which to retrieve the result of an asynchronous
+call once it has been computed. In ABS the type of such handles have a
+future annotation. As can be seen in the final statement in
+Line~\ref{abs:main:end}, it is possible to pass futures around.  After
+the code in the main block has finished, two tasks in the current COG
+wait for execution: \lstinline{init()} and \lstinline{process()}.
+
+Scheduler, sequence, if in different COGs, shared heap, deadlocks.
+
+
+
+
+
 \subsubsection{ProActive/ASP}
 ASP~\cite{ref:asp} is an active object programming language especially designed 
 for programming distributed systems. In ASP, active objects coexist with objects 
@@ -357,7 +452,7 @@ Encore explicit bytecode operations; haskell; new java backend; ProActive?
 
 % Bibliography
 \bibliographystyle{ACM-Reference-Format-Journals}
-\bibliography{2015-active-objects-survey.bib,biblio.bib}
+\bibliography{2015-active-objects-survey,biblio,envisage}
                              % Sample .bib file with references that match those in
                              % the 'Specifications Document (V1.5)' as well containing
                              % 'legacy' bibs and bibs with 'alternate codings'.
@@ -377,3 +472,8 @@ Encore explicit bytecode operations; haskell; new java backend; ProActive?
 % End of v2-acmsmall-sample.tex (March 2012) - Gerry Murray, ACM
 
 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
