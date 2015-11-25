@@ -514,13 +514,30 @@ the user wants to ensure that an object has a unique coherent state he should no
 transmit it by copy, and for example transmit an active-object reference instead.
 
 \paragraph{Formall suport and semantics}
-\TODO{TODO: do we want to put the language semantics here ?}
 
-\TODO{add ref to semantics of ASP}
+Several papers formalise the semantics of ASP. The first of them formalised the 
+mono-threaded part of the language and proved some determinacy 
+properties~\cite{CHS:POPL04}. In particular, this paper proved that the order of future 
+updates has no influence on the execution and that the only source of non-determinacy in 
+mono-threaded ASP is when two activities can send a request to the same destination.
+A functional fragment of the calculus has also been 
+formalised in Isabelle/HOL~\cite{HKL:SCP11}. A specific semantics has been exhibited tin 
+order to evaluate a functional ASP program without risk of having a deadlock; the absence 
+of deadlock has been proved in Isabelle/HOL.
+The full semantics of imperative ASP with multi-threaded activities is published 
+in~\cite{HHI2013:mao}.
 
-\TODO{speak about formal verification and Vercors}
+As shown in~\cite{BHR2014:gcm}, ProActive active objects, and active objects in general,
+provide a convenient programming model for component based composition of distributed
+applications. The ProActive library implements the GCM distributed component model. In
+this context, the Vercors
+platform\footnote{\url{https://team.inria.fr/scale/software/vercors/}} provides
+verification capacities for ProActive components; Vercors consists of an Eclipse plugin
+for designing component systems; from this point the Vercors platform can on one hand
+verify the correct behaviour of the application using the CADP model-checker, and on the
+other hand generate an executable ProActive/GCM corresponding to the designed system.
 
-\TODO{speak about formalisation in Isabelle/HOL of ASP fragments}
+\TODO{do we want to put the language semantics here ?}
 
 \paragraph{Implementation: programming and execution support}
 
