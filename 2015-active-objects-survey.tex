@@ -402,11 +402,6 @@ v.foobar(); 	// potential wait-by-necessity
 % RMI registry delivered with Java. A local reference to this active object is also created: 
 % a proxy that delegates invocations to the active object.
 
-% The deployment specification of ProActive is based on the concept of virtual nodes: 
-% a virtual node is an aggregation of physical machines that are declared in configuration 
-% files (XML files). Such virtual nodes can be used in the code via their identifiers in order 
-% to choose a specific machine on which to deploy an active object.
-
  The principle of the multi-active object programming model is to execute multiple
  requests of an active object in parallel, while controlling the concurrency. 
  In practice, the 
@@ -513,7 +508,7 @@ There is no coherency ensured between the different copies of a passive object, 
 the user wants to ensure that an object has a unique coherent state he should not 
 transmit it by copy, and for example transmit an active-object reference instead.
 
-\paragraph{Formall suport and semantics}
+\paragraph{Formal support and semantics}
 
 Several papers formalise the semantics of ASP. The first of them formalised the 
 mono-threaded part of the language and proved some determinacy 
@@ -540,6 +535,9 @@ other hand generate an executable ProActive/GCM corresponding to the designed sy
 \TODO{do we want to put the language semantics here ?}
 
 \paragraph{Implementation: programming and execution support}
+ProActive is the Java library implementing ASP semantics. ProActive has a particular expertise in the deployment of ASP active objects on distributed infrastructures. The design choices of the programming language typically target a high performance of distributed ProActive applications. 
+In order to settle active objects on distributed infrastructures, ProActive features a deployment specification mechanism. The goal of this mechanism is to make the physical deployment independent from the the deployment logic. This is possible by having a binding from virtual node names, used in the source code, to machine addresses or names. In practice, this binding is implemented in XML configuration files. Also, since the binding is made at \emph{deployment time}, changing infrastructure for a given ProActive application is localized in one or a few files and does not require application recompilation. 
+Several machines can be aggregated under a single virtual node name in the deployment logic, for example to provide the virtual node with some properties or non functional deployment options (such as fault tolerance or logging). The deployment support of ProActive 
 
 
 \subsubsection{Encore}
