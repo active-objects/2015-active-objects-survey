@@ -15,6 +15,7 @@
 
 % Package to generate and customize Algorithm as per ACM style
 \usepackage[ruled]{algorithm2e}
+\usepackage{tikz}
 \renewcommand{\algorithmcfname}{ALGORITHM}
 \SetAlFnt{\small}
 \SetAlCapFnt{\small}
@@ -222,9 +223,10 @@ ProActive/Rebecca
 \lstset{ morekeywords={module,export,import, from, interface, class,
     implements, await, get, new, local,release} }
 
-ABS (\emph{A}bstract \emph{B}ehavioral \emph{S}pecification)
-\cite{JHSSS10} is an object-oriented, concurrent modeling language
-developed since 2009 in a series of EC-funded research
+\paragraph{General presentation} ABS (\emph{A}bstract
+\emph{B}ehavioral \emph{S}pecification) \cite{JHSSS10} is an
+object-oriented, concurrent modeling language developed since 2009 in
+a series of EC-funded research
 projects.\footnote{\url{www.hats-project.eu},
   \url{www.envisage-project.eu}} Its ancestors include \textsc{Creol}
 \cite{Elinar2006} and \textsc{JCoBox} \cite{SchaeferP10b}.
@@ -243,10 +245,86 @@ unbounded object creation.
 The main design goal of ABS was to create a language that permits to
 specify complex behavior of concurrent objects in a concise, natural
 manner, while keeping automated analysis of that behavior feasible and
-scalable. The central issue to achieve this goal is the concurrency
-model.
+scalable. ABS has a fully formal, small step operational semantics
+\cite{hats-d1.2} that permits formal soundness theorems for the
+various analyses that are available for ABS.
 
-The ABS concurrency model is characterized by cooperative
+There are extensions of ABS to model product variability
+\cite{HHJLSSW12} as well as time and other resources
+\cite{johnsen15jlamp}, but these are considered to be out of scope of
+the present article.
+
+\begin{figure}
+  \centering
+\begin{tikzpicture}[scale=1]\small
+\node[rectangle, 
+          ,shading=axis,shading angle=180,top color=white,bottom color=black!25, line width=2pt,
+          minimum width=9cm, minimum height=.6cm, draw] (ass) at (0,4.5) 
+         {Local Contracts, Assertions};
+
+\node[rectangle,
+          ,shading=axis,shading angle=180,top color=white,bottom color=pink!20, line width=2pt, draw=black,
+          minimum width=9cm, minimum height=.6cm] (int) at (0,5.1)
+          {Behavioral Interface Specs};
+
+\node[rectangle, 
+          ,shading=axis,shading angle=180,top color=white,bottom color=gray!20, line width=2pt,
+          minimum width=9cm, minimum height=0.6cm, draw] (mod)
+          at (0,3.9) {Syntactic Modules}; 
+
+\node[rectangle, 
+          ,shading=axis,shading angle=180,top color=white,bottom color=blue!40, line width=2pt,
+          minimum width=9cm, minimum height=0.6cm, draw] (async)
+          at (0,3.3) {Asynchronous Actor-Based Communication}; 
+
+\node[rectangle, 
+          shading=axis,shading angle=180,top color=white,bottom color=blue!20, line width=2pt,
+          minimum width=9cm, minimum height=0.6cm, draw] (cog)
+          at (0,2.7) {Concurrent Object Groups (COGs)}; 
+
+\node[rectangle,
+          shading=axis,shading angle=180,top color=white,bottom color=green!40, line width=2pt,
+          minimum width=9cm, minimum height=0.6cm, draw] (imp) at
+          (0,2.1){Imperative Language};
+
+\node[rectangle,
+          shading=axis,shading angle=180,top color=white,bottom color=green!20, line width=2pt,
+          minimum width=9cm, minimum height=0.6cm, draw] (object) at
+          (0,1.5){Object Model};
+\node[rectangle, 
+          shading=axis,shading angle=180,top color=white,bottom color=yellow!60, line width=2pt,
+          minimum width=9cm, 
+          minimum height=.6cm, draw] (exp) at (0,0.9) {Pure
+            Functional Programs};
+
+\node[rectangle
+          ,shading=axis,shading angle=180,top color=white,bottom color=yellow!40, line width=2pt,
+          minimum width=9cm, minimum height=0.6cm, draw] (adt) at
+          (0,0.3){Algebraic (Parametric) Data Types};
+\end{tikzpicture}
+\caption{Syntax layers of the ABS language}
+\label{fig:layer}
+\end{figure}
+
+\paragraph{Language description} 
+In Fig.~\ref{fig:layer} the language layers of ABS are
+displayed. Based on parametric (first-order) abstract data types, a
+simple, pure, first-order functional language with pattern matching
+and strict evaluation is defined. On top of that are objects and a
+standard imperative layer. So far, this is very much like
+\textsc{Scala}-light.
+
+The central issue for achieving automated, scalable analysis is the
+design of the concurrency model. Formal analysis of multi-threaded
+languages with interleaving semantics, for example, \textsc{Java},
+while principally possible \cite{BlomHuisman14}, is highly complex and
+seems to be out of scope at the moment for relaxed memory consistency
+models. To achieve feasibility, the concurrency model of ABS carefully
+restricts the possible interactions among concurrent tasks while still
+allowing to describe complex, realistic behavior of asynchronous
+systems.  
+%
+More precisely, the ABS concurrency model is based on cooperative
 scheduling. This means that no task in preempted (interrupted) unless
 its modeler explicitly allows to do that. There are two expressions in
 ABS that explicitly release control: \lstinline{release} and
@@ -267,11 +345,10 @@ class Service implements Server {
   Unit process(Fut<Data> fd) {
     await fd?; %\label{abs:process:awaitd}%
     Data rd = fd.get;
-    Fut<Unit> r = rd!modify();
-    await r?;
+    Unit r = rd.modify(); %\label{abs:process:sync}%
+  }
 }
-
-{ // main block of %module%
+{ // main block
 Server s = new local Service(); %\label{abs:main:begin}%
 Data d = new local Data(); 
 Fut<Data> fd = d!init(); %\label{abs:main:init}%
@@ -322,9 +399,7 @@ does not determine which of \lstinline{init()} and
 \lstinline{process()} is started first. In fact, ABS can be
 parameterized with different scheduling strategies. The static
 analyzers of ABS take all possible scheduling sequences into
-account. The important point is that between explicit synchronisation
-points (\lstinline{release}, \lstinline{await}) no data races can
-occur and computations are, therefore, deterministic.
+account. 
 
 A first synchronisation point is reached in
 Line~\ref{abs:process:awaitd} of \lstinline{process()}. It ensures
@@ -338,8 +413,8 @@ calls in ABS is as follows:
   \lstinline{Fut<T> fx = o!m(); ... ; await fx?; T x = fx.get;}
 \end{center}
 
-In many cases the \lstinline{await} and \lstinline{get} follow the
-asynchronous call directly. For this sitation the abbreviation 
+In many cases \lstinline{await} and \lstinline{get} follow an
+asynchronous call directly. For this common sitation the abbreviation
 
 \begin{center}
   \lstinline{T x = await o!m();}
@@ -347,15 +422,39 @@ asynchronous call directly. For this sitation the abbreviation
 
 is provided which avoids the declaration of an explicit future.
 
-Attempting to retrieve a future value that is not yet ready, results
-in blockage of the whole COG until the value becomes
+Line~\ref{abs:process:sync} contains a synchronous call which is also
+possible in ABS. It results in sequential behavior, i.e., yields the
+processor to the callee and blocks the caller until it
+returns. Obviously, here we are interested only in the side effect
+that \lstinline{modify()} has. Synchronous calls are only permitted in
+the COG of the caller object.
+
+\paragraph{Degree of synchronisation} 
+If one attemps to retrieve a future value that is not yet ready, this
+results in blockage of its COG until the value becomes
 available. Obviously, this can easily lead to deadlocks. Many, but not
 all, deadlocks can be avoided by guarding \lstinline{get} expressions
-with an \lstinline{await} as done here. There is an automated deadlock
-analysis tool for ABS \cite{GiachinoLL2014} that detects all potential
-deadlocks.
+with an \lstinline{await}. For example, a future could be passed to
+the method that computes its result and there await its own execution.
+In practice, however, deadlocks are easy to avoid, because
+synchronisation points are explicit. In addition, ABS comes with an
+automated deadlock analysis tool for ABS \cite{GiachinoLL2014} that
+detects all potential deadlocks.  An important point is that between
+explicit synchronisation points (\lstinline{release},
+\lstinline{await}) no data races can occur and computations are,
+therefore, deterministic.
 
-if in different COGs, shared heap
+\paragraph{Degree of transparency}
+
+ABS is an abstract language and implementation-specific aspects
+including scheduling, message queueing, object representation are not
+visible to the modeler.
+
+\paragraph{Data sharing}
+
+\paragraph{Formalization and semantics}
+
+\paragraph{Implementation and tool support}
 
 
 
