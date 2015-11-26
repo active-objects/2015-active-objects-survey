@@ -345,19 +345,21 @@ class Service implements Server {
   Unit process(Fut<Data> fd) {
     await fd?; %\label{abs:process:awaitd}%
     Data rd = fd.get;
-    Unit r = rd.modify(); %\label{abs:process:sync}%
+    rd.modify(); %\label{abs:process:sync}%
   }
 }
 { // main block
 Server s = new local Service(); %\label{abs:main:begin}%
 Data d = new local Data(); 
 Fut<Data> fd = d!init(); %\label{abs:main:init}%
-Unit u = s!process(fd); %\label{abs:main:end}%
+s!process(fd); %\label{abs:main:end}%
 }
 \end{lstlisting}  
   \caption{A simple ABS model}
   \label{fig:abs-simple}
 \end{figure}
+
+%% Besser producer/consumer
 
 We explain the concurrency model of ABS with help of the code in
 Fig.~\ref{fig:abs-simple}. The unit of distribution in ABS is a
@@ -447,12 +449,24 @@ therefore, deterministic.
 \paragraph{Degree of transparency}
 
 ABS is an abstract language and implementation-specific aspects
-including scheduling, message queueing, object representation are not
-visible to the modeler.
+including scheduling, message queueing, object representation are
+hidden from the modeler. Abstract data types and interfaces can be
+used to postpone detailed design decisions while still permitting
+analysis of those aspects of a model that are fully specified.
 
 \paragraph{Data sharing}
 
+Between different COGs no data sharing is possible. The attempt to
+call a method in a remote COG with a local class argument results in a
+runtime error. Within the same COG all tasks have acess to a common
+heap and can modify shared data. However, objects have strictly
+private visibility, that is, they can only directly access their own
+fields. The fields of any other objects must be accessed by explicit
+method calls (getter/setter methods).
+
 \paragraph{Formalization and semantics}
+
+
 
 \paragraph{Implementation and tool support}
 
