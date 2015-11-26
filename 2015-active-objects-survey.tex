@@ -245,9 +245,7 @@ unbounded object creation.
 The main design goal of ABS was to create a language that permits to
 specify complex behavior of concurrent objects in a concise, natural
 manner, while keeping automated analysis of that behavior feasible and
-scalable. ABS has a fully formal, small step operational semantics
-\cite{hats-d1.2} that permits formal soundness theorems for the
-various analyses that are available for ABS.
+scalable. 
 
 There are extensions of ABS to model product variability
 \cite{HHJLSSW12} as well as time and other resources
@@ -260,15 +258,10 @@ the present article.
 \node[rectangle, 
           ,shading=axis,shading angle=180,top color=white,bottom color=black!25, line width=2pt,
           minimum width=9cm, minimum height=.6cm, draw] (ass) at (0,4.5) 
-         {Local Contracts, Assertions};
-
-\node[rectangle,
-          ,shading=axis,shading angle=180,top color=white,bottom color=pink!20, line width=2pt, draw=black,
-          minimum width=9cm, minimum height=.6cm] (int) at (0,5.1)
-          {Behavioral Interface Specs};
+          {History-Based Behavioral Interface Specification};
 
 \node[rectangle, 
-          ,shading=axis,shading angle=180,top color=white,bottom color=gray!20, line width=2pt,
+          ,shading=axis,shading angle=180,top color=white,bottom color=brown!20, line width=2pt,
           minimum width=9cm, minimum height=0.6cm, draw] (mod)
           at (0,3.9) {Syntactic Modules}; 
 
@@ -325,7 +318,7 @@ allowing to describe complex, realistic behavior of asynchronous
 systems.  
 %
 More precisely, the ABS concurrency model is based on cooperative
-scheduling. This means that no task in preempted (interrupted) unless
+scheduling. This means that no task is preempted (interrupted) unless
 its modeler explicitly allows to do that. There are two expressions in
 ABS that explicitly release control: \lstinline{release} and
 \lstinline{await}. The former is unconditional while the latter has a
@@ -359,16 +352,48 @@ s!process(fd); %\label{abs:main:end}%
   \label{fig:abs-simple}
 \end{figure}
 
-%% Besser producer/consumer
+%% Besser producer/consumer?
+
+% module Services;
+
+% interface Server {
+%   Unit produce();
+%   Unit consume();
+% }
+
+% class Service implements Server {
+%   Int MAX = 17;
+%   Int stock = 0;
+  
+%   Unit produce() {
+%     while (True) {
+% 	  await stock < MAX;
+%       stock = stock + 1;
+%       }
+%   }
+  
+%   Unit consume() {
+%     while (True) {
+%       await stock > 0;
+%       stock = stock - 1;
+%       }
+%   }
+% }
+
+% { // main block
+%   Service s = new Server();
+%   s!produce();
+%   s!consume();
+% }
 
 We explain the concurrency model of ABS with help of the code in
 Fig.~\ref{fig:abs-simple}. The unit of distribution in ABS is a
 \emph{concurrent object group} (COG) which can be thought of as a set
-of tasks that share a common heap and a processor. Each task executes
-code owned by an object and at most one task is active in a given COG
-at any time. New tasks are created by asynchronous method calls as
-well as, initially, by selecting the main block of a module. An
-example of the latter is the code in
+of tasks that share a common heap and a single processor. Each task
+executes code owned by an object and at most one task is active in a
+given COG at any time. New tasks are created by asynchronous method
+calls as well as, initially, by selecting the main block of a
+module. An example of the latter is the code in
 lines~\ref{abs:main:begin}--\ref{abs:main:end}.
 
 Line~\ref{abs:main:begin} declares and creates a new object with
@@ -376,40 +401,39 @@ interface type \lstinline{Server} using the implementation in class
 \lstinline{Service}.  The directive \lstinline{local} places the
 object in the current COG. Without \lstinline{local} a new COG is
 created together with the object. The next line declares and creates a
-data object (note that type \lstinline{Data} was explicitly imported)
-in the same COG. Hence, \lstinline{s} and \lstinline{d} share the same
-heap. Line~\ref{abs:main:init} calls an initialization method (not
-shown) on the data. The notation ``\lstinline{!}'' signifies an
-asynchronous call. Its effect is to create a new task in the COG of
-\lstinline{d} that executes the code of
+data object (note that interface \lstinline{Data} must be imported) in
+the same COG. Hence, \lstinline{s} and \lstinline{d} share the same
+heap. Line~\ref{abs:main:init} calls an initialization method
+(implementation not shown) on the data. The notation ``\lstinline{!}''
+signifies an asynchronous call. Its effect is to create a new task in
+the COG of \lstinline{d} that executes the code of
 \lstinline{init()}. Asynchronous calls do not interrupt the caller, so
 the statement following the call is immediately executed. Therefore,
 we need a handle by which to retrieve the result of an asynchronous
 call once its result has been computed. In ABS the type of such
-handles have a future annotation. Note that \lstinline{fd} and
-\lstinline{d} might well be aliases of each other. As can be seen in
-Line~\ref{abs:main:end}, it is possible to pass futures around. This
-makes it possible to use the result of an asynchronous call in
-different places without copying it.  
+handles have a future annotation. As can be seen in
+Line~\ref{abs:main:end}, it is possible to pass futures as
+parameters. This makes it possible to use the result of an
+asynchronous call in different places without copying it.
 
-After execution of the main block is finished, two tasks in the
-current COG are waiting, corresponding to the calls to
-\lstinline{init()} and \lstinline{process()}, respectively. None of
-them could have started while the main block was still executing,
-because there was no synchronization expression in the latter. ABS
-does not determine which of \lstinline{init()} and
-\lstinline{process()} is started first. In fact, ABS can be
-parameterized with different scheduling strategies. The static
-analyzers of ABS take all possible scheduling sequences into
-account. 
+After execution of the main block finished, two tasks in the current
+COG are waiting, corresponding to the calls to \lstinline{init()} and
+\lstinline{process()}, respectively. None of them could have started
+while the main block was still executing, because there was no
+synchronization expression in the latter. ABS does not determine which
+of \lstinline{init()} and \lstinline{process()} is started first. In
+fact, ABS can be parameterized with different scheduling
+strategies. The static analyzers of ABS take all possible scheduling
+sequences into account.
 
 A first synchronisation point is reached in
 Line~\ref{abs:process:awaitd} of \lstinline{process()}. It ensures
 that the value of the future \lstinline{fd} is available. If
 \lstinline{init()} had not been scheduled before, it will be now. Once
 the value of \lstinline{fd} is available, it is retrieved with a
-\lstinline{get} expression. Therefore, the ABS idiom for asynchronous
-calls in ABS is as follows:
+\lstinline{get} expression. Note that \lstinline{rd} and \lstinline{d}
+might well be aliases. The standard ABS idiom for asynchronous calls
+in ABS is as follows:
 
 \begin{center}
   \lstinline{Fut<T> fx = o!m(); ... ; await fx?; T x = fx.get;}
@@ -434,17 +458,16 @@ the COG of the caller object.
 \paragraph{Degree of synchronisation} 
 If one attemps to retrieve a future value that is not yet ready, this
 results in blockage of its COG until the value becomes
-available. Obviously, this can easily lead to deadlocks. Many, but not
-all, deadlocks can be avoided by guarding \lstinline{get} expressions
-with an \lstinline{await}. For example, a future could be passed to
-the method that computes its result and there await its own execution.
-In practice, however, deadlocks are easy to avoid, because
-synchronisation points are explicit. In addition, ABS comes with an
-automated deadlock analysis tool for ABS \cite{GiachinoLL2014} that
-detects all potential deadlocks.  An important point is that between
-explicit synchronisation points (\lstinline{release},
-\lstinline{await}) no data races can occur and computations are,
-therefore, deterministic.
+available. Obviously, this can easily lead to deadlocks. Many
+deadlocks can be avoided by guarding \lstinline{get} expressions with
+an \lstinline{await} (Line~\ref{abs:process:awaitd}). Clearly, not all
+deadlocks can be prevented in this manner. In practice, however,
+deadlocks are easy to avoid, because synchronisation points are
+explicit. In addition, ABS comes with an automated deadlock analysis
+tool for ABS \cite{GiachinoLL2014} that detects all potential
+deadlocks.  An important point is that between explicit
+synchronisation points (\lstinline{release}, \lstinline{await}) no
+data races can occur and computations are, therefore, deterministic.
 
 \paragraph{Degree of transparency}
 
@@ -466,10 +489,52 @@ method calls (getter/setter methods).
 
 \paragraph{Formalization and semantics}
 
+ABS has a fully formal, small step operational semantics
+\cite{hats-d1.2} that permits formal soundness theorems for the
+various analyses that are available for ABS. This semantics is
+directly expressed in terms of rewrite rules in \textsc{Maude} format
+\cite{ClavelDELMMT07} which yields a sound interpreter for ABS.
 
+In addition there is an axiomatic semantics in the form of a program
+logic~\cite{ref:key}. The behavior of interfaces and classes can be
+specified by invariants over the histories of symbolic states.
+Because preemption is excluded in ABS it is sufficient to establish
+invariants at explicit synchronisation points and upon the termination
+of methods. It is possible to prove a composition theorem for ABS
+about the relation between local and global invariants
+\cite{Din14fac}. This makes it possible to prove global behavioral
+properties of an ABS model by (method-)local reasoning.
 
 \paragraph{Implementation and tool support}
 
+As ABS has been developed with the goal of being analysable, there is
+a wide range of tools available. Most of them support the full ABS
+language and are fully automatic. An overview of several of the tools
+is available as \cite{BFH14,WongAMPSS12}.
+
+There is an \textsc{Eclipse} plug-in that provides a development
+environment for ABS and integrates most tools, see
+\url{http://tools.hats-project.eu/eclipseplugin/installation.html}. An
+alternative is the web-based ABS collaboratory at
+\url{http://ei.abs-models.org:8082/clients/web/} which requires no
+installation and also permits to try out most ABS tools.  Here is a
+list of currently supported tools for ABS:
+
+\begin{itemize}
+\item editor with syntax highlighting and integrated build system,
+  including compiler error location;
+\item simulator/interpreter with interactive debugger;
+\item visualization of ABS model execution as sequence diagram;
+\item code generator backends for Erlang, Haskell, Java
+  8~\cite{serbanescuNABN14a};
+\item a glass box test case generator for \emph{concurrent} models \cite{AlbertAGM15};
+\item a sound deadlock analysis \cite{CGM:SoSym2014};
+\item a worst-case resource analysis that can be parameterized with a
+  cost model for execution time, memory consumption, transmission
+  size, peak cost and various other cost categories \cite{AlbertAFGGMPR14};
+\item a deductive verification tool for expressive, history-based
+  property specifications \cite{ref:key}
+\end{itemize}
 
 
 \subsubsection{ProActive and ASP}
