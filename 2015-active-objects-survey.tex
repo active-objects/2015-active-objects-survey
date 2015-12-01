@@ -231,9 +231,9 @@ projects.\footnote{\url{www.hats-project.eu},
   \url{www.envisage-project.eu}} Its ancestors include \textsc{Creol}
 \cite{Elinar2006} and \textsc{JCoBox} \cite{SchaeferP10b}.
 
-In contrast to design-oriented or architectural langauges, ABS code is
+In contrast to design-oriented or architectural languages, ABS code is
 fully executable. There is a simulator as well as several code
-generation backends (at the moment, for Java, Haskell, and Erlang). At
+generation backends (at the moment, for Java, Haskell, and Erlang. At
 the same time, ABS abstracts away from features that make automatic
 analysis difficult in mainstream programming languages. For example,
 ABS has an object model, but it does not support code inheritance and
@@ -432,7 +432,7 @@ that the value of the future \lstinline{fd} is available. If
 \lstinline{init()} had not been scheduled before, it will be now. Once
 the value of \lstinline{fd} is available, it is retrieved with a
 \lstinline{get} expression. Note that \lstinline{rd} and \lstinline{d}
-might well be aliases. The standard ABS idiom for asynchronous calls
+might well be aliased. The standard ABS idiom for asynchronous calls
 in ABS is as follows:
 
 \begin{center}
@@ -497,11 +497,12 @@ directly expressed in terms of rewrite rules in \textsc{Maude} format
 
 In addition there is an axiomatic semantics in the form of a program
 logic~\cite{ref:key}. The behavior of interfaces and classes can be
-specified by invariants over the histories of symbolic states.
+specified by invariants over the histories of symbolic states as contracts 
+between processes. 
 Because preemption is excluded in ABS it is sufficient to establish
-invariants at explicit synchronisation points and upon the termination
-of methods. It is possible to prove a composition theorem for ABS
-about the relation between local and global invariants
+invariants upon object creations, at explicit synchronisation points and 
+upon the termination of methods.  It is possible to prove a composition 
+theorem for ABS about the relation between local and global invariants
 \cite{Din14fac}. This makes it possible to prove global behavioral
 properties of an ABS model by (method-)local reasoning.
 
