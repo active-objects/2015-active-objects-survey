@@ -203,18 +203,50 @@ Where do we put modern languages like Akka?
 
 
 \subsection{Dimensions of Comparison between Languages}
-\begin{itemize}
-	\item Target (what for?)  / Objective of the language
-	\item Degree of synchronisation (from Rebecca to ProActive) from only asynchronus 
-	interactions to strong synchronisation primitives (cooperative scheduling is probably 
-	an intermediate feature here)
-	\item Degree of transparency: how much is the user exposed to ….
-	\item How much data sharing? Under which condition? extremes are probably ABS and 
-ProActive/Rebeca
-	\item Formal support and  formal semantics
-	\item \TODO{[Added by Justine and Ludo]} Implementation and programming and execution 
-	support.
-\end{itemize}
+Before going into more details concerning the presentation of different active-object 
+languages, we would like to define a few dimensions along which  we would like to 
+articulate our study. We define them more in details below
+
+\paragraph{Objective of the language} We believe it is important to identify the main 
+	objectives that leaded to the creation of each language. Indeed, this undrlying 
+	motivation will generally explain the different choices made in the design of each 
+	language. For this reason each language description will start by a brief 
+	presentation of these objectives
+
+\paragraph{Degree of synchronisation} The way a concurrent language is programmed highly 
+	depends on the degree of synchronisation that can be expressed. Each language has a 
+	different set of synchronisation priimitives, even if for Active object languages 
+	there is much less variety than in the general case. Some languages like pure Actor 
+	languages or AmbientTalk have no synchronisation primitive: they behave in a pure 
+	asynchronous manner and there is no instruction waiting for some event to happen. The 
+	only synchronisation between processes is due to the fact that a message can only be 
+	received and taken into account after it has been sent. Additional synchronisation 
+	can be obtained by choosing the set of messages an actor can handle at a given point 
+	in time. Many active object languages use futures as a synchronisation mechanism. 
+	A future represents a
+	result that has not been computed yet. When the result is available it
+	can be retrieved (automatically or manually), we then say that the
+	future is \emph{resolved}. A process can block, waiting for a future to be resolved.
+	In active object languages futures represent the result of an asynchronous 
+	invocation. In active object, access to a future is the main synchronisation point
+	between different entities. This creates strong synchronisation points, but makes 
+	programming easier as the programmer can  write a sequential procedure that collects 
+	several results while following a sequential non-interrupted procedure.
+	Several actor languages support cooperative scheduling allowing a thread to be 
+	suspended (while the actor handles another message) and be resumed later. In those 
+	languages, the suspend event can be triggered when trying to access a future that is 
+	not yet resolved. This breaks the sequential treatment of messages and requires a 
+	little more expertise from the programmer but allows him/her to write programs that 
+	are more efficient and less deadlock-prone.
+
+	\paragraph{Degree of transparency} how much is the user exposed to ….
+
+	\paragraph{How much data sharing?} Under which condition? extremes are probably ABS 
+	and ProActive/Rebeca
+
+	\paragraph{Formal support and  formal semantics}
+	
+	\paragraph{Implementation and tool support}
 
 \subsection{A Focus on Some Active-object Languages}
 \subsubsection{Rebeca}
