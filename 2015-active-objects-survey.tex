@@ -242,23 +242,37 @@ articulate our study. We define them more in details below
 	\paragraph{Degree of transparency} A crucial difference between different languages 
 	with concurrency constructs is the programming abstractions the programmer has to 
 	know and master; among them some are explicitly visible in the program and some are 
-	hidden. In general the more transparency, the easier it is to write simple programs, 
-	as for those programs the programmer do not need to know all the intricacies of the 
-	programming model and the parallelism can be provided automatically. When targeting 
-	more complex applications the benefits of transparency is much weaker and exposing 
-	the programmer to all the programming abstractions that are used can make debugging 
-	or optimization easier. We will see that the different programming languages can 
+	hidden. For example, the different programming languages can 
 	feature transparent asynchronous calls, i.e. asynchronous invocations are 
 	syntactically identical to synchronous ones, or transparent futures, i.e. statically 
 	variables which contain futures are not explicitly distinguished and there is no 
 	explicit instruction for accessing a future: an access to a future object is blocking 
 	if the future is not yet resolved.
+	In general the more transparency, the easier it is to write simple programs, 
+	as for those programs the programmer do not need to know all the intricacies of the 
+	programming model and the parallelism can be provided automatically. When targeting 
+	more complex applications the benefits of transparency is much weaker and exposing 
+	the programmer to all the programming abstractions that are used can make debugging 
+	or optimization easier. 
 	
-	
-	 how much is the user exposed to ….
 
-	\paragraph{How much data sharing?} Under which condition? extremes are probably ABS 
-	and ProActive/Rebeca
+	\paragraph{How much data sharing?} Data sharing is a crucial aspect of concurrent and 
+	distributed programming. Depending on the target application domain and the potential 
+	for distributed execution. Indeed, the most efficient way to communicate data between 
+	different cores of the same machine is generally sharing, whether in a distributed 
+	setting, copying the information necessary to handle a request is often the most 
+	efficient. Concerning difficulty of programming, copied data raises problems of 
+	coherency as the modification of the data may not be reflected on the original data, 
+	but shared data access involve additional communication to the shared memory which  
+	involve additional synchronisation and delays. In practice some of the actor models 
+	like Rebeca and ProActive use a ``no shared memory'' approach with all data 
+	necessarily copied between entities except for actor themselves that are globally 
+	known objects. In ABS, the approach is different as each object can be accessed 
+	remotely leading to a strong coherency of the data, a simpler programming model, but 
+	some overhead in communications, especially when programs are run in a distributed 
+	setting. Encore is probably the richest language from this point of view, aiming at a 
+	precise control of data sharing including entities that can explicitly be shared 
+	between different actors.
 
 	\paragraph{Formal support and  formal semantics}
 	
