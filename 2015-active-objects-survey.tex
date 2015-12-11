@@ -16,6 +16,7 @@
 % Package to generate and customize Algorithm as per ACM style
 \usepackage[ruled]{algorithm2e}
 \usepackage{tikz}
+\usepackage{parcolumns}
 \renewcommand{\algorithmcfname}{ALGORITHM}
 \SetAlFnt{\small}
 \SetAlCapFnt{\small}
@@ -168,7 +169,7 @@ describe ABS -- Reiner and Crystal, Vlad and Frank (by 27/11)
 
 describe proactive -- Justine and Ludo (by 27/11)
 
-use PA and ABS as a template to describe Encore -- Kiko? 
+use PA and ABS as a template to describe Encore -- Kiko and Albert
 
 use PA and ABS as a template to describe Rebeca -- Marjan? 
 
@@ -822,11 +823,10 @@ local heaps} to promote data locality, \textit{type-based synchronisation direct
 provided by a novel capability system and \textit{coordination of parallel
 computations and low-level data parallelism} via parallel combinators.
 On top of these key ingredients, Encore stays loyal to the object-oriented paradigm
-where inheritance is provided by a trait system and active objects and futures can 
+where, instead of interfaces, provides by a trait system and active objects and futures can 
 be seen as normal Java objects.
 
 \paragraph{Language description}
-%overview (AO, thread control, heap, asynchronous; PO, synchronous)
 In Encore, active objects have their own thread of control and communicate with each 
 other by sending messages. These messages are placed in the receiver's message queue
 and processed by the receiver one at a time. This property linearises
@@ -842,12 +842,34 @@ has a well defined interface to operate on and is a first class citizen. On the 
 method calls to passive objects are synchronous and behave similar to Java objects.
 
 The code from Figure~\ref{fig:encore:example} gives a taste of Encore:
-\NOTE{the example could be better and show the use of futures}
 
 \begin{figure}[ht]
-\begin{lstlisting}[numbers=left,xleftmargin=4ex,escapechar=\%]
-passive class Data { ... }
-passive class Queue { ... }
+\begin{parcolumns}{2}
+\colchunk{
+\begin{lstlisting}[numbers=left,xleftmargin=4ex,escapechar=\%,numberblanklines=true, showlines=true]
+passive class Data { ... }    
+
+passive class Queue : TQueue
+  top: Link
+
+class Main
+  def main(): void {
+    let buffer = new Buffer()
+         data = new Data(21)
+    in {
+      buffer.put(data);
+    }
+  }
+
+\end{lstlisting}
+}
+\colchunk{
+\begin{lstlisting}[firstnumber=14,numbers=left,xleftmargin=4ex,escapechar=\%]
+trait TQueue
+  requires top
+  
+  def enqueue(x: int): void
+    this.top = new Data(x, this.top)
 
 class Buffer
    queue: Queue
@@ -857,22 +879,24 @@ class Buffer
     
   def put(item: Data): void
     this.queue.enqueue(item)
-    
-  def take(): Data {
-    while this.queue.empty() {
-      suspend;
-    };
-    this.queue.dequeue();
-  }
 \end{lstlisting}
-\caption{Buffer implementation using Encore\NOTE{Taken from Bertinoro paper}}
+}
+\colplacechunks
+\end{parcolumns}
+\caption{Example of a Buffer implementation that uses traits, active and passive objects in Encore}
 \label{fig:encore:example}
 \end{figure}
 
-The \texttt{Buffer} class (Figure~\ref{fig:encore:example}) represents an active object and
-the \texttt{Data} and \texttt{Queue} classes are passive. By wrapping a \texttt{queue} object
-in the \texttt{Buffer} class, the language guarantees that accesses to the \texttt{queue}
-are serialised and, therefore data-race free.
+The \texttt{Buffer} class (Figure~\ref{fig:encore:example}) represents an active object with
+a private attribute \texttt{queue} of a passive class \texttt{Queue}. This passive class
+implements the trait \texttt{TQueue} (line 3 in Figure~\ref{fig:encore:example}). A trait can be
+seen as a Java interface with a definition and may require some attributes to exists. For instance,
+in line15 the trait \texttt{TQueue}
+requires the existence of an attribute called \texttt{top} and, in the next line, implements the \texttt{enqueue}
+method. This means that any passive object of type \texttt{Queue} has the implement
+methods from the traits it uses, in this case, the \texttt{enqueue} method. The \texttt{Main}
+class is the entry point of the program and creates an active object (\texttt{buffer}) and some data.
+The method call \texttt{buffer.put(data)} returns a future that, in this case, is not used and discarded.
 
 \TODO{Futures, different from ABS and ProActive}
 
