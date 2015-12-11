@@ -16,6 +16,7 @@
 % Package to generate and customize Algorithm as per ACM style
 \usepackage[ruled]{algorithm2e}
 \usepackage{tikz}
+\usepackage{parcolumns}
 \renewcommand{\algorithmcfname}{ALGORITHM}
 \SetAlFnt{\small}
 \SetAlCapFnt{\small}
@@ -168,7 +169,7 @@ describe ABS -- Reiner and Crystal, Vlad and Frank (by 27/11)
 
 describe proactive -- Justine and Ludo (by 27/11)
 
-use PA and ABS as a template to describe Encore -- Kiko? 
+use PA and ABS as a template to describe Encore -- Kiko and Albert
 
 use PA and ABS as a template to describe Rebeca -- Marjan? 
 
@@ -306,7 +307,7 @@ will start by a brief presentation of the language's objectives.
 \subsubsection{ABS}
 
 \lstset{ morekeywords={module,export,import, from, interface, class,
-    implements, await, get, new, local,release} }
+    implements, await, get, new, local,release, suspend} }
 
 \paragraph{General presentation and objective of the language} ABS (\emph{A}bstract
 \emph{B}ehavioral \emph{S}pecification) \cite{JHSSS10} is an
@@ -822,11 +823,10 @@ local heaps} to promote data locality, \textit{type-based synchronisation direct
 provided by a novel capability system and \textit{coordination of parallel
 computations and low-level data parallelism} via parallel combinators.
 On top of these key ingredients, Encore stays loyal to the object-oriented paradigm
-where inheritance is provided by a trait system and active objects and futures can 
+where, instead of interfaces, provides by a trait system and active objects and futures can 
 be seen as normal Java objects.
 
 \paragraph{Language description}
-%overview (AO, thread control, heap, asynchronous; PO, synchronous)
 In Encore, active objects have their own thread of control and communicate with each 
 other by sending messages. These messages are placed in the receiver's message queue
 and processed by the receiver one at a time. This property linearises
@@ -842,12 +842,34 @@ has a well defined interface to operate on and is a first class citizen. On the 
 method calls to passive objects are synchronous and behave similar to Java objects.
 
 The code from Figure~\ref{fig:encore:example} gives a taste of Encore:
-\NOTE{the example could be better and show the use of futures}
 
 \begin{figure}[ht]
-\begin{lstlisting}[numbers=left,xleftmargin=4ex,escapechar=\%]
-passive class Data { ... }
-passive class Queue { ... }
+\begin{parcolumns}{2}
+\colchunk{
+\begin{lstlisting}[numbers=left,xleftmargin=4ex,escapechar=\%,numberblanklines=true, showlines=true]
+passive class Data { ... }    
+
+passive class Queue : TQueue
+  top: Link
+
+class Main
+  def main(): void {
+    let buffer = new Buffer()
+         data = new Data(21)
+    in {
+      buffer.put(data);
+    }
+  }
+
+\end{lstlisting}
+}
+\colchunk{
+\begin{lstlisting}[firstnumber=14,numbers=left,xleftmargin=4ex,escapechar=\%]
+trait TQueue
+  requires top
+  
+  def enqueue(x: int): void
+    this.top = new Data(x, this.top)
 
 class Buffer
    queue: Queue
@@ -857,28 +879,137 @@ class Buffer
     
   def put(item: Data): void
     this.queue.enqueue(item)
-    
-  def take(): Data {
-    while this.queue.empty() {
-      suspend;
-    };
-    this.queue.dequeue();
-  }
 \end{lstlisting}
-\caption{Buffer implementation using Encore\NOTE{Taken from Bertinoro paper}}
+}
+\colplacechunks
+\end{parcolumns}
+\caption{Example of a Buffer implementation that uses traits, active and passive objects in Encore}
 \label{fig:encore:example}
 \end{figure}
 
-The \texttt{Buffer} class (Figure~\ref{fig:encore:example}) represents an active object and
-the \texttt{Data} and \texttt{Queue} classes are passive. By wrapping a \texttt{queue} object
-in the \texttt{Buffer} class, the language guarantees that accesses to the \texttt{queue}
-are serialised and, therefore data-race free.
+The \texttt{Buffer} class (Figure~\ref{fig:encore:example}) represents an active object with
+a private attribute \texttt{queue} of a passive class \texttt{Queue}. This passive class
+implements the trait \texttt{TQueue} (line 3 in Figure~\ref{fig:encore:example}). A trait can be
+seen as a Java interface with a definition and may require some attributes to exists. For instance,
+in line15 the trait \texttt{TQueue}
+requires the existence of an attribute called \texttt{top} and, in the next line, implements the \texttt{enqueue}
+method. This means that any passive object of type \texttt{Queue} has the implement
+methods from the traits it uses, in this case, the \texttt{enqueue} method. The \texttt{Main}
+class is the entry point of the program and creates an active object (\texttt{buffer}) and some data.
+The method call \texttt{buffer.put(data)} returns a future that, in this case, is not used and discarded.
 
 \TODO{Futures, different from ABS and ProActive}
 
 \TODO{Capabilities: should this be in the data sharing section?}
 
 \TODO{Parallel combinators: part of the synchronisation and degree of transparency?}
+
+Encore currently provides three operators for controlling execution flow within
+and across active objects: \verb|suspend|, \verb|get|, and \verb|await|.
+\verb|suspend| suspends the current message processing, appends a resuming
+message to the message queue and pass control to the next message in the message
+queue (which could be the resuming message if the message queue was empty).
+\verb|get| takes a future as its operand, returns the value in the future. In
+other wards, \verb|get| has type: \verb|get :: Fut t -> t|. Depending on the
+status of the future, resolved or not, the control flow change caused by
+\verb|get| is different: if the future is resolved, \verb|get| doesn't alter the
+control flow at all; on the other hand, if the future is not resolved yet,
+\verb|get| would caused the calling active object to be de-scheduled until the
+future is resolved. The active object would be resumed at the exactly same
+execution point except that the future is resolved, and the call to \verb|get|
+returns. Because \verb|get| would stop the whole active object, which might not
+always be desirable, \verb|await| is provided as well so that only the current
+message execution is paused, but the active object could still process the rest
+of messages in the message queue. When the future becomes resolved, a special
+message is sent by the resolver of the future to the active object so that the
+paused message execution could resume. Let's see an example how each of them
+behave in the following example. (To keep things simple, it's assumed to be run
+under single threaded setting.)
+
+\begin{lstlisting}[
+  basicstyle=\footnotesize,language=Haskell,
+  numbers=left,xleftmargin=4ex,escapechar=\%
+]
+class Agent
+  def print_1_3() : void {
+    print 1;
+    suspend;
+    print 3;
+  }
+  def print_2() : void {
+    print 2;
+  }
+  def produce() : int {
+    print 2;
+    3;
+  }
+  def print_1() : void {
+    print 1;
+  }
+  def self_produce() : void {
+    let
+      it = this
+      r = it.produce()
+    in {
+      await r;
+      print get r;
+    }
+  }
+class Main
+  def test_suspend() : void
+    let
+      a = new Agent
+    in {
+      a.print_1_3();
+      a.print_2();
+    }
+  def test_get() : void
+    let
+      a = new Agent
+      ret_future = null
+      ret = 0
+    in {
+      ret_future = a.produce();
+      print 1
+      ret = get ret_future;
+      print ret;
+    }
+  def test_await() : void
+    let
+      a = new Agent
+    in {
+      a.self_produce();
+      a.print_1();
+    }
+  def main() : void {
+    -- call the other two methods like this
+    this.test_suspend();
+  }
+
+\end{lstlisting}
+
+The \verb|Main| class contains three methods for showing the semantics of each
+operator, and the \verb|main| method, the entry point of the program. In the
+\verb|test_suspend| method, two messages, \verb|print_1_3| and \verb|print_2|,
+are sent to the agent one after the other. The \verb|suspend| operator in
+\verb|print_1_3| would suspend the execution of \verb|print_1_3|, and move the
+control to the next message in the queue, which is \verb|print_2|. Once
+\verb|print_2| is finished, the control would go to the next message, which is
+the resuming message created due to \verb|suspend| call in \verb|print_1_3|.
+Therefore, the output would be 1, 2, 3, separated by new lines. In the
+\verb|test_get| method, the \verb|produce| call would return a future, and
+calling \verb|get| on that future (which can be guaranteed to be un-resolved
+while running in the single threaded settings) would block the \verb|test_get|
+method until the future is resolved. Therefore, the output is 1, 2, 3, separated
+by new lines. In the \verb|test_await| method, two messages, \verb|self_produce|
+and \verb|print_1|, are sent to the agent. The agent would process them in
+order, but in \verb|self_produce|, \verb|await| is called on an un-resolved
+future (which is guaranteed to be un-resolved due to the same reason as above),
+which pauses the execution, and moves the control to the next message, which is
+\verb|print_1|. After that, \verb|produce| message, created inside
+\verb|self_produce|, is processed, which resolves the awaited future, and
+\verb|self_produce| is resumed. Therefore, the output is 1, 2, 3, separated by
+new lines.
 
 \paragraph{Degree of synchronisation}
 
