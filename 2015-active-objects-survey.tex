@@ -1053,6 +1053,19 @@ but we have highlighted the most important ones.
 \paragraph{Formalization and semantics}
 
 \paragraph{Implementation: programming and execution support}
+Encore is a relatively new programming language and there is still some
+limited tooling support. However, the Encore compiler can emit a
+highly understandable C code that when compiled, produces the binary file.
+This C code can be analysed and debug using any available tool that
+works with the C11 standard. 
+
+The list of currently supported tools is presented below:
+
+\begin{itemize}
+\item Emacs and Atom editors with syntax highlighting and compiler error support
+\item Support for GDB / LLDB interactive debugger
+\item Vagrant support for rapid installation of Encore in a virtual machine
+\end{itemize}
 
 \section{Implementation of active objects}
 A comparison of Active object language implementations based on a set of comparison 
