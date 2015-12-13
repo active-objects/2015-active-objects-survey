@@ -27,6 +27,7 @@
 \newcommand{\code}[1]{\texttt{\small{#1}}}
 \newcommand{\TODO}[1]{\textcolor{red}{\textbf{[TODO:#1]}}}
 \newcommand{\NOTE}[1]{\textcolor{blue}{\textbf{[Note:#1]}}}
+\newcommand{\parT}{\texttt{ParT}}
 % Metadata Information
 %\acmVolume{9}
 %\acmNumber{4}
@@ -1010,6 +1011,38 @@ which pauses the execution, and moves the control to the next message, which is
 \verb|self_produce|, is processed, which resolves the awaited future, and
 \verb|self_produce| is resumed. Therefore, the output is 1, 2, 3, separated by
 new lines.
+
+The idea of having parallel pipeline and data parallelism is provided by the
+\parT{} collection and the \textit{parallel combinators} that operate on it.
+This collection can hold computations that may not have finished and
+is represented by the type, \texttt{Par t}, where \texttt{t} represents a polymorphic type. 
+Elements of the collection can be normal values and
+future values which can be \textit{lifted} to a parallel collection via
+\texttt{liftv :: t $\to$ Par t} and \texttt{lift :: Fut t $\to$ Par t} respectively.
+
+The available combinators that operate on the \parT{} collection are:
+
+\textbf{$| \; :: Par \;t \to Par \;t \to Par \;t$,} read as \textit{par} combinator, that creates a new
+\parT{} that holds the computations from the first and second expression.
+
+\textbf{$>< \; :: Par \; t \to Par \;t \to Par \;t$,} read as \textit{otherwise} combinator,
+that executes the first expression until the returned value is known and, if empty,
+starts execution of the second expression.
+
+\textbf{$>> \; :: Par \; t \to (t \to t') \to Par \; t'$}, read as \textit{sequence} combinator,
+applies the function to all elements of the \parT{} collection asynchronously,
+returning a new \parT{} collection.
+
+\textbf{$<< \; :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$}, read as \textit{prune} combinator,
+starts execution of both expressions in parallel and, when there is a value available
+in the second expression, it's passed to the first expression.
+
+\parT{} collection and its combinators have been designed to perform
+operations asynchronously without stopping the current thread of execution.
+This creates a collection that never blocks and executes operations on demand,
+when the values are available. There are more combinators available \cite{ref:encore}
+but we have highlighted the most important ones.
+
 
 \paragraph{Degree of synchronisation}
 
