@@ -164,15 +164,28 @@ the abstract
 \TODO{TODO LIST}
 
 
-list dimensions -- all: complete the list or remove or merge
+Historical description -- Franck and Einar? -> ???
 
-describe ABS -- Reiner and Crystal, Vlad and Frank (by 27/11)
 
-describe proactive -- Justine and Ludo (by 27/11)
+implementation sections -> 20 January
 
-use PA and ABS as a template to describe Encore -- Kiko and Albert
+- proactive -- end jan -- Justine+Ludo
 
-use PA and ABS as a template to describe Rebeca -- Marjan? 
+- proactive backend for abs -- 20 jan -- Justine
+
+- java 8 backend for abs (5 jan) -- Vlad
+
+- other backends for abs (end jan) -- vlad
+
+- Encore -- end Jan Kiko and albert
+
+describe implementation dimensions -> 20 jan -- Ludo
+
+
+use PA and ABS as a template to describe Encore -- 5 jan -- kiko and albert
+
+use PA and ABS as a template to describe Rebeca -- End January -- marjan and ehsan
+
 
 
 \NOTE{Page limit is 35 pages}
@@ -304,6 +317,8 @@ will start by a brief presentation of the language's objectives.
 	programs. This point of comparison meets the previous one to ensure the sustainability of the programming language.
 
 \subsection{A Focus on Some Active-object Languages}
+
+\NOTE{perhaps we should distinguish imlpementation and verification tooling}
 \subsubsection{Rebeca}
 \subsubsection{ABS}
 
@@ -1075,7 +1090,48 @@ efficient implementation of the threading model (eg for cooperative scheduling)
 comparie with: old java backend;
 Encore explicit bytecode operations; haskell; new java backend; ProActive?
 
-	
+
+\subsection{Dimensions: points to be addressed when providing an implementation}
+
+\paragraph{Thread creation and scheduling}
+partially related to cooperative multithreading
+
+also implementation of requests and continuation
+
+how active objects are mapped to threads and the scheduling levels within an object and 
+BETWEEN objects
+
+\paragraph{Object referencing}
+partially related to distributed settings
+
+\paragraph{Data sharing}
+particularly important in Encore
+
+
+\paragraph{Error handling}
+distinguish exceptions and recovery/rollback
+
+\NOTE{then we review each implem/backend with these dimensions in mind}
+\subsection{Java 8 backend for ABS}
+proposed structure:
+
+- Scope of the solution
+ for what purpose the implementation is optimized
+ (performance, modelling, memory, distributed, parallel)
+
+- scheduling of active objects
+
+- Error handling
+
+
+\subsection{ProActive library}
+
+\subsection{ProActive backend for ABS}
+
+\subsection{Encore}
+
+\subsection{Erlang backend for Rebeca}
+\TODO{see if Marjan and ehsan want to put something in this section}	
 
 
 \section{Lessons Learned and Conclusion}
