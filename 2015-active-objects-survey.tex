@@ -1092,14 +1092,17 @@ Encore explicit bytecode operations; haskell; new java backend; ProActive?
 
 
 \subsection{Dimensions: points to be addressed when providing an implementation}
+After having explained the programming model of active object languages in the previous section, we want to focus more particularly in this section on the runtime of active object language implementations: how threads are created and handled to achieve the right scheduling, how object are referenced throughout an active object-based application and how objects and data are effectively shared are the questions we want to address in the next sections. Let us first define those points.
 
 \paragraph{Thread creation and scheduling}
-partially related to cooperative multithreading
+% Virtual threads %
+The active object languages that are implemented on top of an existing programming language have to comply to the constraints given by the underlying programming language. In the case of multi-threading, some underlying programming language feature light thread whereas having something different than a physical thread is impossible in other programming languages (e.g. Java). In this case, an implementation of light threads on top of the underlying programming language is possible, if the goal of the given active object language is to scale in the number of active objects located on the same machine.
 
-also implementation of requests and continuation
+% Continuations %
+This notion of virtual threads is particularly important when implementing an active object language which features cooperative scheduling of requests: a thread then must stop executing when a request is paused and must resume afterward. This is a programming challenge when it comes to implement this behavior in programming languages that do not support thread serialization, like Java. In this case, questions like the following should be answered: how active objects are mapped to threads? should a request be associated to a thread or not? Should the thread be a physical thread or some thread notion implemented on top of physical threads?
 
-how active objects are mapped to threads and the scheduling levels within an object and 
-BETWEEN objects
+%how active objects are mapped to threads and the scheduling levels within an object and 
+%BETWEEN objects
 
 \paragraph{Object referencing}
 partially related to distributed settings
