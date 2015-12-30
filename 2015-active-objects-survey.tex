@@ -1083,40 +1083,38 @@ The list of currently supported tools is presented below:
 \end{itemize}
 
 \section{Implementation of active objects}
-A comparison of Active object language implementations based on a set of comparison 
-criteria including at least:
+In this section, we take interest in the implementations of the different active object programming models described in the previous section. In practice, the implementation of a programming language can be provided from scratch or can also be given as an API in a more mainstream language. Another way to implement an active object language is to systematically translate any of its programs into another language; this is possible through a language backend: a translator that captures the semantics of the source language. The advantage of this solution is that an active object language can then have several independent backends targeting different execution platforms and, by this means, fitting the largest needs. 
 
-efficient implementation of the threading model (eg for cooperative scheduling)
-comparie with: old java backend;
-Encore explicit bytecode operations; haskell; new java backend; ProActive?
-
-
-\subsection{Dimensions: points to be addressed when providing an implementation}
-After having explained the programming model of active object languages in the previous section, we want to focus more particularly in this section on the runtime of active object language implementations: how threads are created and handled to achieve the right scheduling, how object are referenced throughout an active object-based application and how objects and data are effectively shared are the questions we want to address in the next sections. Let us first define those points.
+\subsection{Dimensions of Comparison between Implementations}
+In any language implementation strategies, several points need to be considered regarding the language runtime and how the implement efficiently the language semantics. We will use those points to compare active object implementations. 
+For each active object implementation, we want to address \TODO{update number of points} five points, among them: how threads are created and handled to achieve the right scheduling, how object are referenced throughout an active object-based application and how objects and data are effectively shared. We describe them below.
 
 \paragraph{Thread creation and scheduling}
 % Virtual threads %
-The active object languages that are implemented on top of an existing programming language have to comply to the constraints given by the underlying programming language. In the case of multi-threading, some underlying programming language feature light thread whereas having something different than a physical thread is impossible in other programming languages (e.g. Java). In this case, an implementation of light threads on top of the underlying programming language is possible, if the goal of the given active object language is to scale in the number of active objects located on the same machine.
+The active object languages that are implemented on top of an existing programming language have to comply to the constraints given by the underlying programming language. In the case of multi-threading, some underlying programming language feature light thread whereas having something different than a physical thread is impossible in other programming languages (e.g. Java). In this case, one can consider implementing light threads on top of the underlying programming language, for example to handle efficiently the implementation of cooperative scheduling. Featuring light thread is also crucial if the goal of the given active object language is to scale in the number of active objects located on the same machine. 
 
 % Continuations %
-This notion of virtual threads is particularly important when implementing an active object language which features cooperative scheduling of requests: a thread then must stop executing when a request is paused and must resume afterward. This is a programming challenge when it comes to implement this behavior in programming languages that do not support thread serialization, like Java. In this case, questions like the following should be answered: how active objects are mapped to threads? should a request be associated to a thread or not? Should the thread be a physical thread or some thread notion implemented on top of physical threads?
+This notion of virtual threads is particularly important when implementing an active object language which features cooperative scheduling of requests: a thread then must stop executing when a request is paused and must resume afterwards. This is a programming challenge when it comes to implement this behavior in programming languages that do not support thread serialization, like Java. In this case, questions like the following should be answered: how active objects are mapped to threads? should a request be associated to a thread or not? Should the thread be a physical thread or some thread notion implemented on top of physical threads?
 
 %how active objects are mapped to threads and the scheduling levels within an object and 
 %BETWEEN objects
 
-\paragraph{Object referencing}
-partially related to distributed settings
-
 \paragraph{Data sharing}
-particularly important in Encore
+This point answers to the question how objects are shared between active objects. The cornerstone of active objects is that they encapsulate their state such that active objects are independent from each other. In practice, this requires making copies when objects are exchanged between active objects. However, always copying might not be the most efficient implementation of an active object language. For this reason, some active object implementations have, in addition of active object states, an object pool where all objects or active objects can peek on and use. Such objects of the object pool are often immutable in order not to disturb active object execution. How to efficiently and safely share information between active objects is still an on going challenge and different kinds of data sharing strategies have been proposed in active object implementations.
 
+\paragraph{Object referencing}
+In order to be able to communicate, objects and active objects must have a way to reference each other. In particular, to send a request to an active object, one must have a reference to it. Depending on the programming model, objects and active objects can be either referenced or passed by copy. Thus, an adapted way of addressing all kinds of objects must be implemented.
+In distributed settings, an efficient active object implementation cannot rely on a global shared memory, because it would be too costly. Thus, a finer grain referencing is often established for distributed implementation of active objects.
 
 \paragraph{Error handling}
-distinguish exceptions and recovery/rollback
+Among non-functional features an active object implementation can provide, we can mention how errors are handled. Different level of error handling can be achieved. First, it is relevant for the language implementation to deal with exceptions, as in any high level programming language. In the case of distributed implementations, exception chaining is more complex if not relied on a library. Secondly, active object implementations can offer recovery or rollback mechanisms to answer the question how the system can recover after one or more active objects were lost. This support is particularly relevant for distributed active object implementations, because the failure rate is proportional to the degree of distribution. 
 
 \paragraph{Garbage collection}
+Garbage collection is another non-functional feature that an active object implementation can support. This point is important for the active object applications to scale and to be perennial. On most cases, the garbage collecting strategy must be implemented to fit a particular active object language, because relying on the garbage collection of the potential underlying language can only provide a partial garbage collection. Indeed, the true question in the case of active object implementations is when active objects are not needed any more, since they can receive request unexpectedly and from anywhere.
+Again, the question is even more complex in the case of distributed implementations because reference counting is scattered.
 
-\NOTE{then we review each implem/backend with these dimensions in mind}
+Below, we review active object implementation and/or backend according to the dimensions of comparison defined above.
+
 \subsection{Java 8 backend for ABS}
 proposed structure:
 
@@ -1128,12 +1126,16 @@ proposed structure:
 
 - Error handling
 
+- compare with old java backend?
+
 
 \subsection{ProActive library}
 
 \subsection{ProActive backend for ABS}
 
 \subsection{Encore}
+explicit bytecode operations?
+particular accent on data sharing since lots of care has been put is designing an efficient data sharing in Encore.
 
 \subsection{Erlang backend for Rebeca}
 \TODO{see if Marjan and ehsan want to put something in this section}	
