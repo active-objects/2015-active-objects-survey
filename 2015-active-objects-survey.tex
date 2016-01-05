@@ -1061,7 +1061,24 @@ but we have highlighted the most important ones.
 
 \paragraph{Degree of synchronisation}
 
+In Encore, there are two ways for synchronisation, message passing, and
+synchronisation by futures. From the message passing perspective, each method
+call on active objects could be interpreted as a message transmitting, and
+different active objects could communicate and synchronise with each other using
+message passing, just Erlang. The second approach, which is more Object-Oriented
+like, is using futures. Each non-void method call on active objects returns a
+future, denoted as \verb|Fut| in Encore, and two operations are defined on
+futures, \verb|get| and \verb|await|. It would stop the current method execution
+until the future is resolved (fulfilled). The difference between them is the
+former blocks the whole actor, as discussed and explained in the previous
+section on flow control in Encore.
+
 \paragraph{Degree of transparency}
+
+As mentioned above, futures are detonated as \verb|Fut| in Encore, so non-future
+variables and future variables are distinguished statically. In other words,
+developers must decide which varibles are given which type, and extract the
+content of future via \verb|get|, explicitly.
 
 \paragraph{Data sharing}
 
