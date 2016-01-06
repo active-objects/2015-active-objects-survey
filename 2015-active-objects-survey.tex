@@ -17,6 +17,7 @@
 \usepackage[ruled]{algorithm2e}
 \usepackage{tikz}
 \usepackage{parcolumns}
+\usepackage{listings,multicol}
 \renewcommand{\algorithmcfname}{ALGORITHM}
 \SetAlFnt{\small}
 \SetAlCapFnt{\small}
@@ -925,11 +926,11 @@ The method call \texttt{buffer.put(data)} returns a future that, in this case, i
 Encore currently provides three operators for controlling execution flow within
 and across active objects: \verb|suspend|, \verb|get|, and \verb|await|.
 \verb|suspend| suspends the current message processing, appends a resuming
-message to the message queue and pass control to the next message in the message
-queue (which could be the resuming message if the message queue was empty).
-\verb|get| takes a future as its operand, returns the value in the future. In
-other wards, \verb|get| has type: \verb|get :: Fut t -> t|. Depending on the
-status of the future, resolved or not, the control flow change caused by
+message to the message queue and passes control to the next message in the
+message queue (which could be the resuming message if the message queue was
+empty). \verb|get| takes a future as its operand, returns the value in the
+future. In other wards, \verb|get| has type: \verb|get :: Fut t -> t|. Depending
+on the status of the future, resolved or not, the control flow change caused by
 \verb|get| is different: if the future is resolved, \verb|get| doesn't alter the
 control flow at all; on the other hand, if the future is not resolved yet,
 \verb|get| would caused the calling active object to be de-scheduled until the
@@ -941,11 +942,12 @@ message execution is paused, but the active object could still process the rest
 of messages in the message queue. When the future becomes resolved, a special
 message is sent by the resolver of the future to the active object so that the
 paused message execution could resume. Let's see an example how each of them
-behave in the following example. (To keep things simple, it's assumed to be run
-under single threaded setting.)
+behaves in the following example. (To keep things simple, it's assumed to be run
+on a single-core machine or specified to use single Operationg System thread.)
 
 \begin{lstlisting}[
   basicstyle=\footnotesize,language=Haskell,
+  multicols=2,
   numbers=left,xleftmargin=4ex,escapechar=\%
 ]
 class Agent
@@ -1067,20 +1069,26 @@ In Encore, there are two ways for synchronisation, message passing, and
 synchronisation by futures. From the message passing perspective, each method
 call on active objects could be interpreted as a message transmitting, and
 different active objects could communicate and synchronise with each other using
-message passing, just Erlang. The second approach, which is more Object-Oriented
-like, is using futures. Each non-void method call on active objects returns a
-future, denoted as \verb|Fut| in Encore, and two operations are defined on
-futures, \verb|get| and \verb|await|. It would stop the current method execution
-until the future is resolved (fulfilled). The difference between them is the
-former blocks the whole actor, as discussed and explained in the previous
-section on flow control in Encore.
+message passing, just like Erlang. The second approach, which is more akin to
+Object-Oriented style, is using futures. Each non-void method call on active
+objects returns a future, denoted as \verb|Fut| in Encore, and three operations
+are defined on futures, \verb|get|, \verb|await|, $\sim\sim>$ (future chaining).
+The first two operators would pause the current method execution until the
+future is resolved (fulfilled). The difference between them is the former blocks
+the whole actor, as discussed and explained in the previous section on flow
+control in Encore. On the other hand, $\sim\sim>$ would register a callback
+(anonymous function, aka lambda) to the future, continue processing the rest of
+the message. The callback would be called with the future contend as the
+argument when the future is resolved.
 
 \paragraph{Degree of transparency}
 
-As mentioned above, futures are detonated as \verb|Fut| in Encore, so non-future
-variables and future variables are distinguished statically. In other words,
-developers must decide which varibles are given which type, and extract the
-content of future via \verb|get|, explicitly.
+As mentioned above, futures are denoted as \verb|Fut| in Encore, so non-future
+variables and future variables are distinguished statically, e.g.\ \verb|int| vs
+\verb|Fut int|. In other words, developers must decide which variables are given
+which type, and \verb|get| could be use to convert future type to non-future
+type (if the content of the future is non-future type, i.e.\ not something like
+\verb|Fut Fut int|) by extracting the content explicitly.
 
 \paragraph{Data sharing}
 
