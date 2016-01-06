@@ -917,12 +917,6 @@ methods from the traits it uses, in this case, the \texttt{enqueue} method. The 
 class is the entry point of the program and creates an active object (\texttt{buffer}) and some data.
 The method call \texttt{buffer.put(data)} returns a future that, in this case, is not used and discarded.
 
-\TODO{Futures, different from ABS and ProActive}
-
-\TODO{Capabilities: should this be in the data sharing section?}
-
-\TODO{Parallel combinators: part of the synchronisation and degree of transparency?}
-
 Encore currently provides three operators for controlling execution flow within
 and across active objects: \verb|suspend|, \verb|get|, and \verb|await|.
 \verb|suspend| suspends the current message processing, appends a resuming
@@ -1090,10 +1084,29 @@ which type, and \verb|get| could be use to convert future type to non-future
 type (if the content of the future is non-future type, i.e.\ not something like
 \verb|Fut Fut int|) by extracting the content explicitly.
 
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.7\linewidth]{Figs/hierarchy-of-capabilities-bw}
+\caption{Capability hierarchy where leaf nodes denote specific implementations\label{fig:encore:capability}}
+\end{figure}
+
 \paragraph{Data sharing}
+In Encore, active objects are protected by their own thread of control
+while passive objects are passed by reference. This \textit{share-all} policy on passive objects
+makes the model prone to data races when the passive object is shared between
+multiple active objects. The Encore type system enhances this simplistic model
+with a capability-based type system \cite{RobustComposition} 
+where passive objects are seen as resources
+protected by a capability that governs the kind of access to it \cite{ref:encore}. 
+
+A capability is built from a trait and a \textit{kind}. The trait provides the interface-like
+feeling of OOP languages while the \textit{kind} states the "protection" that
+the interface provides. The hierarchy of existing capabilities is shown in Figure~\ref{fig:encore:capability}
+where, i.e. the \textit{exclusive} capability models the active object kind of data protection.
+
 
 \paragraph{Formalization and semantics}
-The Encore concurrency model has been already formalized (\cite{ref:encore}) using
+The Encore concurrency model has been formalized (\cite{ref:encore}) using
 a small step operational semantics. Parallel combinators have been formalized as well
 including a soundness proof with the implicit task parallelism model \cite{encore:parallel-combinators-thesis}.
 
