@@ -842,21 +842,21 @@ local heaps} to promote data locality, \textit{type-based synchronisation direct
 provided by a novel capability system and \textit{coordination of parallel
 computations and low-level data parallelism} via parallel combinators.
 On top of these key ingredients, Encore stays loyal to the object-oriented paradigm
-where, instead of interfaces, provides by a trait system and active objects and futures can 
-be seen as normal Java objects.
+where active objects and futures can be seen as normal Java objects and,
+instead of interfaces, provides a trait system \`a la Scala.
 
 \paragraph{Language description}
 In Encore, active objects have their own thread of control and communicate with each 
 other by sending messages. These messages are placed in the receiver's message queue
 and processed by the receiver one at a time. This property linearises
-the execution of the active object which guarantees data race freedom. As in any other
+the execution of the active object. As in any other
 object-oriented language, an active object has attributes and methods.
 The active object state is usually model with passive objects. These do not have a thread of control and are
 similar to \textit{unsynchronised} Java objects. A passive object lives in an active object's heap
-and, if shared with multiple active objects, these could mutate the state in the passive object and produce data races.
+and, if shared with multiple active objects, data races may occur.
 
 Method calls on active objects are asynchronous and return a future value that, unlike ProActive,
-has the explicit type \texttt{Future<T>}. A future value is a handle to a parallel computation,
+has the explicit type \texttt{Fut t}. A future value is a handle to a parallel computation,
 has a well defined interface to operate on and is a first class citizen. On the other hand,
 method calls to passive objects are synchronous and behave similar to Java objects.
 
@@ -911,9 +911,9 @@ a private attribute \texttt{queue} of a passive class \texttt{Queue}. This passi
 implements the trait \texttt{TQueue} (line 3 in Figure~\ref{fig:encore:example}). A trait can be
 seen as a Java interface with a definition and may require some attributes to exists. For instance,
 in line15 the trait \texttt{TQueue}
-requires the existence of an attribute called \texttt{top} and, in the next line, implements the \texttt{enqueue}
-method. This means that any passive object of type \texttt{Queue} has the implement
-methods from the traits it uses, in this case, the \texttt{enqueue} method. The \texttt{Main}
+requires the existence of an attribute called \texttt{top} and, the next line provides the implementation
+of the \texttt{enqueue} method. Any passive object of type \texttt{Queue} has an implementation
+of methods defined in the traits it extends, in this case, the \texttt{enqueue} method. The \texttt{Main}
 class is the entry point of the program and creates an active object (\texttt{buffer}) and some data.
 The method call \texttt{buffer.put(data)} returns a future that, in this case, is not used and discarded.
 
@@ -923,7 +923,7 @@ and across active objects: \verb|suspend|, \verb|get|, and \verb|await|.
 message to the message queue and passes control to the next message in the
 message queue (which could be the resuming message if the message queue was
 empty). \verb|get| takes a future as its operand, returns the value in the
-future. In other wards, \verb|get| has type: \verb|get :: Fut t -> t|. Depending
+future. In other words, \verb|get| has type: \verb|get :: Fut t -> t|. Depending
 on the status of the future, resolved or not, the control flow change caused by
 \verb|get| is different: if the future is resolved, \verb|get| doesn't alter the
 control flow at all; on the other hand, if the future is not resolved yet,
@@ -937,7 +937,7 @@ of messages in the message queue. When the future becomes resolved, a special
 message is sent by the resolver of the future to the active object so that the
 paused message execution could resume. Let's see an example how each of them
 behaves in the following example. (To keep things simple, it's assumed to be run
-on a single-core machine or specified to use single Operationg System thread.)
+on a single-core machine or specified to use single Operating System thread.)
 
 \begin{lstlisting}[
   basicstyle=\footnotesize,language=Haskell,
@@ -1025,9 +1025,11 @@ which pauses the execution, and moves the control to the next message, which is
 \verb|self_produce| is resumed. Therefore, the output is 1, 2, 3, separated by
 new lines.
 
-The idea of having parallel pipeline and data parallelism is provided by the
-\parT{} collection and the \textit{parallel combinators} that operate on it.
-This collection can hold computations that may not have finished and
+Active objects provide coarse grain parallelism via futures but do not offer
+many high-level language constructs for low-level coordination of these computations.
+In order to unhinge parallel pipeline and data parallelism, Encore incorporates
+the \parT{} collection and the parallel combinators.
+The \parT{} collection can hold computations that may not have finished and
 is represented by the type, \texttt{Par t}, where \texttt{t} represents a polymorphic type. 
 Elements of the collection can be normal values and
 future values which can be \textit{lifted} to a parallel collection via
@@ -1043,14 +1045,15 @@ that executes the first expression until the returned value is known and, if emp
 starts execution of the second expression.
 
 \textbf{$>> \; :: Par \; t \to (t \to t') \to Par \; t'$}, read as \textit{sequence} combinator,
-applies the function to all elements of the \parT{} collection asynchronously,
-returning a new \parT{} collection.
+applies the function to all elements of the \parT{} collection asynchronously -- creating
+parallel pipeline parallelism-- and returns a new \parT{} collection.
 
 \textbf{$<< \; :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$}, read as \textit{prune} combinator,
-starts execution of both expressions in parallel and, when there is a value available
-in the second expression, it's passed to the first expression.
+starts execution of both expressions in parallel. As soon as there is a value available
+in the second expression, this on gets passed to the first expression and all the remaining
+computations from the second expressions are ignored.
 
-\parT{} collection and its combinators have been designed to perform
+The \parT{} collection and its combinators have been designed to perform
 operations asynchronously without stopping the current thread of execution.
 This creates a collection that never blocks and executes operations on demand,
 when the values are available. There are more combinators available \cite{ref:encore}
@@ -1109,6 +1112,7 @@ where, i.e. the \textit{exclusive} capability models the active object kind of d
 The Encore concurrency model has been formalized (\cite{ref:encore}) using
 a small step operational semantics. Parallel combinators have been formalized as well
 including a soundness proof with the implicit task parallelism model \cite{encore:parallel-combinators-thesis}.
+\NOTE{Elias might have a soundness proof for the Capability system?}
 
 \paragraph{Implementation: programming and execution support}
 Encore is a relatively new programming language and there is still some
