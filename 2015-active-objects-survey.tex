@@ -931,13 +931,13 @@ control flow at all; on the other hand, if the future is not resolved yet,
 future is resolved. The active object would be resumed at the exactly same
 execution point except that the future is resolved, and the call to \verb|get|
 returns. Because \verb|get| would stop the whole active object, which might not
-always be desirable, \verb|await| is provided as well so that only the current
-message execution is paused, but the active object could still process the rest
-of messages in the message queue. When the future becomes resolved, a special
-message is sent by the resolver of the future to the active object so that the
-paused message execution could resume. Let's see an example how each of them
-behaves in the following example. (To keep things simple, it's assumed to be run
-on a single-core machine or specified to use single Operating System thread.)
+always be desirable, \verb|await| is provided so that only current message
+execution is paused, but the active object could still process other messages in
+the message queue. When the future becomes resolved, a special message is sent
+by the resolver of the future to the active object so that the paused message
+execution could resume. Let's see an example how each of them behaves in the
+following example. (To keep things simple, it's assumed to be run on a
+single-core machine or specified to use single Operating System thread.)
 
 \begin{lstlisting}[
   basicstyle=\footnotesize,language=Haskell,
