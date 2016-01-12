@@ -931,13 +931,13 @@ control flow at all; on the other hand, if the future is not resolved yet,
 future is resolved. The active object would be resumed at the exactly same
 execution point except that the future is resolved, and the call to \verb|get|
 returns. Because \verb|get| would stop the whole active object, which might not
-always be desirable, \verb|await| is provided as well so that only the current
-message execution is paused, but the active object could still process the rest
-of messages in the message queue. When the future becomes resolved, a special
-message is sent by the resolver of the future to the active object so that the
-paused message execution could resume. Let's see an example how each of them
-behaves in the following example. (To keep things simple, it's assumed to be run
-on a single-core machine or specified to use single Operating System thread.)
+always be desirable, \verb|await| is provided so that only current message
+execution is paused, but the active object could still process other messages in
+the message queue. When the future becomes resolved, a special message is sent
+by the resolver of the future to the active object so that the paused message
+execution could resume. Let's see an example how each of them behaves in the
+following example. (To keep things simple, it's assumed to be run on a
+single-core machine or specified to use single Operating System thread.)
 
 \begin{lstlisting}[
   basicstyle=\footnotesize,language=Haskell,
@@ -1087,26 +1087,16 @@ which type, and \verb|get| could be use to convert future type to non-future
 type (if the content of the future is non-future type, i.e.\ not something like
 \verb|Fut Fut int|) by extracting the content explicitly.
 
-\begin{figure}[ht]
-\centering
-\includegraphics[width=.7\linewidth]{Figs/hierarchy-of-capabilities-bw}
-\caption{Capability hierarchy where leaf nodes denote specific implementations\label{fig:encore:capability}}
-\end{figure}
-
 \paragraph{Data sharing}
 In Encore, active objects are protected by their own thread of control
-while passive objects are passed by reference. This \textit{share-all} policy on passive objects
-makes the model prone to data races when the passive object is shared between
-multiple active objects. The Encore type system enhances this simplistic model
-with a capability-based type system \cite{RobustComposition} 
-where passive objects are seen as resources
-protected by a capability that governs the kind of access to it \cite{ref:encore}. 
-
+while passive objects are protected by a \textit{capability} type.
+Encore's type system sees passive objects as resources that
+are protected by a capability that governs the kind of access to it \cite{ref:encore}. 
 A capability is built from a trait and a \textit{kind}. The trait provides the interface-like
 feeling of OOP languages while the \textit{kind} states the "protection" that
-the interface provides. The hierarchy of existing capabilities is shown in Figure~\ref{fig:encore:capability}
-where, i.e. the \textit{exclusive} capability models the active object kind of data protection.
-
+the interface provides. By changing a keyword, the \textit{kind}, the interface
+changes the protection level. For instance, by changing the \textit{kind} from \textit{exclusive}
+to \textit{lock-free}, the interface changes the protection from an actor-like to a lock-free implementation.
 
 \paragraph{Formalization and semantics}
 The Encore concurrency model has been formalized (\cite{ref:encore}) using
