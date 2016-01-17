@@ -1232,6 +1232,30 @@ An adapted algorithm to garbage collect active objects was developed in ProActiv
 explicit bytecode operations?
 particular accent on data sharing since lots of care has been put is designing an efficient data sharing in Encore.
 
+Encore language implementation consists of two major components, a
+Source-to-source compiler (from Encore to C) implemented in Haskell, and the
+runtime system, which is based on the same runtime (implemented in C) used by
+Pony.
+
+\paragraph{Thread creation and scheduling}
+
+On system start-up, the same number of schedulers are created as the number of
+physical cores on the machine unless specified otherwise on the command line.
+Each active object in Encore is assigned to an Encore thread (green thread),
+which provides thread-of-control for the active object so that it could process
+messages in the mailbox. Each scheduler is mapped to an OS thread, and it runs
+in a loop of scheduling active objects until the whole program (system)
+terminates. Each scheduler owns an active object queue, and in each iteration of
+the loop, it performs three procedures. Firstly, pop an active object from the
+beginning of the queue. Secondly, hand over the control to the active object so
+that it could process messages in the mailbox if any. The active object can only
+process one message in this step to ensure fairness. Thirdly, depending on if an
+message is indeed processed in previous step, the active object is pushed to the
+end of the queue. In the second step, new active objects could be created, and
+they are pushed to the end of queue belonging to the current scheduler as well.
+Active objects propagates across schedulers because of work stealing, which
+tries to achieve load-balancing, and happens whenever a scheduler runs out of
+active objects.
 \subsection{Erlang backend for Rebeca}
 \TODO{see if Marjan and ehsan want to put something in this section}	
 
