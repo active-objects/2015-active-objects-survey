@@ -1256,6 +1256,22 @@ they are pushed to the end of queue belonging to the current scheduler as well.
 Active objects propagates across schedulers because of work stealing, which
 tries to achieve load-balancing, and happens whenever a scheduler runs out of
 active objects.
+
+\paragraph{Data sharing}
+
+When data (active and passive objects) is shared in Encore, no copying is
+performed, so sharing large objects in Encore poses no performance issues. Due
+to this particular way of implementing sharing, sharing mutable passive objects
+naively could introduce data race. Active objects are not subject to this
+problem, for they have thread-of-control internally. Mutable passive objects are
+immune of this problem for oblivious reasons. Therefore, the most interesting
+case is sharing mutable passive objects. Under capability system, a mutable
+passive object could be of kind locked so that sharing it would not result into
+data race. In a slightly more advanced usage scenario, we might want to share
+part of the mutable passive object so that multiple active objects could work on
+different part of the same passive object concurrently. The capability system is
+work-in-progress, and not available in the compiler currently.
+
 \subsection{Erlang backend for Rebeca}
 \TODO{see if Marjan and ehsan want to put something in this section}	
 
