@@ -28,6 +28,7 @@
 \newcommand{\code}[1]{\texttt{\small{#1}}}
 \newcommand{\TODO}[1]{\textcolor{red}{\textbf{[TODO:#1]}}}
 \newcommand{\NOTE}[1]{\textcolor{blue}{\textbf{[Note:#1]}}}
+\newcommand{\LUDO}[1]{\textcolor{blue}{\textbf{[Ludo:#1]}}}
 \newcommand{\parT}{\texttt{ParT}}
 % Metadata Information
 %\acmVolume{9}
@@ -574,6 +575,9 @@ deadlocks.  An important point is that between explicit
 synchronisation points (\lstinline{release}, \lstinline{await}) no
 data races can occur and computations are, therefore, deterministic.
 
+\LUDO{while I agree concerning data races, the order of service of requests is also non 
+deterministic, thus return also creates non-determinism somehow}
+
 \paragraph{Degree of transparency}
 
 ABS is an abstract language and implementation-specific aspects
@@ -582,12 +586,23 @@ hidden from the modeler. Abstract data types and interfaces can be
 used to postpone detailed design decisions while still permitting
 analysis of those aspects of a model that are fully specified.
 
-\paragraph{Degree of data sharing}
+\LUDO{added the following paragraph}
 
+In ABS the user controls however the potential interleavings of the tasks and explicitly 
+writes task release points using \lstinline{release} and \lstinline{await}. As a 
+consequence he is exposed to the notion of asynchronous vs.synchronous calls, futures, 
+and thread interleaving.
+
+\paragraph{Degree of data sharing}
+\LUDO{I do not understantd this first part. I thought all AOs were accessible from any 
+COG and all other data was immutable and thus safe; can you explain better}
 Between different COGs no data sharing is possible. The attempt to
 call a method in a remote COG with a local class argument results in a
 runtime error. Within the same COG all tasks have acess to a common
-heap and can modify shared data. However, objects have strictly
+heap and can modify shared data. 
+\LUDO{the rest is OK but I would mention that all objects of the COG are accessible (via 
+nmethod calls) if this is indeed true}
+However, objects have strictly
 private visibility, that is, they can only directly access their own
 fields. The fields of any other objects must be accessed by explicit
 method calls (getter/setter methods).
@@ -657,7 +672,15 @@ explained by these practical concerns.
 One of the design choices for ASP and ProActive is to ensure maximal transparency for the 
 programmer: active objects and futures are manipulated like usual Java objects. The 
 ProActive middleware automatically triggers asynchronous remote invocations and performs automatically blocking synchronisation when 
-needed. ProActive is thus intended to Java programmers that are not particularly experts in concurrent and distributed programming. 
+needed. ProActive is thus intended to Java programmers that are not particularly experts 
+in concurrent and distributed programming. 
+
+Another choice is that active objects are coarse grain entities. We create a dedicated 
+thread for each of them and they come with a quite heavy machinery  for managing each 
+object and communicating between objects. The machinery ensures all the distributed 
+nature of the computation. As a consequence, using the ProActive library, 
+it is not possible to instantiate thousands of active objects on the same core. Of course 
+the number of passive objects is not particularly restricted.
 
 Since 2010, ASP features
 \emph{multi-active objects}~\cite{HHI2013:mao} meaning that in each active object, several
@@ -773,14 +796,23 @@ In ASP, the only blocking synchronisation is the wait-by-necessity on a future. 
 case of reentrant calls, especially if no compatibility annotation is specified. 
 However, synchronisation only occur when the future value is actually needed and, in 
 particular, future references can safely be transmitted between activities without 
-requiring any additional synchronisation, which limits blocking synchronisation leading to deadlocks.
-Another form of synchronisation exists in the sense that, when a thread becomes in wait-by-necessity, it is not counted in the soft thread limit of the active object any more, so the wait-by-necessity event is potentially coordinated with the start of another request.
+requiring any additional synchronisation, which limits blocking synchronisation leading 
+to deadlocks.
+Deadlocks can also be removed by using multi-active objects especially with no limit or a 
+soft limit of the number of threads. In particular,
+when a thread becomes in wait-by-necessity, it is not counted in the soft thread limit of 
+the active object any more, so the wait-by-necessity event potentially causes the start 
+of another request.
 
 \paragraph{Degree of transparency}
 In ASP the programmer is not explicitly exposed at all to the notion of future and in a moderate way to the notion of active object (at active object creation time only). The syntax is the same as the syntax for sequential 
 programming, there is no specific construct for waiting a future value or performing an 
 asynchronous call. Very often a sequential code can be reused unchanged in a distributed 
 setting.
+
+When dealing with multiactive objects, the programmer is exposed to the notion of 
+parallel treatment of requests, the programming model becomes more explicit concerning 
+concurrency aspects. 
 
 \paragraph{Degree of data sharing}
 ASP follows a strict policy of absence of sharing between active objects. Objects that are 
@@ -790,7 +822,8 @@ objects; a deep-copy mechanism is used ensuring that, when objects are transmitt
 between activities, they are copied as well as all their dependency on the destination 
 side. This mechanism, which is the one used by RMI, slows down request invocation in practice because 
 of the time spent to transmit data, but accelerates request treatment because there is no 
-need to contact another activity to get the value of the request parameters.
+need to contact another activity to get the value of the request parameters. Note that 
+active object and future references are passed by reference.
 
 There is no coherency ensured between the different copies of a passive object, thus if 
 the user wants to ensure that an object has a unique coherent state, he should not 
@@ -810,15 +843,6 @@ of deadlock has been proved in Isabelle/HOL.
 The full semantics of imperative ASP with multi-threaded activities is published 
 in~\cite{HHI2013:mao}.
 
-As shown in~\cite{BHR2014:gcm}, ProActive active objects, and active objects in general,
-provide a convenient programming model for component based composition of distributed
-applications. The ProActive library implements the GCM distributed component model. In
-this context, the Vercors
-platform\footnote{\url{https://team.inria.fr/scale/software/vercors/}} provides
-verification capacities for ProActive components; Vercors consists of an Eclipse plugin
-for designing component systems; from this point the Vercors platform can on one hand
-verify the correct behaviour of the application using the CADP model-checker, and on the
-other hand generate an executable ProActive/GCM code corresponding to the designed system.
 
 \paragraph{Implementation and tooling support}
 ProActive is the Java library implementing ASP semantics. 
@@ -828,6 +852,16 @@ the deployment of ASP active objects on distributed infrastructures. The design 
 In order to settle active objects on distributed infrastructures, ProActive features a deployment specification mechanism. The goal of this mechanism is to make the physical deployment independent from the the deployment logic. This is possible by having a binding from virtual node names, used in the source code, pointing to machine addresses or names. In practice, this binding is implemented in XML configuration files. Also, since the binding is made at \emph{deployment time}, changing infrastructure for a given ProActive application is only localised in a few files and does not require application recompilation. 
 Several machines can be aggregated under a single virtual node name in the deployment logic, for example to provide the virtual node with some properties or non functional deployment options (such as fault tolerance or logging).
 
+
+As shown in~\cite{BHR2014:gcm}, ProActive active objects, and active objects in general,
+provide a convenient programming model for component based composition of distributed
+applications. The ProActive library implements the GCM distributed component model. In
+this context, the Vercors
+platform\footnote{\url{https://team.inria.fr/scale/software/vercors/}} provides
+verification capacities for ProActive components; Vercors consists of an Eclipse plugin
+for designing component systems; from this point the Vercors platform can on one hand
+verify the correct behaviour of the application using the CADP model-checker, and on the
+other hand generate an executable ProActive/GCM code corresponding to the designed system.
 
 \subsubsection{Encore}
 
@@ -851,7 +885,8 @@ other by sending messages. These messages are placed in the receiver's message q
 and processed by the receiver one at a time. This property linearises
 the execution of the active object. As in any other
 object-oriented language, an active object has attributes and methods.
-The active object state is usually model with passive objects. These do not have a thread of control and are
+The active object state is usually modeled with passive objects. These do not have a 
+thread of control and are
 similar to \textit{unsynchronised} Java objects. A passive object lives in an active object's heap
 and, if shared with multiple active objects, data races may occur.
 
@@ -917,6 +952,7 @@ of methods defined in the traits it extends, in this case, the \texttt{enqueue} 
 class is the entry point of the program and creates an active object (\texttt{buffer}) and some data.
 The method call \texttt{buffer.put(data)} returns a future that, in this case, is not used and discarded.
 
+\LUDO{TBDiscussed: rewrite the explanation on get/suspend so that it is closer to ABS}
 Encore currently provides three operators for controlling execution flow within
 and across active objects: \verb|suspend|, \verb|get|, and \verb|await|.
 \verb|suspend| suspends the current message processing, appends a resuming
@@ -935,7 +971,7 @@ always be desirable, \verb|await| is provided so that only current message
 execution is paused, but the active object could still process other messages in
 the message queue. When the future becomes resolved, a special message is sent
 by the resolver of the future to the active object so that the paused message
-execution could resume. Let's see an example how each of them behaves in the
+execution could resume. Let's see how each of them behaves in the
 following example. (To keep things simple, it's assumed to be run on a
 single-core machine or specified to use single Operating System thread.)
 
