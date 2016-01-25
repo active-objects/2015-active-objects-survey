@@ -972,7 +972,9 @@ execution is paused, but the active object could still process other messages in
 the message queue. When the future becomes resolved, a special message is sent
 by the resolver of the future to the active object so that the paused message
 execution could resume. Let's see how each of them behaves in the
-following example. (To keep things simple, it's assumed to be run on a
+following example. \LUDO{what does the next sentence change?}(To keep things simple, it's 
+assumed to be 
+run on a
 single-core machine or specified to use single Operating System thread.)
 
 \begin{lstlisting}[
@@ -1042,24 +1044,23 @@ The \verb|Main| class contains three methods for showing the semantics of each
 operator, and the \verb|main| method, the entry point of the program. In the
 \verb|test_suspend| method, two messages, \verb|print_1_3| and \verb|print_2|,
 are sent to the agent one after the other. The \verb|suspend| operator in
-\verb|print_1_3| would suspend the execution of \verb|print_1_3|, and move the
+\verb|print_1_3| will suspend the execution of \verb|print_1_3|, and move the
 control to the next message in the queue, which is \verb|print_2|. Once
-\verb|print_2| is finished, the control would go to the next message, which is
+\verb|print_2| is finished, the control will go to the next message, which is
 the resuming message created due to \verb|suspend| call in \verb|print_1_3|.
-Therefore, the output would be 1, 2, 3, separated by new lines. In the
-\verb|test_get| method, the \verb|produce| call would return a future, and
+Therefore, the output would be 1, 2, 3. In the
+\verb|test_get| method, the \verb|produce| call returns a future, and
 calling \verb|get| on that future (which can be guaranteed to be un-resolved
-while running in the single threaded settings) would block the \verb|test_get|
+while running in the single threaded settings) blocks the \verb|test_get|
 method until the future is resolved. Therefore, the output is 1, 2, 3, separated
 by new lines. In the \verb|test_await| method, two messages, \verb|self_produce|
-and \verb|print_1|, are sent to the agent. The agent would process them in
+and \verb|print_1|, are sent to the agent. The agent processes them in
 order, but in \verb|self_produce|, \verb|await| is called on an un-resolved
 future (which is guaranteed to be un-resolved due to the same reason as above),
 which pauses the execution, and moves the control to the next message, which is
-\verb|print_1|. After that, \verb|produce| message, created inside
+\verb|print_1|. After that, the \verb|produce| message, created inside
 \verb|self_produce|, is processed, which resolves the awaited future, and
-\verb|self_produce| is resumed. Therefore, the output is 1, 2, 3, separated by
-new lines.
+\verb|self_produce| is resumed. Therefore, the output is 1, 2, 3.
 
 Active objects provide coarse grain parallelism via futures but do not offer
 many high-level language constructs for low-level coordination of these computations.
@@ -1072,22 +1073,32 @@ future values which can be \textit{lifted} to a parallel collection via
 \texttt{liftv :: t $\to$ Par t} and \texttt{lift :: Fut t $\to$ Par t} respectively.
 
 The available combinators that operate on the \parT{} collection are:
+\Ludo{the explanations below are less clear than the rest of the text, I also think they 
+should be better justified from a high-level point of view: actor constructs will be 
+explained in details before but not those ... to be discussed, but a few comments}
 
 \textbf{$| \; :: Par \;t \to Par \;t \to Par \;t$,} read as \textit{par} combinator, that creates a new
-\parT{} that holds the computations from the first and second expression.
+\parT{} that holds the computations from the first and second expression. \LUDO{do you 
+mean it concatenates the 2 constructs? or does this create parallelcomputation? how?}
 
 \textbf{$>< \; :: Par \; t \to Par \;t \to Par \;t$,} read as \textit{otherwise} combinator,
 that executes the first expression until the returned value is known and, if empty,
-starts execution of the second expression.
+starts execution of the second expression. \LUDO{Now I am lost, I thought ParT was data 
+collection ... is it an expression instead?}
 
 \textbf{$>> \; :: Par \; t \to (t \to t') \to Par \; t'$}, read as \textit{sequence} combinator,
 applies the function to all elements of the \parT{} collection asynchronously -- creating
-parallel pipeline parallelism-- and returns a new \parT{} collection.
+parallel pipeline parallelism-- and returns a new \parT{} collection. \LUDO{is it a map 
+or is it something else? a pipeline is one (stream of) data and a set of functions to 
+evaluate, I am not sure this is the case here}
 
-\textbf{$<< \; :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$}, read as \textit{prune} combinator,
+\LUDO{I will have a look at the end of the paragraph once the above has been resolved}
+
+\textbf{$<< \; :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$}, read as 
+\textit{prune} combinator,
 starts execution of both expressions in parallel. As soon as there is a value available
 in the second expression, this on gets passed to the first expression and all the remaining
-computations from the second expressions are ignored.
+computations from the second expressions are ignored. 
 
 The \parT{} collection and its combinators have been designed to perform
 operations asynchronously without stopping the current thread of execution.
@@ -1098,30 +1109,56 @@ but we have highlighted the most important ones.
 
 \paragraph{Degree of synchronisation}
 
-In Encore, there are two ways for synchronisation, message passing, and
-synchronisation by futures. From the message passing perspective, each method
-call on active objects could be interpreted as a message transmitting, and
-different active objects could communicate and synchronise with each other using
-message passing, just like Erlang. The second approach, which is more akin to
-Object-Oriented style, is using futures. Each non-void method call on active
-objects returns a future, denoted as \verb|Fut| in Encore, and three operations
-are defined on futures, \verb|get|, \verb|await|, $\sim\sim>$ (future chaining).
-The first two operators would pause the current method execution until the
-future is resolved (fulfilled). The difference between them is the former blocks
-the whole actor, as discussed and explained in the previous section on flow
-control in Encore. On the other hand, $\sim\sim>$ would register a callback
+Like in ABS and in ASP, in Encore, synchronisation results of message passing and 
+synchronisation on futures.  \verb|get| and  \verb|await| provide the same 
+synchronisation possibilities and the same control on futures as in ABS: blocking until 
+the future is resolved or releasing the current thread if the future is not resolved. One 
+more original asynchronous constructs in Encore is the future chaining operator 
+($\sim\sim>$).
+ $\sim\sim>$ registers a callback
 (anonymous function, aka lambda) to the future, continue processing the rest of
 the message. The callback would be called with the future contend as the
-argument when the future is resolved.
+argument when the future is resolved. This construct allows chaining operation on futures 
+without creating synchronisation, it is kind of similar to the default fandling of 
+futures in AmbientTalk except that it is more explicit and easier to control for the 
+programnner. It is also similar to
+the transparent first-class 
+futures of ASP except that the callback request is only created when the future is 
+resolved thus the callback function is executed later than in the ASP case and the 
+request could be delayed forever if the future is never resolved, in which case the ASP 
+request would create a deadlock.
+
+\LUDO{I changed this paragraph to better relate with the other languages (perhaps too 
+long or too much references), the previous version is commented if you want to recover 
+some or all the text}
+%In Encore, there are two ways for synchronisation, message passing, and
+%synchronisation by futures. From the message passing perspective, each method
+%call on active objects could be interpreted as a message transmitting, and
+%different active objects could communicate and synchronise with each other using
+%message passing, just like Erlang. The second approach, which is more akin to
+%Object-Oriented style, is using futures. Each non-void method call on active
+%objects returns a future, denoted as \verb|Fut| in Encore, and three operations
+%are defined on futures, \verb|get|, \verb|await|, $\sim\sim>$ (future chaining).
+%The first two operators would pause the current method execution until the
+%future is resolved (fulfilled). The difference between them is the former blocks
+%the whole actor, as discussed and explained in the previous section on flow
+%control in Encore. On the other hand, $\sim\sim>$ would register a callback
+%(anonymous function, aka lambda) to the future, continue processing the rest of
+%the message. The callback would be called with the future contend as the
+%argument when the future is resolved.
 
 \paragraph{Degree of transparency}
 
-As mentioned above, futures are denoted as \verb|Fut| in Encore, so non-future
+Futures are denoted as \verb|Fut| in Encore, so non-future
 variables and future variables are distinguished statically, e.g.\ \verb|int| vs
 \verb|Fut int|. In other words, developers must decide which variables are given
 which type, and \verb|get| could be use to convert future type to non-future
 type (if the content of the future is non-future type, i.e.\ not something like
-\verb|Fut Fut int|) by extracting the content explicitly.
+\verb|Fut Fut int|) by extracting the content explicitly. Both in future management and 
+with parallel combinators, the programmer is exposed to the concurrent computations being 
+handled in Encore. However, especially  when using future chaining or parallel 
+combinators, the scheduling and ordering of operations is handled automatically, and the 
+programmer only expresses concurrency from a high-level point of view.
 
 \paragraph{Data sharing}
 In Encore, active objects are protected by their own thread of control
@@ -1134,6 +1171,10 @@ the interface provides. By changing a keyword, the \textit{kind}, the interface
 changes the protection level. For instance, by changing the \textit{kind} from \textit{exclusive}
 to \textit{lock-free}, the interface changes the protection from an actor-like to a lock-free implementation.
 
+\LUDO{perhaps you could detail a little this data-sharing aspect as it is probably one of 
+the most original aspect compared to the other languages? perhaps explain most of the 
+capabilities?}
+
 \paragraph{Formalization and semantics}
 The Encore concurrency model has been formalized (\cite{ref:encore}) using
 a small step operational semantics. Parallel combinators have been formalized as well
@@ -1143,11 +1184,11 @@ including a soundness proof with the implicit task parallelism model \cite{encor
 \paragraph{Implementation: programming and execution support}
 Encore is a relatively new programming language and there is still some
 limited tooling support. However, the Encore compiler can emit a
-highly understandable C code that when compiled, produces the binary file.
+highly understandable C code.
 This C code can be analysed and debug using any available tool that
 works with the C11 standard. 
 
-The list of currently supported tools is presented below:
+The currently supported tools are:
 
 \begin{itemize}
 \item Emacs and Atom editors with syntax highlighting and compiler error support
