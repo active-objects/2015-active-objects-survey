@@ -1351,9 +1351,15 @@ In conclusion, two types of object references exist in ProActive: global referen
 Distributed environments are prone to failures. 
 Since ProActive targets distributed environments, a particular effort was made in producing robust ProActive applications by design. 
 For that, the ProActive library includes two different error handling aspects. 
-First, an exception chaining mechanism was developed on top of RemoteException, which is the basic RMI exception, in order to have a readable feedback when ProActive applications crash. \TODO{Check what was done for exception handling in PA}. 
+First, an exception chaining mechanism was developed on top of RemoteException, which is 
+the basic RMI exception, in order to have a readable feedback when ProActive applications 
+crash. Also a specific API has been developed to compensate for the difficulty to deal 
+with asynchronous exception and the lack of control on the Java exception 
+mechanism~\cite{CC-ECOOPWS2005}. 
 Another aspect of the ProActive library consists in continuing the execution of the application in presence of some failed active objects, for example if a machine hosting some active objects of the application crashes. 
-For this purpose, ProActive implements a special fault tolerance protocol enabling restart of an application from the latest checkpoint, if an active object is detected as failed. 
+For this purpose, ProActive implements a  fault tolerance protocol specific to the active 
+object semantics. It enables a set of failed active objects to restart  from the latest 
+checkpoint. 
 The checkpoints are taken per active object, based on the communications between them. 
 This strategy is coupled with the logging of events received by the active object, to ensure a deterministic reexecution. 
 The fault tolerant protocol is complete for applications that only feature mono-threaded active objects. 
@@ -1364,7 +1370,10 @@ Handling garbage collection in ProActive is deeply linked with how objects are r
 Firstly, to ensure garbage collection of regular objects, no particular attention is needed, simply because the given Java garbage collector will take care of them. 
 Indeed, as a regular object cannot be referenced by several active objects, it is guaranteed that no reference to this object exists in another JVM, so classical garbage collection is enough.
 However, in the case of active objects, we cannot directly know if it still exists a reference to an active object, because many proxies of an active object can be disseminated throughout the network.
-An adapted algorithm to garbage collect active objects was developed in ProActive. It is based on \TODO{Explain}.
+An adapted algorithm to garbage collect active objects was developed in ProActive. 
+It is based on the detection of useless active objects (those that are idle and only 
+referenced by idle active objects). This is detected as some form of common agreement 
+based on the reference graph between active objects~\cite{CCH:Middleware07}.
 
 \subsection{ProActive backend for ABS}
 The ProActive backend for ABS is another translator that generates the ProActive code corresponding to an ABS program. This backend allows ABS program to run in distributed environments thanks to the support of ProActive. For that, all ABS concepts are simulated with ProActive, since the two languages are based on different active object models. The main challenges in the translation are (i) how to efficiently support object groups in ProActive where there only exist active and passive objects, (ii) how to address objects in the translation since objects are passed by reference in ABS and by copy in ProActive, and (iii) how to simulate cooperative scheduling with multi-threading controlled through annotations.
