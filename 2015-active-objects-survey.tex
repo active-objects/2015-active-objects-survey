@@ -1324,27 +1324,45 @@ Additionally, threads that are waiting for a future can be temporarily reused to
 This is also configurable at the application level. 
 So to conclude, in ProActive thread creation and thread scheduling are almost completely exposed to the programmer, allowing him to have a great control on the performance of ProActive applications.
 
-\paragraph{Data sharing}
-For data sharing in ProActive, two aspects have to be considered.
-First, active objects do not share any object, apart from active objects themselves, that can be shared between active objects.
-Each active object has it own set of object references, and it is the only one active object having such a reference to each of them. 
-This applies to the active object state, but also to the local references. 
-So, in practice, each time an object is part of the parameters of a remote method invocation (on an active object), or part of a return value of such an invocation, this object is serialized on the sender side and deserialized on the recipient side; a copy of it is thus manipulated on the recipient side. 
-The first reason for this behavior is that ProActive is based on Java RMI, and Java RMI is based on parameters copy.
-The second reason is because of distribution: affording a consistent distributed memory is too costly for HPC, which is the primary target of ProActive.
-In the case of active objects, they can be indeed shared between active objects but this does not imply safety issues since request reception is centralized and request execution is controlled.
-Thus, one way to share an object globally is to turn it into an active object, but this strategy should be unusually used for performance reasons.
-Another aspect of data sharing in ProActive applies within an active object. 
-Since ProActive implements multiactive objects, there is a potential a multi-threaded environment in each active object. 
-Consequently, objects can be shared between several threads living in the same active object. 
-Data protection must be then ensured by the programmer: either by compatibility definition or by classical locking mechanisms.
+\paragraph{Data sharing and object referencing}
+% LUDO: I shhortenned the part that was common with ASP
+ProActive differentiates active and passive objects in a way that is much transparent to 
+the programmer, except that passive objects are passed by copy when communicated between 
+active objects while referneces between active objects can be shared and accessed from 
+anywhere.
+The first reason for this behavior is that ProActive is based on Java RMI, and Java RMI 
+is based on parameters copy.
+The second reason is because of distribution: affording a consistent distributed memory 
+is too costly for HPC, which is the primary target of ProActive.
+Of course data is shared between the several threads of a multi-active object.
 
-\paragraph{Object referencing}
-Once again, ProActive object referencing is driven by the underlying technology legacy. 
+This sharing pattern is thus naturally implemented using RMI and Java serialization that 
+performs a deep copy of the parameters transmitted between objects. Future and active 
+objects are implemented by a proxy that can be passed by referenced and is serialized as 
+a reference (without any copy of other objects referenced). The serialization mechanism 
+is also used to track the multiple references to the same future and to implement 
+efficient future update strategies~\cite{HKRZ:Coregrid:2010}.
+%
+%In the case of active objects, they can be indeed shared between active objects but this 
+%does not imply safety issues since request reception is centralized and request 
+%execution 
+%is controlled.
+%Thus, one way to share an object globally is to turn it into an active object, but this 
+%strategy should be unusually used for performance reasons.
+%Another aspect of data sharing in ProActive applies within an active object. 
+%Since ProActive implements multiactive objects, there is a potential a multi-threaded 
+%environment in each active object. 
+%Consequently, objects can be shared between several threads living in the same active 
+%object. 
+%Data protection must be then ensured by the programmer: either by compatibility 
+%definition or by classical locking mechanisms.
+
+%Once again, ProActive object referencing is driven by the underlying technology legacy. 
 In RMI, remote objects are globally referenced in what is known as the RMI registry: a mapping from remote object names to remote object stubs, that can be copied and used anywhere in order to target the remote object. 
 Networking communication is ensured by the rmi protocol. 
 Consequently, in ProActive, all active objects are referenced in a RMI registry, and can be accessed this way from any other object communicating through the rmi protocol. 
-Then, for objects that are not active objects, traditional Java object references are used.
+For objects that are not active objects, traditional Java object references are used as 
+they are only referenced within the same active object.
 In conclusion, two types of object references exist in ProActive: global references, retrievable from the RMI registry, and local references, manipulable like classical references in programming languages. 
 
 \paragraph{Error handling}
@@ -1424,7 +1442,7 @@ More precisely, we first retrieve a reference to the COG of the server object by
 Then, a generic \code{execute} method of the COG class is called on the COG object returned by \code{getCog()}, and this method call is implicitly asynchronous by the nature of the COG object. When the \code{execute} request is run, it uses the identifier of the targeted object to lookup the reference of the server object that is local to the targeted COG, and then run the \code{start} method synchronously on it by reflection. 
 In summary, in the ProActive translation of ABS programs, object references are hidden behind COG references, that are globally known in order to give an entry point to local objects. This way, the performance of the generated distributed applications with the ProActive backend can be preserved.
 
-\paragraph{Data sharing}
+\paragraph{Data sharing and object referencing}
 In ProActive, passive objects are not shared between active objects. Therefore, when a passive object is a parameter of a remote method call, it is copied, whereas in ABS parameters of method call are manipulated by reference.
 In particular, when in the translation we run an \code{execute} method call, all the parameters are copied. For the identifier of the targeted object and the name of the method to run, this is not a problem because they are immutable variables, so having many independent copies of them does not change the behavior of the program. Apart from those parameters, the \code{execute} method also copy the parameters of the method to run by reflection.
 for example, consider an ABS asynchronous method call like this one:
