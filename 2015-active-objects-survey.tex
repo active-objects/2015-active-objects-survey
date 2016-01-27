@@ -1294,17 +1294,23 @@ another language, have their own runtime, or are implemented as a middleware lay
 according to the dimensions of comparison defined above.
 
 \subsection{Java 8 backend for ABS}
-proposed structure:
+The Abstract Behavioural Specification (ABS) language allows several programming paradigms and design patterns offering both a functional model as well as an object-oriented model. ABS has a similar syntax to Java enhanced with several new constructs and annotations that allow design of distributed applications for grid and cloud environments. Annotations can include custom defined schedulers to ease the development of batch systems and workflows. The main goal of the Java 8 backend for ABS is to translate these models into production code to be executed in a parallel or distributed environment. The challenge of this implementation is to generate the real memory structures and execution instances while being aware of the possbile resource limitations, communication bottlenecks or latencies and performance, as these requirements are not easily observable at a modelling level. 
 
-- Scope of the solution
- for what purpose the implementation is optimized
- (performance, modelling, memory, distributed, parallel)
+\paragraph{Thread Creation and Scheduling}
+In ABS, the core language contains constructs for the two finest levels of granularity in parallel computing which are scheduling method calls within an object and scheduling object execution within a task. To model cooperative scheduling as used by ABS in Java we need to use Threads to map each method call and a Thread pool to map each object. Therefore a construct of an asynchronous method call requires the creation of a new Thread inside a thread pool along with the start of this thread executing the method. Our research question results from the fact that each object is supposed to execute on one thread. In Java each object will be in fact a Thread pool containing the number of threads corresponding to the number of method calls invoked by the object to support that finest level of scheduling featured by ABS. This is done despite only one method running at most on that object. This underlying thread model significantly affects performance of an ABS-modelled application that is translated into Java code. This approach was used in a previous Java backend that creates a really large number of threads that occupy a large portion of the program's heap.
 
-- scheduling of active objects
+\paragraph{Cooperative Scheduling of Active Objects using Java 8}
+\par Java 8 new features allow wrapping of method calls into lightweight lambda expressions such that they can be put into a scheduling queue of an ExecutorService to which the running objects are mapped, significantly reducing the number of idle Threads at runtime.  The only drawback is that if a method call contains a recursive stack of synchronous calls, upon preemption this stack needs to be saved, a scenario which cannot be achieved through lambda expressions. To solve this issue we focused our research in two directions:
+\begin{itemize}
+	\item On every preemption, we calculate the continuation and enqueue the rest of the call into the message queue.
+	\item On every preemption, we try to optimally suspend the message thread until the continuation of the call is released.
+\end{itemize}
 
-- Error handling
+\paragraph{Data Sharing}
+In ABS, objects are organized into Concurrent Object Groups (COG), each running on one thread. When objects are created, they are assigned a new or existing COG and all invocations on the object are executed on the same thread. Data that is shared among distributed objects is passed thorough lamda expressions that are sent as serialized messages beteween the objects. When COGs reside on the same machine all data is passed as arguments of lambda expressions or synchronous method calls in Java 8.
 
-- compare with old java backend?
+\paragraph{Object Referencing} 
+Objects can hold as inner fields references to any other object both belonging to the same COG or a different one. Similar to data sharing objects must be serializable to be transfferd between distributed objects. Furthermore, the generated classes will be loaded on all machines that require an object of a particular type, such that remote objects can invoke methods the serialized references that they receive. 
 
 
 \subsection{ProActive}
