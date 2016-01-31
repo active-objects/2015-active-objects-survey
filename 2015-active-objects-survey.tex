@@ -1617,7 +1617,16 @@ Active objects propagates across schedulers because of work stealing, which
 tries to achieve load-balancing, and happens whenever a scheduler runs out of
 active objects.
 
-\paragraph{Data sharing}
+Because of three different ways of altering control flowing, processing of a
+message (method call) could be paused in the middle, and would resumed depending
+on which language construct is used to cause this pause. All information living
+on the stack must be preserved for message processing continuation. Currently,
+Encore runtime would fetch a free stack page from the stack pool to processing
+next active objects, and this new stack page would be used until next pause
+happen. After the paused message processing is resumed and run to completion,
+the stack page is collected and returned to the stack pool for future reuse.
+
+\paragraph{Data sharing and object referencing}
 
 When data (active and passive objects) is shared in Encore, no copying is
 performed, so sharing large objects in Encore poses no performance issues. Due
@@ -1631,6 +1640,20 @@ data race. In a slightly more advanced usage scenario, we might want to share
 part of the mutable passive object so that multiple active objects could work on
 different part of the same passive object concurrently. The capability system is
 work-in-progress, and not available in the compiler currently.
+
+\paragraph{Error handling}
+
+Currently, Encore doesn't have support for exception handling. Errors are
+expressed using \verb|Maybe| type, and programmers could do pattern match on it
+to cater for the erroneous cases.
+
+\paragraph{Garbage collection}
+
+Encore borrows the garbage collection part from Pony runtime with the necessary
+extension to accommodate future values, which is not available in Pony. Garbage
+collection consists of two parts, collecting active objects, which is covered in
+\cite{ref:pony_actor_gc}, and collecting passive objects, which is discussion in
+a paper under submission.
 
 \subsection{Erlang backend for Rebeca}
 \TODO{see if Marjan and ehsan want to put something in this section}	
