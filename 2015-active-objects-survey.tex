@@ -952,9 +952,9 @@ of methods defined in the traits it extends, in this case, the \texttt{enqueue} 
 class is the entry point of the program and creates an active object (\texttt{buffer}) and some data.
 The method call \texttt{buffer.put(data)} returns a future that, in this case, is not used and discarded.
 
-\LUDO{TBDiscussed: rewrite the explanation on get/suspend so that it is closer to ABS}
-Encore currently provides three operators for controlling execution flow within
-and across active objects: \verb|suspend|, \verb|get|, and \verb|await|.
+\LUDO{TBDiscussed: rewrite the explanation on get/suspend so that it is closer
+to ABS} Encore currently provides three operators for controlling execution flow
+within and across active objects: \verb|suspend|, \verb|get|, and \verb|await|.
 \verb|suspend| suspends the current message processing, appends a resuming
 message to the message queue and passes control to the next message in the
 message queue (which could be the resuming message if the message queue was
@@ -971,11 +971,10 @@ always be desirable, \verb|await| is provided so that only current message
 execution is paused, but the active object could still process other messages in
 the message queue. When the future becomes resolved, a special message is sent
 by the resolver of the future to the active object so that the paused message
-execution could resume. Let's see how each of them behaves in the
-following example. \LUDO{what does the next sentence change?}(To keep things simple, it's 
-assumed to be 
-run on a
-single-core machine or specified to use single Operating System thread.)
+execution could resume. Let's see how each of them behaves in the following
+example. \LUDO{what does the next sentence change?}(To keep things simple, it's
+assumed to be running on a single-core machine or specified to use single
+Operating System thread.)
 
 \begin{lstlisting}[
   basicstyle=\footnotesize,language=Haskell,
@@ -1122,7 +1121,7 @@ argument when the future is resolved. This construct allows chaining operation o
 without creating synchronisation, it is kind of similar to the default fandling of 
 futures in AmbientTalk \TODO{add a citation if needed} except that it is more explicit 
 and easier to control for the 
-programnner. It is also similar to
+programmer. It is also similar to
 the transparent first-class 
 futures of ASP except that the callback request is only created when the future is 
 resolved thus the callback function is executed later than in the ASP case and the 
@@ -1638,7 +1637,16 @@ Active objects propagates across schedulers because of work stealing, which
 tries to achieve load-balancing, and happens whenever a scheduler runs out of
 active objects.
 
-\paragraph{Data sharing}
+Because of three different ways of altering control flowing, processing of a
+message (method call) could be paused in the middle, and would resumed depending
+on which language construct is used to cause this pause. All information living
+on the stack must be preserved for message processing continuation. Currently,
+Encore runtime would fetch a free stack page from the stack pool to processing
+next active objects, and this new stack page would be used until next pause
+happen. After the paused message processing is resumed and run to completion,
+the stack page is collected and returned to the stack pool for future reuse.
+
+\paragraph{Data sharing and object referencing}
 
 When data (active and passive objects) is shared in Encore, no copying is
 performed, so sharing large objects in Encore poses no performance issues. Due
@@ -1652,6 +1660,20 @@ data race. In a slightly more advanced usage scenario, we might want to share
 part of the mutable passive object so that multiple active objects could work on
 different part of the same passive object concurrently. The capability system is
 work-in-progress, and not available in the compiler currently.
+
+\paragraph{Error handling}
+
+Currently, Encore doesn't have support for exception handling. Errors are
+expressed using \verb|Maybe| type, and programmers could do pattern match on it
+to cater for the erroneous cases.
+
+\paragraph{Garbage collection}
+
+Encore borrows the garbage collection part from Pony runtime with the necessary
+extension to accommodate future values, which is not available in Pony. Garbage
+collection consists of two parts, collecting active objects, which is covered in
+\cite{ref:pony_actor_gc}, and collecting passive objects, which is discussion in
+a paper under submission.
 
 \subsection{Erlang backend for Rebeca}
 \TODO{see if Marjan and ehsan want to put something in this section}	
