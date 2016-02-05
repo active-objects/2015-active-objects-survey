@@ -1503,23 +1503,53 @@ $\bullet$ \textit{Translation of ABS \code{await} statement on futures.}
 In ProActive multiactive objects, a way to control what happens when a thread switches in wait-by-necessity is to specify the kind of thread limit (in addition to the thread number) that is used by the considered multiactive object: a hard limit restricts the total number of threads existing for a multiactive object instance whereas a soft limit only restricts the number of threads that are active (not in wait-by-necessity).
 Thus, in order to achieve the desired request scheduling, we configure the COG class and its \code{execute} method with multiactive object annotations.
 %% RM
-We declare that the generic method of the COG that execute all methods by reflection is compatible with itself, which means that many of such methods are allowed run in parallel. Additionally, we declare that an instance of COG has a thread limit of 1, and that this limit is a soft limit (only thread that  are not in wait-by-necessity are counted in this limit). Consequently, there can exist only one active thread at a time in a COG multiactive object, so generic COG method calls do not run in parallel but interleave upon wait-by-necessity. Consequently, this multiactive configuration leads to a similar scheduling as ABS.
+We declare that the generic method of the COG that executes all methods by reflection is 
+compatible with itself, which means that many of such methods are allowed run in 
+parallel. Additionally, we declare that this set of methods has a thread limit of 1, and 
+that this limit is a soft limit (only thread that  are not in wait-by-necessity are 
+counted in this limit). Consequently, there is only one active thread at a time that 
+serveds requests in a COG multiactive object, so generic COG method calls do not run in 
+parallel but interleave upon wait-by-necessity. Consequently, this multiactive 
+configuration leads to a similar scheduling as ABS.
 	
 \smallskip
 $\bullet$ \textit{Translation of ABS \code{get} statement.}
-The translation of the ABS \code{get} statement would have been straightforward if we had not configured the COG class for the translation of the \code{await} statement. Indeed, by doing so, we have disabled the blocking aspect of a ProActive wait-by-necessity (enabling interleaving). 
+The translation of the ABS \code{get} statement would have been straightforward if we had 
+not configured the COG class for the translation of the \code{await} statement. Indeed, 
+by doing so, we have disabled the blocking aspect of a ProActive wait-by-necessity 
+(enabling cooperative thread release). 
 Consequently, what is required to translate the \code{get} statement is to temporarily go back to the initial behavior of a ProActive wait-by-necessity (i.e. blocking, like without annotations).
-To do that, we temporarily set a hard thread limit just before waiting for the future to be resolved, so that no other thread can start or resume a request in the meantime. When the future is resolved, we set back the soft limit to be default in a cooperative scheduling. 
+To do that, we temporarily switch the thread limit to a hard thread limit, so that no 
+other thread can start or resume a request in the meantime. When the future is resolved, 
+we set back the soft limit restore the cooperative scheduling behaviour. 
 %% RM
 
 \smallskip
 $\bullet$ \textit{Translation of ABS \code{await} statement on conditions.}
-Another usage of the ABS \code{await} statement is to use it followed by a condition. For translating this kind of \code{await} in ProActive, we wrap the condition evaluation in a method call that returns a future, and we synchronize on it afterwards. More precisely, for each such condition, we generate a corresponding method. Then, we translate the \code{await} statement by an asynchronous call to another generic method of the COG class that is specially devoted to execute waiting conditions, giving it all required parameters to do that. Again, we configure this method with multiactive annotations in order to allow several conditions to run in parallel. To be sure that the execution thread is not taken by condition execution, we reserve through annotations one thread only for the generic method execution.  
+Another usage of the ABS \code{await} statement is to use it followed by a condition. For 
+translating this kind of \code{await} in ProActive, we wrap the condition evaluation in a 
+method call that returns a future, and we synchronize on it afterwards. More precisely, 
+for each such condition, we generate a corresponding method. Then, we translate the 
+\code{await} statement by an asynchronous call to another generic method of the COG class 
+that is specially devoted to execute waiting conditions, giving it all required 
+parameters to do that. Again, we configure this method with multiactive annotations in 
+order to allow several conditions to run in parallel. 
+We allocate many threads for the evaluation of conditions and reserve through annotations 
+one thread for the generic method execution.  
 %% RM  
-So in fact we have a clear separation between the single thread used by application method, and the threads used by the condition execution method.
+This way, we have a clear separation between the single thread used by application 
+method, and the threads used by the condition execution method.
 %% RM
 
-In conclusion, all ABS constructs are sustained by the ProActive backend. We have also proven the translation to be correct. For that, we have used ASP, the calculus of ProActive, with multiactive objects extensions, and we have showed that the ASP translation simulates all the rules of ABS semantics, and that all translated ASP configurations correspond to a valid ABS execution. In addition, we have performed two experimental evaluations on an ABS application translated with the ProActive backend, that show that (i) the translated application run in a distributed environment indeed outperforms traditional ABS program execution, and (ii) that the overhead introduced by the translation is always kept under 10\% compared to a native ProActive application.
+In conclusion, all ABS constructs are sustained by the ProActive backend. We have also 
+proven the translation to be correct. For that, we have used ASP with multiactive objects 
+extensions, and we have showed that the ASP translation simulates all the rules of ABS 
+semantics, and that all translated ASP configurations correspond to a valid ABS 
+execution. In addition, we have performed two experimental evaluations on an ABS 
+application translated with the ProActive backend, that show that (i) the translated 
+application run in a distributed environment indeed outperforms traditional ABS program 
+execution, and (ii) that the overhead introduced by the translation is always kept under 
+10\% compared to a native ProActive application.
 
 
 \subsection{Encore}
