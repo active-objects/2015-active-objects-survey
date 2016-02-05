@@ -1451,6 +1451,13 @@ Thus, we have a two-level hierarchical indexing of objects:
 \end{itemize}
 This classification implies that the application always manipulates local references. The 
 translation introduces indirections through COGs that can be accesed by remote references.
+This configuration of objects is illustrated on Figure~\ref{fig:ABS-to-PA-new}, where a new COG is created through a new \code{Server} object.
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.3]{pictures/ABS-to-PA-new.png}
+	\caption{Object organization given by the ProActive backend for ABS when a new COG is created}
+	\label{fig:ABS-to-PA-new}
+\end{figure}
 %% RM
 In the ProActive backend for ABS, the principle to translate an asynchronous ABS call is 
 thus to run a generic asynchronous method call on the COG of the targeted object and then 
