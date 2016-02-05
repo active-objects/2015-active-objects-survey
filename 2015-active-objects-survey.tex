@@ -1449,6 +1449,13 @@ Thus, we have a two-level hierarchical indexing of objects:
 \item A first level of network-wide accessible COG objects. This mechanism is integrated in ProActive as it is based on RMI~\cite{Wollrath:1996:DOM:1268049.1268066}.
 \item A second level of locally accessible objects. This mechanism is implemented in the COG class using a map from object identifiers to object references.
 \end{itemize}
+This configuration of objects is illustrated on Figure~\ref{fig:ABS-to-PA-new}, where a new COG is created through a new \code{Server} object.
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.3]{pictures/ABS-to-PA-new.png}
+	\caption{Object organization given by the ProActive backend for ABS when a new COG is created}
+	\label{fig:ABS-to-PA-new}
+\end{figure}
 This classification implies that the application always manipulates local references except for COG objects that can be manipulated through remote references.
 %% RM
 In the ProActive backend for ABS, the principle to translate an asynchronous ABS call is thus to run a generic asynchronous method call on the COG of the targeted object and then let the generic method of the COG retrieve the targeted object, thanks to a unique identifier, and run the desired method on it by reflection with the method name.
