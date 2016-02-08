@@ -17,7 +17,7 @@
 \usepackage[ruled]{algorithm2e}
 \usepackage{tikz}
 \usepackage{parcolumns}
-\usepackage{listings,multicol}
+\usepackage{listings,multicol,amssymb}
 \renewcommand{\algorithmcfname}{ALGORITHM}
 \SetAlFnt{\small}
 \SetAlCapFnt{\small}
@@ -30,6 +30,16 @@
 \newcommand{\NOTE}[1]{\textcolor{blue}{\textbf{[Note:#1]}}}
 \newcommand{\LUDO}[1]{\textcolor{blue}{\textbf{[Ludo:#1]}}}
 \newcommand{\parT}{\texttt{ParT}}
+
+%% For bold syntax highlighting in the Encore chapter
+\renewcommand{\ttdefault}{lmtt}
+\DeclareFontFamily{T1}{lmtt}{}
+\DeclareFontShape{T1}{lmtt}{m}{n}{<-> ec-lmtl10}{}
+\DeclareFontShape{T1}{lmtt}{m}{\itdefault}{<-> ec-lmtlo10}{}
+\DeclareFontShape{T1}{lmtt}{\bfdefault}{n}{<-> ec-lmtk10}{}
+\DeclareFontShape{T1}{lmtt}{\bfdefault}{\itdefault}{<-> ec-lmtko10}{}
+
+
 % Metadata Information
 %\acmVolume{9}
 %\acmNumber{4}
@@ -863,11 +873,35 @@ for designing component systems; from this point the Vercors platform can on one
 verify the correct behaviour of the application using the CADP model-checker, and on the
 other hand generate an executable ProActive/GCM code corresponding to the designed system.
 
+\lstdefinestyle{encore}{
+  language=java,
+  basicstyle=\tt\color{black},
+  keywordstyle=\tt\bfseries\color{blue},
+  commentstyle=\it,
+  aboveskip=1ex,
+  belowskip=1ex,
+  tabsize=2,
+  columns=fullflexible,
+  xleftmargin=1ex,
+  resetmargins=true,
+  showstringspaces=false,
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  escapeinside=??,
+  morekeywords={assert,exclusive,stable,atomic,immutable,locked,lockfree,unsafe,trait,require,async,finish,def,consume,finish,async,J,S,var,val,shared,safe,subordinate,I,let,in,excl,then,else,wlock,wlocked,rlock,rlocked,read,thread,synchronise,linear,unpack,pack,subord,sync,bound,as,encaps,active,passive,requires,Fut,suspend,await,get}
+}
+
+\lstnewenvironment{ecode}{\lstset{style=encore}}{}
+\lstnewenvironment{ecodep}[1][numbers=left]{\lstset{style=encore,#1}}{}
+\newcommand{\ec}[1]{\lstinline[style=encore,basicstyle=\tt]@#1@}
+
+
 \subsubsection{Encore}
 
 \paragraph{General presentation} Encore \cite{ref:encore}
 is a general purpose parallel language based on active objects
-developed since 2014 \NOTE{check year} by an
+developed since 2014 %% \NOTE{check year} Tobias: this is correct
+by an
 EC-funded research project\TODO{reference to Upscale}. 
 The language has been designed to excel at scalability and rests on four pillar concepts: 
 \textit{parallel by default} using the
@@ -881,44 +915,44 @@ instead of interfaces, provides a trait system \`a la Scala.
 
 \paragraph{Language description}
 In Encore, active objects have their own thread of control and communicate with each 
-other by sending messages. These messages are placed in the receiver's message queue
-and processed by the receiver one at a time. This property linearises
-the execution of the active object. As in any other
-object-oriented language, an active object has attributes and methods.
-The active object state is usually modeled with passive objects. These do not have a 
-thread of control and are
-similar to \textit{unsynchronised} Java objects. A passive object lives in an active object's heap
-and, if shared with multiple active objects, data races may occur.
+other by asynchronous message sends. Messages are appended to the receiver's message queue
+and processed one at a time in FIFO order. % This property linearises
+% the execution of the active object. Tobias: I removed this since it did not make sense
+Active objects act like plain old Java objects, except that they
+have an asynchronous interface. Active objects encapsulate passive
+objects, and operations on passive objects are synchronous. Each
+active object owns a local heap on which it can allocate passive
+objects. The passive objects on a local heap may be shared with
+other active objects, or transferred, but are not not susceptible
+to data-races.
 
-Method calls on active objects are asynchronous and return a future value that, unlike ProActive,
-has the explicit type \texttt{Fut t}. A future value is a handle to a parallel computation,
-has a well defined interface to operate on and is a first class citizen. On the other hand,
-method calls to passive objects are synchronous and behave similar to Java objects.
+Method calls on active objects immediately return a future value
+that, unlike ProActive, has the explicit type \ec{Fut t}, for
+some \ec{t}. Futures support future chaining \textbf{SEE BELOW},
+and both \ec{get} and \ec{await} operations similar to ABS.
 
 The code from Figure~\ref{fig:encore:example} gives a taste of Encore:
 
 \begin{figure}[ht]
 \begin{parcolumns}{2}
 \colchunk{
-\begin{lstlisting}[numbers=left,xleftmargin=4ex,escapechar=\%,numberblanklines=true, showlines=true]
+\begin{lstlisting}[style=encore, numbers=left,xleftmargin=4ex,escapechar=\%,numberblanklines=true, showlines=true]
 passive class Data { ... }    
 
 passive class Queue : TQueue
   top: Link
 
 class Main
-  def main(): void {
+  def main(): void
     let buffer = new Buffer()
-         data = new Data(21)
-    in {
-      buffer.put(data);
-    }
-  }
+        data = new Data(21)
+    in 
+      buffer ! put(data);
 
 \end{lstlisting}
 }
 \colchunk{
-\begin{lstlisting}[firstnumber=14,numbers=left,xleftmargin=4ex,escapechar=\%]
+\begin{lstlisting}[style=encore, firstnumber=14,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]
 trait TQueue
   requires top
   
@@ -941,125 +975,191 @@ class Buffer
 \label{fig:encore:example}
 \end{figure}
 
-The \texttt{Buffer} class (Figure~\ref{fig:encore:example}) represents an active object with
-a private attribute \texttt{queue} of a passive class \texttt{Queue}. This passive class
-implements the trait \texttt{TQueue} (line 3 in Figure~\ref{fig:encore:example}). A trait can be
-seen as a Java interface with a definition and may require some attributes to exists. For instance,
-in line15 the trait \texttt{TQueue}
-requires the existence of an attribute called \texttt{top} and, the next line provides the implementation
-of the \texttt{enqueue} method. Any passive object of type \texttt{Queue} has an implementation
-of methods defined in the traits it extends, in this case, the \texttt{enqueue} method. The \texttt{Main}
-class is the entry point of the program and creates an active object (\texttt{buffer}) and some data.
-The method call \texttt{buffer.put(data)} returns a future that, in this case, is not used and discarded.
+The \ec{Buffer} class (Figure~\ref{fig:encore:example}) represents an active object with
+a private attribute \ec{queue} of a type \ec{Queue}, which is a passive class. \ec{Queue}
+implements the \ec{TQueue} trait (line 3 in Figure~\ref{fig:encore:example}). A trait can be
+thought of as a Java interface with defined methods and may require some attributes to be present
+in implementing classes. For instance, \ec{TQueue}
+requires the existence of an attribute ``\ec{top}'' and provides the implementation
+of the \ec{enqueue} method. Any passive object of type \ec{Queue} has an implementation
+of methods defined in the traits it extends, in this case, the \ec{enqueue} method. The \ec{Main}
+class is the entry point of the program and creates an active object (\ec{buffer}) and some data.
+The method call \ec{buffer ! put(data)} is a uni-directional message send, meaning it does not
+return a future. If it was rewritten as \ec{buffer.put(data)}, it would return a \ec{Fut void}
+value, which would allow the called to detect when the put message is finished processing on the receiver
+side. 
 
-\LUDO{TBDiscussed: rewrite the explanation on get/suspend so that it is closer
-to ABS} Encore currently provides three operators for controlling execution flow
-within and across active objects: \verb|suspend|, \verb|get|, and \verb|await|.
-\verb|suspend| suspends the current message processing, appends a resuming
-message to the message queue and passes control to the next message in the
-message queue (which could be the resuming message if the message queue was
-empty). \verb|get| takes a future as its operand, returns the value in the
-future. In other words, \verb|get| has type: \verb|get :: Fut t -> t|. Depending
-on the status of the future, resolved or not, the control flow change caused by
-\verb|get| is different: if the future is resolved, \verb|get| doesn't alter the
-control flow at all; on the other hand, if the future is not resolved yet,
-\verb|get| would caused the calling active object to be de-scheduled until the
-future is resolved. The active object would be resumed at the exactly same
-execution point except that the future is resolved, and the call to \verb|get|
-returns. Because \verb|get| would stop the whole active object, which might not
-always be desirable, \verb|await| is provided so that only current message
-execution is paused, but the active object could still process other messages in
-the message queue. When the future becomes resolved, a special message is sent
-by the resolver of the future to the active object so that the paused message
-execution could resume. Let's see how each of them behaves in the following
-example. \LUDO{what does the next sentence change?}(To keep things simple, it's
-assumed to be running on a single-core machine or specified to use single
-Operating System thread.)
 
-\begin{lstlisting}[
-  basicstyle=\footnotesize,language=Haskell,
-  multicols=2,
-  numbers=left,xleftmargin=4ex,escapechar=\%
-]
-class Agent
-  def print_1_3() : void {
-    print 1;
-    suspend;
-    print 3;
-  }
-  def print_2() : void {
-    print 2;
-  }
-  def produce() : int {
-    print 2;
-    3;
-  }
-  def print_1() : void {
-    print 1;
-  }
-  def self_produce() : void {
-    let
-      it = this
-      r = it.produce()
-    in {
-      await r;
-      print get r;
-    }
-  }
-class Main
-  def test_suspend() : void
-    let
-      a = new Agent
-    in {
-      a.print_1_3();
-      a.print_2();
-    }
-  def test_get() : void
-    let
-      a = new Agent
-      ret_future = null
-      ret = 0
-    in {
-      ret_future = a.produce();
-      print 1
-      ret = get ret_future;
-      print ret;
-    }
-  def test_await() : void
-    let
-      a = new Agent
-    in {
-      a.self_produce();
-      a.print_1();
-    }
-  def main() : void {
-    -- call the other two methods like this
-    this.test_suspend();
-  }
+\paragraph{Cooperative Scheduling of Active Objects}
 
-\end{lstlisting}
+Encore supports versions of the \ec{suspend}, \ec{get}, and
+\ec{await} statements similar to ABS. In contrast with ABS, Encore
+supports using suspend and await anywhere in a program, as opposed
+to ABS which only permits this at the top-level of a method inside
+active objects. This is due to underlying technical reasons
+described in the implementation sections of Encore and ABS.
+Encore's \ec{await} statement is somewhat limited in relation
+to ABS as it only supports awaiting the fulfilment of a future,
+and not any boolean condition.
 
-The \verb|Main| class contains three methods for showing the semantics of each
-operator, and the \verb|main| method, the entry point of the program. In the
-\verb|test_suspend| method, two messages, \verb|print_1_3| and \verb|print_2|,
-are sent to the agent one after the other. The \verb|suspend| operator in
-\verb|print_1_3| will suspend the execution of \verb|print_1_3|, and move the
-control to the next message in the queue, which is \verb|print_2|. Once
-\verb|print_2| is finished, the control will go to the next message, which is
-the resuming message created due to \verb|suspend| call in \verb|print_1_3|.
-Therefore, the output would be 1, 2, 3. In the
-\verb|test_get| method, the \verb|produce| call returns a future, and
-calling \verb|get| on that future (which can be guaranteed to be un-resolved
-while running in the single threaded settings) blocks the \verb|test_get|
-method until the future is resolved. Therefore, the output is 1, 2, 3, separated
-by new lines. In the \verb|test_await| method, two messages, \verb|self_produce|
-and \verb|print_1|, are sent to the agent. The agent processes them in
-order, but in \verb|self_produce|, \verb|await| is called on an un-resolved
-future (which is guaranteed to be un-resolved due to the same reason as above),
-which pauses the execution, and moves the control to the next message, which is
-\verb|print_1|. After that, the \verb|produce| message, created inside
-\verb|self_produce|, is processed, which resolves the awaited future, and
-\verb|self_produce| is resumed. Therefore, the output is 1, 2, 3.
+A pictorial overview of the semantics of \ec{suspend}, \ec{await}
+and \ec{get} is found in Figures~\ref{fig:enc-suspend} and
+\ref{fig:enc-get-await}. The type signatures of the operations
+are found below:
+
+\begin{center}
+\begin{tabular}{rcl}
+\ec{suspend} & \ec{::} & \ec{void -> void} \\
+\ec{    get} & \ec{::} & \ec{Fut t -> t} \\
+\ec{  await} & \ec{::} & \ec{Fut t -> void} 
+\end{tabular}
+\end{center}
+
+
+% \LUDO{TBDiscussed: rewrite the explanation on get/suspend so that it is closer
+% to ABS} Encore currently provides three operators for controlling execution flow
+% within and across active objects: \verb|suspend|, \verb|get|, and \verb|await|.
+% \verb|suspend| suspends the current message processing, appends a resuming
+% message to the message queue and passes control to the next message in the
+% message queue (which could be the resuming message if the message queue was
+% empty). \verb|get| takes a future as its operand, returns the value in the
+% future. In other words, \verb|get| has type: \verb|get :: Fut t -> t|. Depending
+% on the status of the future, resolved or not, the control flow change caused by
+% \verb|get| is different: if the future is resolved, \verb|get| doesn't alter the
+% control flow at all; on the other hand, if the future is not resolved yet,
+% \verb|get| would caused the calling active object to be de-scheduled until the
+% future is resolved. The active object would be resumed at the exactly same
+% execution point except that the future is resolved, and the call to \verb|get|
+% returns. Because \verb|get| would stop the whole active object, which might not
+% always be desirable, \verb|await| is provided so that only current message
+% execution is paused, but the active object could still process other messages in
+% the message queue. When the future becomes resolved, a special message is sent
+% by the resolver of the future to the active object so that the paused message
+% execution could resume. Let's see how each of them behaves in the following
+% example. \LUDO{what does the next sentence change?}(To keep things simple, it's
+% assumed to be running on a single-core machine or specified to use single
+% Operating System thread.)
+
+% \begin{lstlisting}[
+%   basicstyle=\footnotesize,language=Haskell,
+%   multicols=2,
+%   numbers=left,xleftmargin=4ex,escapechar=\%
+% ]
+% class Agent
+%   def print_1_3() : void {
+%     print 1;
+%     suspend;
+%     print 3;
+%   }
+%   def print_2() : void {
+%     print 2;
+%   }
+%   def produce() : int {
+%     print 2;
+%     3;
+%   }
+%   def print_1() : void {
+%     print 1;
+%   }
+%   def self_produce() : void {
+%     let
+%       it = this
+%       r = it.produce()
+%     in {
+%       await r;
+%       print get r;
+%     }
+%   }
+% class Main
+%   def test_suspend() : void
+%     let
+%       a = new Agent
+%     in {
+%       a.print_1_3();
+%       a.print_2();
+%     }
+%   def test_get() : void
+%     let
+%       a = new Agent
+%       ret_future = null
+%       ret = 0
+%     in {
+%       ret_future = a.produce();
+%       print 1
+%       ret = get ret_future;
+%       print ret;
+%     }
+%   def test_await() : void
+%     let
+%       a = new Agent
+%     in {
+%       a.self_produce();
+%       a.print_1();
+%     }
+%   def main() : void {
+%     -- call the other two methods like this
+%     this.test_suspend();
+%   }
+
+% \end{lstlisting}
+
+% The \verb|Main| class contains three methods for showing the semantics of each
+% operator, and the \verb|main| method, the entry point of the program. In the
+% \verb|test_suspend| method, two messages, \verb|print_1_3| and \verb|print_2|,
+% are sent to the agent one after the other. The \verb|suspend| operator in
+% \verb|print_1_3| will suspend the execution of \verb|print_1_3|, and move the
+% control to the next message in the queue, which is \verb|print_2|. Once
+% \verb|print_2| is finished, the control will go to the next message, which is
+% the resuming message created due to \verb|suspend| call in \verb|print_1_3|.
+% Therefore, the output would be 1, 2, 3. In the
+% \verb|test_get| method, the \verb|produce| call returns a future, and
+% calling \verb|get| on that future (which can be guaranteed to be un-resolved
+% while running in the single threaded settings) blocks the \verb|test_get|
+% method until the future is resolved. Therefore, the output is 1, 2, 3, separated
+% by new lines. In the \verb|test_await| method, two messages, \verb|self_produce|
+% and \verb|print_1|, are sent to the agent. The agent processes them in
+% order, but in \verb|self_produce|, \verb|await| is called on an un-resolved
+% future (which is guaranteed to be un-resolved due to the same reason as above),
+% which pauses the execution, and moves the control to the next message, which is
+% \verb|print_1|. After that, the \verb|produce| message, created inside
+% \verb|self_produce|, is processed, which resolves the awaited future, and
+% \verb|self_produce| is resumed. Therefore, the output is 1, 2, 3.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[scale=.4]{pictures/enc-basic}
+\qquad
+  \includegraphics[scale=.4]{pictures/enc-resume}
+  \caption{(Left) An Encore scheduler, local to one core. A
+    scheduler has a queue of active objects with non-empty message
+    queues. (Right) The result of the executing active in the left
+    picture executing a \ec{suspend}.}
+  \label{fig:enc-suspend}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+%  \includegraphics[scale=.4]{pictures/enc-get-await-fulfilled}
+  \includegraphics[scale=.4]{pictures/enc-get-unfulfilled}
+\qquad
+  \includegraphics[scale=.4]{pictures/enc-await-unfulfilled}
+  \caption{(Left) An Encore program executing a \ec{get} on an
+    unfillfilled future. This causes the currently executing
+    active object to be descheduled, only to be rescheduled after
+    the future has been fulfilled. Once the object gets to the
+    head of the scheduling queue after this point, the \ec{get}
+    operation returns and the program continues from this point.
+    with non-empty message queues. (Right) An Encore program
+    executing an \ec{await} on an unfillfilled future. In
+    difference with \ec{get}, the active object is only
+    descheduled if it does not have any messages in its message
+    queue, and once the future is fulfilled, the resuming method
+    is placed at the end of the active object's queue.}
+  \label{fig:enc-get-await}
+\end{figure}
+
+
+\paragraph{Parallelism Inside Active Objects}
 
 Active objects provide coarse grain parallelism via futures but do not offer
 many high-level language constructs for low-level coordination of these computations.
@@ -1106,15 +1206,15 @@ when the values are available. There are more combinators available \cite{ref:en
 but we have highlighted the most important ones.
 
 
-\paragraph{Degree of synchronisation}
+\paragraph{Degree of Synchronisation}
 
 Like in ABS and in ASP, in Encore, synchronisation results of message passing and 
-synchronisation on futures.  \verb|get| and  \verb|await| provide the same 
+synchronisation on futures.  \ec{get} and  \ec{await} provide the same 
 synchronisation possibilities and the same control on futures as in ABS: blocking until 
 the future is resolved or releasing the current thread if the future is not resolved. One 
 more original asynchronous constructs in Encore is the future chaining operator 
-($\sim\sim>$).
- $\sim\sim>$ registers a callback
+($\rightsquigarrow$).
+ $\rightsquigarrow$ registers a callback
 (anonymous function, aka lambda) to the future, continue processing the rest of
 the message. The callback would be called with the future contend as the
 argument when the future is resolved. This construct allows chaining operation on futures 
@@ -1149,31 +1249,70 @@ some or all the text}
 
 \paragraph{Degree of transparency}
 
-Futures are denoted as \verb|Fut| in Encore, so non-future
-variables and future variables are distinguished statically, e.g.\ \verb|int| vs
-\verb|Fut int|. In other words, developers must decide which variables are given
-which type, and \verb|get| could be use to convert future type to non-future
-type (if the content of the future is non-future type, i.e.\ not something like
-\verb|Fut Fut int|) by extracting the content explicitly. Both in future management and 
-with parallel combinators, the programmer is exposed to the concurrent computations being 
-handled in Encore. However, especially  when using future chaining or parallel 
-combinators, the scheduling and ordering of operations is handled automatically, and the 
-programmer only expresses concurrency from a high-level point of view.
+Futures are denoted as \ec{Fut} in Encore, so non-future variables
+and future variables are distinguished statically, e.g.\ \ec{int}
+vs \ec{Fut int}. In other words, developers must decide which
+variables are given which type, and \ec{get} could be use to
+convert future type to non-future type (if the content of the
+future is non-future type, i.e.\ not something like \ec{Fut Fut
+  int}) by extracting the content explicitly. Both in future
+management and with parallel combinators, the programmer is
+exposed to the concurrent computations being handled in Encore.
+However, especially when using future chaining or parallel
+combinators, the scheduling and ordering of operations is handled
+automatically, and the programmer only expresses concurrency from
+a high-level point of view.
 
 \paragraph{Data sharing}
+
 In Encore, active objects are protected by their own thread of control
 while passive objects are protected by a \textit{capability} type.
 Encore's type system sees passive objects as resources that
 are protected by a capability that governs the kind of access to it \cite{ref:encore}. 
 A capability is built from a trait and a \textit{kind}. The trait provides the interface-like
-feeling of OOP languages while the \textit{kind} states the "protection" that
+feeling of OOP languages while the \textit{kind} states the ``protection'' that
 the interface provides. By changing a keyword, the \textit{kind}, the interface
 changes the protection level. For instance, by changing the \textit{kind} from \textit{exclusive}
 to \textit{lock-free}, the interface changes the protection from an actor-like to a lock-free implementation.
 
+The Encore capabilities form the hierarchy seen in
+Figure~\ref{fig:capa-tree}. Exclusive capabilities are local to
+one thread only and linear capabilities may be transferred between
+concurrent computations without data-races of dynamic means of
+concurrency control. Shared capabilities may be shared across
+concurrent computations because these capabilities encapsulate
+some means of protection against concurrent accesses: pessimistic
+capabilities like locks and actors serialise computation;
+optimistic capabilities like STM and lock-free capabilities allow
+parallel operations but uses some form of roll-back scheme when
+conflicts are detected. Immutable and read-only capabilities are
+always safe to access concurrently because of the absence of
+writes. Finally, subordinate capabilities allow constructing
+aggregates of objects whose data-race freedom stems from their
+proper encapsulation inside some other capability.
+
+Encore capabilities are created from traits, and importantly,
+different traits in the same class can construct different
+capabilities. This allows a substructural treatment of objects,
+e.g., taking a pair and splitting it into two disjoint halves,
+which can be pointed to and modified separate of each other. One
+of the more experimental features of Encore, which is far from
+fully explored, is the combination of certain capabilities to
+express e.g., an active object with a partially synchronous
+interface (like a priority channel), or active objects which are
+encapsulated inside other active objects to create constrained
+active object topologies.
+
 \LUDO{perhaps you could detail a little this data-sharing aspect as it is probably one of 
 the most original aspect compared to the other languages? perhaps explain most of the 
 capabilities?}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[scale=.4]{pictures/capabilities}
+  \caption{Encore capability hierarchy.}
+  \label{fig:capa-tree}
+\end{figure}
 
 \paragraph{Formalization and semantics}
 The Encore concurrency model has been formalized (\cite{ref:encore}) using
