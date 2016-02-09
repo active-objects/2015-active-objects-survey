@@ -29,6 +29,7 @@
 \newcommand{\TODO}[1]{\textcolor{red}{\textbf{[TODO:#1]}}}
 \newcommand{\NOTE}[1]{\textcolor{blue}{\textbf{[Note:#1]}}}
 \newcommand{\LUDO}[1]{\textcolor{blue}{\textbf{[Ludo:#1]}}}
+\newcommand{\TW}[1]{\textcolor{magenta}{\textbf{[Tobias:#1]}}}
 \newcommand{\parT}{\texttt{ParT}}
 
 %% For bold syntax highlighting in the Encore chapter
@@ -908,7 +909,7 @@ The language has been designed to excel at scalability and rests on four pillar 
 active object paradigm for coarse grain parallelism, \textit{independent
 local heaps} to promote data locality, \textit{type-based synchronisation directives}
 provided by a novel capability system and \textit{coordination of parallel
-computations and low-level data parallelism} via parallel combinators.
+computations and low-level data parallelism} via parallel combinators. \TW{Make sure to revisit all of these pillars properly in the text. (And that it is easy to find them.)}
 On top of these key ingredients, Encore stays loyal to the object-oriented paradigm
 where active objects and futures can be seen as normal Java objects and,
 instead of interfaces, provides a trait system \`a la Scala.
@@ -918,11 +919,14 @@ In Encore, active objects have their own thread of control and communicate with 
 other by asynchronous message sends. Messages are appended to the receiver's message queue
 and processed one at a time in FIFO order. % This property linearises
 % the execution of the active object. Tobias: I removed this since it did not make sense
-Active objects act like plain old Java objects, except that they
-have an asynchronous interface. Active objects encapsulate passive
-objects, and operations on passive objects are synchronous. Each
-active object owns a local heap on which it can allocate passive
-objects. The passive objects on a local heap may be shared with
+Active objects act like ``plain old Java objects'', except that
+they have an asynchronous interface. Active objects encapsulate
+passive objects, and operations on passive objects are
+synchronous. Each active object owns a local heap on which it can
+allocate passive objects. Ownership in this context means that the
+actor is responsible for keeping track on foreign dependencies on
+passive objects on its local heap, and eventually deallocate them. 
+The passive objects on a local heap may be shared with
 other active objects, or transferred, but are not not susceptible
 to data-races.
 
@@ -971,12 +975,12 @@ class Buffer
 }
 \colplacechunks
 \end{parcolumns}
-\caption{Example of a Buffer implementation that uses traits, active and passive objects in Encore}
+\caption{Example of a Buffer implementation that uses traits, active and passive objects in Encore. \TW{Can the code be placed in a more natural order? Also -- line numbers are off so need to be changed and then sync'd with the references in text. }}
 \label{fig:encore:example}
 \end{figure}
 
-The \ec{Buffer} class (Figure~\ref{fig:encore:example}) represents an active object with
-a private attribute \ec{queue} of a type \ec{Queue}, which is a passive class. \ec{Queue}
+The \ec{Buffer} class (Figure~\ref{fig:encore:example}) is an active object with
+a private \ec{queue} of a type \ec{Queue}, which is a passive class. \ec{Queue}
 implements the \ec{TQueue} trait (line 3 in Figure~\ref{fig:encore:example}). A trait can be
 thought of as a Java interface with defined methods and may require some attributes to be present
 in implementing classes. For instance, \ec{TQueue}
@@ -997,14 +1001,13 @@ Encore supports versions of the \ec{suspend}, \ec{get}, and
 supports using suspend and await anywhere in a program, as opposed
 to ABS which only permits this at the top-level of a method inside
 active objects. This is due to underlying technical reasons
-described in the implementation sections of Encore and ABS.
-Encore's \ec{await} statement is somewhat limited in relation
-to ABS as it only supports awaiting the fulfilment of a future,
-and not any boolean condition.
-
-A pictorial overview of the semantics of \ec{suspend}, \ec{await}
-and \ec{get} is found in Figures~\ref{fig:enc-suspend} and
-\ref{fig:enc-get-await}. The type signatures of the operations
+described in the implementation sections of Encore and ABS
+\TW{Make it so! :) Encore threads yadayada.}. Encore's \ec{await}
+statement is somewhat limited in relation to ABS's as it only
+supports awaiting the fulfilment of a future, and not any boolean
+condition. Encore's support for future chaining however makes
+\ec{await} less useful as chaining allows triggering arbitrary operations on the fulfilment of future. 
+The type signatures of the operations
 are found below:
 
 \begin{center}
@@ -1014,6 +1017,14 @@ are found below:
 \ec{  await} & \ec{::} & \ec{Fut t -> void} 
 \end{tabular}
 \end{center}
+
+A pictorial overview of the semantics of \ec{suspend}, \ec{await}
+and \ec{get} is found in Figures~\ref{fig:enc-suspend} and
+\ref{fig:enc-get-await}. It shows how the operations may involve
+\emph{descheduling} an object (removed from round-robin scheduler
+queue), \emph{blocking} (no processing of other messages in the
+object's queue), and whether a resuming message is prepended or
+appended to the object's queue.
 
 
 % \LUDO{TBDiscussed: rewrite the explanation on get/suspend so that it is closer
@@ -1164,12 +1175,24 @@ are found below:
 Active objects provide coarse grain parallelism via futures but do not offer
 many high-level language constructs for low-level coordination of these computations.
 In order to unhinge parallel pipeline and data parallelism, Encore incorporates
-the \parT{} collection and the parallel combinators.
-The \parT{} collection can hold computations that may not have finished and
-is represented by the type, \texttt{Par t}, where \texttt{t} represents a polymorphic type. 
-Elements of the collection can be normal values and
+\parT{} collections and associated parallel combinators. A \parT{}
+collection is a set of possibly parallel computations that return
+values of a single type. The \parT{} collection is opaque---it
+does not allow observing the number of on-going computations, and
+whether individual computations have finished or not. A \parT{} collection 
+has the type, \texttt{Par t}, where \texttt{t} is a polymorphic type. 
+\TW{This sentence is not possible to understand:} Elements of a collection can be normal values and
 future values which can be \textit{lifted} to a parallel collection via
 \texttt{liftv :: t $\to$ Par t} and \texttt{lift :: Fut t $\to$ Par t} respectively.
+
+\TW{Rather than just going through the combinators, say how a
+  parallel collection is created (that's not visible in the text
+  now), and how it can be ``extended'' by additional combinators.
+  A picture of a pipeline and its combinator stages would be good!
+  Once the reader understands the what ParT types do, you can list
+  the other combinators because then she is ready to think about
+  them in a constructive manner.}
+
 
 The available combinators that operate on the \parT{} collection are:
 \LUDO{the explanations below are less clear than the rest of the text, I also think they 
