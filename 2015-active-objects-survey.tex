@@ -895,15 +895,15 @@ other hand generate an executable ProActive/GCM code corresponding to the design
 \lstnewenvironment{ecode}{\lstset{style=encore}}{}
 \lstnewenvironment{ecodep}[1][numbers=left]{\lstset{style=encore,#1}}{}
 \newcommand{\ec}[1]{\lstinline[style=encore,basicstyle=\tt]@#1@}
-
+\newcommand{\Upscale}{\textsc{UpScale}\xspace}
 
 \subsubsection{Encore}
 
 \paragraph{General presentation} Encore \cite{ref:encore}
 is a general purpose parallel language based on active objects
-developed since 2014 %% \NOTE{check year} Tobias: this is correct
-by an
-EC-funded research project\TODO{reference to Upscale}. 
+developed since 2014 by an
+EC-funded research project\footnote{EU project FP7-612985 \Upscale:
+From Inherent Concurrency to Massive Parallelism through Type-based~Optimisations.}. 
 The language has been designed to excel at scalability and rests on four pillar concepts: 
 \textit{parallel by default} using the
 active object paradigm for coarse grain parallelism, \textit{independent
