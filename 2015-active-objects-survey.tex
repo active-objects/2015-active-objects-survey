@@ -1175,54 +1175,140 @@ appended to the object's queue.
 \paragraph{Parallelism Inside Active Objects}
 
 Active objects provide coarse grain parallelism via futures but do not offer
-many high-level language constructs for low-level coordination of these computations.
-In order to unhinge parallel pipeline and data parallelism, Encore incorporates
-\parT{} collections and associated parallel combinators. A \parT{}
-collection is a set of possibly parallel computations that return
-values of a single type. The \parT{} collection is opaque---it
-does not allow observing the number of on-going computations, and
-whether individual computations have finished or not. A \parT{} collection 
-has the type, \texttt{Par t}, where \texttt{t} is a polymorphic type. 
-\TW{This sentence is not possible to understand:} Elements of a collection can be normal values and
-future values which can be \textit{lifted} to a parallel collection via
-\texttt{liftv :: t $\to$ Par t} and \texttt{lift :: Fut t $\to$ Par t} respectively.
+many high-level language constructs for low-level coordination of these parallel computations.
+In order to express complex coordination workflows, such as pipeline and
+speculative parallelism, Encore incorporates
+\parT{} collections and associated parallel combinators.
+A \parT{} collection is an abstraction that can contain asynchronous computations,
+but it represents more than a mere container, as \parT{} can be seen as a handle to these
+asynchronous computations, exploited via the combinators.
+%
+%The \parT{} collection is opaque---it
+%does not allow observing the number of on-going computations, and
+%whether individual computations have finished or not. 
+%
+\parT{} collections have the type \texttt{Par t} (\texttt{t} is a polymorphic type)
+and can contain values and asynchronous computations
+represented by futures.
+%, but it does not create new threads,
+%as that may have a negative impact performance-wise.
+%
+%\TW{This sentence is not possible to understand:} Elements of a collection can be normal values and
+%future values which can be \textit{lifted} to a parallel collection via
+%\texttt{liftv :: t $\to$ Par t} and \texttt{lift :: Fut t $\to$ Par t} respectively.
+%
+%\TW{Rather than just going through the combinators, say how a
+%  parallel collection is created (that's not visible in the text
+%  now), and how it can be ``extended'' by additional combinators.
+%  A picture of a pipeline and its combinator stages would be good!
+%  Once the reader understands the what ParT types do, you can list
+%  the other combinators because then she is ready to think about
+%  them in a constructive manner.}
 
-\TW{Rather than just going through the combinators, say how a
-  parallel collection is created (that's not visible in the text
-  now), and how it can be ``extended'' by additional combinators.
-  A picture of a pipeline and its combinator stages would be good!
-  Once the reader understands the what ParT types do, you can list
-  the other combinators because then she is ready to think about
-  them in a constructive manner.}
+Futures created from tasks or methods calls on active objects can be lifted
+to the \parT{} abstraction via the \emph{lift} combinator (lift :: Fut t $\to$ Par t);
+multiple \parT{}s can be treated as a single one with
+the $\|$ construct ($\| :: Par \;t \to Par \;t \to Par \;t$), which takes two \parT{}s
+and returns a new \parT{} collection. This construct does not create new threads,
+but exploits the inner parallelism within the \parT{}, spawning new tasks when there
+is an optimisation opportunity.
+%, which increases the degree of asynchrony while keeping the throughput of the system.
+
+The \parT{} combinators are informally explained based in the example from Fig.~\ref{fig:encore:factorisation},
+which computes the LU and Cholesky factorisation asynchronously, inverts these matrixes in parallel,
+gets the diagonal of the first inverted matrix result and terminates the remaining computations.
+%
+The LU and Cholesky factorisation are performed asynchronously, spawning tasks (lines 27 - 30), and the
+obtained futures are lifted to a \parT{} abstraction (line 31).
+%
+This example inverts, asynchronously, the factorised matrixes using the \emph{bind} combinator
+($>>= :: Par \ t \to (t \to Par\ t') \to Par\ t'$), where
+the second argument is a function that is applied asynchronously to the items in the
+\parT{} collection, therefore creating pipeline parallelism. 
+%
+Afterwards, with the prune combinator ($<< \; :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$),
+the \verb|getDiagonal| function is applied to the first computation that returns the inverted matrix result
+and the remaining computations are terminated --- stopping the speculative work.
+
+\begin{figure}[ht]
+\begin{parcolumns}{2}
+\colchunk{
+\begin{lstlisting}[style=encore, firstnumber=1,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]                                                           
+def luFact(Matrix m): [Factor] {
+    ...
+}                                                                              
+                                                                                
+def choleskyFact(Matrix m): [Factor] {
+    ...
+}
+                                                                                
+def matrixInv(f: [Factor])
+        : Par [Matrix] {
+    ...
+}
+
+def getDiagonal(Fut (Maybe [Matrix]))
+        : Par [Factor] {
+    ...
+}
+\end{lstlisting}
+}               
+%
+\colchunk{
+\begin{lstlisting}[style=encore, firstnumber=18,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]                                                                                                                                           
+
+class Main         
+
+  def getMatrix(): Matrix {                                                    
+      ...                                                                      
+  }                                                                            
+
+  def main(): [Factor]                                                                    
+    let matrix = this.getMatrix()                                            
+        fLU = async { luFact(matrix) }
+        fChlsk = async { 
+                  choleskyFact(matrix) 
+                }
+        par = (lift fLU) || (lift fChlsk)
+    in                                                                       
+        getDiagonal << 
+            (par >>= matrixInversion)
+           
+\end{lstlisting}
+}
+\colplacechunks
+\end{parcolumns}
+\caption{\label{fig:encore:factorisation}Data-pipeline and speculative parallelism for matrix factorisation in Encore. }
+\end{figure}
 
 
-The available combinators that operate on the \parT{} collection are:
-\LUDO{the explanations below are less clear than the rest of the text, I also think they 
-should be better justified from a high-level point of view: actor constructs will be 
-explained in details before but not those ... to be discussed, but a few comments}
+%The available combinators that operate on the \parT{} collection are:
+%\LUDO{the explanations below are less clear than the rest of the text, I also think they 
+%should be better justified from a high-level point of view: actor constructs will be 
+%explained in details before but not those ... to be discussed, but a few comments}
 
-\textbf{$| \; :: Par \;t \to Par \;t \to Par \;t$,} read as \textit{par} combinator, that creates a new
-\parT{} that holds the computations from the first and second expression. \LUDO{do you 
-mean it concatenates the 2 constructs? or does this create parallelcomputation? how?}
+%\textbf{$| \; :: Par \;t \to Par \;t \to Par \;t$,} read as \textit{par} combinator, that creates a new
+%\parT{} that holds the computations from the first and second expression. \LUDO{do you 
+%mean it concatenates the 2 constructs? or does this create parallelcomputation? how?}
 
-\textbf{$>< \; :: Par \; t \to Par \;t \to Par \;t$,} read as \textit{otherwise} combinator,
-that executes the first expression until the returned value is known and, if empty,
-starts execution of the second expression. \LUDO{Now I am lost, I thought ParT was data 
-collection ... is it an expression instead?}
-
-\textbf{$>> \; :: Par \; t \to (t \to t') \to Par \; t'$}, read as \textit{sequence} combinator,
-applies the function to all elements of the \parT{} collection asynchronously -- creating
-parallel pipeline parallelism-- and returns a new \parT{} collection. \LUDO{is it a map 
-or is it something else? a pipeline is one (stream of) data and a set of functions to 
-evaluate, I am not sure this is the case here}
-
-\LUDO{I will have a look at the end of the paragraph once the above has been resolved}
-
-\textbf{$<< \; :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$}, read as 
-\textit{prune} combinator,
-starts execution of both expressions in parallel. As soon as there is a value available
-in the second expression, this on gets passed to the first expression and all the remaining
-computations from the second expressions are ignored. 
+%\textbf{$>< \; :: Par \; t \to Par \;t \to Par \;t$,} read as \textit{otherwise} combinator,
+%that executes the first expression until the returned value is known and, if empty,
+%starts execution of the second expression. \LUDO{Now I am lost, I thought ParT was data 
+%collection ... is it an expression instead?}
+%
+%\textbf{$>> \; :: Par \; t \to (t \to t') \to Par \; t'$}, read as \textit{sequence} combinator,
+%applies the function to all elements of the \parT{} collection asynchronously -- creating
+%parallel pipeline parallelism-- and returns a new \parT{} collection. \LUDO{is it a map 
+%or is it something else? a pipeline is one (stream of) data and a set of functions to 
+%evaluate, I am not sure this is the case here}
+%
+%\LUDO{I will have a look at the end of the paragraph once the above has been resolved}
+%
+%\textbf{$<< \; :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$}, read as 
+%\textit{prune} combinator,
+%starts execution of both expressions in parallel. As soon as there is a value available
+%in the second expression, this on gets passed to the first expression and all the remaining
+%computations from the second expressions are ignored. 
 
 The \parT{} collection and its combinators have been designed to perform
 operations asynchronously without stopping the current thread of execution.
