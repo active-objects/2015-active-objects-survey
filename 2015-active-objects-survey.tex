@@ -930,6 +930,8 @@ The passive objects on a local heap may be shared with
 other active objects, or transferred, but are not not susceptible
 to data-races.
 
+\TODO{Talk about tasks, which is more lightweight than actors}
+
 Method calls on active objects immediately return a future value
 that, unlike ProActive, has the explicit type \ec{Fut t}, for
 some \ec{t}. Futures support future chaining \textbf{SEE BELOW},
