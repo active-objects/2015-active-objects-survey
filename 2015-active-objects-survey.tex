@@ -1339,9 +1339,10 @@ resolved thus the callback function is executed later than in the ASP case and t
 request could be delayed forever if the future is never resolved, in which case the ASP 
 request would create a deadlock.
 
-\LUDO{I changed this paragraph to better relate with the other languages (perhaps too 
-long or too much references), the previous version is commented if you want to recover 
-some or all the text}
+%\LUDO{I changed this paragraph to better relate with the other languages (perhaps too 
+%long or too much references), the previous version is commented if you want to recover 
+%some or all the text}
+
 %In Encore, there are two ways for synchronisation, message passing, and
 %synchronisation by futures. From the message passing perspective, each method
 %call on active objects could be interpreted as a message transmitting, and
@@ -1414,13 +1415,9 @@ interface (like a priority channel), or active objects which are
 encapsulated inside other active objects to create constrained
 active object topologies.
 
-\LUDO{perhaps you could detail a little this data-sharing aspect as it is probably one of 
-the most original aspect compared to the other languages? perhaps explain most of the 
-capabilities?}
-
 \begin{figure}[t]
   \centering
-  \includegraphics[scale=.4]{pictures/capabilities}
+  \includegraphics[scale=.33]{pictures/capabilities}
   \caption{Encore capability hierarchy.}
   \label{fig:capa-tree}
 \end{figure}
