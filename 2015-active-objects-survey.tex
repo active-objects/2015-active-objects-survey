@@ -1031,15 +1031,15 @@ other hand generate an executable ProActive/GCM code corresponding to the design
 \lstnewenvironment{ecode}{\lstset{style=encore}}{}
 \lstnewenvironment{ecodep}[1][numbers=left]{\lstset{style=encore,#1}}{}
 \newcommand{\ec}[1]{\lstinline[style=encore,basicstyle=\tt]@#1@}
-
+\newcommand{\Upscale}{\textsc{UpScale}\xspace}
 
 \subsubsection{Encore}
 
 \paragraph{General presentation} Encore \cite{ref:encore}
 is a general purpose parallel language based on active objects
-developed since 2014 %% \NOTE{check year} Tobias: this is correct
-by an
-EC-funded research project\TODO{reference to Upscale}. 
+developed since 2014 by an
+EC-funded research project\footnote{EU project FP7-612985 \Upscale:
+From Inherent Concurrency to Massive Parallelism through Type-based~Optimisations.}. 
 The language has been designed to excel at scalability and rests on four pillar concepts: 
 \textit{parallel by default} using the
 active object paradigm for coarse grain parallelism, \textit{independent
@@ -1063,42 +1063,50 @@ allocate passive objects. Ownership in this context means that the
 actor is responsible for keeping track on foreign dependencies on
 passive objects on its local heap, and eventually deallocate them. 
 The passive objects on a local heap may be shared with
-other active objects, or transferred, but are not not susceptible
-to data-races.
+other active objects, or transferred, but are susceptible to data-races.
+%
+Active objects provide coarse-grain parallelism, i.e., an active object
+cannot work on multiple method calls at the same time.
+%
+In order to create fine-grain parallel computations, Encore
+has tasks (\ec{async \{ e \}}), which contain a body \verb|e| that is asynchronously executed
+and, whose return value is immediately a future. Tasks increase the level
+of asynchrony on the system, keeping the throughput while being
+space (memory) efficient.
 
-Method calls on active objects immediately return a future value
+Method calls on active objects and spawning of tasks immediately return a future value
 that, unlike ProActive, has the explicit type \ec{Fut t}, for
-some \ec{t}. Futures support future chaining \textbf{SEE BELOW},
+some \ec{t}. Futures support future chaining,
 and both \ec{get} and \ec{await} operations similar to ABS.
+%
+These operations are explained in detail later (in \emph{Cooperate Scheduling of Active Objects}).
 
-The code from Figure~\ref{fig:encore:example} gives a taste of Encore:
-
+The example below (Fig.~\ref{fig:encore:example}) shows a buffer implementation
+using the features of the Encore.
+%
 \begin{figure}[ht]
 \begin{parcolumns}{2}
 \colchunk{
-\begin{lstlisting}[style=encore, numbers=left,xleftmargin=4ex,escapechar=\%,numberblanklines=true, showlines=true]
-passive class Data { ... }    
-
-passive class Queue : TQueue
-  top: Link
-
-class Main
-  def main(): void
-    let buffer = new Buffer()
-        data = new Data(21)
-    in 
-      buffer ! put(data);
-
-\end{lstlisting}
-}
-\colchunk{
-\begin{lstlisting}[style=encore, firstnumber=14,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]
-trait TQueue
+\begin{lstlisting}[style=encore, firstnumber=1, lastline=14,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible, showlines=true]                                                           
+trait TQueue {
   requires top
   
   def enqueue(x: int): void
     this.top = new Data(x, this.top)
+}
 
+passive class Data { 
+  ... 
+}    
+
+passive class Queue : TQueue {
+  top: Link
+}  
+\end{lstlisting}
+}
+%
+\colchunk{
+\begin{lstlisting}[style=encore, firstnumber=14,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]                                                           
 class Buffer
    queue: Queue
    
@@ -1107,24 +1115,30 @@ class Buffer
     
   def put(item: Data): void
     this.queue.enqueue(item)
+
+class Main
+  def main(): void
+    let buffer = new Buffer()
+        data = new Data(21)
+     in buffer ! put(data)
 \end{lstlisting}
 }
 \colplacechunks
 \end{parcolumns}
-\caption{Example of a Buffer implementation that uses traits, active and passive objects in Encore. \TW{Can the code be placed in a more natural order? Also -- line numbers are off so need to be changed and then sync'd with the references in text. }}
-\label{fig:encore:example}
+\caption{\label{fig:encore:example}Example of a Buffer implementation that uses traits, active and passive objects in Encore.}
 \end{figure}
-
-The \ec{Buffer} class (Figure~\ref{fig:encore:example}) is an active object with
+%
+In this example, the \ec{Buffer} class is an active object with
 a private \ec{queue} of a type \ec{Queue}, which is a passive class. \ec{Queue}
-implements the \ec{TQueue} trait (line 3 in Figure~\ref{fig:encore:example}). A trait can be
+implements the \ec{TQueue} trait (line 12). A trait can be
 thought of as a Java interface with defined methods and may require some attributes to be present
 in implementing classes. For instance, \ec{TQueue}
 requires the existence of an attribute ``\ec{top}'' and provides the implementation
-of the \ec{enqueue} method. Any passive object of type \ec{Queue} has an implementation
+of the \ec{enqueue} method (lines 1 -- 6). Any passive object of type \ec{Queue} has an implementation
 of methods defined in the traits it extends, in this case, the \ec{enqueue} method. The \ec{Main}
-class is the entry point of the program and creates an active object (\ec{buffer}) and some data.
-The method call \ec{buffer ! put(data)} is a uni-directional message send, meaning it does not
+class is the entry point of the program and creates an active object (\ec{buffer}, line 25),
+some data (line 26) and, the method call (line 27) \ec{buffer ! put(data)} is a
+uni-directional message send, meaning it does not
 return a future. If it was rewritten as \ec{buffer.put(data)}, it would return a \ec{Fut void}
 value, which would allow the called to detect when the put message is finished processing on the receiver
 side. 
@@ -1309,54 +1323,140 @@ appended to the object's queue.
 \paragraph{Parallelism Inside Active Objects}
 
 Active objects provide coarse grain parallelism via futures but do not offer
-many high-level language constructs for low-level coordination of these computations.
-In order to unhinge parallel pipeline and data parallelism, Encore incorporates
-\parT{} collections and associated parallel combinators. A \parT{}
-collection is a set of possibly parallel computations that return
-values of a single type. The \parT{} collection is opaque---it
-does not allow observing the number of on-going computations, and
-whether individual computations have finished or not. A \parT{} collection 
-has the type, \texttt{Par t}, where \texttt{t} is a polymorphic type. 
-\TW{This sentence is not possible to understand:} Elements of a collection can be normal values and
-future values which can be \textit{lifted} to a parallel collection via
-\texttt{liftv :: t $\to$ Par t} and \texttt{lift :: Fut t $\to$ Par t} respectively.
+many high-level language constructs for low-level coordination of these parallel computations.
+In order to express complex coordination workflows, such as pipeline and
+speculative parallelism, Encore incorporates
+\parT{} collections and associated parallel combinators.
+A \parT{} collection is an abstraction that can contain asynchronous computations,
+but it represents more than a mere container, as \parT{} can be seen as a handle to these
+asynchronous computations, exploited via the combinators.
+%
+%The \parT{} collection is opaque---it
+%does not allow observing the number of on-going computations, and
+%whether individual computations have finished or not. 
+%
+\parT{} collections have the type \texttt{Par t} (\texttt{t} is a polymorphic type)
+and can contain values and asynchronous computations
+represented by futures.
+%, but it does not create new threads,
+%as that may have a negative impact performance-wise.
+%
+%\TW{This sentence is not possible to understand:} Elements of a collection can be normal values and
+%future values which can be \textit{lifted} to a parallel collection via
+%\texttt{liftv :: t $\to$ Par t} and \texttt{lift :: Fut t $\to$ Par t} respectively.
+%
+%\TW{Rather than just going through the combinators, say how a
+%  parallel collection is created (that's not visible in the text
+%  now), and how it can be ``extended'' by additional combinators.
+%  A picture of a pipeline and its combinator stages would be good!
+%  Once the reader understands the what ParT types do, you can list
+%  the other combinators because then she is ready to think about
+%  them in a constructive manner.}
 
-\TW{Rather than just going through the combinators, say how a
-  parallel collection is created (that's not visible in the text
-  now), and how it can be ``extended'' by additional combinators.
-  A picture of a pipeline and its combinator stages would be good!
-  Once the reader understands the what ParT types do, you can list
-  the other combinators because then she is ready to think about
-  them in a constructive manner.}
+Futures created from tasks or methods calls on active objects can be lifted
+to the \parT{} abstraction via the \emph{lift} combinator (lift :: Fut t $\to$ Par t);
+multiple \parT{}s can be treated as a single one with
+the $\|$ construct ($\| :: Par \;t \to Par \;t \to Par \;t$), which takes two \parT{}s
+and returns a new \parT{} collection. This construct does not create new threads,
+but exploits the inner parallelism within the \parT{}, spawning new tasks when there
+is an optimisation opportunity.
+%, which increases the degree of asynchrony while keeping the throughput of the system.
+
+The \parT{} combinators are informally explained with the example from Fig.~\ref{fig:encore:factorisation},
+which computes the LU and Cholesky factorisation in parallel, inverting these matrixes asynchronously,
+getting the diagonal of the first asynchronous computation that finishes inverting the matrix
+and terminating the remaining computations.
+%
+The LU and Cholesky factorisation are performed in parallel, spawning tasks (lines 26 -- 27), and the
+obtained futures are lifted and grouped into a \parT{} abstraction (line 28).
+%
+The inversion of the matrix is performed asynchronously, using the \emph{bind} ($>>=$) combinator.
+This combinator ($>>= :: Par \ t \to (t \to Par\ t') \to Par\ t'$) receives as second argument 
+a function that will be applied asynchronously to the items in the
+\parT{} collection (first argument), therefore creating pipeline parallelism. 
+%
+Afterwards, with the prune combinator ($<< \; :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$),
+the \verb|getDiagonal| function is applied to the first computation that returns the inverted matrix,
+and the remaining computations are terminated --- safely stops speculative work.
+
+\begin{figure}[t]
+\begin{parcolumns}{2}
+\colchunk{
+\begin{lstlisting}[style=encore, firstnumber=1,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]                                                           
+def luFact(Matrix m): [Factor] {
+    ...
+}                                                                              
+                                                                                
+def choleskyFact(Matrix m): [Factor] {
+    ...
+}
+                                                                                
+def matrixInv(f: [Factor])
+        : Par [Matrix] {
+    ...
+}
+
+def getDiagonal(Fut (Maybe [Matrix]))
+        : Par [Factor] {
+    ...
+}
+\end{lstlisting}
+}               
+%
+\colchunk{
+\begin{lstlisting}[style=encore, firstnumber=18,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]                                                                                                                                           
+class Main {
+
+  def getMatrix(): Matrix {                                                    
+      ...                                                                      
+  }                                                                            
+
+  def main(): [Factor] {
+    let mtx = this.getMatrix()                                            
+        fLU = async luFact(mtx)
+        fChlsk = async choleskyFact(mtx)
+        par = (lift fLU) || (lift fChlsk)
+    in {
+        getDiagonal << 
+            (par >>= matrixInversion)
+    }
+  }
+}
+\end{lstlisting}
+}
+\colplacechunks
+\end{parcolumns}
+\caption{\label{fig:encore:factorisation}Data-pipeline and speculative parallelism for matrix factorisation in Encore. }
+\end{figure}
 
 
-The available combinators that operate on the \parT{} collection are:
-\LUDO{the explanations below are less clear than the rest of the text, I also think they 
-should be better justified from a high-level point of view: actor constructs will be 
-explained in details before but not those ... to be discussed, but a few comments}
+%The available combinators that operate on the \parT{} collection are:
+%\LUDO{the explanations below are less clear than the rest of the text, I also think they 
+%should be better justified from a high-level point of view: actor constructs will be 
+%explained in details before but not those ... to be discussed, but a few comments}
 
-\textbf{$| \; :: Par \;t \to Par \;t \to Par \;t$,} read as \textit{par} combinator, that creates a new
-\parT{} that holds the computations from the first and second expression. \LUDO{do you 
-mean it concatenates the 2 constructs? or does this create parallelcomputation? how?}
+%\textbf{$| \; :: Par \;t \to Par \;t \to Par \;t$,} read as \textit{par} combinator, that creates a new
+%\parT{} that holds the computations from the first and second expression. \LUDO{do you 
+%mean it concatenates the 2 constructs? or does this create parallelcomputation? how?}
 
-\textbf{$>< \; :: Par \; t \to Par \;t \to Par \;t$,} read as \textit{otherwise} combinator,
-that executes the first expression until the returned value is known and, if empty,
-starts execution of the second expression. \LUDO{Now I am lost, I thought ParT was data 
-collection ... is it an expression instead?}
-
-\textbf{$>> \; :: Par \; t \to (t \to t') \to Par \; t'$}, read as \textit{sequence} combinator,
-applies the function to all elements of the \parT{} collection asynchronously -- creating
-parallel pipeline parallelism-- and returns a new \parT{} collection. \LUDO{is it a map 
-or is it something else? a pipeline is one (stream of) data and a set of functions to 
-evaluate, I am not sure this is the case here}
-
-\LUDO{I will have a look at the end of the paragraph once the above has been resolved}
-
-\textbf{$<< \; :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$}, read as 
-\textit{prune} combinator,
-starts execution of both expressions in parallel. As soon as there is a value available
-in the second expression, this on gets passed to the first expression and all the remaining
-computations from the second expressions are ignored. 
+%\textbf{$>< \; :: Par \; t \to Par \;t \to Par \;t$,} read as \textit{otherwise} combinator,
+%that executes the first expression until the returned value is known and, if empty,
+%starts execution of the second expression. \LUDO{Now I am lost, I thought ParT was data 
+%collection ... is it an expression instead?}
+%
+%\textbf{$>> \; :: Par \; t \to (t \to t') \to Par \; t'$}, read as \textit{sequence} combinator,
+%applies the function to all elements of the \parT{} collection asynchronously -- creating
+%parallel pipeline parallelism-- and returns a new \parT{} collection. \LUDO{is it a map 
+%or is it something else? a pipeline is one (stream of) data and a set of functions to 
+%evaluate, I am not sure this is the case here}
+%
+%\LUDO{I will have a look at the end of the paragraph once the above has been resolved}
+%
+%\textbf{$<< \; :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$}, read as 
+%\textit{prune} combinator,
+%starts execution of both expressions in parallel. As soon as there is a value available
+%in the second expression, this on gets passed to the first expression and all the remaining
+%computations from the second expressions are ignored. 
 
 The \parT{} collection and its combinators have been designed to perform
 operations asynchronously without stopping the current thread of execution.
@@ -1387,9 +1487,10 @@ resolved thus the callback function is executed later than in the ASP case and t
 request could be delayed forever if the future is never resolved, in which case the ASP 
 request would create a deadlock.
 
-\LUDO{I changed this paragraph to better relate with the other languages (perhaps too 
-long or too much references), the previous version is commented if you want to recover 
-some or all the text}
+%\LUDO{I changed this paragraph to better relate with the other languages (perhaps too 
+%long or too much references), the previous version is commented if you want to recover 
+%some or all the text}
+
 %In Encore, there are two ways for synchronisation, message passing, and
 %synchronisation by futures. From the message passing perspective, each method
 %call on active objects could be interpreted as a message transmitting, and
@@ -1462,13 +1563,9 @@ interface (like a priority channel), or active objects which are
 encapsulated inside other active objects to create constrained
 active object topologies.
 
-\LUDO{perhaps you could detail a little this data-sharing aspect as it is probably one of 
-the most original aspect compared to the other languages? perhaps explain most of the 
-capabilities?}
-
 \begin{figure}[t]
   \centering
-  \includegraphics[scale=.4]{pictures/capabilities}
+  \includegraphics[scale=.33]{pictures/capabilities}
   \caption{Encore capability hierarchy.}
   \label{fig:capa-tree}
 \end{figure}
