@@ -927,15 +927,23 @@ allocate passive objects. Ownership in this context means that the
 actor is responsible for keeping track on foreign dependencies on
 passive objects on its local heap, and eventually deallocate them. 
 The passive objects on a local heap may be shared with
-other active objects, or transferred, but are not not susceptible
-to data-races.
+other active objects, or transferred, but are susceptible to data-races.
+%
+Active objects provide coarse-grain parallelism, i.e., an active object
+cannot work on multiple method calls at the same time.
+%
+In order to create fine-grain parallel computations, Encore
+has tasks (\ec{async \{ e \}}), which contain a body \verb|e| that is asynchronously executed
+and, whose return value is immediately a future. Tasks increase the level
+of asynchrony on the system, keeping the throughput while being
+space (memory) efficient.
 
-\TODO{Talk about tasks, which is more lightweight than actors}
-
-Method calls on active objects immediately return a future value
+Method calls on active objects and spawning of tasks immediately return a future value
 that, unlike ProActive, has the explicit type \ec{Fut t}, for
-some \ec{t}. Futures support future chaining \textbf{SEE BELOW},
+some \ec{t}. Futures support future chaining,
 and both \ec{get} and \ec{await} operations similar to ABS.
+%
+These operations are explained in detail later (in \emph{Cooperate Scheduling of Active Objects}).
 
 The code from Figure~\ref{fig:encore:example} gives a taste of Encore:
 
