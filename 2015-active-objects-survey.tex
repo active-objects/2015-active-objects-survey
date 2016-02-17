@@ -945,34 +945,32 @@ and both \ec{get} and \ec{await} operations similar to ABS.
 %
 These operations are explained in detail later (in \emph{Cooperate Scheduling of Active Objects}).
 
-The code from Figure~\ref{fig:encore:example} gives a taste of Encore:
-
+The example below (Fig.~\ref{fig:encore:example}) shows a buffer implementation
+using the features of the Encore.
+%
 \begin{figure}[ht]
 \begin{parcolumns}{2}
 \colchunk{
-\begin{lstlisting}[style=encore, numbers=left,xleftmargin=4ex,escapechar=\%,numberblanklines=true, showlines=true]
-passive class Data { ... }    
-
-passive class Queue : TQueue
-  top: Link
-
-class Main
-  def main(): void
-    let buffer = new Buffer()
-        data = new Data(21)
-    in 
-      buffer ! put(data);
-
-\end{lstlisting}
-}
-\colchunk{
-\begin{lstlisting}[style=encore, firstnumber=14,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]
-trait TQueue
+\begin{lstlisting}[style=encore, firstnumber=1, lastline=14,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible, showlines=true]                                                           
+trait TQueue {
   requires top
   
   def enqueue(x: int): void
     this.top = new Data(x, this.top)
+}
 
+passive class Data { 
+  ... 
+}    
+
+passive class Queue : TQueue {
+  top: Link
+}  
+\end{lstlisting}
+}
+%
+\colchunk{
+\begin{lstlisting}[style=encore, firstnumber=14,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]                                                           
 class Buffer
    queue: Queue
    
@@ -981,24 +979,30 @@ class Buffer
     
   def put(item: Data): void
     this.queue.enqueue(item)
+
+class Main
+  def main(): void
+    let buffer = new Buffer()
+        data = new Data(21)
+     in buffer ! put(data)
 \end{lstlisting}
 }
 \colplacechunks
 \end{parcolumns}
-\caption{Example of a Buffer implementation that uses traits, active and passive objects in Encore. \TW{Can the code be placed in a more natural order? Also -- line numbers are off so need to be changed and then sync'd with the references in text. }}
-\label{fig:encore:example}
+\caption{\label{fig:encore:example}Example of a Buffer implementation that uses traits, active and passive objects in Encore.}
 \end{figure}
-
-The \ec{Buffer} class (Figure~\ref{fig:encore:example}) is an active object with
+%
+In this example, the \ec{Buffer} class is an active object with
 a private \ec{queue} of a type \ec{Queue}, which is a passive class. \ec{Queue}
-implements the \ec{TQueue} trait (line 3 in Figure~\ref{fig:encore:example}). A trait can be
+implements the \ec{TQueue} trait (line 12). A trait can be
 thought of as a Java interface with defined methods and may require some attributes to be present
 in implementing classes. For instance, \ec{TQueue}
 requires the existence of an attribute ``\ec{top}'' and provides the implementation
-of the \ec{enqueue} method. Any passive object of type \ec{Queue} has an implementation
+of the \ec{enqueue} method (lines 1 -- 6). Any passive object of type \ec{Queue} has an implementation
 of methods defined in the traits it extends, in this case, the \ec{enqueue} method. The \ec{Main}
-class is the entry point of the program and creates an active object (\ec{buffer}) and some data.
-The method call \ec{buffer ! put(data)} is a uni-directional message send, meaning it does not
+class is the entry point of the program and creates an active object (\ec{buffer}, line 25),
+some data (line 26) and, the method call (line 27) \ec{buffer ! put(data)} is a
+uni-directional message send, meaning it does not
 return a future. If it was rewritten as \ec{buffer.put(data)}, it would return a \ec{Fut void}
 value, which would allow the called to detect when the put message is finished processing on the receiver
 side. 
