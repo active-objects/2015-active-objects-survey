@@ -177,17 +177,11 @@ the abstract
 \TODO{TODO LIST}
 
 
-Historical description -- Frank and Einar
-
 Check the dimensions (sec 3.1) -- Frank
 
 implementation sections -> 20 January
 
-- proactive -- 20 jan -- Justine+Ludo
 
-- proactive backend for abs -- 20 jan -- Justine
-
-- java 8 backend for abs (20 jan) -- Vlad
 
 - other backends for abs (end jan) -- vlad
 
@@ -195,7 +189,6 @@ implementation sections -> 20 January
 
 - Encore implementation -- end Jan Kiko and albert
 
-refine implementation dimensions -> 20 jan -- Ludo
 
 use PA and ABS as a template to describe Rebeca -- End January -- marjan and ehsan
 
@@ -706,7 +699,7 @@ possible in ABS. It results in sequential behavior, i.e., yields the
 processor to the callee and blocks the caller until it
 returns. Obviously, here we are interested only in the side effect
 that \lstinline{modify()} has. Synchronous calls are only permitted in
-the COG of the caller object.
+the COG of the caller object. \LUDO{add a sentence for release/suspend}
 
 \paragraph{Degree of synchronisation} 
 If one attemps to retrieve a future value that is not yet ready, this
@@ -1150,12 +1143,16 @@ Encore supports versions of the \ec{suspend}, \ec{get}, and
 \ec{await} statements similar to ABS. In contrast with ABS, Encore
 supports using suspend and await anywhere in a program, as opposed
 to ABS which only permits this at the top-level of a method inside
-active objects. This is due to underlying technical reasons
+active objects \LUDO{not sure what is meant here: in abs all objects are kind of  active 
+no? is it 
+impossible to do an await in a synchronously called method?}. This is due to underlying 
+technical reasons
 described in the implementation sections of Encore and ABS
 \TW{Make it so! :) Encore threads yadayada.}. Encore's \ec{await}
 statement is somewhat limited in relation to ABS's as it only
 supports awaiting the fulfilment of a future, and not any boolean
-condition. Encore's support for future chaining however makes
+condition. \LUDO{perhaps link here to the ProActive ABS backend that encodes await on 
+conditions by await on future} Encore's support for future chaining however makes
 \ec{await} less useful as chaining allows triggering arbitrary operations on the fulfilment of future. 
 The type signatures of the operations
 are found below:
@@ -1293,8 +1290,8 @@ appended to the object's queue.
   \includegraphics[scale=.4]{pictures/enc-resume}
   \caption{(Left) An Encore scheduler, local to one core. A
     scheduler has a queue of active objects with non-empty message
-    queues. (Right) The result of the executing active in the left
-    picture executing a \ec{suspend}.}
+    queues. (Right) The state after the execution of \ec{suspend} in the left 
+    configuration.}
   \label{fig:enc-suspend}
 \end{figure}
 
