@@ -231,7 +231,7 @@ construction of a program in a compositional manner, e.g., sequential
 composition, choice and iterative constructs.
 
 One of the first major high-level imperative programming languages is
-ALGOL (short for ALGOrithmic Language) \cite{backus63cacmA} which
+ALGOL (short for ALGOrithmic Language) \cite{backus63cacm} which
 features procedural and functional abstractions of data and control.
 The resulting general abstraction level allows for a compositional
 construction and analysis of mainly the flow of control.  A major
@@ -244,23 +244,23 @@ programming paradigm modules are generalized to classes.  Classes can
 be characterized as modules from which objects can be dynamically
 instantiated and referred to by unique identifiers (generated at
 runtime).  The concepts of classes and objects were introduced in
-Simula 67 \cite{dahl66cacmA}, the first object-oriented
+Simula 67 \cite{dahl66cacm}, the first object-oriented
 language. Whereas Simula was a sequential language with a single
 thread of control, it was developed to simulate real-world
 (concurrent) systems and featured the concept of \emph{coroutines}
-\cite{dahl68simulaA}.
+\cite{dahl68simula}.
 
 A major remaining challenge in the development of high-level
 programming languages is the high-level specification of concurrent
 and parallel threads of control and their synchronization.  In process
 calculi like CSP \cite{Hoare85} and CCS \cite{Milner89}
 independent threads of control communicate data synchronously, e.g.,
-via channels.  The Ada programming language \cite{bal89acmsurvA}
+via channels.  The Ada programming language \cite{bal89acmsurv}
 extends this model of synchronous communication by a rendez-vous
 interpretation of the execution of procedure calls and returns.  In
 the shared-variable model of concurrency, threads of control
 communicate and synchronize directly via shared data. For example in
-the popular object-oriented language Java \cite{goetz06javaA} such a
+the popular object-oriented language Java \cite{goetz06java} such a
 thread of control consists of a stack of procedure (method) calls,
 extending the sequential thread of control of Simula and Smalltalk
 from one to multiple threads in an manner resembling operating
@@ -270,7 +270,7 @@ The shared-variable model of concurrency underlying the Java language
 requires that the developer ensures so-called ``thread safety'';
 without enough synchronization data races between threads make the
 program behavior ``unpredictable and sometimes surprising''
-\cite{goetz06javaA}. To avoid races, complex low-level synchronization
+\cite{goetz06java}. To avoid races, complex low-level synchronization
 mechanisms are required which may in turn give rise to deadlocks and
 thread starvation.  The execution of multithreaded programs depends on
 an underlying, intricate, and fine-grained granularity of
@@ -305,15 +305,15 @@ originally discovered by Baker and Hewitt in the
 Shrira as promises in Argus~\cite{Liskov88} and by Halstead in the
 context of MultiLisp~\cite{Halstead:1985:MLC:4472.4478} before finding their way
 into object-oriented languages such as
-Concurrent\-Smalltalk~\cite{Yokote87A}, ABCL~\cite{Yonezawa:1986:OCP:28697.28722},
-Eiffel$/\!/$~\cite{Caromel96A}, and CJava~\cite{Cugola97A}. A future may
+Concurrent\-Smalltalk~\cite{Yokote87}, ABCL~\cite{Yonezawa:1986:OCP:28697.28722},
+Eiffel$/\!/$~\cite{Caromel96}, and CJava~\cite{Cugola97}. A future may
 be understood as a mailbox which will eventually contain the return
 values from a method call. Thus the calling method may proceed with
 its computation and pick up the reply later. However, this requires
 additional synchronization by means of a blocking get-operation on the
 future.
 
-In Creol \cite{johnsen03nikA,johnsen07sosym} a powerful further
+In Creol \cite{johnsen03nik,johnsen07sosym} a powerful further
 synchronization mechanism is provided by cooperative scheduling of the
 methods of an active object by an explicit statement which allows the
 release of control.  This gives rise to a coroutine like execution of
@@ -322,7 +322,7 @@ thread of control. This model of computation supports a compositional
 proof theory \cite{deBoerDJ07}.
 
 
-Caromel, Henrio, and Serpett~\cite{CHS:POPL04} present ASP, an
+Caromel, Henrio, and Serpette~\cite{CHS:POPL04} present ASP, an
 imperative, asynchronous object calculus with transparent futures.
 Their active objects may have internal passive objects which can be
 passed between active objects by first deep copying the entire
@@ -351,16 +351,16 @@ is no sharing of passive objects between active objects (when
 communicated passive objects are copied), no data races occur, in
 contrast to the multithreaded control of the cogs in ABS. Ownership
 type systems have been proposed to alleviate unnecessary copying of
-passive objects in this setting \cite{clarke08aplasA}. While ABS is an
+passive objects in this setting \cite{clarke08aplas}. While ABS is an
 executable modeling language with a focus on analysis and
 property-preserving code generation, both Encore and ProActive aim at
 efficient runtime systems for active object languages. Whereas Encore
 targets multicore platforms, ProActive has also been applied for the
 distributed setting.
 
-Plus a small (or bigger) note on : JAC, 
-AmbientTalk, E programming language, Erlang, 
-Kilim, Scala actors, Akka, Go,
+Plus a small (or bigger) note on : JAC [LUDO], 
+E programming language, Erlang, 
+Kilim, Akka, Go,
 Panini [Reinar]
 
 \TODO{Not sure all of them should be cited but we will decide later}
