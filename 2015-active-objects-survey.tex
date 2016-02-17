@@ -1226,23 +1226,24 @@ but exploits the inner parallelism within the \parT{}, spawning new tasks when t
 is an optimisation opportunity.
 %, which increases the degree of asynchrony while keeping the throughput of the system.
 
-The \parT{} combinators are informally explained based in the example from Fig.~\ref{fig:encore:factorisation},
-which computes the LU and Cholesky factorisation asynchronously, inverts these matrixes in parallel,
-gets the diagonal of the first inverted matrix result and terminates the remaining computations.
+The \parT{} combinators are informally explained with the example from Fig.~\ref{fig:encore:factorisation},
+which computes the LU and Cholesky factorisation in parallel, inverting these matrixes asynchronously,
+getting the diagonal of the first asynchronous computation that finishes inverting the matrix
+and terminating the remaining computations.
 %
-The LU and Cholesky factorisation are performed asynchronously, spawning tasks (lines 27 - 30), and the
-obtained futures are lifted to a \parT{} abstraction (line 31).
+The LU and Cholesky factorisation are performed in parallel, spawning tasks (lines 26 -- 27), and the
+obtained futures are lifted and grouped into a \parT{} abstraction (line 28).
 %
-This example inverts, asynchronously, the factorised matrixes using the \emph{bind} combinator
-($>>= :: Par \ t \to (t \to Par\ t') \to Par\ t'$), where
-the second argument is a function that is applied asynchronously to the items in the
-\parT{} collection, therefore creating pipeline parallelism. 
+The inversion of the matrix is performed asynchronously, using the \emph{bind} ($>>=$) combinator.
+This combinator ($>>= :: Par \ t \to (t \to Par\ t') \to Par\ t'$) receives as second argument 
+a function that will be applied asynchronously to the items in the
+\parT{} collection (first argument), therefore creating pipeline parallelism. 
 %
 Afterwards, with the prune combinator ($<< \; :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$),
-the \verb|getDiagonal| function is applied to the first computation that returns the inverted matrix result
-and the remaining computations are terminated --- stopping the speculative work.
+the \verb|getDiagonal| function is applied to the first computation that returns the inverted matrix,
+and the remaining computations are terminated --- safely stops speculative work.
 
-\begin{figure}[ht]
+\begin{figure}[t]
 \begin{parcolumns}{2}
 \colchunk{
 \begin{lstlisting}[style=encore, firstnumber=1,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]                                                           
@@ -1268,24 +1269,23 @@ def getDiagonal(Fut (Maybe [Matrix]))
 %
 \colchunk{
 \begin{lstlisting}[style=encore, firstnumber=18,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]                                                                                                                                           
-
-class Main         
+class Main {
 
   def getMatrix(): Matrix {                                                    
       ...                                                                      
   }                                                                            
 
-  def main(): [Factor]                                                                    
-    let matrix = this.getMatrix()                                            
-        fLU = async { luFact(matrix) }
-        fChlsk = async { 
-                  choleskyFact(matrix) 
-                }
+  def main(): [Factor] {
+    let mtx = this.getMatrix()                                            
+        fLU = async luFact(mtx)
+        fChlsk = async choleskyFact(mtx)
         par = (lift fLU) || (lift fChlsk)
-    in                                                                       
+    in {
         getDiagonal << 
             (par >>= matrixInversion)
-           
+    }
+  }
+}
 \end{lstlisting}
 }
 \colplacechunks
