@@ -217,10 +217,146 @@ Definitions of the important notions like what is an actor or what is a future f
 \section{Active object Languages}
 
 \subsection{An historical view of Actor and active-object languages}
-Actors, Creol \cite{JOY06:creol}, JCobox, 
 
-	Requirements in the design of those languages
+We present the languages discussed in this overview paper in a
+historical context.  The general development of high-level programming
+languages is driven by the quest for suitable abstractions of the
+low-level implementation details of the specific underlying hardware
+architectures, i.e., machine instructions.  The basic abstraction of
+the machine instructions for reading from and writing to memory
+locations which underlies imperative programming is the
+assignment. The low-level flow of control is further abstracted by
+means of high-level structuring mechanisms which allow the
+construction of a program in a compositional manner, e.g., sequential
+composition, choice and iterative constructs.
 
+One of the first major high-level imperative programming languages is
+ALGOL (short for ALGOrithmic Language) \cite{backus63cacmA} which
+features procedural and functional abstractions of data and control.
+The resulting general abstraction level allows for a compositional
+construction and analysis of mainly the flow of control.  A major
+advance in the development of high-level programming languages which
+gave rise to the paradigm of object-orientation is the compositional
+construction of programs in terms of modules.  Modules are used to
+model abstract data types and as such provide a powerful abstraction
+which fully integrates data and control.  In the object-oriented
+programming paradigm modules are generalized to classes.  Classes can
+be characterized as modules from which objects can be dynamically
+instantiated and referred to by unique identifiers (generated at
+runtime).  The concepts of classes and objects were introduced in
+Simula 67 \cite{dahl66cacmA}, the first object-oriented
+language. Whereas Simula was a sequential language with a single
+thread of control, it was developed to simulate real-world
+(concurrent) systems and featured the concept of \emph{coroutines}
+\cite{dahl68simulaA}.
+
+A major remaining challenge in the development of high-level
+programming languages is the high-level specification of concurrent
+and parallel threads of control and their synchronization.  In process
+calculi like CSP \cite{Hoare85} and CCS \cite{Milner89}
+independent threads of control communicate data synchronously, e.g.,
+via channels.  The Ada programming language \cite{bal89acmsurvA}
+extends this model of synchronous communication by a rendez-vous
+interpretation of the execution of procedure calls and returns.  In
+the shared-variable model of concurrency, threads of control
+communicate and synchronize directly via shared data. For example in
+the popular object-oriented language Java \cite{goetz06javaA} such a
+thread of control consists of a stack of procedure (method) calls,
+extending the sequential thread of control of Simula and Smalltalk
+from one to multiple threads in an manner resembling operating
+systems.
+
+The shared-variable model of concurrency underlying the Java language
+requires that the developer ensures so-called ``thread safety'';
+without enough synchronization data races between threads make the
+program behavior ``unpredictable and sometimes surprising''
+\cite{goetz06javaA}. To avoid races, complex low-level synchronization
+mechanisms are required which may in turn give rise to deadlocks and
+thread starvation.  The execution of multithreaded programs depends on
+an underlying, intricate, and fine-grained granularity of
+interleaving, which makes multithreaded programs very difficult to
+understand and verify.  Further, since data, as represented statically
+by classes, and control, as represented at run-time by threads, are
+decoupled, this model of concurrency is also unintuitive and
+difficult to use in a distributed setting.
+
+In contrast to the above synchronous communication mechanisms, the
+Actor model of computation \cite{Agha86-book} is based on loosely
+coupled processes and asynchronous message passing.  Actors integrate
+and encapsulate both data and a single thread of control, and
+communicate without transfer of control. Message delivery is
+guaranteed but messages may arrive out of order.  This loose coupling
+makes Actor languages conceptually attractive for distributed
+programming.  Active objects integrate the basic Actor model with
+object-orientated concepts. This integration can be realized by
+modeling a message as an asynchronous method call, thus fixing the
+interpretation of a message by a corresponding method definition.  In
+a language like Rebeca the methods are run to completion without any
+further synchronization mechanisms and do not return values. Like in
+the original Actor model, returning values from a method call can be
+modeled by another asynchronous message.  In contrast, in the
+Actor-based extension of Scala \cite{haller2009scala}, messages are
+interpreted by the callee using pattern-matching.
+
+Pushing the notion of method calls further by directly supporting
+return values leads to the notion of future variables.  Futures were
+originally discovered by Baker and Hewitt in the
+70s~\cite{BakerHH77}, and later rediscovered by Liskov and
+Shrira as promises in Argus~\cite{Liskov88} and by Halstead in the
+context of MultiLisp~\cite{Halstead:1985:MLC:4472.4478} before finding their way
+into object-oriented languages such as
+Concurrent\-Smalltalk~\cite{Yokote87A}, ABCL~\cite{Yonezawa:1986:OCP:28697.28722},
+Eiffel$/\!/$~\cite{Caromel96A}, and CJava~\cite{Cugola97A}. A future may
+be understood as a mailbox which will eventually contain the return
+values from a method call. Thus the calling method may proceed with
+its computation and pick up the reply later. However, this requires
+additional synchronization by means of a blocking get-operation on the
+future.
+
+In Creol \cite{johnsen03nikA,johnsen07sosym} a powerful further
+synchronization mechanism is provided by cooperative scheduling of the
+methods of an active object by an explicit statement which allows the
+release of control.  This gives rise to a coroutine like execution of
+the method activations of an active object which encapsulates a single
+thread of control. This model of computation supports a compositional
+proof theory \cite{deBoerDJ07}.
+
+
+Caromel, Henrio, and Serpett~\cite{CHS:POPL04} present ASP, an
+imperative, asynchronous object calculus with transparent futures.
+Their active objects may have internal passive objects which can be
+passed between active objects by first deep copying the entire
+(passive) object graph.  To manage the complexity of reasoning about
+distributed and concurrent systems, they restrict the language to
+ensure that reduction is confluent and deterministic. ASP constitutes
+the theoretical foundation for the ProActive language
+\cite{CH-book}.
+
+The Java multithreaded model of computation can be integrated with
+active objects. In the Abstract Behavioral Specification Language ABS
+\cite{JHSSS10} this is done by combining Creol's cooperative
+scheduling model with the structuring mechanism of concurrent object
+groups (cogs) \cite{ref:jcobox}.  Such a group of active objects
+consists of a pool of threads each of which is generated from an
+external asynchronous call and extended as a stack of internal
+synchronous method calls.  Within such a pool only one thread is
+executing at a time, but the granularity of interleaving is fully
+controlled by the high-level release statements of the cooperative
+scheduling.
+
+Both the Encore \cite{ref:encore} and the ProActive languages
+support the distinction between active and passive objects. Passive
+objects are associated to (or owned by) active objects.  Since there
+is no sharing of passive objects between active objects (when
+communicated passive objects are copied), no data races occur, in
+contrast to the multithreaded control of the cogs in ABS. Ownership
+type systems have been proposed to alleviate unnecessary copying of
+passive objects in this setting \cite{clarke08aplasA}. While ABS is an
+executable modeling language with a focus on analysis and
+property-preserving code generation, both Encore and ProActive aim at
+efficient runtime systems for active object languages. Whereas Encore
+targets multicore platforms, ProActive has also been applied for the
+distributed setting.
 
 Plus a small (or bigger) note on : JAC, 
 AmbientTalk, E programming language, Erlang, 
