@@ -351,14 +351,27 @@ efficient runtime systems for active object languages. Whereas Encore
 targets multicore platforms, ProActive has also been applied for the
 distributed setting.
 
-Plus a small (or bigger) note on : JAC [LUDO], 
+\LUDO{I added a note on some other not too old languages that we might find related}
+
+In parallel with this track of languages, other languages emerged, diverging more from 
+the classical active-object model but providing interesting complementary contributions. 
+JAC~\cite{ref:jac} stands for Java Annotations for Concurrency, it relies on a set of 
+Java annotation allowing the programmer to specify what parallelism can occur inside a 
+Java object with a relatively high-level perspective. It is also possible to encode some 
+kinds of actors in JAC. AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349} provide 
+actors with fully asynchronous futures: contrarily to other active object languages, 
+futures do not provide a classical synchronisation pattern, but instead a call on a 
+future triggers an asynchronous invocation that will be executed when the future is 
+available.
+
+
+Plus a small (or bigger) note on : 
 E programming language, Erlang, 
 Kilim, Akka, Go,
 Panini [Reinar]
 
 \TODO{Not sure all of them should be cited but we will decide later}
 
-Where do we put modern languages like Akka?
 
 
 
