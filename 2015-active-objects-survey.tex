@@ -31,6 +31,7 @@
 \newcommand{\TODO}[1]{\textcolor{red}{\textbf{[TODO:#1]}}}
 \newcommand{\NOTE}[1]{\textcolor{blue}{\textbf{[Note:#1]}}}
 \newcommand{\LUDO}[1]{\textcolor{blue}{\textbf{[Ludo:#1]}}}
+\newcommand{\KIKO}[1]{\textcolor{cyan}{\textbf{[Kiko:#1]}}}
 \newcommand{\TW}[1]{\textcolor{magenta}{\textbf{[Tobias:#1]}}}
 \newcommand{\parT}{\texttt{ParT}}
 
@@ -954,7 +955,7 @@ in ABS is as follows:
 \end{center}
 
 In many cases \lstinline{await} and \lstinline{get} follow an
-asynchronous call directly. For this common sitation the abbreviation
+asynchronous call directly. For this common situation the abbreviation
 
 \begin{center}
   \lstinline{T x = await o!m();}
@@ -967,7 +968,10 @@ possible in ABS. It results in sequential behavior, i.e., yields the
 processor to the callee and blocks the caller until it
 returns. Obviously, here we are interested only in the side effect
 that \lstinline{modify()} has. Synchronous calls are only permitted in
-the COG of the caller object. \LUDO{add a sentence for release/suspend}
+the COG of the caller object. \LUDO{add a sentence for release/suspend} 
+\KIKO{In Encore, await returns void and in ABS, it seems to return
+a type T bound to o!m(). Maybe this should be explicitly said. At first, I assumed
+that await fx? returns void}
 
 \paragraph{Degree of synchronisation} 
 If one attemps to retrieve a future value that is not yet ready, this
@@ -1299,14 +1303,15 @@ other hand generate an executable ProActive/GCM code corresponding to the design
 \paragraph{General presentation} Encore \cite{ref:encore}
 is a general purpose parallel language based on active objects
 developed since 2014 by an
-EC-funded research project\footnote{EU project FP7-612985 \Upscale:
-From Inherent Concurrency to Massive Parallelism through Type-based~Optimisations.}. 
+EC-funded research project.\footnote{EU project FP7-612985 \Upscale:
+From Inherent Concurrency to Massive Parallelism through Type-based~Optimisations.} 
 The language has been designed to excel at scalability and rests on four pillar concepts: 
 \textit{parallel by default} using the
 active object paradigm for coarse grain parallelism, \textit{independent
 local heaps} to promote data locality, \textit{type-based synchronisation directives}
 provided by a novel capability system and \textit{coordination of parallel
-computations and low-level data parallelism} via parallel combinators. \TW{Make sure to revisit all of these pillars properly in the text. (And that it is easy to find them.)}
+computations and low-level data parallelism} via parallel combinators. 
+%\TW{Make sure to revisit all of these pillars properly in the text. (And that it is easy to find them.)}
 On top of these key ingredients, Encore stays loyal to the object-oriented paradigm
 where active objects and futures can be seen as normal Java objects and,
 instead of interfaces, provides a trait system \`a la Scala.
@@ -1318,22 +1323,22 @@ and processed one at a time in FIFO order. % This property linearises
 % the execution of the active object. Tobias: I removed this since it did not make sense
 Active objects act like ``plain old Java objects'', except that
 they have an asynchronous interface. Active objects encapsulate
-passive objects, and operations on passive objects are
-synchronous. Each active object owns a local heap on which it can
+passive objects, and operations on passive objects are synchronous. 
+%
+Each active object owns a local heap on which it can
 allocate passive objects. Ownership in this context means that the
 actor is responsible for keeping track on foreign dependencies on
 passive objects on its local heap, and eventually deallocate them. 
 The passive objects on a local heap may be shared with
 other active objects, or transferred, but are susceptible to data-races.
 %
-Active objects provide coarse-grain parallelism, i.e., an active object
-cannot work on multiple method calls at the same time.
+Encore is \emph{parallel by default}, as active objects are lightweight and provide coarse-grain parallelism,
+i.e., an active object cannot work on multiple method calls at the same time.
 %
-In order to create fine-grain parallel computations, Encore
-has tasks (\ec{async \{ e \}}), which contain a body \verb|e| that is asynchronously executed
-and, whose return value is immediately a future. Tasks increase the level
-of asynchrony on the system, keeping the throughput while being
-space (memory) efficient.
+To create fine-grain parallel computations Encore supports the creation of tasks.
+A task (\ec{async \{ e \}}) contains a body \verb|e| that is asynchronously executed
+and, whose return value is immediately a future. Tasks are more lightweight
+that actors (memory-wise) and increase the level of asynchrony on the system.
 
 Method calls on active objects and spawning of tasks immediately return a future value
 that, unlike ProActive, has the explicit type \ec{Fut t}, for
@@ -1343,7 +1348,7 @@ and both \ec{get} and \ec{await} operations similar to ABS.
 These operations are explained in detail later (in \emph{Cooperate Scheduling of Active Objects}).
 
 The example below (Fig.~\ref{fig:encore:example}) shows a buffer implementation
-using the features of the Encore.
+using features of the Encore language.
 %
 \begin{figure}[ht]
 \begin{parcolumns}{2}
@@ -1390,16 +1395,16 @@ class Main
 \end{figure}
 %
 In this example, the \ec{Buffer} class is an active object with
-a private \ec{queue} of a type \ec{Queue}, which is a passive class. \ec{Queue}
+a private \ec{queue} of type \ec{Queue}, which is a passive class. \ec{Queue}
 implements the \ec{TQueue} trait (line 12). A trait can be
 thought of as a Java interface with defined methods and may require some attributes to be present
 in implementing classes. For instance, \ec{TQueue}
-requires the existence of an attribute ``\ec{top}'' and provides the implementation
+requires the existence of an attribute \ec{top} and provides the implementation
 of the \ec{enqueue} method (lines 1 -- 6). Any passive object of type \ec{Queue} has an implementation
 of methods defined in the traits it extends, in this case, the \ec{enqueue} method. The \ec{Main}
-class is the entry point of the program and creates an active object (\ec{buffer}, line 25),
-some data (line 26) and, the method call (line 27) \ec{buffer ! put(data)} is a
-uni-directional message send, meaning it does not
+class is the entry point of the program and creates an active object (\ec{buffer}, line 25) and
+some data (line 26); the method call (line 27) \ec{buffer ! put(data)} is a
+uni-directional message send, i.e., it does not
 return a future. If it was rewritten as \ec{buffer.put(data)}, it would return a \ec{Fut void}
 value, which would allow the called to detect when the put message is finished processing on the receiver
 side. 
@@ -1410,16 +1415,15 @@ side.
 Encore supports versions of the \ec{suspend}, \ec{get}, and
 \ec{await} statements similar to ABS. In contrast with ABS, Encore
 supports using suspend and await anywhere in a program, as opposed
-to ABS which only permits this at the top-level of a method inside
-active objects \LUDO{not sure what is meant here: in abs all objects are kind of  active 
-no? is it 
-impossible to do an await in a synchronously called method?}. This is due to underlying 
-technical reasons
+to ABS which only permits calling these operations inside active objects.
+%\LUDO{not sure what is meant here: in abs all objects are kind of  active 
+%no? is it  impossible to do an await in a synchronously called method?}.
+This is due to underlying  technical reasons
 described in the implementation sections of Encore and ABS
 \TW{Make it so! :) Encore threads yadayada.}. Encore's \ec{await}
 statement is somewhat limited in relation to ABS's as it only
 supports awaiting the fulfilment of a future, and not any boolean
-condition. \LUDO{perhaps link here to the ProActive ABS backend that encodes await on 
+condition and differs from ProActive's \ec{await} . \LUDO{perhaps link here to the ProActive ABS backend that encodes await on 
 conditions by await on future} Encore's support for future chaining however makes
 \ec{await} less useful as chaining allows triggering arbitrary operations on the fulfilment of future. 
 The type signatures of the operations
