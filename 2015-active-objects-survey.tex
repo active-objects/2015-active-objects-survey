@@ -505,7 +505,6 @@ several aspects.
 
 \subsection{A Focus on Some Active-object Languages}
 
-\NOTE{perhaps we should distinguish imlpementation and verification tooling}
 
 \subsubsection{Rebeca}
 \paragraph{General presentation and objective of the language} 
@@ -655,10 +654,18 @@ main {
 \end{figure}
 
 \paragraph{Degree of synchronisation} 
-Conforming the Agha's actor model, the only communication mechanism among actors of Rebeca is asynchronous message passing. So, there is no synchronization among actors of Rebeca. 
-The only condition that you may consider as a deadlock, is when all the message queues of all actors are empty. 
- In this case, all the actors will stay idle and having progress is impossible. The analysis tool sets of  Rebeca family support automatic deadlock-freedom check for the models.  
-In Rebeca, arrival of a message to its receiver message queue is guaranteed and the order of the messages sent by one actor to the same actor is preserved.
+Conforming the Agha's actor model, the only communication mechanism among actors of 
+Rebeca is asynchronous message passing. So, there is no synchronization among actors of 
+Rebeca. 
+% Ludo: removed : I am not sure this is really related to synchronisation
+%The only condition that you may consider as a deadlock, is when all the message queues 
+%of all actors are empty. 
+% In this case, all the actors will stay idle and having progress is impossible. The 
+%analysis tool sets of  Rebeca family support automatic deadlock-freedom check for the 
+%models.  
+In Rebeca, arrival of a message to its receiver message queue is guaranteed and the order 
+of the messages sent by one actor to the same actor is preserved creating some form of 
+guaranteed order of execution.
 
 %Marjan
 % rebeca extensions
@@ -666,7 +673,17 @@ In  Extended Rebeca \cite{DBLP:conf/acsd/SirjaniBMS05,DBLP:journals/jucs/Sirjani
 %At the highest level of abstraction, components only interact asynchronously via broadcasting anonymous messages. At a lower level of abstraction (within a component), computations, on the one hand are driven by asynchronous messages, and on the other hand can be synchronized by a handshaking communication mechanism. 
 
 %RebecaSys
-In RebecaSys, the syntax is extended to allow defining \textit{wait} statements, and a block of \textit{global variables} at the beginning of the model.  RebecaSys is defined as a back-end language,  SystemC codes are automatically mapped to RebecaSys and then are formally verified. As a RebecaSys model is only created from a SystemC model automatically, a controlled way of using global variables  is enforced, so, racing is avoided. Hardware/Software co-design languages support a cycle-based synchronization among all parallel processes. For example, if more than one module or process can write in a SystemC variable then two global variables in RebecaSys are defined, for pre- and post- values for each cycle.  
+\LUDO{I do not really understand this paragraph and hoew this is related to 
+synchronisation}
+In RebecaSys, the syntax is extended with \textit{wait} statements, and a block of 
+\textit{global variables} at the beginning of the model.  RebecaSys is defined as a 
+back-end language,  SystemC codes are automatically mapped to RebecaSys and then are 
+formally verified. As a RebecaSys model is only created from a SystemC model 
+automatically, a controlled way of using global variables  is enforced, so, racing is 
+avoided. Hardware/Software co-design languages support a cycle-based synchronization 
+among all parallel processes. For example, if more than one module or process can write 
+in a SystemC variable then two global variables in RebecaSys are defined, for pre- and 
+post- values for each cycle.  
 A wait statement is also added, where a rebec waits until a Boolean expression becomes true. 
 %This way we could keep the same model checking tools and techniques (including reduction techniques)
 % ... multiple writer will be two variable, for pre-post, 
@@ -674,11 +691,14 @@ A wait statement is also added, where a rebec waits until a Boolean expression b
 %
 %Variable Rebeca: 
 
+
 In Broadcasting Rebeca,
-broadcast statement is added to Rebeca, on the other hand, there is no known rebecs, so direct message sending to an actor is impossible.
+broadcast statement is added to Rebeca, but there is no known rebecs, so direct message 
+sending to an actor is impossible.
 % there is no shared variable or synchronization
  Wireless Rebeca is an extension of Broadcasting Rebeca where in addition to broadcast to all, there are possibilities of multicast to neighbors and unicast to sender.
 Neighbours of an actor are actors which sent messages to it. Here, unlike in Rebeca, we have possibility of a message getting lost, as a neighbor may move out of the reach of an actor.
+\LUDO{what is your message here concerning synchronisation?}
 
 \paragraph{Degree of transparency}
 In Rebeca, programmers are not exposed to the mechanism of asynchronous communication among actors. 
@@ -689,12 +709,18 @@ There is no way to access the contents of message queues, and acknowledgments ar
 
 In Rebeca, the modeler cannot peek into the  message queues and have information about a message without taking the message. 
 In modeling various applications, it is observed that sometimes a pattern-matching mechanism for choosing a message to take from the queue, like what is provided by Erlang,  could be very handy.
+\LUDO{is this more related to transparency or to synchronisation (on another message)?}
 
 This transparency holds for all the extensions of Rebeca.
 In Timed Rebeca and Probabilistic Timed Rebeca, the message queue is changed into a message bag with time-stamped messages, nevertheless, the transparency is not changed.
-%
 
-Variable Rebeca is defined for designing product line software, and allows all the constructs of a model (i.e. reactive classes, state variables, message servers, statements, ...) to be annotated. This way the modeler can show which constructs are associated to each  products, and hence different concrete models are built based on the annotated model.
+\LUDO{I would remove this paragraph, at least from here and perhaps globally: I feel like 
+it is not related to the main subject ... I think}
+Variable Rebeca is defined for designing product line software, and allows all the 
+constructs of a model (i.e. reactive classes, state variables, message servers, 
+statements, ...) to be annotated. This way the modeler can show which constructs are 
+associated to each  product, and hence different concrete models are built based on the 
+annotated model. 
 
 \paragraph{Degree of data sharing}
 %Following the actor's definition, 
@@ -702,12 +728,11 @@ There is no shared variable among actors in Rebeca. Parameters in sending messag
 %, so, the value of parameters are sent to the other actors not their references. 
 This  is also valid when a reference to an actor is sent as a parameter. In this case, the sent reference is created by shallow-copy of the original reference, i.e., avoiding creation of a new actor because of message passing (e.g. Fig~\ref{fig:rebeca-example} line 9) .
 %Marjan: compare with ASP?
-
 % GALS Extended Rebeca
 % RebecaSys
-None of the languages in Rebeca family allows shared variables.
+%None of the languages in Rebeca family allows shared variables.
 In RebecaSys, a block of global variables can be defined at the beginning of the model, but these variables are used in a controlled way as explained above.
-
+\TODO{Ludo: check again when I understand better the previous section on rebecasys}
 
 \paragraph{Formal semantics and support}
 To support analyzability and develop formal verification tools, Rebeca and its extensions are all equipped with formal semantics.
@@ -724,7 +749,6 @@ Floating time transition system is an innovative semantics for real-time actors,
 %It is also presented in real-time Maude to support the analysis of dynamically creating real-time actors \cite{DBLP:journals/scp/Sabahi-KavianiK15}. 
 Formal semantics of Probabilistic Timed Rebeca is presented as TMDP in \cite{DBLP:journals/eceasst/JafariKSH14}. 
 
-For the summary of the mentioned aspects and comparing the features the members of Rebeca family refer to Table~\ref{tab::Rebecacomparison}.
 
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}m{#1}}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
@@ -758,19 +782,28 @@ For the summary of the mentioned aspects and comparing the features the members 
 \end{table}
 
 \paragraph{Implementation and tooling support}
-There is a wide range of analysis and mapping toolsets for Rebeca family models which are accessible from the Rebeca home page, see \url{http://rebeca-lang.org}. The majority of these toolsets (and libraries) are integrated in Afra, the modeling and model checking IDE of Rebeca family models. 
-Rebeca has been taught in different courses at different universities, including Reykjavik University, Sharif University, University of Tehran, and University of Illinois at Urbana-Campaign. Afra is an \textsc{Eclipse} plug-in that is used by students of these classes, and provides the following facilities:
+There is a wide range of analysis and mapping toolsets for Rebeca family models which are 
+accessible from the Rebeca home page, see \url{http://rebeca-lang.org}. The majority of 
+these toolsets and libraries are integrated in Afra, the modeling and model checking IDE 
+of Rebeca family models. 
+Rebeca has been taught in different courses at different universities, including 
+Reykjavik University, Sharif University, University of Tehran, and University of Illinois 
+at Urbana-Campaign. Afra is an \textsc{Eclipse} plug-in that is used by students of these 
+classes, and provides the following facilities: \LUDO{do we really want to all list the 
+universities where each language is taught???}
 %, Afra is an integrated tool which has been used in teaching classes different universities (Tehran, sharif, RU, UIUC)visualize and step through the counter example - queue overflow - . 
 \begin{itemize}
-\item Editor: Eclipse-based editor with syntax highlighting for writing the models and  properties
-\item Compiler: compiler and build system which are integrated with error location mechanism of Eclipse
-\item Model checking tool: integrated model checker for  LTL and CTL model checking of Rebeca,
+\item Eclipse-based editor with syntax highlighting for writing the models and  properties
+\item Compiler and build system integrated with error location mechanism of Eclipse
+\item Model checking tool for  LTL and CTL model checking of Rebeca,
 and  Floating Time Transition System generator and analyzer for Timed Rebeca
-\item Visualization: state space generators, compatible with CADP and $\mu$CRL analysis and visualization toolsets
-\item Counter example: facilities for traversing counter examples in case of property violation
+\item State space generators, compatible with CADP and $\mu$CRL analysis and 
+visualization toolsets
+\item Facilities for traversing counter examples in case of property violation
 \end{itemize}
 
-In addition to Afra, there are other stand-alone tool-sets for the analysis of Rebeca family models:
+Additionally, there are other stand-alone tool-sets for the analysis of Rebeca  
+models:
 \begin{itemize}
 \item Simulator backend tool for Rebeca and Timed Rebeca models, generating  Erlang 
 codes   \cite{DBLP:journals/scp/ReynissonSACJIS14}
@@ -794,6 +827,8 @@ codes   \cite{DBLP:journals/scp/ReynissonSACJIS14}
 \end{itemize}
 
 
+For the summary of the mentioned aspects and comparing the features the members of Rebeca 
+family refer to Table~\ref{tab::Rebecacomparison}.
 \subsubsection{ABS}
 
 \lstset{ morekeywords={module,export,import, from, interface, class,
