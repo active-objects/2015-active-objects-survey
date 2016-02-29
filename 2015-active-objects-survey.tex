@@ -511,21 +511,40 @@ several aspects.
 \paragraph{General presentation and objective of the language} 
 Rebeca (\emph{\underline{Re}active O\underline{b}j\underline{ec}ts L\underline{a}nguage}) is an actor-based modeling language designed in 2001 \cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/fuin/SirjaniMSB04}, as an imperative interpretation of Agha's actor model,  provided with formal semantics and supported by model checking tools~\cite{DBLP:journals/jucs/SirjaniBM05,DBLP:conf/birthday/SirjaniJ11}. Rebeca is designed for modeling and verification of concurrent and distributed systems with the goal to bridge the gap between software engineers and formal methods community, by being a usable and at the same time analyzable modeling language. 
 
-As usability has been a primary goal in designing Rebeca, the syntax is shifted to be Java-like,  the computation and communication model of the core language is kept simple, and the analysis support is the model checking. Rebeca is an event-driven modeling language which there is no shared variable among actors and they are allowed to communicate by asynchronous message passing (there is no blocking send or receive statement).
+As usability has been a primary goal in designing Rebeca, the syntax is shifted to be 
+Java-like,  the computation and communication model of the core language is kept simple, 
+and the analysis support is the model checking. Rebeca is an actor-based language without 
+shared variable between actors and with asynchronous message passing (there is no 
+blocking send or receive statement).
 Because of the simple structure of the language, learning Rebeca is easy. Furthermore, using model checking tools needs far less expertise comparing to deduction-based analysis techniques.
 %
 Semantics of Rebeca helps analyzability,  Rebeca actors are isolated and hence various abstractions, and modular and compositional verification become less problematic to apply. Any tight coupling between the building modules of a model, like shared variables, wait statements, and synchronous message calls, can make the analysis more difficult.
 
-Rebeca offers  perfect modeling capabilities and efficient model checking tools for concurrent distributed,  event-based applications where the asynchronous message passing is all we need. Even so, there are places that synchronization among components, or different communication models  are vital and lack of that in the modeling language makes the task of modeling of such applications cumbersome. Following the strategy of ``pay for what you need'', while core Rebeca is kept simple,   the language is extended in different dimensions, creating the Rebeca family, to support modeling and analysis of a wider variety  of application domains. 
+Rebeca offers  perfect modeling capabilities and efficient model checking tools for 
+concurrent distributed,  event-based applications with pure asynchronous message passing. 
+Even so, sometimes synchronization among components, or different communication models  
+are vital and the modeling of some applications becomes cumbersome. Following the 
+strategy of ``pay for what you need'', while core Rebeca is kept simple,   the language 
+is extended in different dimensions, creating the Rebeca family, to support modeling and 
+analysis of a wider variety  of application domains. 
 Extended Rebeca \cite{DBLP:conf/acsd/SirjaniBMS05,DBLP:journals/jucs/SirjaniBM05}, RebecaSys \cite{DBLP:journals/tecs/RazaviBSKSS10}, Variable Rebeca \cite{DBLP:journals/jucs/SabouriK13}, 
-Broadcasting Rebeca \cite{DBLP:conf/fsen/YousefiGK15},  and Wireless Rebeca are examples of these extensions for modeling and analysis of globally asynchronous-locally synchronous systems,  hardware/software co-design (or system-level design), product-line of actors,  actors with message broadcasting abilities, and mobile ad-hoc actors, respectively. 
+Broadcasting Rebeca \cite{DBLP:conf/fsen/YousefiGK15},  and Wireless Rebeca are examples 
+of these extensions for modeling and analysis of globally asynchronous-locally 
+synchronous systems,  hardware/software co-design (or system-level design), product-line 
+of actors,  message broadcasting abilities, and mobile ad-hoc actors, respectively. 
   %Timed Rebeca \cite{DBLP:journals/scp/ReynissonSACJIS14}, and Probabilistic Timed Rebeca \cite{DBLP:journals/eceasst/JafariKSH14} real-time actors, and real-time actors with probabilistic behaviors
-  In these extensions, the core Java-like syntax of Rebeca is preserved and only a minimal  set of statements and keywords are added to the language to support the requirements of each application domain. 
+  In these extensions, the core Java-like syntax of Rebeca is preserved and only a 
+  minimal  set of statements and keywords are added to support the requirements of each 
+  application domain. 
   %This way, modelers learn one modeling language; although, they are able to use different extensions of Rebeca to analyze different kinds of systems or different aspects of a system. 
   %Rebeca also tailored for the domain of hardware-software co-design in \cite{DBLP:journals/tecs/RazaviBSKSS10} to be used as the back-end model checker of SystemC designs.
   %
- 
-Moreover, Rebeca is extended to capture real-time behavior and constraints, and also probabilistic behavior. Timed Rebeca \cite{DBLP:journals/corr/abs-1108-0228,DBLP:journals/scp/ReynissonSACJIS14} is supported by customized efficient analysis tools, and Probabilistic Timed Rebeca \cite{DBLP:journals/eceasst/JafariKSH14} can be analyzed using back-end tools.
+Timed Rebeca 
+\cite{DBLP:journals/corr/abs-1108-0228,DBLP:journals/scp/ReynissonSACJIS14} 
+ extends Rebeca to capture real-time behavior and is  supported by customized efficient 
+ analysis tools. Finally probabilistic behavior are supported by Probabilistic Timed 
+ Rebeca \cite{DBLP:journals/eceasst/JafariKSH14} that can be analyzed using back-end 
+ tools.
 
 
 \paragraph{Language description} 
