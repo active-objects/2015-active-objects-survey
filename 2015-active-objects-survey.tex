@@ -550,21 +550,41 @@ Timed Rebeca
 \paragraph{Language description} 
 We describe Rebeca using an example of a Media Service system, depicted in Fig.~\ref{fig:rebeca-example}. In this example, there are some clients 
 %which want to watch movies. They 
-that send requests for watching movies to a dispatcher and the dispatcher non-deterministically redirects the request to media servers. A media server starts streaming upon receiving a request from the dispatcher. The Rebeca model of Media Service consists of a number of \emph{reactive classes}, which are \texttt{MediaServer}, \texttt{Dispatcher}, and \texttt{Client}, each describing the type of a certain number of \emph{actors} (also called \emph{rebecs} in Rebeca)\footnote{here, we use rebec and actor interchangeably.}. A reactive class declares a set of \emph{state variables} (line 2). The local state of each actor is defined by the values of its state variables and the contents of its message queue. Following the actor model, the communication in Rebeca models takes place by the asynchronous message passing among actors. Each actor has a set of \emph{known rebecs} to which it can send messages. For example, an actor of type \texttt{Dispatcher} knows three actors of type \texttt{MediaServer} (line 8), to which it can send \texttt{requestForMovie} message (lines 12-14). Each reactive class of a Rebeca model may have a constructor. Constructors have the same name as the declaring reactive class and does not have return value (lines 3 and 21). Their  task is initializing the actor's state variables (line 3) and putting initially needed messages in the queue of that actor (line 21). A properly written constructor leaves the resulting actor in a valid state. 
+that send requests for watching movies to a dispatcher and the dispatcher 
+non-deterministically redirects the request to media servers. A media server starts 
+streaming upon receiving a request from the dispatcher. The Rebeca model of Media Service 
+consists of a number of \emph{reactive classes}, which are \texttt{MediaServer}, 
+\texttt{Dispatcher}, and \texttt{Client}, each describing the type of a certain number of 
+\emph{actors} (also called \emph{rebecs} in Rebeca). A reactive class declares a set of 
+\emph{state variables} (line 2). The local state of each actor is defined by the values 
+of its state variables and the contents of its message queue. Following the actor model, 
+communication is realised by asynchronous message passing. Each actor has a set of 
+\emph{knownrebecs} of known actors to which it can send messages. For 
+example, an actor of type \texttt{Dispatcher} knows three actors of type 
+\texttt{MediaServer} (line 8), to which it can send \texttt{requestForMovie} message 
+(lines 12-14). Each reactive class of a Rebeca model may have a constructor. Constructors 
+have the same name as the declaring reactive class and does not have return value (lines 
+3 and 21). Their  task is initializing the actor's state variables (line 3) and putting 
+initially needed messages in the queue of that actor (line 21). %A properly written 
+%constructor leaves the resulting actor in a valid state. -> LUDEO REMOVED: in which 
+%language this is not true?
 
 Message servers are defined in reactive classes in a similar way that methods are written in Java.
 %Reactive classes declare the messages to which they can respond to, using Java-like syntax of defining methods. 
 In contrast to the Java methods, \emph{message servers} of Rebeca does not have return value and their declarations start with keyword \texttt{msgsrv}. 
 %
 A message server is executed upon receiving the  corresponding message,  
-and may include assignment statements,  conditional statements (lines 11 to 15), and sending messages (e.g lines 4 and 22).
+and may include assignment statements,  conditional statements (lines 11 to 15), and  
+message sending (lines 4 and 22).
 Loops and periodic behavior is modeled by sending messages to itself (line 23). Since the communication is asynchronous, each actor has a \emph{message queue} from which it takes the next message to serve. The ordering of the messages in the message queues is first-in first-out.
 %based on the arrival times of messages. 
 An actor takes the first message from its message queue, executes its corresponding message server in  a non-preemptive way, and then takes the next message. The actor stays idle only if there is no other message in the queue.
 %, and continues in.(or waits for the next message to arrive) and so on. 
 A message server may include a \emph{nondeterministic assignment} statement which is used to model the nondeterminism in the behavior of a message server (line 10).
 
-Finally, the \texttt{main} block is defined in a Rebeca model for instantiating the actors of the model. In the Media Service model, seven actors are created, receiving their known rebecs and the parameters' values of their constructors upon instantiation (lines 27-29).
+Finally, the \texttt{main} block instantiates the 
+actors of the model. In the Media Service model, seven actors are created, receiving 
+their known rebecs and the parameters' values of their constructors (lines 27-29).
 
 
 \lstdefinelanguage{rebeca}{
