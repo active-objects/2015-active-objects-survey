@@ -1512,8 +1512,8 @@ Encore supports versions of the \ec{suspend}, \ec{get}, and
 \ec{await} statements similar to ABS. In contrast with ABS, Encore
 supports using suspend and await anywhere in a program, as opposed
 to ABS which only permits calling these operations inside active objects.
-%\LUDO{not sure what is meant here: in abs all objects are kind of  active 
-%no? is it  impossible to do an await in a synchronously called method?}.
+\LUDO{I am still not sure what is meant here: in abs all objects are kind of  active 
+no?}.
 This is due to underlying  technical reasons
 described in the implementation sections of Encore and ABS
 \TW{Make it so! :) Encore threads yadayada.}. Encore's \ec{await}
@@ -1722,10 +1722,13 @@ Futures created from tasks or methods calls on active objects can be lifted
 to the \parT{} abstraction via the \emph{lift} combinator (lift :: Fut t $\to$ Par t);
 multiple \parT{}s can be treated as a single one with
 the $\|$ construct ($\| :: Par \;t \to Par \;t \to Par \;t$), which takes two \parT{}s
-and returns a new \parT{} collection. This construct does not create new threads,
+and returns a new \parT{} collection. 
+\LUDO{could you say: which merges two \parT{}s into a single one? this would be more 
+informative}
+This construct does not create new threads,
 but exploits the inner parallelism within the \parT{}, spawning new tasks when there
-is an optimisation opportunity.
-%, which increases the degree of asynchrony while keeping the throughput of the system.
+is an optimisation opportunity. \LUDO{this creates no new thread but creates new task? 
+how? what do you mean? aren't the thread and tasks already created? ... }
 
 The \parT{} combinators are informally explained with the example from Fig.~\ref{fig:encore:factorisation},
 which computes the LU and Cholesky factorisation in parallel, inverting these matrixes asynchronously,
