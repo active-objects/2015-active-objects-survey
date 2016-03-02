@@ -1394,7 +1394,7 @@ other hand generate an executable ProActive/GCM code corresponding to the design
 \newcommand{\ec}[1]{\lstinline[style=encore,basicstyle=\tt]@#1@}
 \newcommand{\Upscale}{\textsc{UpScale}\xspace}
 
-\subsubsection{Encore}
+\subsubsection{Encore}\label{sec:encore}
 
 \paragraph{General presentation} Encore \cite{ref:encore}
 is a general purpose parallel language based on active objects
@@ -1830,7 +1830,9 @@ The \parT{} collection and its combinators have been designed to perform
 operations asynchronously without stopping the current thread of execution.
 This creates a collection that never blocks and executes operations on demand,
 when the values are available. There are more combinators available \cite{ref:encore}
-but we have highlighted the most important ones.
+but we have highlighted the most important ones. \LUDO{it would be good to conclude this 
+paragraph by two sentences exaplining how parallel combinators integrate  well with the 
+active object model (concurrency inside a single task at least)}
 
 
 \paragraph{Degree of Synchronisation}
@@ -1845,15 +1847,13 @@ more original asynchronous constructs in Encore is the future chaining operator
 (anonymous function, aka lambda) to the future, continue processing the rest of
 the message. The callback would be called with the future contend as the
 argument when the future is resolved. This construct allows chaining operation on futures 
-without creating synchronisation, it is kind of similar to the default fandling of 
+without creating synchronisation, it is kind of similar to the default behaviour of 
 futures in AmbientTalk \TODO{add a citation if needed} except that it is more explicit 
 and easier to control for the 
-programmer. It is also similar to
-the transparent first-class 
+programmer. It is also a way to mimic 
+ transparent first-class 
 futures of ASP except that the callback request is only created when the future is 
-resolved thus the callback function is executed later than in the ASP case and the 
-request could be delayed forever if the future is never resolved, in which case the ASP 
-request would create a deadlock.
+resolved.
 
 %\LUDO{I changed this paragraph to better relate with the other languages (perhaps too 
 %long or too much references), the previous version is commented if you want to recover 
@@ -2319,12 +2319,13 @@ execution, and (ii) that the overhead introduced by the translation is always ke
 
 
 \subsection{Encore}
+\TODO{clean up this introduction}
 explicit bytecode operations?
 particular accent on data sharing since lots of care has been put is designing an efficient data sharing in Encore.
 
 Encore language implementation consists of two major components, a
 Source-to-source compiler (from Encore to C) implemented in Haskell, and the
-runtime system, which is based on the same runtime (implemented in C) used by
+runtime system, which is based on the  runtime (implemented in C) used by
 Pony.
 
 \paragraph{Thread creation and scheduling}
@@ -2334,36 +2335,40 @@ physical cores on the machine unless specified otherwise on the command line.
 Each active object in Encore is assigned to an Encore thread (green thread),
 which provides thread-of-control for the active object so that it could process
 messages in the mailbox. Each scheduler is mapped to an OS thread, and it runs
-in a loop of scheduling active objects until the whole program (system)
+in a loop of scheduling active objects until the whole program 
 terminates. Each scheduler owns an active object queue, and in each iteration of
 the loop, it performs three procedures. Firstly, pop an active object from the
 beginning of the queue. Secondly, hand over the control to the active object so
-that it could process messages in the mailbox if any. The active object can only
+that it can process messages in the mailbox if any. The active object can only
 process one message in this step to ensure fairness. Thirdly, depending on if an
 message is indeed processed in previous step, the active object is pushed to the
-end of the queue. In the second step, new active objects could be created, and
+end of the queue \TODO{make this clearer3: what if no message is processed?}. In the 
+second step, new active objects could be created, and
 they are pushed to the end of queue belonging to the current scheduler as well.
-Active objects propagates across schedulers because of work stealing, which
-tries to achieve load-balancing, and happens whenever a scheduler runs out of
+Active objects can be transmitted from one scheduler to another because of work stealing, 
+which \LUDO{Remove this (seems obvious to me)?
+tries to achieve load-balancing, and} happens whenever a scheduler runs out of
 active objects.
 
-Because of three different ways of altering control flowing, processing of a
-message (method call) could be paused in the middle, and would resumed depending
-on which language construct is used to cause this pause. All information living
+As described in Section~\ref{sec:encore}, processing of a
+message could be paused in the middle, and be resumed when the request service is 
+scheduled again. All information living
 on the stack must be preserved for message processing continuation. Currently,
-Encore runtime would fetch a free stack page from the stack pool to processing
-next active objects, and this new stack page would be used until next pause
-happen. After the paused message processing is resumed and run to completion,
+Encore runtime fetches a free stack page from the stack pool to process
+next active object, this new stack page is used until next pause
+happen. When message processing finished,
 the stack page is collected and returned to the stack pool for future reuse.
 
-\paragraph{Data sharing and object referencing}
+\paragraph{Data sharing and object referencing} \LUDO{I think this paragraph needs proof 
+reading and improvement: I tried to do the basic but more is needed}
 
 When data (active and passive objects) is shared in Encore, no copying is
-performed, so sharing large objects in Encore poses no performance issues. Due
-to this particular way of implementing sharing, sharing mutable passive objects
+performed, so sharing large objects in Encore poses no performance issues. Consequently, 
+sharing mutable passive objects
 naively could introduce data race. Active objects are not subject to this
-problem, for they have thread-of-control internally. Mutable passive objects are
-immune of this problem for oblivious reasons. Therefore, the most interesting
+problem, for they have an internal thread-of-control. Mutable passive objects are
+immune of this problem for oblivious reasons \LUDO{You mean immutable?}. Therefore, the 
+most interesting
 case is sharing mutable passive objects. Under capability system, a mutable
 passive object could be of kind locked so that sharing it would not result into
 data race. In a slightly more advanced usage scenario, we might want to share
@@ -2382,35 +2387,53 @@ to cater for the erroneous cases.
 Encore borrows the garbage collection part from Pony runtime with the necessary
 extension to accommodate future values, which is not available in Pony. Garbage
 collection consists of two parts, collecting active objects, which is covered in
-\cite{ref:pony_actor_gc}, and collecting passive objects, which is discussion in
-a paper under submission.
+\cite{ref:pony_actor_gc}, and collecting passive objects. %, which is discussion in
+%a paper under submission.
 
 \subsection{Erlang backend for Rebeca}
-According to the natural conformance concepts between Rebeca and Erlang, generating executable programs from Rebeca models is developed by translating Rebeca models to Erlang codes (as a part of \cite{DBLP:journals/scp/ReynissonSACJIS14}). Erlang as a dynamically-typed general-purpose programming language for development of distributed, real-time and fault-tolerant applications, provides actor-based concurrency model. Having the same concurrency model, translating Rebeca models to Erlang codes takes place by direct mapping of language constructs as shown in \cite{DBLP:journals/scp/ReynissonSACJIS14}.
+Execution of Rebeca models is done by translating Rebeca models to Erlang code 
+\cite{DBLP:journals/scp/ReynissonSACJIS14}. Erlang is a dynamically-typed general-purpose 
+programming language for development of distributed, real-time and fault-tolerant 
+applications; it provides an actor-based concurrency model. Having the same concurrency 
+model, translating Rebeca models to Erlang is realised by direct mapping of language 
+constructs as shown in \cite{DBLP:journals/scp/ReynissonSACJIS14}.
 
 \paragraph{Thread Creation and Scheduling}
-Actors, as the only concurrent elements of Rebeca models, are mapped to processes in Erlang, concurrently executing elements which are extremely lighter than OS-level threads (in some cases more than 100,000 of them are run in a single computer) \cite{Erlang-book}. The programming facilities of Erlang for developing concurrent applications (i.e., spawn, ``!'', and receive) allow processes to create new processes and communicate through asynchronous message passing. This facilities are used in translating Rebeca models to Erlang codes without needs of any modification. The generated processes are scheduled using the default scheduler of Erlang, called reduction-based scheduler.
+Actors, as the only concurrent elements of Rebeca models, are mapped to processes in 
+Erlang, concurrently executing elements which are extremely lighter than OS-level threads 
+(more than 100,000 of them can be run in a single computer) \cite{Erlang-book}. The 
+programming facilities of Erlang for developing concurrent applications (i.e., spawn, 
+``!'', and receive) allow processes to create new processes and communicate through 
+asynchronous message passing. This facilities are used for translating Rebeca models to 
+Erlang codes without needing any modification. The generated processes are scheduled 
+using the default scheduler of Erlang, called reduction-based scheduler.
 %To model the actors scheduler of Rebeca, reduction-based scheduler of Erlang is used. Using reduction-based scheduler, an Erlang process is allowed to execute for a time slice of approximately 2000 reductions before a context switch occurs. A reduction corresponds to the execution of one of the Erlang's built-in functions.% So, a single reduction is not a constant value.
 
 \paragraph{Data Sharing and Object Referencing}
-Reserving a dedicated memory space for each process in Erlang, avoids having any shared object among processes. In communications between two actors, the sent message and its parameters must be stored in the message bag of the receiver actor which is located in its dedicated memory space. So, a copy of the parameters are stored in the receiver's memory space. %This mechanism is called copying message passing of Erlang. 
+Reserving a dedicated memory space for each process in Erlang, avoids having any shared 
+object among processes. Upon communication, the sent message and its parameters must be 
+stored in the message bag of the receiver actor which is located in its dedicated memory 
+space. %So, a copy of the parameters is stored in the receiver's memory space. %This 
+%%mechanism is called copying message passing of Erlang. 
+\LUDO{the end is not clear to me}
 Although, passing reference of actors using this mechanism does not result in sending the deep-copy of actors and only reference to actors are copied and are sent. The references to actors are allowed to be used for message sending not for sharing data of actors.
 
 \paragraph{Error handling}
-In the current version of Rebeca, there is no mechanism for distributed exception handling. %So, modelers have to handle exceptions manually. In other words, exception handling is not a special case in Rebeca models and they must be implemented the same as ordinary parts of message servers of actors.
-Currently, Rebeca doesn't have support for exception handling. Codes for handing errors must be implemented the same as ordinary parts of message servers of actors.
-
-\paragraph{Garbage collection}
-
-Encore borrows the garbage collection part from Pony runtime with the necessary
-extension to accommodate future values, which is not available in Pony. Garbage
-collection consists of two parts, collecting active objects, which is covered in
-\cite{ref:pony_actor_gc}, and collecting passive objects, which is discussion in
-a paper under submission.
+In the current version of Rebeca, there is no mechanism for exception handling and the 
+programmer must rely on traditional messages to deal with errors. %So, modelers have to 
+%handle exceptions manually. In other words, exception handling is not a special case in 
+%Rebeca models and they must be implemented the same as ordinary parts of message servers 
+%of actors.
+%Currently, Rebeca doesn't have support for exception handling. 
+%Codes for handing errors must be implemented the same as ordinary parts of message 
+%servers of actors.
 
 
 \paragraph{Garbage collection}
-Rebeca borrows the default garbage collector of Erlang without any modification, which runs one garbage collector for each process. %It uses general garbage collection algorithm (dividing memory to young and old generations) for each process. 
+Rebeca borrows the default garbage collector of Erlang without any modification, which 
+runs one garbage collector for each process. %It uses general garbage collection 
+%algorithm (dividing memory to young and old generations) for each process. 
+\LUDO{I do not understand the last two sentences}
 This way, as each Rebeca actor is mapped to one Erlang process, we can say that per actor garbage collection takes place in translated codes. %In addition, the intra process garbage collection only analyses large processes (i.e., processes which consumes more than 20K of memory). So, 
 In memory pressure, all of the Rebeca actors are analyzed to this aim as they are long-lived large processes.
 
