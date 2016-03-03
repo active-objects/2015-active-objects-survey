@@ -679,7 +679,8 @@ In  Extended Rebeca \cite{DBLP:conf/acsd/SirjaniBMS05,DBLP:journals/jucs/Sirjani
 
 %RebecaSys
 \LUDO{I do not really understand this paragraph and hoew this is related to 
-synchronisation}
+synchronisation -- after skype: explain better vraiable protection, then the rest should 
+follow}
 In RebecaSys, the syntax is extended with \textit{wait} statements, and a block of 
 \textit{global variables} at the beginning of the model.  RebecaSys is defined as a 
 back-end language,  SystemC codes are automatically mapped to RebecaSys and then are 
@@ -703,7 +704,21 @@ sending to an actor is impossible.
 % there is no shared variable or synchronization
  Wireless Rebeca is an extension of Broadcasting Rebeca where in addition to broadcast to all, there are possibilities of multicast to neighbors and unicast to sender.
 Neighbours of an actor are actors which sent messages to it. Here, unlike in Rebeca, we have possibility of a message getting lost, as a neighbor may move out of the reach of an actor.
-\LUDO{what is your message here concerning synchronisation?}
+\LUDO{what is your message here concerning synchronisation? -- after skype: have to say 
+that this is asynchronous communication again but no point-to-point???} 
+
+In most actor language, the status of the queue cannot be precisely introspected; this 
+limits expressiveness but prevents the creation of highly unpredictable behaviors. In 
+practice several actor languages allows filtering and pattern matching on the service of 
+message that seems to be a reasonable compromise. \LUDO{I added this intro as it is kind 
+of related with the first version of ASP that related determinacy with message filtering 
+... but perhaps it is a little too complicated}
+For example in Rebeca, the modeler cannot peek into the  message queues and have 
+information about a message without taking the message. 
+In modeling various applications, it is observed that sometimes a pattern-matching 
+mechanism for choosing a message to take from the queue, like what is provided by 
+Erlang,  could be very handy.
+
 
 \paragraph{Degree of transparency}
 In Rebeca, programmers are not exposed to the mechanism of asynchronous communication among actors. 
@@ -712,20 +727,18 @@ The  syntax  is the same as the syntax for sequential programming.
 There is no way to access the contents of message queues, and acknowledgments are not sent upon starting or finishing the execution of a message server. In addition, programmers does not have any control on the interleaved execution of actors; i.e., the internal thread of an actor takes a message from the actor's message queue and serve it in an isolated environment, regardless of the states of other actors.
 %
 
-In Rebeca, the modeler cannot peek into the  message queues and have information about a message without taking the message. 
-In modeling various applications, it is observed that sometimes a pattern-matching mechanism for choosing a message to take from the queue, like what is provided by Erlang,  could be very handy.
-\LUDO{is this more related to transparency or to synchronisation (on another message)?}
 
 This transparency holds for all the extensions of Rebeca.
 In Timed Rebeca and Probabilistic Timed Rebeca, the message queue is changed into a message bag with time-stamped messages, nevertheless, the transparency is not changed.
 
-\LUDO{I would remove this paragraph, at least from here and perhaps globally: I feel like 
-it is not related to the main subject ... I think}
-Variable Rebeca is defined for designing product line software, and allows all the 
-constructs of a model (i.e. reactive classes, state variables, message servers, 
-statements, ...) to be annotated. This way the modeler can show which constructs are 
-associated to each  product, and hence different concrete models are built based on the 
-annotated model. 
+%\LUDO{I would remove this paragraph, at least from here and perhaps globally: I feel 
+%like 
+%it is not related to the main subject ... I think}
+%Variable Rebeca is defined for designing product line software, and allows all the 
+%constructs of a model (i.e. reactive classes, state variables, message servers, 
+%statements, ...) to be annotated. This way the modeler can show which constructs are 
+%associated to each  product, and hence different concrete models are built based on the 
+%annotated model. 
 
 \paragraph{Degree of data sharing}
 %Following the actor's definition, 
@@ -736,8 +749,9 @@ This  is also valid when a reference to an actor is sent as a parameter. In this
 % GALS Extended Rebeca
 % RebecaSys
 %None of the languages in Rebeca family allows shared variables.
-In RebecaSys, a block of global variables can be defined at the beginning of the model, but these variables are used in a controlled way as explained above.
-\TODO{Ludo: check again when I understand better the previous section on rebecasys}
+In RebecaSys, a block of global variables can be defined at the beginning of the model, 
+but these variables are used in a controlled way as explained above.
+%\TODO{Ludo: check again when I understand better the previous section on rebecasys}
 
 \paragraph{Formal semantics and support}
 To support analyzability and develop formal verification tools, Rebeca and its extensions are all equipped with formal semantics.
@@ -759,31 +773,47 @@ Formal semantics of Probabilistic Timed Rebeca is presented as TMDP in \cite{DBL
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
 \begin{table}
-\tbl{Summary of comparing different members of Rebeca family language\label{tab::Rebecacomparison}}{%
-
-\scriptsize
-    \begin{tabular}{|L{1.8cm}|L{1.7cm}|L{1.3cm}|L{1.9cm}|L{1.3cm}|L{1.6cm}|L{1.2cm}|}
-    \hline
-    & \textbf{Objective of the language} & \textbf{Degree of Synchronization} & \textbf{Degree of Transparency} & \textbf{Degree of data sharing} & \textbf{Formal Semantics and Support} & \textbf{Tooling Support} \\
-    \hline
-    \textbf{Rebeca (R)} & modeling and verification of actors & NO & message queues and  interleaving of executions  & NO & SOS, ACP & YES \\
-    \hline
-    \textbf{Extended Rebeca (ER)} &  Globally asynchronous-locally synchronous Systems & local synchronous messages & (R) & NO & SOS & NO \\
-    \hline
-    \textbf{RebecaSys (RS)} & Hardware / Software co-design & wait statement & (R) + synchronization over global variables & Global variables & LTS & YES \\
-    \hline
-    \textbf{Variable Rebeca (VR)} & Modeling and analysis of product-lines of actors & NO & (R) + features inclusion regarding to the selected product & NO & SOS & Needs helps of an expert\\
-    \hline
-    \textbf{Broadcasting Rebeca (BR)} & Modeling of actors with broadcasting abilities & NO & (R) + broadcasting to all actors mechanism & NO & SOS & YES \\
-    \hline
-    \textbf{Wireless Rebeca (WR)} & Modeling of ad-hoc mobile networks & NO & (BR) + handling the connectivity of nodes + multi-casting & NO & SOS & YES \\
-    \hline
-    \textbf{Timed Rebeca (TR)} & Realtime actors & delay statement & (R) + Progress of time  & NO & SOS, RT Maude, Timed Automata, FTTS & YES \\
-    \hline
-    \textbf{Probabilistic Timed Rebeca (PTR)} & Probabilistic readtime actors & (TR) & (TR) & NO & SOS & Backend (IMCA \& Prism) \\
-    \hline
-    \end{tabular}
-}
+	\tbl{Summary of dimensions of comparison for  members of Rebeca family  
+	\label{tab::Rebecacomparison}}{%
+		
+		\scriptsize
+		\begin{tabular}{|L{1.8cm}|L{1.7cm}|L{1.3cm}|L{1.9cm}|L{1.3cm}|L{1.6cm}|L{1.2cm}|}
+			\hline
+			& \textbf{Objective} & \textbf{ Synchronization} & \textbf{Transparency} & 
+			\textbf{Data Sharing} & \textbf{Formal Semantics} & \textbf{Tool Support} \\
+			\hline
+			\textbf{Rebeca (R)} & modeling and verification of distributed concurrent 
+			systems & None & (Full) message queues and  interleaving of executions  & 
+			None & SOS, ACP & Afra integrated tool, various back-ends \\
+			\hline
+			\textbf{Extended Rebeca (ER)} &  Globally Asynchronous-Locally Synchronous 
+			Systems & local synchronous messages & As in Rebeca & None & SOS & None \\
+			\hline
+			\textbf{RebecaSys (RS)} & Hardware / Software Co-Design & wait statement & As 
+			in Rebeca + synchronization over global variables & Global variables & LTS & 
+			Model Checking, Simulation \\
+			\hline
+			\textbf{Variable Rebeca (VR)} & Product-lines of actors & None & As in Rebeca 
+			+ feature inclusion for selected product & None & SOS & Needs help of an 
+			expert\\
+			\hline
+			\textbf{Broadcasting Rebeca (BR)} & Actors with broadcasting abilities & None 
+			& As in Rebeca + broadcasting to all actors mechanism & None & SOS & Model 
+			Checking \\
+			\hline
+			\textbf{Wireless Rebeca (WR)} & Ad-hoc mobile networks & None & As in BRebeca 
+			+ handling the connectivity of nodes + multi-casting & None & SOS & Model 
+			Checking \\
+			\hline
+			\textbf{Timed Rebeca (TR)} & Realtime actors & delay statement & As in Rebeca 
+			+ Progress of time  & None & SOS, RT Maude, Timed Automata, FTTS & Afra 
+			integrated tool, various back-ends \\
+			\hline
+			\textbf{Probabilistic Timed Rebeca (PTR)} & Probabilistic readtime actors & 
+			As in TRebeca & As in TRebeca & None & SOS & Back-ends (IMCA \& Prism) \\
+			\hline
+		\end{tabular}
+	}
 \end{table}
 
 \paragraph{Implementation and tooling support}
@@ -1906,7 +1936,8 @@ A capability is built from a trait and a \textit{kind}. The trait provides the i
 feeling of OOP languages while the \textit{kind} states the ``protection'' that
 the interface provides. By changing a keyword, the \textit{kind}, the interface
 changes the protection level. For instance, by changing the \textit{kind} from \textit{exclusive}
-to \textit{lock-free}, the interface changes the protection from an actor-like to a lock-free implementation.
+to \textit{lock-free}, the interface changes the protection from an actor-like to a 
+lock-free implementation. Like in RebecaSys, this creates controlled data sharing.
 
 The Encore capabilities form the hierarchy seen in
 Figure~\ref{fig:capa-tree}. Exclusive capabilities are local to
