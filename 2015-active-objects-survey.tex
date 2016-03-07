@@ -2376,46 +2376,44 @@ physical cores on the machine unless specified otherwise on the command line.
 Each active object in Encore is assigned to an Encore thread (green thread),
 which provides thread-of-control for the active object so that it could process
 messages in the mailbox. Each scheduler is mapped to an OS thread, and it runs
-in a loop of scheduling active objects until the whole program 
-terminates. Each scheduler owns an active object queue, and in each iteration of
-the loop, it performs three procedures. Firstly, pop an active object from the
-beginning of the queue. Secondly, hand over the control to the active object so
-that it can process messages in the mailbox if any. The active object can only
-process one message in this step to ensure fairness. Thirdly, depending on if an
-message is indeed processed in previous step, the active object is pushed to the
-end of the queue \TODO{make this clearer3: what if no message is processed?}. In the 
-second step, new active objects could be created, and
-they are pushed to the end of queue belonging to the current scheduler as well.
-Active objects can be transmitted from one scheduler to another because of work stealing, 
-which \LUDO{Remove this (seems obvious to me)?
-tries to achieve load-balancing, and} happens whenever a scheduler runs out of
-active objects.
+in a loop of scheduling active objects until the whole program terminates. Each
+scheduler owns an active object queue, and in each iteration of the loop, it
+performs three procedures. Firstly, pop an active object from the beginning of
+the queue. Secondly, hand over the control to the active object so that it can
+process messages in the mailbox if any. The active object can only process one
+message in this step to ensure fairness. Thirdly, if an message is indeed
+processed in previous step, the active object is pushed to the end of the queue,
+otherwise, the active object is unscheduled due to having empty mailbox. The
+unscheduled active objects would be rescheduled if other active objectives send
+messages to them. In the second step, new active objects could be created, and
+they are pushed to the end of queue belonging to the current scheduler as well
+to avoid unnecessary synchronization. Active objects can be transmitted from one
+scheduler to another because of work stealing, which tries to achieve
+load-balancing, and happens whenever a scheduler runs out of active objects.
 
-As described in Section~\ref{sec:encore}, processing of a
-message could be paused in the middle, and be resumed when the request service is 
-scheduled again. All information living
-on the stack must be preserved for message processing continuation. Currently,
-Encore runtime fetches a free stack page from the stack pool to process
-next active object, this new stack page is used until next pause
-happen. When message processing finished,
-the stack page is collected and returned to the stack pool for future reuse.
+As described in Section~\ref{sec:encore}, processing of a message could be
+paused in the middle, and be resumed when the request service is scheduled
+again. All information living on the stack must be preserved for message
+processing continuation. Currently, Encore runtime fetches a free stack page
+from the stack pool to process next active object, this new stack page is used
+until next pause happen. When message processing finished, the stack page is
+collected and returned to the stack pool for future reuse.
 
-\paragraph{Data sharing and object referencing} \LUDO{I think this paragraph needs proof 
+\paragraph{Data sharing and object referencing} \LUDO{I think this paragraph needs proof
 reading and improvement: I tried to do the basic but more is needed}
 
 When data (active and passive objects) is shared in Encore, no copying is
-performed, so sharing large objects in Encore poses no performance issues. Consequently, 
-sharing mutable passive objects
-naively could introduce data race. Active objects are not subject to this
-problem, for they have an internal thread-of-control. Mutable passive objects are
-immune of this problem for oblivious reasons \LUDO{You mean immutable?}. Therefore, the 
-most interesting
-case is sharing mutable passive objects. Under capability system, a mutable
-passive object could be of kind locked so that sharing it would not result into
-data race. In a slightly more advanced usage scenario, we might want to share
-part of the mutable passive object so that multiple active objects could work on
-different part of the same passive object concurrently. The capability system is
-work-in-progress, and not available in the compiler currently.
+performed, so sharing large objects in Encore poses no performance issues.
+Consequently, sharing mutable passive objects naively could introduce data race.
+Active objects are not subject to this problem, for they have an internal
+thread-of-control. Immutable passive objects are immune of this problem for
+obvious reasons. Therefore, the most interesting case is sharing mutable passive
+objects. Under capability system, a mutable passive object could be of kind
+locked so that sharing it would not result into data race. In a slightly more
+advanced usage scenario, we might want to share part of the mutable passive
+object so that multiple active objects could work on different part of the same
+passive object concurrently. The capability system is work-in-progress, and not
+available in the compiler currently.
 
 \paragraph{Error handling}
 
