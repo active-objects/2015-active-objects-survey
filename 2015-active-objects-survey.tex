@@ -17,7 +17,9 @@
 \usepackage[ruled]{algorithm2e}
 \usepackage{tikz}
 \usepackage{tabularx}
-
+\usepackage{graphicx}
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
 \usepackage{parcolumns}
 \usepackage{listings,multicol,amssymb}
 \renewcommand{\algorithmcfname}{ALGORITHM}
@@ -2348,16 +2350,56 @@ This way, we have a clear separation between the single thread used by applicati
 method, and the threads used by the condition execution method.
 %% RM
 
+\smallskip
 In conclusion, all ABS constructs are sustained by the ProActive backend. We have also 
 proven the translation to be correct. For that, we have used ASP with multiactive objects 
 extensions, and we have showed that the ASP translation simulates all the rules of ABS 
 semantics, and that all translated ASP configurations correspond to a valid ABS 
-execution. In addition, we have performed two experimental evaluations on an ABS 
-application translated with the ProActive backend, that show that (i) the translated 
-application run in a distributed environment indeed outperforms traditional ABS program 
-execution, and (ii) that the overhead introduced by the translation is always kept under 
-10\% compared to a native ProActive application.
+execution. 
+%%%% Without the figures, the text could be like the one below %%%%
+%In addition, we have performed two experimental evaluations on an ABS 
+%application translated with the ProActive backend, that show that (i) the translated 
+%application run in a distributed environment indeed outperforms traditional ABS program 
+%execution, and (ii) that the overhead introduced by the translation is always kept under 
+%10\% compared to a native ProActive application.
+We have also conducted an experimental performance evaluation of an ABS distributed application translated with the ProActive backend and distributed on a cluster. We compare it to the performance of the same ABS application translated with the old Java backend, run on a single machine. The considered use case is the pattern matching of a DNA sequence using the MapReduce programming model.%~\cite{Dean:2008:MSD:1327452.1327492}.
+Map instances (workers) are created in their own COG to make them work in parallel.
+We consider a searched pattern of 250 bytes, and a database of 5 MB of DNA sequences.
+Each map searches for the maximum matching sequence of a chunk.
+Then, a reducer outputs the global maximum matching sequence.
+We compute the global execution time. In the case of ProActive translation, the number
+of workers is twice the number of physical machines used 
+(two workers run on each machine). 
+%All used machines have 2 dual
+%core CPUs at 2.6GHz, and 8 GB of RAM\footnote{We use a cluster of Grid5000 platform: \url{http://grid5000.fr}}.
 
+\begin{figure}[t]
+		\begin{subfigure}[b]{0.50\linewidth}
+                 \includegraphics[scale=0.31]{pictures/usecase-final.png} 
+                \caption{Against existing solution}
+                \label{fig:bench-usecase}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.50\linewidth}
+                  \includegraphics[scale=0.31]{pictures/native-final.png} 
+                \caption{Against native code}
+                \label{fig:bench-native}
+        \end{subfigure}
+ \caption{Execution time of DNA-matching ABS application${}^{\thefootnote}$} 
+\label{fig:graph}
+\end{figure}
+
+Figure~\ref{fig:bench-usecase} shows execution time of both ProActive and Java translations of the ABS application from 2 to 50 workers, therefore using from 1 to 25 physical machines with ProActive. 
+The execution time of the application stemming from the ProActive backend is sharply decreasing for the first added machines and then decreases at a slower rate. On the other hand, the application stemming from the Java backend has an optimal degree of parallelism of 4 workers (which actually is the number of cores of the machine) and then cannot benefit from higher parallelism; execution time even increases afterwards due to context switching overhead.
+On the opposite, increasing the degree of parallelism for the application stemming from the ProActive backend gives a linear speedup, because it balances the load between machines. 
+
+Figure~\ref{fig:bench-native} compares now the performance of the generated ProActive code to a hand-written version. 
+In the generated program, we have manually replaced the translation of functional ABS types 
+(integers, booleans, lists, maps) with corresponding standard Java types, similar to the code that the Java 8 backend for ABS would produce. 
+%Indeed, our point here was to evaluate the additional communication cost of our translation, not the performance of ABS types compared to standard Java types.
+%\footnote{As can be noticed on the generated ProActive of Figures~\ref{fig:bench-usecase} and~\ref{fig:bench-native}, there is an order of magnitude of difference depending on the types used; fixing this is  
+%on-going~\cite{ref:ABS-Java-translate}.}
+In this context, we can see that the overhead introduced by the ProActive backend is rather low since it is generally kept under 10\%.
+At the biggest stage, the application translated with the ProActive backend starts to have a higher overhead because it involves too much communication. 
 
 \subsection{Encore}
 \TODO{clean up this introduction}
