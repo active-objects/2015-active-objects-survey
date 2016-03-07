@@ -1309,12 +1309,17 @@ The two groups are declared to be compatible (so as their method, by extension).
 \code{selfCompatible} parameter defines whether two different requests of the same group 
 are allowed to run in parallel. At runtime, a ready request is automatically executed if 
 it is compatible with requests that are already executing and with older requests in the 
-queue (to avoid starvation). 
+queue (to avoid starvation).
 
-Without annotations, a multi-active object is a mono-threaded active object, 
-without 
-any local parallelism nor any possible race condition. Programming a mono-threaded active object-based application with ProActive is thus extremely simple. If some 
-parallelism is desired, a compatibility should be declared between requests 
+\NOTE{Albert: If I understand the previous sentence correctly, starvation could
+occur if a ready request is *not* automatically executed even though it's
+compatible withe current running requests and older request in the queue. Could
+you provide a concrete scenario where this kind of starvation could happen?}
+
+Without annotations, a multi-active object is a mono-threaded active object,
+without
+any local parallelism nor any possible race condition. Programming a mono-threaded active object-based application with ProActive is thus extremely simple. If some
+parallelism is desired, a compatibility should be declared between requests
 that can be safely interleaved and for which execution order do not matter.
 To define a compatibility between two requests, the programmer can also use runtime information such as the request parameters or the object's 
 state. Programming a multi-active object-based application with ProActive is thus a bit more difficult than programming mono-threaded ProActive active objects, but it is less complicated than programming with raw threads and low-level synchronization mechanisms while giving a competing parallelism compared to those ancient techniques.
