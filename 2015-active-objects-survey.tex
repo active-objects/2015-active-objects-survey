@@ -1317,11 +1317,6 @@ could occur, for example: a request $R$ could starve because requests $\overline
 that are only compatible with executing requests, could keep overtaking $R$ and thus 
 prevent $R$ from being executed. 
 
-\NOTE{Albert: If I understand the previous sentence correctly, starvation could
-occur if a ready request is *not* automatically executed even though it's
-compatible withe current running requests and older request in the queue. Could
-you provide a concrete scenario where this kind of starvation could happen?}
-
 Without annotations, a multi-active object is a mono-threaded active object,
 without
 any local parallelism nor any possible race condition. Programming a mono-threaded active object-based application with ProActive is thus extremely simple. If some
