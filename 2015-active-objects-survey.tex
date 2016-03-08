@@ -1311,8 +1311,11 @@ In this example, two groups of requests are defined, each of them holding one me
 The two groups are declared to be compatible (so as their method, by extension). The 
 \code{selfCompatible} parameter defines whether two different requests of the same group 
 are allowed to run in parallel. At runtime, a ready request is automatically executed if 
-it is compatible with requests that are already executing and with older requests in the 
-queue (to avoid starvation).
+it is compatible (i) with requests that are already executing and (ii) with older 
+requests in the queue. Indeed, if condition (ii) were not set, starvation of requests 
+could occur, for example: a request $R$ could starve because requests $\overline{S}$, 
+that are only compatible with executing requests, could keep overtaking $R$ and thus 
+prevent $R$ from being executed. 
 
 \NOTE{Albert: If I understand the previous sentence correctly, starvation could
 occur if a ready request is *not* automatically executed even though it's
