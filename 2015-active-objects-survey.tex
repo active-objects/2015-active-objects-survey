@@ -35,6 +35,7 @@
 \newcommand{\LUDO}[1]{\textcolor{blue}{\textbf{[Ludo:#1]}}}
 \newcommand{\KIKO}[1]{\textcolor{cyan}{\textbf{[Kiko:#1]}}}
 \newcommand{\TW}[1]{\textcolor{magenta}{\textbf{[Tobias:#1]}}}
+\newcommand{\JS}[1]{\textcolor{gray}{\textbf{[Justine:#1]}}}
 \newcommand{\parT}{\texttt{ParT}}
 
 %% For bold syntax highlighting in the Encore chapter
@@ -2519,6 +2520,11 @@ This way, as each Rebeca actor is mapped to one Erlang process, we can say that 
 In memory pressure, all of the Rebeca actors are analyzed to this aim as they are long-lived large processes.
 
 \section{Lessons Learned and Conclusion}
+
+\JS{There is an increased parallelism in new active object programming languages. 
+They bring new challenges such as efficient data sharing: more work is dedicated to mix and find a balance between data copy and safe shared memory. 
+Latest active object languages also take more into account distribution of the the code, and consider data locality. 
+Such languages do not systematically assume that there exists a global memory, which then lead to more efficient implementations of those languages.}
 
 %\input{survey-parts/introduction.tex}
 %\input{survey-parts/example.tex}
