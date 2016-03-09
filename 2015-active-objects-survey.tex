@@ -978,7 +978,7 @@ allowing to describe complex, realistic behavior of asynchronous
 systems. \KIKO{Tasks are mentioned but have not been defined 
 At this point, the reader may understand tasks as C\# tasks. This is explained with
 the example afterwards. I believe it may make sense to explain this and the COG
-concept before. Your reader } 
+concept before.} 
 %
 More precisely, the ABS concurrency model is based on cooperative
 scheduling. This means that no task is preempted (interrupted) unless
@@ -1117,9 +1117,6 @@ processor to the callee and blocks the caller until it
 returns. Obviously, here we are interested only in the side effect
 that \lstinline{modify()} has. Synchronous calls are only permitted in
 the COG of the caller object. \LUDO{add a sentence for release/suspend} 
-\KIKO{In Encore, await returns void and in ABS, it seems to return
-a type T bound to o!m(). Maybe this should be explicitly said. At first, I assumed
-that await fx? returns void}
 
 \paragraph{Degree of synchronisation} 
 If one attemps to retrieve a future value that is not yet ready, this
@@ -1482,7 +1479,7 @@ actor is responsible for keeping track on foreign dependencies on
 passive objects on its local heap, and eventually deallocate them. 
 The passive objects on a local heap may be shared with
 other active objects, or transferred, but are susceptible to data-races.
-%
+
 Encore is \emph{parallel by default}, as active objects are lightweight and provide coarse-grain parallelism,
 i.e., an active object cannot work on multiple method calls at the same time.
 %
@@ -1544,7 +1541,7 @@ class Main
 \end{parcolumns}
 \caption{\label{fig:encore:example}Example of a Buffer implementation that uses traits, active and passive objects in Encore.}
 \end{figure}
-%
+
 In this example, the \ec{Buffer} class is an active object with
 a private \ec{queue} of type \ec{Queue}, which is a passive class. \ec{Queue}
 implements the \ec{TQueue} trait (line 12). A trait can be
@@ -1574,8 +1571,8 @@ described in the implementation sections of Encore and ABS
 \TW{Make it so! :) Encore threads yadayada.}. Encore's \ec{await}
 statement is somewhat limited in relation to ABS's as it only
 supports awaiting the fulfilment of a future, and not any boolean
-condition and differs from ProActive's \ec{await} . \LUDO{perhaps link here to the ProActive ABS backend that encodes await on 
-conditions by await on future} Encore's support for future chaining however makes
+condition and differs from ProActive's \ec{await} (Section \ref{subsec:proactive-backend-abs}).
+Encore's support for future chaining however makes
 \ec{await} less useful as chaining allows triggering arbitrary operations on the fulfilment of future. 
 The type signatures of the operations
 are found below:
@@ -1596,115 +1593,6 @@ queue), \emph{blocking} (no processing of other messages in the
 object's queue), and whether a resuming message is prepended or
 appended to the object's queue.
 
-
-% \LUDO{TBDiscussed: rewrite the explanation on get/suspend so that it is closer
-% to ABS} Encore currently provides three operators for controlling execution flow
-% within and across active objects: \verb|suspend|, \verb|get|, and \verb|await|.
-% \verb|suspend| suspends the current message processing, appends a resuming
-% message to the message queue and passes control to the next message in the
-% message queue (which could be the resuming message if the message queue was
-% empty). \verb|get| takes a future as its operand, returns the value in the
-% future. In other words, \verb|get| has type: \verb|get :: Fut t -> t|. Depending
-% on the status of the future, resolved or not, the control flow change caused by
-% \verb|get| is different: if the future is resolved, \verb|get| doesn't alter the
-% control flow at all; on the other hand, if the future is not resolved yet,
-% \verb|get| would caused the calling active object to be de-scheduled until the
-% future is resolved. The active object would be resumed at the exactly same
-% execution point except that the future is resolved, and the call to \verb|get|
-% returns. Because \verb|get| would stop the whole active object, which might not
-% always be desirable, \verb|await| is provided so that only current message
-% execution is paused, but the active object could still process other messages in
-% the message queue. When the future becomes resolved, a special message is sent
-% by the resolver of the future to the active object so that the paused message
-% execution could resume. Let's see how each of them behaves in the following
-% example. \LUDO{what does the next sentence change?}(To keep things simple, it's
-% assumed to be running on a single-core machine or specified to use single
-% Operating System thread.)
-
-% \begin{lstlisting}[
-%   basicstyle=\footnotesize,language=Haskell,
-%   multicols=2,
-%   numbers=left,xleftmargin=4ex,escapechar=\%
-% ]
-% class Agent
-%   def print_1_3() : void {
-%     print 1;
-%     suspend;
-%     print 3;
-%   }
-%   def print_2() : void {
-%     print 2;
-%   }
-%   def produce() : int {
-%     print 2;
-%     3;
-%   }
-%   def print_1() : void {
-%     print 1;
-%   }
-%   def self_produce() : void {
-%     let
-%       it = this
-%       r = it.produce()
-%     in {
-%       await r;
-%       print get r;
-%     }
-%   }
-% class Main
-%   def test_suspend() : void
-%     let
-%       a = new Agent
-%     in {
-%       a.print_1_3();
-%       a.print_2();
-%     }
-%   def test_get() : void
-%     let
-%       a = new Agent
-%       ret_future = null
-%       ret = 0
-%     in {
-%       ret_future = a.produce();
-%       print 1
-%       ret = get ret_future;
-%       print ret;
-%     }
-%   def test_await() : void
-%     let
-%       a = new Agent
-%     in {
-%       a.self_produce();
-%       a.print_1();
-%     }
-%   def main() : void {
-%     -- call the other two methods like this
-%     this.test_suspend();
-%   }
-
-% \end{lstlisting}
-
-% The \verb|Main| class contains three methods for showing the semantics of each
-% operator, and the \verb|main| method, the entry point of the program. In the
-% \verb|test_suspend| method, two messages, \verb|print_1_3| and \verb|print_2|,
-% are sent to the agent one after the other. The \verb|suspend| operator in
-% \verb|print_1_3| will suspend the execution of \verb|print_1_3|, and move the
-% control to the next message in the queue, which is \verb|print_2|. Once
-% \verb|print_2| is finished, the control will go to the next message, which is
-% the resuming message created due to \verb|suspend| call in \verb|print_1_3|.
-% Therefore, the output would be 1, 2, 3. In the
-% \verb|test_get| method, the \verb|produce| call returns a future, and
-% calling \verb|get| on that future (which can be guaranteed to be un-resolved
-% while running in the single threaded settings) blocks the \verb|test_get|
-% method until the future is resolved. Therefore, the output is 1, 2, 3, separated
-% by new lines. In the \verb|test_await| method, two messages, \verb|self_produce|
-% and \verb|print_1|, are sent to the agent. The agent processes them in
-% order, but in \verb|self_produce|, \verb|await| is called on an un-resolved
-% future (which is guaranteed to be un-resolved due to the same reason as above),
-% which pauses the execution, and moves the control to the next message, which is
-% \verb|print_1|. After that, the \verb|produce| message, created inside
-% \verb|self_produce|, is processed, which resolves the awaited future, and
-% \verb|self_produce| is resumed. Therefore, the output is 1, 2, 3.
 
 \begin{figure}[t]
   \centering
@@ -1751,39 +1639,19 @@ A \parT{} collection is an abstraction that can contain asynchronous computation
 but it represents more than a mere container, as \parT{} can be seen as a handle to these
 asynchronous computations, exploited via the combinators.
 %
-%The \parT{} collection is opaque---it
-%does not allow observing the number of on-going computations, and
-%whether individual computations have finished or not. 
-%
 \parT{} collections have the type \texttt{Par t} (\texttt{t} is a polymorphic type)
 and can contain values and asynchronous computations
 represented by futures.
-%, but it does not create new threads,
-%as that may have a negative impact performance-wise.
-%
-%\TW{This sentence is not possible to understand:} Elements of a collection can be normal values and
-%future values which can be \textit{lifted} to a parallel collection via
-%\texttt{liftv :: t $\to$ Par t} and \texttt{lift :: Fut t $\to$ Par t} respectively.
-%
-%\TW{Rather than just going through the combinators, say how a
-%  parallel collection is created (that's not visible in the text
-%  now), and how it can be ``extended'' by additional combinators.
-%  A picture of a pipeline and its combinator stages would be good!
-%  Once the reader understands the what ParT types do, you can list
-%  the other combinators because then she is ready to think about
-%  them in a constructive manner.}
 
 Futures created from tasks or methods calls on active objects can be lifted
 to the \parT{} abstraction via the \emph{lift} combinator (lift :: Fut t $\to$ Par t);
 multiple \parT{}s can be treated as a single one with
-the $\|$ construct ($\| :: Par \;t \to Par \;t \to Par \;t$), which takes two \parT{}s
-and returns a new \parT{} collection. 
-\LUDO{could you say: which merges two \parT{}s into a single one? this would be more 
-informative}
-This construct does not create new threads,
-but exploits the inner parallelism within the \parT{}, spawning new tasks when there
-is an optimisation opportunity. \LUDO{this creates no new thread but creates new task? 
-how? what do you mean? aren't the thread and tasks already created? ... }
+the $\|$ construct ($\| :: Par \;t \to Par \;t \to Par \;t$), which merges two \parT{}s
+into a new \parT{} collection. 
+This operation does not create a new threads but, exploits the inner parallelism
+within the \parT{}s, i.e., the runtime can detect when there is a potential possibility
+for spawning more tasks, that work on different elements of the collection,
+increasing the degree of asynchrony while keeping the throughput of the system.
 
 The \parT{} combinators are informally explained with the example from Fig.~\ref{fig:encore:factorisation},
 which computes the LU and Cholesky factorisation in parallel, inverting these matrixes asynchronously,
@@ -1852,42 +1720,19 @@ class Main {
 \caption{\label{fig:encore:factorisation}Data-pipeline and speculative parallelism for matrix factorisation in Encore. }
 \end{figure}
 
-
-%The available combinators that operate on the \parT{} collection are:
-%\LUDO{the explanations below are less clear than the rest of the text, I also think they 
-%should be better justified from a high-level point of view: actor constructs will be 
-%explained in details before but not those ... to be discussed, but a few comments}
-
-%\textbf{$| \; :: Par \;t \to Par \;t \to Par \;t$,} read as \textit{par} combinator, that creates a new
-%\parT{} that holds the computations from the first and second expression. \LUDO{do you 
-%mean it concatenates the 2 constructs? or does this create parallelcomputation? how?}
-
-%\textbf{$>< \; :: Par \; t \to Par \;t \to Par \;t$,} read as \textit{otherwise} combinator,
-%that executes the first expression until the returned value is known and, if empty,
-%starts execution of the second expression. \LUDO{Now I am lost, I thought ParT was data 
-%collection ... is it an expression instead?}
-%
-%\textbf{$>> \; :: Par \; t \to (t \to t') \to Par \; t'$}, read as \textit{sequence} combinator,
-%applies the function to all elements of the \parT{} collection asynchronously -- creating
-%parallel pipeline parallelism-- and returns a new \parT{} collection. \LUDO{is it a map 
-%or is it something else? a pipeline is one (stream of) data and a set of functions to 
-%evaluate, I am not sure this is the case here}
-%
-%\LUDO{I will have a look at the end of the paragraph once the above has been resolved}
-%
-%\textbf{$<< \; :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$}, read as 
-%\textit{prune} combinator,
-%starts execution of both expressions in parallel. As soon as there is a value available
-%in the second expression, this on gets passed to the first expression and all the remaining
-%computations from the second expressions are ignored. 
-
 The \parT{} collection and its combinators have been designed to perform
 operations asynchronously without stopping the current thread of execution.
 This creates a collection that never blocks and executes operations on demand,
 when the values are available. There are more combinators available \cite{ref:encore}
-but we have highlighted the most important ones. \LUDO{it would be good to conclude this 
-paragraph by two sentences exaplining how parallel combinators integrate  well with the 
-active object model (concurrency inside a single task at least)}
+but we have highlighted the most important ones. 
+%
+\parT{} integrates well in the active object model, as it
+adds a higher level abstraction that provides a uniform interface, via parallel combinators,
+to a collection of futures and values where complex coordination workflows
+can be easily expressed, including but not limited
+to data-pipeline and speculative parallelism. Furthermore, \parT{} can potentially
+increase the level of asynchrony of an application, spawning more lightweight tasks,
+when it detects optimisation possibilities within the \parT{} abstraction.
 
 
 \paragraph{Degree of Synchronisation}
@@ -1900,35 +1745,14 @@ more original asynchronous constructs in Encore is the future chaining operator
 ($\rightsquigarrow$).
  $\rightsquigarrow$ registers a callback
 (anonymous function, aka lambda) to the future, continue processing the rest of
-the message. The callback would be called with the future contend as the
+the message. The callback would be called with the future content as the
 argument when the future is resolved. This construct allows chaining operation on futures 
-without creating synchronisation, it is kind of similar to the default behaviour of 
-futures in AmbientTalk \TODO{add a citation if needed} except that it is more explicit 
-and easier to control for the 
-programmer. It is also a way to mimic 
- transparent first-class 
+without creating synchronisation, similar to the default behaviour of 
+futures in AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349}
+except that it is more explicit and easier to control for the 
+programmer. It is also a way to mimic transparent first-class 
 futures of ASP except that the callback request is only created when the future is 
 resolved.
-
-%\LUDO{I changed this paragraph to better relate with the other languages (perhaps too 
-%long or too much references), the previous version is commented if you want to recover 
-%some or all the text}
-
-%In Encore, there are two ways for synchronisation, message passing, and
-%synchronisation by futures. From the message passing perspective, each method
-%call on active objects could be interpreted as a message transmitting, and
-%different active objects could communicate and synchronise with each other using
-%message passing, just like Erlang. The second approach, which is more akin to
-%Object-Oriented style, is using futures. Each non-void method call on active
-%objects returns a future, denoted as \verb|Fut| in Encore, and three operations
-%are defined on futures, \verb|get|, \verb|await|, $\sim\sim>$ (future chaining).
-%The first two operators would pause the current method execution until the
-%future is resolved (fulfilled). The difference between them is the former blocks
-%the whole actor, as discussed and explained in the previous section on flow
-%control in Encore. On the other hand, $\sim\sim>$ would register a callback
-%(anonymous function, aka lambda) to the future, continue processing the rest of
-%the message. The callback would be called with the future contend as the
-%argument when the future is resolved.
 
 \paragraph{Degree of transparency}
 
@@ -1995,10 +1819,10 @@ active object topologies.
 \end{figure}
 
 \paragraph{Formalization and semantics}
-The Encore concurrency model has been formalized (\cite{ref:encore}) using
-a small step operational semantics. Parallel combinators have been formalized as well
+The Encore concurrency model has been formalized \cite{ref:encore} using
+a small step operational semantics. Parallel combinators have been formalized as well,
 including a soundness proof with the implicit task parallelism model \cite{encore:parallel-combinators-thesis}.
-\NOTE{Elias might have a soundness proof for the Capability system?}
+The capability type system has been formalized with proofs of soundness and data-race freedom \cite{encore:kappa}.
 
 \paragraph{Implementation: programming and execution support}
 Encore is a relatively new programming language and there is still some
@@ -2013,6 +1837,7 @@ The currently supported tools are:
 \item Emacs and Atom editors with syntax highlighting and compiler error support
 \item Support for GDB / LLDB interactive debugger
 \item Vagrant support for rapid installation of Encore in a virtual machine
+\item Online sandbox of the language, that compiles and runs the program 
 \end{itemize}
 
 \section{Implementation of active objects}
@@ -2251,6 +2076,7 @@ based on the reference graph between active objects~\cite{CCH:Middleware07}. Gar
 collection of passive objects can safely rely on the Java garbage collector.
 
 \subsection{ProActive backend for ABS}
+\label{subsec:proactive-backend-abs}
 The ProActive backend for ABS is another translator that generates the ProActive code 
 corresponding to an ABS program. The goal of the ProActive backend for ABS is similar to the one of the Java 8 backend for ABS: turn ABS models into production code. The difference is that the Java 8 backend targets optimized performance, this why it is still under development, whereas the ProActive backend provides a fully working execution of ABS models in distributed environments, with less optimization than expected with the Java 8 backend. The ProActive backend aims at \emph{simulating} all ABS concepts 
 with ProActive, since the two languages are based on different active object models. The 
