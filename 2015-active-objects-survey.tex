@@ -1986,7 +1986,7 @@ To study the improvement given by Java 8 features, we benchmark a simple example
 \end{figure}
 
 
-\subsection{ProActive}
+\subsection{ProActive}\label{sec:implem-proactive}
 The ProActive library is all written in standard Java and provides an implementation for 
 the ASP programming model. 
 By default, it uses the remote method invocation Java package to implement the communication layer between active objects, although other communication protocols are possible. 
@@ -2138,7 +2138,9 @@ others attributes of the objects can actually be omitted since they will not be 
 copied. This observation allows us to optimize object copy and reduce the amount of 
 information that is sent through the network. In summary, the ProActive backend generate 
  programs that copy few data but incur more communications 
-than native ProActive applications. Compared to the Java 8 backend for ABS, the ProActive backend does not distinguish whether COGs are located on the same machines to optimize communications, however this is not a problem since copies are always lightweight. Also, in the ProActive backend class loading is handled by RMI wheres it is implemented from scratch in the Java 8 backend.
+than native ProActive applications. Compared to the Java 8 backend for ABS, the ProActive backend does not distinguish whether COGs are located on the same machines to optimize communications, however this is not a problem since copies are always lightweight.
+\KIKO{I am not sure I understood everything but, why are copies lightweight?}
+Also, in the ProActive backend class loading is handled by RMI wheres it is implemented from scratch in the Java 8 backend.
 
 \paragraph{Thread creation and scheduling}
 Multiactive objects provide several mechanisms to control the scheduling of requests. The right tuning of those controls allows the ProActive backend to simulate the behavior of ABS cooperative scheduling. 
