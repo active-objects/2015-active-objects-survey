@@ -878,11 +878,13 @@ object-oriented, concurrent modeling language developed since 2009 in
 a series of EC-funded research
 projects.\footnote{\url{www.hats-project.eu},
   \url{www.envisage-project.eu}} Its ancestors include \textsc{Creol}
-\cite{Elinar2006} and \textsc{JCoBox} \cite{SchaeferP10b}.
+\cite{Elinar2006} and \textsc{JCoBox} \cite{SchaeferP10b}. 
+\KIKO{General comment: the other parts of the paper are not using textsc when
+naming languages. We should be consistent with this.}
 
 In contrast to design-oriented or architectural languages, ABS code is
 fully executable. There is a simulator as well as several code
-generation backends (at the moment, for Java, Haskell, and Erlang. At
+generation backends (at the moment, for Java, Haskell, and Erlang). At
 the same time, ABS abstracts away from features that make automatic
 analysis difficult in mainstream programming languages. For example,
 ABS has an object model, but it does not support code inheritance and
@@ -958,13 +960,16 @@ standard imperative layer. So far, this is very much like
 
 The central issue for achieving automated, scalable analysis is the
 design of the concurrency model. Formal analysis of multi-threaded
-languages with interleaving semantics, for example, \textsc{Java},
+languages with interleaving semantics, for example, \textsc{Java} \KIKO{Why uppercase?},
 while principally possible \cite{BlomHuisman14}, is highly complex and
 seems to be out of scope at the moment for relaxed memory consistency
 models. To achieve feasibility, the concurrency model of ABS carefully
 restricts the possible interactions among concurrent tasks while still
 allowing to describe complex, realistic behavior of asynchronous
-systems.  
+systems. \KIKO{Tasks are mentioned but have not been defined 
+At this point, the reader may understand tasks as C\# tasks. This is explained with
+the example afterwards. I believe it may make sense to explain this and the COG
+concept before. Your reader } 
 %
 More precisely, the ABS concurrency model is based on cooperative
 scheduling. This means that no task is preempted (interrupted) unless
