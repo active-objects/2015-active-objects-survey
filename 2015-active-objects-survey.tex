@@ -251,7 +251,8 @@ The shared-variable model of concurrency underlying the Java language
 requires that the developer ensures so-called ``thread safety'';
 without enough synchronization data races between threads make the
 program behavior ``unpredictable and sometimes surprising''
-\cite{goetz06java}. To avoid races, complex low-level synchronization
+\cite{goetz06java}\KIKO{I don't understand the sentence, starting from without}. 
+To avoid races, complex low-level synchronization
 mechanisms are required which may in turn give rise to deadlocks and
 thread starvation.  The execution of multithreaded programs depends on
 an underlying, intricate, and fine-grained granularity of
@@ -355,16 +356,24 @@ scheduling.
 
 Both the Encore \cite{ref:encore} and the ProActive languages
 support the distinction between active and passive objects. Passive
-objects are associated to (or owned by) active objects.  Since there
-is no sharing of passive objects between active objects (when
-communicated passive objects are copied), no data races occur, in
-contrast to the multithreaded control of the cogs in ABS. Ownership
-type systems have been proposed to alleviate unnecessary copying of
-passive objects in this setting \cite{clarke08aplas}. While ABS is an
-executable modeling language with a focus on analysis and
-property-preserving code generation, both Encore and ProActive aim at
-efficient runtime systems for active object languages. Whereas Encore
-targets multicore platforms, ProActive has also been applied for the
+objects are associated to (or owned by) active objects. In terms of sharing,
+ProActive follows the deep copying strategy of ASP which prevents data races
+while, in Encore, passive objects are passed by reference where a
+capability type system prevents data races.
+%is no sharing of passive objects between active objects (when
+%communicated passive objects are copied), no data races occur, in
+%contrast to the multithreaded control of the cogs in ABS. 
+Ownership type systems have been proposed to alleviate unnecessary copying of
+passive objects in this setting \cite{clarke08aplas}. 
+\KIKO{not sure where this last line can be used now...}
+
+All these languages have drawn attention on different areas.
+%
+For instance, ABS is an executable modelling language with a focus on analysis and
+property-preserving code generation while, both Encore and ProActive, aim at
+efficient runtime systems for active object languages. 
+%
+Encore targets multicore platforms, ProActive has also been applied for the
 distributed setting.
 
 \paragraph{Further interesting languages}
