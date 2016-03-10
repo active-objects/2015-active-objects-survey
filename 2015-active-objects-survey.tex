@@ -1077,7 +1077,7 @@ heap. Line~\ref{abs:main:init} calls an initialization method
 (implementation not shown) on the data. The notation ``\lstinline{!}''
 signifies an asynchronous call. Its effect is to create a new task in
 the COG of \lstinline{d} that executes the code of
-\lstinline{init()}. Asynchronous calls do not interrupt the caller, so
+\lstinline{init()} \VLAD{TODO: emphasize the programming to interfaces paradigm by means of not having the implementation of init}. Asynchronous calls do not interrupt the caller, so
 the statement following the call is immediately executed. Therefore,
 we need a handle by which to retrieve the result of an asynchronous
 call once its result has been computed. In ABS the type of such
@@ -1093,7 +1093,7 @@ while the main block was still executing, because there was no
 synchronization expression in the latter. ABS does not determine which
 of \lstinline{init()} and \lstinline{process()} is started first. In
 fact, ABS can be parameterized with different scheduling
-strategies. The static analyzers of ABS take all possible scheduling
+strategies \VLAD{TODO: "but each object has a FIFO ordering of the tasks"}. The static analyzers of ABS take all possible scheduling
 sequences into account.
 
 A first synchronisation point is reached in
