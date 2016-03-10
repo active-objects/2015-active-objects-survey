@@ -36,6 +36,7 @@
 \newcommand{\KIKO}[1]{\textcolor{cyan}{\textbf{[Kiko:#1]}}}
 \newcommand{\TW}[1]{\textcolor{magenta}{\textbf{[Tobias:#1]}}}
 \newcommand{\JS}[1]{\textcolor{gray}{\textbf{[Justine:#1]}}}
+\newcommand{\VLAD}[1]{\textcolor{orange}{\textbf{[Vlad:#1]}}}
 \newcommand{\parT}{\texttt{ParT}}
 
 %% For bold syntax highlighting in the Encore chapter
@@ -888,7 +889,7 @@ family refer to Table~\ref{tab::Rebecacomparison}.
     implements, await, get, new, local,release, suspend} }
 
 \paragraph{General presentation and objective of the language} ABS (\emph{A}bstract
-\emph{B}ehavioral \emph{S}pecification) \cite{JHSSS10} is an
+\emph{B}ehavioral \emph{S}pecification) \cite{JHSSS10} \VLAD{TODO: The first time ABS is mentioned I think it should be first the full title followed by acronym in paranthesis} is an
 object-oriented, concurrent modeling language developed since 2009 in
 a series of EC-funded research
 projects.\footnote{\url{www.hats-project.eu},
@@ -991,7 +992,7 @@ scheduling. This means that no task is preempted (interrupted) unless
 its modeler explicitly allows to do that. There are two expressions in
 ABS that explicitly release control: \lstinline{release} and
 \lstinline{await}. The former is unconditional while the latter has a
-Boolean argument and can be used to synchronize with another task.
+Boolean argument and can be used to synchronize with another task. \VLAD{I think it is important here to mention that task results are captured in futures and used for synchronization to better understand synchronization between tasks}
 
 \begin{figure}
   \centering
