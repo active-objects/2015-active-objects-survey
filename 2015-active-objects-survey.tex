@@ -363,15 +363,15 @@ scheduling.
 Both the Encore \cite{ref:encore} and the ProActive languages
 support the distinction between active and passive objects. Passive
 objects are associated to (or owned by) active objects. In terms of sharing,
-ProActive follows the deep copying strategy of ASP which prevents data races
-while, in Encore, passive objects are passed by reference where a
+ProActive follows a deep copying strategy which prevents data races
+while, in Encore, passive objects are passed by reference and a
 capability type system prevents data races.
 %is no sharing of passive objects between active objects (when
 %communicated passive objects are copied), no data races occur, in
 %contrast to the multithreaded control of the cogs in ABS. 
 Ownership type systems have been proposed to alleviate unnecessary copying of
-passive objects in this setting \cite{clarke08aplas}. 
-\KIKO{not sure where this last line can be used now...}
+passive objects \cite{clarke08aplas}. 
+%\KIKO{not sure where this last line can be used now...}
 
 All these languages have drawn attention on different areas.
 %
@@ -1653,8 +1653,7 @@ represented by futures.
 
 Futures created from tasks or methods calls on active objects can be lifted
 to the \parT{} abstraction via the \emph{lift} combinator (lift :: Fut t $\to$ Par t);
-multiple \parT{}s can be treated as a single one with
-the $\|$ construct ($\| :: Par \;t \to Par \;t \to Par \;t$), which merges two \parT{}s
+the $\|$ construct ($\| :: Par \;t \to Par \;t \to Par \;t$) merges two \parT{}s
 into a new \parT{} collection. 
 This operation does not create a new threads but, exploits the inner parallelism
 within the \parT{}s, i.e., the runtime can detect when there is a potential possibility
@@ -1731,14 +1730,14 @@ class Main {
 The \parT{} collection and its combinators have been designed to perform
 operations asynchronously without stopping the current thread of execution.
 This creates a collection that never blocks and executes operations on demand,
-when the values are available. There are more combinators available \cite{ref:encore}
+when the values are available. There are more combinators \cite{ref:encore}
 but we have highlighted the most important ones. 
 %
 \parT{} integrates well in the active object model, as it
-adds a higher level abstraction that provides a uniform interface, via parallel combinators,
-to a collection of futures and values where complex coordination workflows
+ provides a uniform interface, via parallel combinators,
+to manipulate a collection of futures and values. Complex coordination workflows
 can be easily expressed, including but not limited
-to data-pipeline and speculative parallelism. Furthermore, \parT{} can potentially
+to data-pipeline and speculative parallelism. Furthermore, the Encore framework can
 increase the level of asynchrony of an application, spawning more lightweight tasks,
 when it detects optimisation possibilities within the \parT{} abstraction.
 
