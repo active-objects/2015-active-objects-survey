@@ -410,19 +410,22 @@ Kilim, Akka, Go,
 
 \subsection{Dimensions of Comparison between Languages}
 Before presenting in details different active object languages, we  
-define the key points that we consider as important regarding the design and the 
-implementation of actor programming languages. 
-Those dimensions of comparison, defined below, will  be used in the following to present 
-the different languages.
+define the key points that we consider as important regarding the design of actor 
+programming languages. 
+%Those dimensions of comparison will  be used in the following to present 
+%the different languages.
 
 \paragraph{Objective of the language} Identifying the objective of the language, for
 which purpose it was created, is crucial to understand the design of a programming 
-language.  For example, the performance of the language can be a crucial factor 
+language and the trade-offs that had to be taken between different aspects.  For example, 
+the performance of the language can be a crucial factor 
 for which another aspect can be neglected, such as the accessibility of the language to 
-non-experts. Or, a high expressiveness can be expected for a language targeting several 
-platforms. Having a precise objective for a language generally defines the trade-offs 
-that have to be taken between 
-several aspects. 
+non-experts. %Also, a high expressiveness can be expected for a language targeting 
+%several 
+%platforms. 
+%Having a precise objective for a language generally defines the trade-offs 
+%that have to be taken between 
+%several aspects. 
 %and for this reason, 
 %in the following each language description 
 %will start by a brief presentation of the language's objectives.
@@ -445,34 +448,34 @@ several aspects.
 	automatically available or explicitly retrieved, depending on the language design; we then say that the
 	future is \emph{resolved}. A process can also block waiting for a future to be resolved.
 	In active object languages, futures represent the result of asynchronous 
-	invocations, and, in most of active object languages, an access to a future is a  
-	synchronisation point
-	between concurrent entities. Somehow such a synchronisation makes 
+	invocations. In most of those languages, an access to a future is a  
+	synchronisation point. Somehow such a synchronisation makes 
 	programming easier as it keeps a sequential workflow that the programmer can trust.
 	Several active object languages also support cooperative scheduling: a thread can be 
 	suspended to handle another message, and resumed later. The suspension can be 
 	triggered when checking whether a future
-	is resolved or not. This breaks the sequential processing of messages and requires a 
-	better concurrent expertise from the programmer, but also allows him/her to write 	
-	programs that are more efficient and less deadlock-prone.
+	is resolved or not. This breaks the sequential processing of a message, but also 
+	allows 
+	programs to be more efficient and less deadlock-prone.
 
 	\paragraph{Degree of transparency} Another difference between languages 
-	with concurrency constructs is the number and the complexity of the programming abstractions the programmer has to 
-	know and master; among them some are explicitly visible in the program and some are 
-	hidden from the programmer, we say that they are transparent. For example,  some 
-	active object languages feature transparent futures, which means that, on one hand
-	variables which contain futures are not explicitly distinguished with a special static type, and on the other hand, that there is no 
+	is the number and the complexity of the programming abstractions the programmer has 
+	to 
+	know; among them some are explicitly visible in the program and some are 
+	hidden: they are transparent. For example,  if futures are transparent
+	variables which contain futures are not explicitly distinguished with a special 
+	static type, additionally there is no 
 	explicit instruction for accessing a future: an access to a future object is blocking 
 	if the future is not resolved yet.
 %some active object languages 
 %feature transparent asynchronous method invocations, i.e. asynchronous method 
 %invocations that are 
 %syntactically identical to synchronous ones. S
-	In general, the more transparency, the easier it is to write 	basic programs, 
+	In general, the more transparency, the easier it is to write 	simple programs, 
 	because the programmer do not need to know all the intricacies of the 
-	programming model and because the parallelism can be provided automatically. However, when targeting 
-	more complex applications, the benefits of transparency is weakened, as exposing 
-	the programmer to all the programming abstractions that are used can make 
+	programming model and because parallelism can be provided automatically. However, for
+	complex programs, the benefits of transparency is weakened, as exposing 
+	the programmer to the programming abstractions that are used can make 
 	programming, debugging,
 	or optimization easier. 
 	
@@ -483,9 +486,9 @@ several aspects.
 	and be stronger or weaker. 		
 	The most efficient way to communicate data between 
 	different cores of the same machine is to share the data, whether in a distributed 
-	setting, copying the information to the different consumers of the data is often the most 
+	setting, copying the information to the different consumers of the data is often more
 	efficient as it avoids additional communications for peaking the data source. 	
-	Aside runtime efficiency, the complexity of the language implementation varies 	
+	Aside efficiency, the complexity of the language implementation varies 	
 	accordingly to the degree of data sharing. For example, copying data raises the 
 	problem of 
 	data consistency as data modifications may not be reflected on all copies.  
@@ -493,11 +496,10 @@ several aspects.
 	shared memory, and additional synchronisation and delays. In practice, active object 
 	and actor languages that have distributed runtimes often use a ``no shared memory'' 
 	approach that favors 	
-	data copies for objects in general, and that accepts a few entities that are globally 
+	data copies for objects, and that accepts a few entities that are globally 
 	known and shared. On the contrary, when all objects are shared and accessible from 
-	anywhere, the 
-	advantage is that the data consistency is simpler to obtain, but 
-	the communication overhead is high when programs are run in distributed 
+	anywhere, the data consistency is simpler to obtain, but 
+	the communication overhead is higher in distributed 
 	settings. 
 	%Encore is probably the richest language from this point of view, aiming at a 
 	%precise control of data sharing including entities that can explicitly be shared 
