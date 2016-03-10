@@ -1328,13 +1328,12 @@ In this example, two groups of requests are defined, each of them holding one me
 The two groups are declared to be compatible (so as their method, by extension). The 
 \code{selfCompatible} parameter defines whether two different requests of the same group 
 are allowed to run in parallel. At runtime, a ready request is automatically executed if 
-it is compatible with requests that are already executing (to prevent data 
-race-conditions) and with older 
-requests in the queue. The second condition preserves the ordering of non-compatible 
-requests. It also prevents starvation that would arise if many requests of a group 
+it is compatible (i) with requests that are already executing and (ii) with older 
+requests in the queue. The first condition (i) prevents data races. The second condition (ii) preserves the ordering of non-compatible 
+requests. The second condition (ii) also prevents starvation that would arise if many requests of a group 
 $G$, 
 that are only compatible with executing requests keep overtaking requests of another 
-group $G'$. 
+group $G'$, with which they would not be compatible. 
 
 Without annotations, a multi-active object is a mono-threaded active object,
 without
@@ -1939,10 +1938,10 @@ implementations is when active objects are not needed any more, since they can r
 request unexpectedly and from anywhere.
 Again, the question is even more complex in the case of distributed implementations because reference counting is scattered.
 
-Below, we review active object implementations, whether they rely on a translation to 
-another language, have their own runtime, or are implemented as a middleware layer, 
+Below, we review active object implementations, and say whether they rely on a translation to 
+another language, or have their own runtime, or are implemented as a middleware layer, 
 according to the dimensions of comparison defined above. When meaningful, we show 
-experiments illustrating in which condition the implementation performs better.
+experiments illustrating in which conditions the implementation outperforms existing solutions.
 
 \subsection{Java 8 backend for ABS}\label{sec:implem-java-8}
 The Abstract Behavioural Specification (ABS) language allows several programming paradigms and design patterns offering both a functional model as well as an object-oriented model. ABS has a similar syntax to Java enhanced with several new constructs and annotations that allow design of distributed applications for grid and cloud environments. Annotations can include custom defined schedulers to ease the development of batch systems and workflows. The main goal of the Java 8 backend for ABS is to translate these models into production code to be executed in a parallel or distributed environment. The challenge of this implementation is to generate the real memory structures and execution instances while being aware of the possible resource limitations, communication bottlenecks or latencies and performance, as these requirements are not easily observable at a modeling level.  
@@ -2211,7 +2210,8 @@ execution.
 %application run in a distributed environment indeed outperforms traditional ABS program 
 %execution, and (ii) that the overhead introduced by the translation is always kept under 
 %10\% compared to a native ProActive application.
-We have also conducted an experimental performance evaluation of an ABS distributed application translated with the ProActive backend and distributed on a cluster. We compare it to the performance of the same ABS application translated with the old Java backend, run on a single machine. The considered use case is the pattern matching of a DNA sequence using the MapReduce programming model.%~\cite{Dean:2008:MSD:1327452.1327492}.
+We have evaluated a program generated with the ProActive backend for ABS, and run in distributed mode. We have compared it with the same program generated with the old Java backend for ABS, and run on a single machine. We have also compared it with the same application written directly in ProActive, so that the experiment also illustrate the performance of the ProActive library. The chosen use case is oriented towards computation: it relies less on active object communications than the experiment presented for the Java 8 backend for ABS. Indeed, as ProActive active objects are not light threaded, and as data copy has to be paid for each communication, ProActive is better for computational intensive use cases rather than communication intensive use cases.
+The considered use case is the pattern matching of a DNA sequence using the MapReduce programming model.%~\cite{Dean:2008:MSD:1327452.1327492}.
 Map instances (workers) are created in their own COG to make them work in parallel.
 We consider a searched pattern of 250 bytes, and a database of 5 MB of DNA sequences.
 Each map searches for the maximum matching sequence of a chunk.
@@ -2417,7 +2417,10 @@ In memory pressure, all of the Rebeca actors are analyzed to this aim as they ar
 \JS{There is an increased parallelism in new active object programming languages. 
 They bring new challenges such as efficient data sharing: more work is dedicated to mix and find a balance between data copy and safe shared memory. 
 Latest active object languages also take more into account distribution of the the code, and consider data locality. 
-Such languages do not systematically assume that there exists a global memory, which then lead to more efficient implementations of those languages.}
+Such languages do not systematically assume that there exists a global memory, which then lead to more efficient implementations of those languages.
+In this paper, we have showed many implementations of active object languages, and even several of them for the same language semantics (e.g. ABS backends). Those implementations are not simply a duplication for different technologies: each of them is targeted at a particular execution context and at particular use cases where they perform the best compared to other implementations.
+Throughout the description of implementations for the presented languages, we could perceive the good point for each of them. Typically, ProActive, the Java 8 backend for ABS, the ProActive backend for ABS, and Encore are the languages and implementations that target efficiency of the program execution. However, each of them address efficiency with a different approach. ProActive programs clearly target HPC applications: setting the program environment is heavy but the distributed execution is efficient on the whole; in particular, a few active objects coexist in the application. The Java 8 backend for ABS provides light threads and enables instantiation of many active objects on the same machine. It also allows active objects to achieve faster communications than in ProActive. At a finer grain, Encore provides optimized constructs with an efficiency of the program at a low-level. On a completely different aspect, Rebeca and ABS by itself have a wide range of verification tools and are not much concerned by the program execution but rather by the program properties. It does not mean that bridging the gap between those two categories of languages is useless, on the contrary it allows program verification and program efficiency to be reconciled and to benefit to a large range of programmers.
+}
 
 %\input{survey-parts/introduction.tex}
 %\input{survey-parts/example.tex}
