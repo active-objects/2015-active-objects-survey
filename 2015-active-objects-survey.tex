@@ -2117,24 +2117,41 @@ Thus, we have a two-level hierarchical indexing of objects:
 This classification implies that the application always manipulates local references. The 
 translation introduces indirections through COGs that can be accesed by remote references.
 This configuration of objects is illustrated on Figure~\ref{fig:ABS-to-PA-new}, where a new COG is created through a new \code{Server} object.
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.3]{pictures/ABS-to-PA-new.png}
-	\caption{Object organization given by the ProActive backend for ABS when a new COG is created}
-	\label{fig:ABS-to-PA-new}
+
+\begin{figure}[t]
+		\begin{subfigure}[b]{0.43\linewidth}
+                 \includegraphics[scale=0.3]{pictures/ABS-to-PA-new.png} 
+                \caption{ABS new in ProActive}
+                \label{fig:ABS-to-PA-new}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.50\linewidth}
+                  \includegraphics[scale=0.3]{pictures/ABS-to-PA-call.png} 
+                \caption{ABS asynchronous method call in ProActive}
+                \label{fig:ABS-to-PA-call}
+        \end{subfigure}
+ \caption{Representation of ABS objects and calls in ProActive} 
+\label{fig:graph}
 \end{figure}
-%% RM
+
+%\begin{figure}
+%	\centering
+%	\includegraphics[scale=0.3]{pictures/ABS-to-PA-new.png}
+%	\caption{Object organization given by the ProActive backend for ABS when a new COG is created}
+%	\label{fig:ABS-to-PA-new}
+%\end{figure}
+
 In the ProActive backend for ABS, the principle to translate an asynchronous ABS call is 
 thus to run a generic asynchronous method call on the COG of the targeted object and then 
 let the generic method of the COG retrieve the targeted object, thanks to a unique 
 identifier, and run the desired method on it by reflection. Figure~\ref{fig:ABS-to-PA-call}
-%% RM
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.3]{pictures/ABS-to-PA-call.png}
-	\caption{Translation of an ABS asynchronous method call in ProActive}
-	\label{fig:ABS-to-PA-call}
-\end{figure}
+
+%\begin{figure}
+%	\centering
+%	\includegraphics[scale=0.3]{pictures/ABS-to-PA-call.png}
+%	\caption{Translation of an ABS asynchronous method call in ProActive}
+%	\label{fig:ABS-to-PA-call}
+%\end{figure}
+
 In ProActive, passive objects are not shared between active objects. Therefore, when a passive object is a parameter of a remote method call, it is copied, whereas in ABS parameters of method call are manipulated by reference.
 So when in the translation we run a generic method call on a COG, all the parameters are 
 copied. For the identifier of the targeted object and the name of the method to run, this 
