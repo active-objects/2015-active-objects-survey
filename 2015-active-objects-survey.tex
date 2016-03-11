@@ -2187,56 +2187,82 @@ Also, in the ProActive backend class loading is handled by RMI wheres it is impl
 \paragraph{Thread creation and scheduling}
 Multiactive objects provide several mechanisms to control the scheduling of requests. The right tuning of those controls allows the ProActive backend to simulate the behavior of ABS cooperative scheduling. 
 %In general, we create more threads than supposedly in ABS because, when a thread is handed over to another request in ABS, in fact in the ProActive backend a thread is paused and another one is allowed to continue to simulate the same behavior.
-More precisely, we can compare the ProActive backend and the Java 8 backend  on the four points explained in Section~\ref{sec:implem-java-8}. On points 1 and 3, the ProActive backend also delivers a message per asynchronous invocation, but a single request queue exist for all objects in a same COG, whereas in the Java 8 backend, there is a request queue per object. Point 2 is implemented differently from the two backends: the Java 8 backend ensures that all objects in the same COG compete for one single threads (which closely sticks to ABS models), whereas the ProActive backend creates one thread per executing (and paused) requests: it is actually the precise interleaving of several threads that ensures that only one request is progressing at a time; this strategy avoids implementing continuations in Java which is made difficult because of JVM constraints. Finally, on point 4 the Java 8 backend shares a thread pool for many COGs whereas in the ProActive backend each COG has its own thread pool (this avoids distinguishing whether COGs are distributed). In conclusion, the ProActive backend has to handle more idle threads than the Java 8 backend. We explain below in more details how we implement ABS preemption constructs in ProActive.
+More precisely, we can compare the ProActive backend and the Java 8 backend  on the four 
+points explained in Section~\ref{sec:implem-java-8}. On points 1 and 3, the ProActive 
+backend also delivers a message per asynchronous invocation, but a single request queue 
+exists for all objects in a same COG, whereas in the Java 8 backend, there is a request 
+queue per object. Concerning point 2, the Java 8 backend ensures that all objects in the 
+same COG compete for one single thread, whereas the ProActive backend creates one thread 
+per executing (and paused) requests: it is actually the scheduling associated to 
+compatibility annotations that ensures that only one request is progressing at a time; 
+this strategy avoids implementing continuations in Java which is difficult because of JVM 
+constraints. Finally, on point 4 the Java 8 backend shares a thread pool for many COGs 
+whereas in the ProActive backend each COG has its own thread pool. In conclusion, the 
+ProActive backend has to handle more idle threads than the Java 8 backend. We explain 
+below in more details how we implement ABS preemption constructs in ProActive.
 
 \smallskip
-$\bullet$ \textit{Translation of ABS \code{await} statement on futures.}
+$\bullet$ \textit{Translation of  \code{await} statement on futures.}
 %% RM
-In ProActive multiactive objects, a way to control what happens when a thread switches in wait-by-necessity is to specify the kind of thread limit (in addition to the thread number) that is used by the considered multiactive object: a hard limit restricts the total number of threads existing for a multiactive object instance whereas a soft limit only restricts the number of threads that are active (not in wait-by-necessity).
-Thus, in order to achieve the desired request scheduling, we configure the COG class and its \code{execute} method with multiactive object annotations.
-%% RM
-We declare that the generic method of the COG that executes all methods by reflection is 
+With multiactive objects, a way to control what happens when a thread switches in 
+wait-by-necessity is to specify the kind of thread limit: a hard limit restricts the 
+total number of threads existing for a multiactive object instance whereas a soft limit 
+only restricts the number of threads that are active (not in wait-by-necessity).
+To achieve the request scheduling of ABS, we  declare that the generic method of the COG 
+that executes all methods by reflection is 
 compatible with itself, which means that many of such methods are allowed run in 
-parallel. Additionally, we declare that this set of methods has a thread limit of 1, and 
-that this limit is a soft limit (only thread that  are not in wait-by-necessity are 
-counted in this limit). Consequently, there is only one active thread at a time that 
-serveds requests in a COG multiactive object, so generic COG method calls do not run in 
-parallel but interleave upon wait-by-necessity. Consequently, this multiactive 
-configuration leads to a similar scheduling as ABS.
+parallel. Additionally, this set of methods has a thread limit of 1, with a soft limit. 
+Thus, there is only one active thread at a time that 
+serves requests in a COG multiactive object: requests do not run in 
+parallel but interleave upon wait-by-necessity. 
+%Consequently, this multiactive 
+%configuration leads to a similar scheduling as ABS.
 	
 \smallskip
-$\bullet$ \textit{Translation of ABS \code{get} statement.}
-The translation of the ABS \code{get} statement would have been straightforward if we had 
-not configured the COG class for the translation of the \code{await} statement. Indeed, 
-by doing so, we have disabled the blocking aspect of a ProActive wait-by-necessity 
-(enabling cooperative thread release). 
-Consequently, what is required to translate the \code{get} statement is to temporarily go back to the initial behavior of a ProActive wait-by-necessity (i.e. blocking, like without annotations).
-To do that, we temporarily switch the thread limit to a hard thread limit, so that no 
-other thread can start or resume a request in the meantime. When the future is resolved, 
-we set back the soft limit restore the cooperative scheduling behaviour. 
+$\bullet$ \textit{Translation of  \code{get} statement.}
+%The translation of the ABS \code{get} statement would have been straightforward if we 
+%had 
+%not configured the COG class for the translation of the \code{await} statement. Indeed,
+%by doing so, 
+The problem  is that
+we have disabled the blocking aspect of a ProActive wait-by-necessity to handle 
+ cooperative thread release upon await statement. 
+Consequently, to translate the \code{get} statement we temporarily go back to the initial 
+behavior of a ProActive wait-by-necessity and switch the thread limit to a hard thread 
+limit so that no 
+other request can execute while the get statement is executed. 
+%When the future is resolved, 
+%we set back the soft limit restore the cooperative scheduling behaviour. 
 %% RM
 
 \smallskip
-$\bullet$ \textit{Translation of ABS \code{await} statement on conditions.}
-Another usage of the ABS \code{await} statement is to use it followed by a condition. For 
-translating this kind of \code{await} in ProActive, we wrap the condition evaluation in a 
-method call that returns a future, and we synchronize on it afterwards. More precisely, 
-for each such condition, we generate a corresponding method. Then, we translate the 
-\code{await} statement by an asynchronous call to another generic method of the COG class 
-that is specially devoted to execute waiting conditions, giving it all required 
-parameters to do that. Again, we configure this method with multiactive annotations in 
-order to allow several conditions to run in parallel. 
-We allocate many threads for the evaluation of conditions and reserve through annotations 
-one thread for the generic method execution.  
-%% RM  
-This way, we have a clear separation between the single thread used by application 
-method, and the threads used by the condition execution method.
-%% RM
+$\bullet$ \textit{Translation of  \code{await} statement on conditions.}
+To handle an \code{await} statement on a condition we generate a  method and create an 
+asynchronous request (of another compatible group) that checks the condition ane finishes 
+when the condition is verified. It is then sufficient to perform an await on the future 
+for this request as explained above.
+%Another usage of the ABS \code{await} statement is to use it followed by a condition. 
+%For 
+%translating this kind of \code{await} in ProActive, we wrap the condition evaluation in 
+%a 
+%method call that returns a future, and we synchronize on it afterwards. More precisely, 
+%for each such condition, we generate a corresponding method. Then, we translate the 
+%\code{await} statement by an asynchronous call to another generic method of the COG 
+%class 
+%that is specially devoted to execute waiting conditions, giving it all required 
+%parameters to do that. Again, we configure this method with multiactive annotations in 
+%order to allow several conditions to run in parallel. 
+%We allocate many threads for the evaluation of conditions and reserve through 
+%annotations 
+%one thread for the generic method execution.  
+%%% RM  
+%This way, we have a clear separation between the single thread used by application 
+%method, and the threads used by the condition execution method.
+%%% RM
 
 \smallskip
-In conclusion, all ABS constructs are sustained by the ProActive backend. We have also 
-proven the translation to be correct. For that, we have used ASP with multiactive objects 
-extensions, and we have showed that the ASP translation simulates all the rules of ABS 
+We have formally proven that all ABS constructs are correctly translated by the ProActive 
+backend, more precisely the ASP translation simulates all the rules of ABS 
 semantics, and that all translated ASP configurations correspond to a valid ABS 
 execution. 
 %%%% Without the figures, the text could be like the one below %%%%
@@ -2245,15 +2271,22 @@ execution.
 %application run in a distributed environment indeed outperforms traditional ABS program 
 %execution, and (ii) that the overhead introduced by the translation is always kept under 
 %10\% compared to a native ProActive application.
-We have evaluated a program generated with the ProActive backend for ABS, and run in distributed mode. We have compared it with the same program generated with the old Java backend for ABS, and run on a single machine. We have also compared it with the same application written directly in ProActive, so that the experiment also illustrate the performance of the ProActive library. The chosen use case is oriented towards computation: it relies less on active object communications than the experiment presented for the Java 8 backend for ABS. Indeed, as ProActive active objects are not light threaded, and as data copy has to be paid for each communication, ProActive is better for computational intensive use cases rather than communication intensive use cases.
+We have evaluated a program generated with the ProActive backend for ABS, and run in 
+distributed mode. We have compared it with the same program generated with the old Java 
+backend for ABS run on a single machine. We have also compared it with the same 
+application written directly in ProActive so that the experiment also illustrate the 
+performance of the ProActive library. The chosen use case is oriented towards 
+computation: it relies less on active object communications than the experiment presented 
+for the Java 8 backend for ABS. Indeed, as ProActive active objects rely on physical 
+threads and data copy has to be paid for each communication, ProActive is more adapted to
+computational intensive use cases rather than communication intensive use cases.
 The considered use case is the pattern matching of a DNA sequence using the MapReduce programming model.%~\cite{Dean:2008:MSD:1327452.1327492}.
 Map instances (workers) are created in their own COG to make them work in parallel.
 We consider a searched pattern of 250 bytes, and a database of 5 MB of DNA sequences.
 Each map searches for the maximum matching sequence of a chunk.
 Then, a reducer outputs the global maximum matching sequence.
-We compute the global execution time. In the case of ProActive translation, the number
-of workers is twice the number of physical machines used 
-(two workers run on each machine). 
+We compute the global execution time. In ProActive, we instantiate two workers on each 
+machine (each machine has two dual-core CPUs). 
 %All used machines have 2 dual
 %core CPUs at 2.6GHz, and 8 GB of RAM\footnote{We use a cluster of Grid5000 platform: \url{http://grid5000.fr}}.
 
@@ -2273,17 +2306,28 @@ of workers is twice the number of physical machines used
 \end{figure}
 
 Figure~\ref{fig:bench-usecase} shows execution time of both ProActive and Java translations of the ABS application from 2 to 50 workers, therefore using from 1 to 25 physical machines with ProActive. 
-The execution time of the application stemming from the ProActive backend is sharply decreasing for the first added machines and then decreases at a slower rate. On the other hand, the application stemming from the Java backend has an optimal degree of parallelism of 4 workers (which actually is the number of cores of the machine) and then cannot benefit from higher parallelism; execution time even increases afterwards due to context switching overhead.
-On the opposite, increasing the degree of parallelism for the application stemming from the ProActive backend gives a linear speedup, because it balances the load between machines. 
+The execution time of the application stemming from the ProActive backend is sharply 
+decreasing for the first added machines and then decreases at a slower rate. On the other 
+hand, the application stemming from the Java backend has an optimal degree of parallelism 
+of 4 workers (i.e., the number of cores of the machine); execution time even increases 
+afterwards due to context switching.
+On the opposite, increasing the degree of parallelism for the application stemming from 
+the ProActive backend gives a linear speedup, because it balances the load between 
+machines. 
 
-Figure~\ref{fig:bench-native} compares now the performance of the generated ProActive code to a hand-written version. 
+Figure~\ref{fig:bench-native} compares  the performance of the generated ProActive code 
+to a hand-written version. 
 In the generated program, we have manually replaced the translation of functional ABS types 
-(integers, booleans, lists, maps) with corresponding standard Java types, similar to the code that the Java 8 backend for ABS would produce. 
+(integers, booleans, lists, maps) with standard Java types, similarly to the 
+code the Java 8 backend produces. 
 %Indeed, our point here was to evaluate the additional communication cost of our translation, not the performance of ABS types compared to standard Java types.
 %\footnote{As can be noticed on the generated ProActive of Figures~\ref{fig:bench-usecase} and~\ref{fig:bench-native}, there is an order of magnitude of difference depending on the types used; fixing this is  
 %on-going~\cite{ref:ABS-Java-translate}.}
-In this context, we can see that the overhead introduced by the ProActive backend is rather low since it is generally kept under 10\%.
-At the biggest stage, the application translated with the ProActive backend starts to have a higher overhead because it involves too much communication. 
+The overhead introduced by the transaltion performed by the ProActive 
+backend is rather low since it is  kept under 10\% except when many machine are involved 
+and the communication rate is too high.
+%At the biggest stage, the application translated with the ProActive backend starts to 
+%have a higher overhead because it involves too much communication. 
 
 \subsection{Encore}
 %\TODO{clean up this introduction}
