@@ -16,6 +16,7 @@
 % Package to generate and customize Algorithm as per ACM style
 \usepackage[ruled]{algorithm2e}
 \usepackage{tikz}
+\usepackage{ulem}
 \usepackage{tabularx}
 \usepackage{graphicx}
 \usepackage{subcaption}
@@ -252,8 +253,7 @@ The shared-variable model of concurrency underlying the Java language
 requires that the developer ensures so-called ``thread safety'';
 without enough synchronization, data races between threads make the
 program behavior ``unpredictable and sometimes surprising''
-\cite{goetz06java}\KIKO{I don't understand the sentence, starting from without}\LUDO{I 
-understand it, but is it better now  with a comma?}. 
+\cite{goetz06java}. 
 To avoid races, complex low-level synchronization
 mechanisms are required which may in turn give rise to deadlocks and
 thread starvation.  The execution of multithreaded programs depends on
@@ -278,15 +278,15 @@ Erlang~\cite{Erlang-book} is one of the most successful actor language, especial
 because of its adoption by programmers in the industry, and because of its massively 
 parallel execution model supporting  a huge number of independent actors. 
  Active objects integrate the basic Actor model with
-object-orientated concepts. This integration can be realized by
-modeling a message as an asynchronous method call, thus fixing the
+object-oriented concepts. This integration can be realized by
+modelling a message as an asynchronous method call, thus fixing the
 interpretation of a message by a corresponding method definition. 
  In
  Rebeca \cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/jucs/SirjaniBM05} 
 the methods are run to completion without any
 further synchronization mechanism and do not return values. Like in
 the original Actor model, returning values from a method call can be
-modeled by another asynchronous message. 
+modelled by another asynchronous message;
 %Rebeca is an 
 %actor-based language with a FIFO point-to-point communication and message service. 
 %Actors are encapsulated units of concurrency, with no shared variables. Communication takes place by asynchronous message passing, with non-blocking send and receive statements. 
@@ -294,7 +294,7 @@ modeled by another asynchronous message.
 %queue and is executed non-preemptively. In addition, instead of having a soup of 
 %messages 
 %like in Agha's actor model, 
-However,  in Rebeca the order of messages between any two actors is 
+unlike the original Actor model, in Rebeca the order of messages between any two actors is 
 preserved. 
 %A network where messages can be lost or arrive out-of-order, can be modeled using an 
 %actor that behaves like the intermediate medium. The same as the original actor mode, 
@@ -302,9 +302,12 @@ preserved.
  % Based on the application 
 %domains, where necessary, Rebeca is extended to provide other means of communication or 
 %safe synchronization.
- In contrast, in the
- Actor-based extension of Scala \cite{haller2009scala}, messages are
- interpreted by the callee using pattern-matching.
+ \sout{In contrast to how Erlang and Rebeca process asynchronous messages on the callee side,
+ in the Actor-based extension of Scala \cite{haller2009scala}, messages are
+ interpreted by the callee using pattern-matching.}
+ \KIKO{I have modified the sentence, although I believe that this last sentence is
+ that important and introduces one aspect of Scala which is never mentioned it again.
+ I am missing a bit the reason of the comparison}
  
 Rebeca is 
 designed to be simple and analyzable. Efficient compositional verification 
@@ -361,26 +364,33 @@ executing at a time, but the granularity of interleaving is fully
 controlled by the high-level release statements of the cooperative
 scheduling.
 
-Both the Encore \cite{ref:encore} and the ProActive languages
-support the distinction between active and passive objects. Passive
-objects are associated to (or owned by) active objects. In terms of sharing,
-ProActive follows a deep copying strategy which prevents data races
-while, in Encore, passive objects are passed by reference and a
-capability type system prevents data races.
+Another approach on integrating active objects in object-oriented languages is
+taken by the Encore \cite{ref:encore} programming language which,
+as ASP, makes a distinction between active and passive objects --
+passive objects are owned by active objects.
+%
+However, unlike ASP, futures have an explicit type and, in terms of sharing,
+passive objects are passed by reference and are data race free
+via a capability type system~\cite{encore:kappa}.
+%
+%Both the Encore \cite{ref:encore} and the ProActive languages
+%support the distinction between active and passive objects. Passive
+%objects are associated to (or owned by) active objects. In terms of sharing,
+%ProActive follows a deep copying strategy which prevents data races
+%while, in Encore, passive objects are passed by reference and a
+%capability type system prevents data races.
 %is no sharing of passive objects between active objects (when
 %communicated passive objects are copied), no data races occur, in
 %contrast to the multithreaded control of the cogs in ABS. 
-Ownership type systems have been proposed to alleviate unnecessary copying of
-passive objects \cite{clarke08aplas}. 
-%\KIKO{not sure where this last line can be used now...}
+Previous work on ownership type systems have been proposed to
+alleviate unnecessary copying of passive objects \cite{clarke08aplas}. 
 
 All these languages have drawn attention on different areas.
 %
 For instance, ABS is an executable modelling language with a focus on analysis and
 property-preserving code generation while, both Encore and ProActive, aim at
-efficient runtime systems for active object languages. 
-%
-Encore targets multicore platforms, ProActive has also been applied for the
+efficient runtime systems for active object languages where
+Encore targets multicore platforms and ProActive has also been applied for the
 distributed setting.
 
 \paragraph{Further interesting languages}
