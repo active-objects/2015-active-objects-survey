@@ -1740,16 +1740,23 @@ class Main
 \end{figure}
 
 The \parT{} collection and its combinators have been designed to perform
-operations asynchronously without stopping the current thread of execution.
-This creates a collection that never blocks and executes operations on demand,
-when the values are available. There are more combinators \cite{ref:encore}
-but we have highlighted the most important ones. 
+operations asynchronously --- without stopping the current thread of execution.
 %
 \parT{} integrates well in the active object model, as it
- provides a uniform interface, via parallel combinators,
-to manipulate a collection of futures and values. Complex coordination workflows
-can be easily expressed, including but not limited
-to data-pipeline and speculative parallelism.
+provides a uniform interface, via parallel combinators,
+to manipulate a collection of asynchronous values
+and can express complex coordination workflows.
+%
+%This creates a collection that never blocks and executes operations on demand,
+%when the values are available. 
+More combinators are available \cite{ref:encore}
+but we have highlighted the most important ones. 
+%
+%\parT{} integrates well in the active object model, as it
+%provides a uniform interface, via parallel combinators,
+%to manipulate a collection of futures and values. Complex coordination workflows
+%can be easily expressed, including but not limited
+%to data-pipeline and speculative parallelism.
 %Furthermore, the Encore framework can
 %increase the level of asynchrony of an application, spawning more lightweight tasks,
 %when it detects optimisation possibilities within the \parT{} abstraction.
@@ -1833,8 +1840,9 @@ Encore capabilities are created from traits, and importantly,
 different traits in the same class can construct different
 capabilities. This allows a substructural treatment of objects,
 e.g., taking a pair and splitting it into two disjoint halves,
-which can be pointed to and modified separate of each other. One
-of the more experimental features of Encore, which is far from
+which can be pointed to and modified separate of each other.
+%
+One of the more experimental features of Encore, which is far from
 fully explored, is the combination of certain capabilities to
 express e.g., an active object with a partially synchronous
 interface (like a priority channel), or active objects which are
@@ -1843,7 +1851,7 @@ active object topologies.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[scale=.33]{pictures/capabilities}
+  \includegraphics[scale=.30]{pictures/capabilities}
   \caption{Encore capability hierarchy.}
   \label{fig:capa-tree}
 \end{figure}
