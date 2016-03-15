@@ -1521,7 +1521,7 @@ These operations are explained in detail later (in \emph{Cooperate Scheduling of
 The example below (Fig.~\ref{fig:encore:example}) shows a buffer implementation
 using features of the Encore language.
 %
-\begin{figure}[ht]
+\begin{figure}[t]
 \begin{parcolumns}{2}
 \colchunk{
 \begin{lstlisting}[style=encore, firstnumber=1, lastline=14,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible, showlines=true]                                                           
@@ -1636,15 +1636,15 @@ appended to the object's queue.
 \qquad
   \includegraphics[scale=.4]{pictures/enc-await-unfulfilled}
   \caption{(Left) An Encore program executing a \ec{get} on an
-    unfillfilled future. This causes the currently executing
-    active object to be descheduled, only to be rescheduled after
+    unfulfilled future. This causes the currently executing
+    active object to be unscheduled, only to be rescheduled after
     the future has been fulfilled. Once the object gets to the
     head of the scheduling queue after this point, the \ec{get}
     operation returns and the program continues from this point.
     with non-empty message queues. (Right) An Encore program
-    executing an \ec{await} on an unfillfilled future. In
+    executing an \ec{await} on an unfulfilled future. In
     difference with \ec{get}, the active object is only
-    descheduled if it does not have any messages in its message
+    unscheduled if it does not have any messages in its message
     queue, and once the future is fulfilled, the resuming method
     is placed at the end of the active object's queue.}
   \label{fig:enc-get-await}
@@ -1653,44 +1653,50 @@ appended to the object's queue.
 
 \paragraph{Parallelism Inside Active Objects}
 
+\newcommand{\bind}[0]{\ensuremath{\gg\!\!=}}
+\newcommand{\prune}[0]{\ensuremath{\ll}}
+
 Active objects provide coarse grain parallelism via futures but do not offer
-many high-level language constructs for low-level coordination of these parallel computations.
+high-level language constructs for low-level coordination of parallel computations.
 In order to express complex coordination workflows, such as pipeline and
 speculative parallelism, Encore incorporates
 \parT{} collections and associated parallel combinators.
-A \parT{} collection is an abstraction that can contain asynchronous computations,
-but it represents more than a mere container, as \parT{} can be seen as a handle to these
-asynchronous computations, exploited via the combinators.
+A \parT{} collection is an abstraction that can contain asynchronous computations
+and values and it is controlled via parallel combinators. 
+\parT{} computations have type \ec{Par t} (\ec{t} is a polymorphic type).
+%but it represents more than a mere container, as \parT{} can be seen as a handle to these
+%asynchronous computations, exploited via the combinators.
 %
-\parT{} collections have the type \texttt{Par t} (\texttt{t} is a polymorphic type)
-and can contain values and asynchronous computations
-represented by futures.
+%\parT{} collections have the type \texttt{Par t} (\texttt{t} is a polymorphic type)
+%and can contain values and asynchronous computations
+%represented by futures.
 
-Futures created from tasks or methods calls on active objects can be lifted
-to the \parT{} abstraction via the \emph{lift} combinator (lift :: Fut t $\to$ Par t);
-the $\|$ construct ($\| :: Par \;t \to Par \;t \to Par \;t$) merges two \parT{}s
-into a new \parT{} collection. 
-This operation does not create new threads but, exploits the inner parallelism
-within the \parT{}s, i.e., the runtime can detect when there is a potential possibility
-for spawning more tasks, %that work on different elements of the collection,
-increasing the degree of asynchrony while keeping the throughput of the system.
+%Futures created from tasks or methods calls on active objects can be lifted
+%to the \parT{} abstraction via the \emph{lift} combinator (lift :: Fut t $\to$ Par t);
+%the $\|$ construct ($\| :: Par \;t \to Par \;t \to Par \;t$) merges two \parT{}s
+%into a new \parT{} collection. 
+%This operation does not create new threads but, exploits the inner parallelism
+%within the \parT{}s, i.e., the runtime can detect when there is a potential possibility
+%for spawning more tasks,
+%increasing the degree of asynchrony while keeping the throughput of the system.
 
 The \parT{} combinators are informally explained with the example from Fig.~\ref{fig:encore:factorisation},
 which computes the LU and Cholesky factorisation in parallel, inverting these matrixes asynchronously,
 getting the diagonal of the first asynchronous computation that finishes inverting the matrix
 and terminating the remaining computations.
 %
-The LU and Cholesky factorisation are performed in parallel, spawning tasks (lines 20 and 21), and the
-obtained futures are lifted and grouped into a \parT{} abstraction (line 22).
+The LU and Cholesky factorisation are performed in parallel, spawning tasks (lines 20 and 21),
+lifting and grouping the futures into a \parT{} abstraction (line 22) via the \emph{lift} (lift :: Fut t $\to$ Par t)
+and $\|$ combinators ($\| :: Par \;t \to Par \;t \to Par \;t$) which lift the future to a \parT{} and
+merges two \parT{}s into a new \parT{} collection, respectively.
 %
-The inversion of the matrix is performed asynchronously, using the \emph{bind} ($>>=$) combinator (line 24).
-This combinator ($>>= :: Par \ t \to (t \to Par\ t') \to Par\ t'$) receives as second argument 
-a function that will be applied asynchronously to the items in the
-\parT{} collection, therefore creating pipeline parallelism. 
+The inversion of the matrix is performed asynchronously, using the \bind{} combinator
+($\bind \ :: Par \ t \to (t \to Par\ t') \to Par\ t'$), which receives a function (second argument)
+that is applied asynchronously to the items in the \parT{} collection --- creating pipeline parallelism. 
 %
-Afterwards, with the prune combinator ($<< \; :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$),
+With the \prune{} combinator ($\prune \ :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$),
 the \verb|getDiagonal| function is applied to the first computation that returns the inverted matrix,
-and the remaining computations are terminated --- safely stopping speculative work.
+stopping the remaining computations --- safely stops speculative work.
 
 \begin{figure}[t]
 \begin{parcolumns}[colwidths={1=2.8in,2=3.1in}, distance=0em]{2}
@@ -1804,15 +1810,22 @@ The Encore capabilities form the hierarchy seen in
 Figure~\ref{fig:capa-tree}. Exclusive capabilities are local to
 one thread only and linear capabilities may be transferred between
 concurrent computations without data-races of dynamic means of
-concurrency control. Shared capabilities may be shared across
+concurrency control.
+%
+Shared capabilities may be shared across
 concurrent computations because these capabilities encapsulate
 some means of protection against concurrent accesses: pessimistic
 capabilities like locks and actors serialise computation;
+%
 optimistic capabilities like STM and lock-free capabilities allow
 parallel operations but uses some form of roll-back scheme when
-conflicts are detected. Immutable and read-only capabilities are
+conflicts are detected.
+%
+Immutable and read-only capabilities are
 always safe to access concurrently because of the absence of
-writes. Finally, subordinate capabilities allow constructing
+writes.
+%
+Finally, subordinate capabilities allow constructing
 aggregates of objects whose data-race freedom stems from their
 proper encapsulation inside some other capability.
 
