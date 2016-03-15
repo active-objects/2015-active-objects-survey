@@ -353,7 +353,7 @@ The Java multithreaded model of computation can be integrated with
 active objects. In the Abstract Behavioral Specification Language ABS
 \cite{JHSSS10} this is done by combining Creol's cooperative
 scheduling model with the structuring mechanism of concurrent object
-groups (cogs) \cite{ref:jcobox}.  Such a group of active objects
+groups (cogs) \cite{SchaeferP10b}.  Such a group of active objects
 consists of a pool of threads each of which is generated from an
 external asynchronous call and extended as a stack of internal
 synchronous method calls.  Within such a pool only one thread is
@@ -410,19 +410,22 @@ Kilim, Akka, Go,
 
 \subsection{Dimensions of Comparison between Languages}
 Before presenting in details different active object languages, we  
-define the key points that we consider as important regarding the design and the 
-implementation of actor programming languages. 
-Those dimensions of comparison, defined below, will  be used in the following to present 
-the different languages.
+define the key points that we consider as important regarding the design of actor 
+programming languages. 
+%Those dimensions of comparison will  be used in the following to present 
+%the different languages.
 
 \paragraph{Objective of the language} Identifying the objective of the language, for
 which purpose it was created, is crucial to understand the design of a programming 
-language.  For example, the performance of the language can be a crucial factor 
+language and the trade-offs that had to be taken between different aspects.  For example, 
+the performance of the language can be a crucial factor 
 for which another aspect can be neglected, such as the accessibility of the language to 
-non-experts. Or, a high expressiveness can be expected for a language targeting several 
-platforms. Having a precise objective for a language generally defines the trade-offs 
-that have to be taken between 
-several aspects. 
+non-experts. %Also, a high expressiveness can be expected for a language targeting 
+%several 
+%platforms. 
+%Having a precise objective for a language generally defines the trade-offs 
+%that have to be taken between 
+%several aspects. 
 %and for this reason, 
 %in the following each language description 
 %will start by a brief presentation of the language's objectives.
@@ -445,34 +448,34 @@ several aspects.
 	automatically available or explicitly retrieved, depending on the language design; we then say that the
 	future is \emph{resolved}. A process can also block waiting for a future to be resolved.
 	In active object languages, futures represent the result of asynchronous 
-	invocations, and, in most of active object languages, an access to a future is a  
-	synchronisation point
-	between concurrent entities. Somehow such a synchronisation makes 
+	invocations. In most of those languages, an access to a future is a  
+	synchronisation point. Somehow such a synchronisation makes 
 	programming easier as it keeps a sequential workflow that the programmer can trust.
 	Several active object languages also support cooperative scheduling: a thread can be 
 	suspended to handle another message, and resumed later. The suspension can be 
 	triggered when checking whether a future
-	is resolved or not. This breaks the sequential processing of messages and requires a 
-	better concurrent expertise from the programmer, but also allows him/her to write 	
-	programs that are more efficient and less deadlock-prone.
+	is resolved or not. This breaks the sequential processing of a message, but also 
+	allows 
+	programs to be more efficient and less deadlock-prone.
 
 	\paragraph{Degree of transparency} Another difference between languages 
-	with concurrency constructs is the number and the complexity of the programming abstractions the programmer has to 
-	know and master; among them some are explicitly visible in the program and some are 
-	hidden from the programmer, we say that they are transparent. For example,  some 
-	active object languages feature transparent futures, which means that, on one hand
-	variables which contain futures are not explicitly distinguished with a special static type, and on the other hand, that there is no 
+	is the number and the complexity of the programming abstractions the programmer has 
+	to 
+	know; among them some are explicitly visible in the program and some are 
+	hidden: they are transparent. For example,  if futures are transparent
+	variables which contain futures are not explicitly distinguished with a special 
+	static type, additionally there is no 
 	explicit instruction for accessing a future: an access to a future object is blocking 
 	if the future is not resolved yet.
 %some active object languages 
 %feature transparent asynchronous method invocations, i.e. asynchronous method 
 %invocations that are 
 %syntactically identical to synchronous ones. S
-	In general, the more transparency, the easier it is to write 	basic programs, 
+	In general, the more transparency, the easier it is to write 	simple programs, 
 	because the programmer do not need to know all the intricacies of the 
-	programming model and because the parallelism can be provided automatically. However, when targeting 
-	more complex applications, the benefits of transparency is weakened, as exposing 
-	the programmer to all the programming abstractions that are used can make 
+	programming model and because parallelism can be provided automatically. However, for
+	complex programs, the benefits of transparency is weakened, as exposing 
+	the programmer to the programming abstractions that are used can make 
 	programming, debugging,
 	or optimization easier. 
 	
@@ -483,9 +486,9 @@ several aspects.
 	and be stronger or weaker. 		
 	The most efficient way to communicate data between 
 	different cores of the same machine is to share the data, whether in a distributed 
-	setting, copying the information to the different consumers of the data is often the most 
+	setting, copying the information to the different consumers of the data is often more
 	efficient as it avoids additional communications for peaking the data source. 	
-	Aside runtime efficiency, the complexity of the language implementation varies 	
+	Aside efficiency, the complexity of the language implementation varies 	
 	accordingly to the degree of data sharing. For example, copying data raises the 
 	problem of 
 	data consistency as data modifications may not be reflected on all copies.  
@@ -493,11 +496,10 @@ several aspects.
 	shared memory, and additional synchronisation and delays. In practice, active object 
 	and actor languages that have distributed runtimes often use a ``no shared memory'' 
 	approach that favors 	
-	data copies for objects in general, and that accepts a few entities that are globally 
+	data copies for objects, and that accepts a few entities that are globally 
 	known and shared. On the contrary, when all objects are shared and accessible from 
-	anywhere, the 
-	advantage is that the data consistency is simpler to obtain, but 
-	the communication overhead is high when programs are run in distributed 
+	anywhere, the data consistency is simpler to obtain, but 
+	the communication overhead is higher in distributed 
 	settings. 
 	%Encore is probably the richest language from this point of view, aiming at a 
 	%precise control of data sharing including entities that can explicitly be shared 
@@ -1224,7 +1226,7 @@ list of currently supported tools for ABS:
 
 \subsubsection{ProActive and ASP}
 \paragraph{General presentation and objective of the language}
-ASP~\cite{ref:asp} is an active object programming language especially designed for
+ASP~\cite{CH-book} is an active object programming language especially designed for
 programming and deploying distributed systems. ProActive is a Java library implementing the semantics
 of the ASP calculus. The language is designed taking the constraints of distributed
 programming into account, and relies on Remote Method Invocation as the communication layer even though
@@ -1851,45 +1853,54 @@ The currently supported tools are:
 In this section, we take interest in the implementations of the different active object programming models described in the previous section. In practice, the implementation of a programming language can be provided from scratch or can also be given as an API in a more mainstream language. Another way to implement an active object language is to systematically translate any of its programs into another language; this is possible through a language backend: a translator that captures the semantics of the source language. The advantage of this solution is that an active object language can then have several independent backends targeting different execution platforms and, by this means, fitting the largest needs. 
 
 \subsection{Dimensions of Comparison between Implementations}
-In any language implementation strategies, several points need to be considered regarding the language runtime and how the implement efficiently the language semantics. We will use those points to compare active object implementations. 
-For each active object implementation, we want to address \TODO{update number of points} five points, among them: how threads are created and handled to achieve the right scheduling, how object are referenced throughout an active object-based application and how objects and data are effectively shared. We describe them below.
+Several points need to be considered regarding the language runtime and how to implement 
+efficiently the language semantics. We will use the points described below to compare 
+active object implementations. 
+%For each active object implementation, we want to address \TODO{update number of points} 
+%five points, among them: how threads are created and handled to achieve the right 
+%scheduling, how object are referenced throughout an active object-based application and 
+%how objects and data are effectively shared. We describe them below.
 
 \paragraph{Thread creation and scheduling}
 % Virtual threads %
 The active object languages that are implemented on top of an existing programming 
-language have to comply to the constraints given by the underlying programming language. 
-In the case of multi-threading, some underlying programming language feature light thread 
-whereas having something different than a physical thread is impossible in other 
-programming languages (e.g. Java). In this case, one can consider implementing light 
-threads on top of the underlying programming language. Featuring light thread is also 
+language (or runtime) have to comply to the constraints given by the underlying platform. 
+In the case of multi-threading, some underlying platforms feature light threads
+whereas in some frameworks like Java each thread is a physical one. In this case, one can 
+consider implementing light 
+threads on top of the underlying threads. Featuring light thread is also 
 crucial if the goal of the given active object language is to scale in the number of 
-active objects located on the same machine. 
+active objects located on the same machine, or to cope with cooperative multithreading if 
+a lot of tasks can be interrupted. 
 % Continuations %
-This notion of virtual threads is particularly important when implementing an active 
-object language which features cooperative scheduling of requests: a thread  must stop 
-executing when a request is paused and must resume afterwards. This is a programming 
+%This notion of virtual threads is particularly important when implementing an active 
+%object language which features cooperative scheduling of requests: a thread  must stop 
+%executing when a request is paused and must resume afterwards. 
+This is a programming 
 challenge when it comes to implement this behavior in programming languages that do not 
 support thread serialization, like Java. 
-
 Concerning this dimension, the following questions are raised in general: how active 
 objects and requests are mapped to threads? Should the thread be a physical thread or a 
-virtual thread implemented on top of physical threads? Depending on these choices, some 
-scheduling between different active objects or different requests might have to be 
-considered.
+virtual one? 
+%Depending on these choices, some 
+%scheduling between different active objects or different requests might have to be 
+%considered.
 
 %how active objects are mapped to threads and the scheduling levels within an object and 
 %BETWEEN objects
 
 \paragraph{Data sharing and object referencing}
-This point answers to the question ``how objects are shared between active objects?'' 
+This point answers to the question ``Are objects shared between active objects, and 
+how?'' 
 Active objects encapsulate their state such that active objects are independent from each 
 other.
-By principle, active objects prevents race-conditions by allowing a single entity (a cog 
-or an active object) access to it. This principle partitions the memory which limits or 
+In general, active objects prevents race-conditions by allowing a single entity (a cog 
+or an active object) access to each object. This principle partitions the memory which 
+limits or 
 prevents data-race-conditions.
  In practice, this requires to distinguish between objects that can be remotely 
-accessed (by asynchronous invocation) and objects that has to be copied when exchanged 
-between active objects.
+accessed (by asynchronous invocation), objects that has to be copied when exchanged 
+between active objects, and objects that can be shared safely (e.g. immutable objects).
 Accessing objects in another activity might involve additional communications and request 
 treatment 
 delays, while copying objects might lengthen the initial request invocation because of 
@@ -1897,50 +1908,50 @@ the serialisation time but fastens the request treatment. Handling copied object
 involves coherency issues. 
 %Different languages take different choices on which objects are copied and how the copy 
 %and the referencing of objects is handled.
-Some implementation also create a pool of immutable objects that are easier to share 
-without risk of data-race-condition. 
-
-To communicate, objects must have a way to reference each other. In particular, to send a 
-request to an active object, one must have a reference to it and be able to access it. 
-In distributed settings, an efficient active object implementation cannot rely on a 
-global shared memory, because it would be too costly. 
+%Some implementation also create a pool of immutable objects that are easier to share 
+%without risk of data-race-condition. 
+To communicate, objects must have a way to reference each other. 
+%In particular, to send a 
+%request to an active object, one must have a reference to it and be able to access it. 
+%In distributed settings, an efficient active object implementation cannot rely on a 
+%global shared memory, because it would be too costly. 
 The ability to reference and interact with remote object raises even more questions in a 
-distributed setting.
-
+distributed setting where a global address space is generally too costly.
 How to efficiently and safely share information 
 between active objects is still an on going challenge and different kinds of data sharing 
 strategies have been proposed in active object implementations.
 
 
-\paragraph{Error handling}
-Among non-functional features an active object implementation can provide, we can mention 
-how errors are handled. 
-In general, the handling of errors is easier in a sequential program where the context of 
-an operation is known. Indeed, in a concurrent setting, if a task raises an error, this 
-will have to be reported to another task that is willing to interact with the first one. 
-When the second task is informed of the error it is difficult to react properly as the 
-conditions that raised the error are not fully known.
- In the case of distributed 
-implementations, exception handling is more complex as some of the exception might reveal 
-failure of nodes or communications. Additionally, active object implementations can offer 
-recovery or rollback mechanisms to allow  systems to recover after one or more active 
-objects were lost. 
-%This support is particularly relevant for distributed active object implementations, 
-%because the failure rate is proportional to the degree of distribution. 
+\paragraph{Error handling} %Among non-functional features an active object
+% implementation can provide, we can mention
+%how errors are handled.
+The handling of errors is easier in a sequential program where the context of an
+operation is known. Indeed, in a concurrent setting, if a task raises an error, this
+will have to be reported to another task. When the second task is informed of the error
+it is difficult to react properly as the conditions that raised the error are not fully
+known. In the case of distributed implementations, exception handling is even more
+complex as some of the exception might reveal failure of nodes or communications.
+Additionally, active object implementations can offer recovery mechanisms to
+allow  systems to recover after one or more active objects failed. %This support is
+% particularly relevant for distributed active object implementations,
+%because the failure rate is proportional to the degree of distribution.
 
 \paragraph{Garbage collection}
-Garbage collection is another non-functional feature that an active object implementation 
-should support. This point is important for the active object applications to scale and 
+%Garbage collection is another non-functional feature that an active object 
+%implementation 
+%should support. 
+This point is important for the active object applications to scale and 
 to be perennial. On most cases, the garbage collecting strategy must be implemented to 
 fit a particular active object language. Even for active object languages built upon an 
 underlying language with garbage collection, this language can only provide a partial 
 garbage collection. Indeed, the true question in the case of active object 
-implementations is when active objects are not needed any more, since they can receive 
-request unexpectedly and from anywhere.
+implementations is when active objects are not needed any more, i.e. when they do not 
+have to serve new requests.
 Again, the question is even more complex in the case of distributed implementations because reference counting is scattered.
 
-Below, we review active object implementations, and say whether they rely on a translation to 
-another language, or have their own runtime, or are implemented as a middleware layer, 
+Below, we review active object implementations
+%, and say whether they rely on a translation to 
+%another language, or have their own runtime, or are implemented as a middleware layer, 
 according to the dimensions of comparison defined above. When meaningful, we show 
 experiments illustrating in which conditions the implementation outperforms existing solutions.
 
@@ -2085,9 +2096,11 @@ collection of passive objects can safely rely on the Java garbage collector.
 
 \subsection{ProActive backend for ABS}
 \label{subsec:proactive-backend-abs}
-The ProActive backend for ABS is another translator that generates the ProActive code 
-corresponding to an ABS program. The goal of the ProActive backend for ABS is similar to the one of the Java 8 backend for ABS: turn ABS models into production code. The difference is that the Java 8 backend targets optimized performance, this why it is still under development, whereas the ProActive backend provides a fully working execution of ABS models in distributed environments, with less optimization than expected with the Java 8 backend. The ProActive backend aims at \emph{simulating} all ABS concepts 
-with ProActive, since the two languages are based on different active object models. The 
+The ProActive backend for ABS generates ProActive code 
+corresponding to an ABS program. The goal of the ProActive backend is to provide a fully 
+working execution of ABS models in distributed environments, with less optimization than 
+expected with the Java 8 backend. Since the two languages are based on different active 
+object models, the 
 main challenges in the translation are (i) how to efficiently support object groups in 
 ProActive where there only exist active and passive objects, (ii) how to address objects 
 in the translation since objects are passed by reference in ABS and by copy in ProActive, 
@@ -2096,113 +2109,160 @@ annotations. We first present object referencing aspects as scheduling is
 dependent on the set of objects that are decided to be active.
 
 \paragraph{Data sharing and object referencing}
-As in ABS all objects should be accessible from all others, one could think that implementing all objects with a ProActive active object would meet the requirement. However, in practice, this is hardly manageable: a ProActive active object is associated a plain Java thread. Thus, this solution would inevitably lead to a substantial memory consumption and context switch overhead.
+In ABS all objects are accessible from all others; thus one could implement all objects 
+with a ProActive active object. However, in practice, this is hardly manageable: a 
+ProActive active object is associated a plain Java thread. Thus, this solution would 
+inevitably lead to a substantial memory consumption and context switch overhead.
 In the code generated by the ProActive backend, only the COGs are active objects, and thus are the entry points to all the objects they contains. Thanks to this hierarchy, objects other than COG objects remain passive, which preserves the performance of the ProActive backend.
 Thus, we have a two-level hierarchical indexing of objects:
-\begin{itemize}
-\item A first level of network-wide accessible COG objects. This mechanism is integrated in ProActive as it is based on RMI~\cite{Wollrath:1996:DOM:1268049.1268066}.
-\item A second level of locally accessible objects. This mechanism is implemented in the COG class using a map from object identifiers to object references.
-\end{itemize}
-This classification implies that the application always manipulates local references. The 
+ A first level of network-wide accessible COG objects. This mechanism is integrated in 
+ ProActive as it is based on RMI~\cite{Wollrath:1996:DOM:1268049.1268066}.
+ A second level of locally accessible objects. This mechanism is implemented in the COG 
+ class using a map from object identifiers to object references.
+Consequently the 
 translation introduces indirections through COGs that can be accesed by remote references.
 This configuration of objects is illustrated on Figure~\ref{fig:ABS-to-PA-new}, where a new COG is created through a new \code{Server} object.
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.3]{pictures/ABS-to-PA-new.png}
-	\caption{Object organization given by the ProActive backend for ABS when a new COG is created}
-	\label{fig:ABS-to-PA-new}
+
+\begin{figure}[t]
+		\begin{subfigure}[b]{0.43\linewidth}
+                 \includegraphics[scale=0.3]{pictures/ABS-to-PA-new.png} 
+                \caption{ABS new in ProActive}
+                \label{fig:ABS-to-PA-new}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.50\linewidth}
+                  \includegraphics[scale=0.3]{pictures/ABS-to-PA-call.png} 
+                \caption{ABS asynchronous method call in ProActive}
+                \label{fig:ABS-to-PA-call}
+        \end{subfigure}
+ \caption{Representation of ABS objects and calls in ProActive} 
+\label{fig:graph}
 \end{figure}
-%% RM
-In the ProActive backend for ABS, the principle to translate an asynchronous ABS call is 
-thus to run a generic asynchronous method call on the COG of the targeted object and then 
-let the generic method of the COG retrieve the targeted object, thanks to a unique 
-identifier, and run the desired method on it by reflection. Figure~\ref{fig:ABS-to-PA-call}
-%% RM
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.3]{pictures/ABS-to-PA-call.png}
-	\caption{Translation of an ABS asynchronous method call in ProActive}
-	\label{fig:ABS-to-PA-call}
-\end{figure}
+
+%\begin{figure}
+%	\centering
+%	\includegraphics[scale=0.3]{pictures/ABS-to-PA-new.png}
+%	\caption{Object organization given by the ProActive backend for ABS when a new COG is created}
+%	\label{fig:ABS-to-PA-new}
+%\end{figure}
+
+An ABS asynchronous  call is 
+thus translated into a generic asynchronous method call on the COG of the targeted 
+object; it is then the generic method of the COG which retrieves the targeted object 
+thanks to a unique 
+identifier, and runs the desired method on it by reflection. 
+Figure~\ref{fig:ABS-to-PA-call}
+%\begin{figure}
+%	\centering
+%	\includegraphics[scale=0.3]{pictures/ABS-to-PA-call.png}
+%	\caption{Translation of an ABS asynchronous method call in ProActive}
+%	\label{fig:ABS-to-PA-call}
+%\end{figure}
 In ProActive, passive objects are not shared between active objects. Therefore, when a passive object is a parameter of a remote method call, it is copied, whereas in ABS parameters of method call are manipulated by reference.
-So when in the translation we run a generic method call on a COG, all the parameters are 
-copied. For the identifier of the targeted object and the name of the method to run, this 
-is not a problem because they are immutable variables, similarly for parameters that are 
-primitive values. Concerning 
+So when the translation performs a remote method call on a COG, all the parameters are 
+copied. For the identifier of the targeted object, the name of the method to run, and the 
+primitive values, this 
+is not a problem because they are immutable variables. Concerning 
 the parameters of the method to run that are reference to ABS objects the different 
-parameter passing semantics could raise a problem.
+parameter passing semantics is still safe but for a different reason.
 %% RM
-However, 
-any access to those objects is done through an asynchronous method call on the copy of 
+Any access to an object is done through an asynchronous method call on the copy of 
 method parameters, those invocations end up in calling the unique original 
 version of the created object and their hosting COG. Thanks to this mechanism, the 
 initial data sharing of ABS is correctly 
 simulated even with the no-sharing philosophy of ProActive because the copied data is 
 only used as a reference to the original object.
-In the end, in the ProActive translation of ABS, when we copy an object from one node to 
-another, we only need the identifier of the object, to be able to retrieve it in the 
-right memory space, and a reference to its COG, that is globally accessible. All the 
-others attributes of the objects can actually be omitted since they will not be used when 
+In the end, when we copy an object from one node to 
+another, we only need the identifier of the object to be able to retrieve it in the 
+right memory space, and a reference to its COG. All the 
+others attributes of the objects can actually be omitted since they are never used when 
 copied. This observation allows us to optimize object copy and reduce the amount of 
-information that is sent through the network. In summary, the ProActive backend generate 
+information that is sent through the network. Consequently, the ProActive backend 
+generate 
  programs that copy few data but incur more communications 
-than native ProActive applications. Compared to the Java 8 backend for ABS, the ProActive backend does not distinguish whether COGs are located on the same machines to optimize communications, however this is not a problem since copies are always lightweight.
-\KIKO{I am not sure I understood everything but, why are copies lightweight?}
+than native ProActive applications. Compared to the Java 8 backend for ABS, the ProActive 
+backend does not distinguish whether COGs are located on the same machines to optimize 
+communications, however this is not a problem since only references are copied.
 Also, in the ProActive backend class loading is handled by RMI wheres it is implemented from scratch in the Java 8 backend.
 
 \paragraph{Thread creation and scheduling}
 Multiactive objects provide several mechanisms to control the scheduling of requests. The right tuning of those controls allows the ProActive backend to simulate the behavior of ABS cooperative scheduling. 
 %In general, we create more threads than supposedly in ABS because, when a thread is handed over to another request in ABS, in fact in the ProActive backend a thread is paused and another one is allowed to continue to simulate the same behavior.
-More precisely, we can compare the ProActive backend and the Java 8 backend  on the four points explained in Section~\ref{sec:implem-java-8}. On points 1 and 3, the ProActive backend also delivers a message per asynchronous invocation, but a single request queue exist for all objects in a same COG, whereas in the Java 8 backend, there is a request queue per object. Point 2 is implemented differently from the two backends: the Java 8 backend ensures that all objects in the same COG compete for one single threads (which closely sticks to ABS models), whereas the ProActive backend creates one thread per executing (and paused) requests: it is actually the precise interleaving of several threads that ensures that only one request is progressing at a time; this strategy avoids implementing continuations in Java which is made difficult because of JVM constraints. Finally, on point 4 the Java 8 backend shares a thread pool for many COGs whereas in the ProActive backend each COG has its own thread pool (this avoids distinguishing whether COGs are distributed). In conclusion, the ProActive backend has to handle more idle threads than the Java 8 backend. We explain below in more details how we implement ABS preemption constructs in ProActive.
+More precisely, we can compare the ProActive backend and the Java 8 backend  on the four 
+points explained in Section~\ref{sec:implem-java-8}. On points 1 and 3, the ProActive 
+backend also delivers a message per asynchronous invocation, but a single request queue 
+exists for all objects in a same COG, whereas in the Java 8 backend, there is a request 
+queue per object. Concerning point 2, the Java 8 backend ensures that all objects in the 
+same COG compete for one single thread, whereas the ProActive backend creates one thread 
+per executing (and paused) requests: it is actually the scheduling associated to 
+compatibility annotations that ensures that only one request is progressing at a time; 
+this strategy avoids implementing continuations in Java which is difficult because of JVM 
+constraints. Finally, on point 4 the Java 8 backend shares a thread pool for many COGs 
+whereas in the ProActive backend each COG has its own thread pool. In conclusion, the 
+ProActive backend has to handle more idle threads than the Java 8 backend. We explain 
+below in more details how we implement ABS preemption constructs in ProActive.
 
 \smallskip
-$\bullet$ \textit{Translation of ABS \code{await} statement on futures.}
+$\bullet$ \textit{Translation of  \code{await} statement on futures.}
 %% RM
-In ProActive multiactive objects, a way to control what happens when a thread switches in wait-by-necessity is to specify the kind of thread limit (in addition to the thread number) that is used by the considered multiactive object: a hard limit restricts the total number of threads existing for a multiactive object instance whereas a soft limit only restricts the number of threads that are active (not in wait-by-necessity).
-Thus, in order to achieve the desired request scheduling, we configure the COG class and its \code{execute} method with multiactive object annotations.
-%% RM
-We declare that the generic method of the COG that executes all methods by reflection is 
+With multiactive objects, a way to control what happens when a thread switches in 
+wait-by-necessity is to specify the kind of thread limit: a hard limit restricts the 
+total number of threads existing for a multiactive object instance whereas a soft limit 
+only restricts the number of threads that are active (not in wait-by-necessity).
+To achieve the request scheduling of ABS, we  declare that the generic method of the COG 
+that executes all methods by reflection is 
 compatible with itself, which means that many of such methods are allowed run in 
-parallel. Additionally, we declare that this set of methods has a thread limit of 1, and 
-that this limit is a soft limit (only thread that  are not in wait-by-necessity are 
-counted in this limit). Consequently, there is only one active thread at a time that 
-serveds requests in a COG multiactive object, so generic COG method calls do not run in 
-parallel but interleave upon wait-by-necessity. Consequently, this multiactive 
-configuration leads to a similar scheduling as ABS.
+parallel. Additionally, this set of methods has a thread limit of 1, with a soft limit. 
+Thus, there is only one active thread at a time that 
+serves requests in a COG multiactive object: requests do not run in 
+parallel but interleave upon wait-by-necessity. 
+%Consequently, this multiactive 
+%configuration leads to a similar scheduling as ABS.
 	
 \smallskip
-$\bullet$ \textit{Translation of ABS \code{get} statement.}
-The translation of the ABS \code{get} statement would have been straightforward if we had 
-not configured the COG class for the translation of the \code{await} statement. Indeed, 
-by doing so, we have disabled the blocking aspect of a ProActive wait-by-necessity 
-(enabling cooperative thread release). 
-Consequently, what is required to translate the \code{get} statement is to temporarily go back to the initial behavior of a ProActive wait-by-necessity (i.e. blocking, like without annotations).
-To do that, we temporarily switch the thread limit to a hard thread limit, so that no 
-other thread can start or resume a request in the meantime. When the future is resolved, 
-we set back the soft limit restore the cooperative scheduling behaviour. 
+$\bullet$ \textit{Translation of  \code{get} statement.}
+%The translation of the ABS \code{get} statement would have been straightforward if we 
+%had 
+%not configured the COG class for the translation of the \code{await} statement. Indeed,
+%by doing so, 
+The problem  is that
+we have disabled the blocking aspect of a ProActive wait-by-necessity to handle 
+ cooperative thread release upon await statement. 
+Consequently, to translate the \code{get} statement we temporarily go back to the initial 
+behavior of a ProActive wait-by-necessity and switch the thread limit to a hard thread 
+limit so that no 
+other request can execute while the get statement is executed. 
+%When the future is resolved, 
+%we set back the soft limit restore the cooperative scheduling behaviour. 
 %% RM
 
 \smallskip
-$\bullet$ \textit{Translation of ABS \code{await} statement on conditions.}
-Another usage of the ABS \code{await} statement is to use it followed by a condition. For 
-translating this kind of \code{await} in ProActive, we wrap the condition evaluation in a 
-method call that returns a future, and we synchronize on it afterwards. More precisely, 
-for each such condition, we generate a corresponding method. Then, we translate the 
-\code{await} statement by an asynchronous call to another generic method of the COG class 
-that is specially devoted to execute waiting conditions, giving it all required 
-parameters to do that. Again, we configure this method with multiactive annotations in 
-order to allow several conditions to run in parallel. 
-We allocate many threads for the evaluation of conditions and reserve through annotations 
-one thread for the generic method execution.  
-%% RM  
-This way, we have a clear separation between the single thread used by application 
-method, and the threads used by the condition execution method.
-%% RM
+$\bullet$ \textit{Translation of  \code{await} statement on conditions.}
+To handle an \code{await} statement on a condition we generate a  method and create an 
+asynchronous request (of another compatible group) that checks the condition ane finishes 
+when the condition is verified. It is then sufficient to perform an await on the future 
+for this request as explained above.
+%Another usage of the ABS \code{await} statement is to use it followed by a condition. 
+%For 
+%translating this kind of \code{await} in ProActive, we wrap the condition evaluation in 
+%a 
+%method call that returns a future, and we synchronize on it afterwards. More precisely, 
+%for each such condition, we generate a corresponding method. Then, we translate the 
+%\code{await} statement by an asynchronous call to another generic method of the COG 
+%class 
+%that is specially devoted to execute waiting conditions, giving it all required 
+%parameters to do that. Again, we configure this method with multiactive annotations in 
+%order to allow several conditions to run in parallel. 
+%We allocate many threads for the evaluation of conditions and reserve through 
+%annotations 
+%one thread for the generic method execution.  
+%%% RM  
+%This way, we have a clear separation between the single thread used by application 
+%method, and the threads used by the condition execution method.
+%%% RM
 
 \smallskip
-In conclusion, all ABS constructs are sustained by the ProActive backend. We have also 
-proven the translation to be correct. For that, we have used ASP with multiactive objects 
-extensions, and we have showed that the ASP translation simulates all the rules of ABS 
+We have formally proven that all ABS constructs are correctly translated by the ProActive 
+backend, more precisely the ASP translation simulates all the rules of ABS 
 semantics, and that all translated ASP configurations correspond to a valid ABS 
 execution. 
 %%%% Without the figures, the text could be like the one below %%%%
@@ -2211,15 +2271,22 @@ execution.
 %application run in a distributed environment indeed outperforms traditional ABS program 
 %execution, and (ii) that the overhead introduced by the translation is always kept under 
 %10\% compared to a native ProActive application.
-We have evaluated a program generated with the ProActive backend for ABS, and run in distributed mode. We have compared it with the same program generated with the old Java backend for ABS, and run on a single machine. We have also compared it with the same application written directly in ProActive, so that the experiment also illustrate the performance of the ProActive library. The chosen use case is oriented towards computation: it relies less on active object communications than the experiment presented for the Java 8 backend for ABS. Indeed, as ProActive active objects are not light threaded, and as data copy has to be paid for each communication, ProActive is better for computational intensive use cases rather than communication intensive use cases.
+We have evaluated a program generated with the ProActive backend for ABS, and run in 
+distributed mode. We have compared it with the same program generated with the old Java 
+backend for ABS run on a single machine. We have also compared it with the same 
+application written directly in ProActive so that the experiment also illustrate the 
+performance of the ProActive library. The chosen use case is oriented towards 
+computation: it relies less on active object communications than the experiment presented 
+for the Java 8 backend for ABS. Indeed, as ProActive active objects rely on physical 
+threads and data copy has to be paid for each communication, ProActive is more adapted to
+computational intensive use cases rather than communication intensive use cases.
 The considered use case is the pattern matching of a DNA sequence using the MapReduce programming model.%~\cite{Dean:2008:MSD:1327452.1327492}.
 Map instances (workers) are created in their own COG to make them work in parallel.
 We consider a searched pattern of 250 bytes, and a database of 5 MB of DNA sequences.
 Each map searches for the maximum matching sequence of a chunk.
 Then, a reducer outputs the global maximum matching sequence.
-We compute the global execution time. In the case of ProActive translation, the number
-of workers is twice the number of physical machines used 
-(two workers run on each machine). 
+We compute the global execution time. In ProActive, we instantiate two workers on each 
+machine (each machine has two dual-core CPUs). 
 %All used machines have 2 dual
 %core CPUs at 2.6GHz, and 8 GB of RAM\footnote{We use a cluster of Grid5000 platform: \url{http://grid5000.fr}}.
 
@@ -2239,17 +2306,28 @@ of workers is twice the number of physical machines used
 \end{figure}
 
 Figure~\ref{fig:bench-usecase} shows execution time of both ProActive and Java translations of the ABS application from 2 to 50 workers, therefore using from 1 to 25 physical machines with ProActive. 
-The execution time of the application stemming from the ProActive backend is sharply decreasing for the first added machines and then decreases at a slower rate. On the other hand, the application stemming from the Java backend has an optimal degree of parallelism of 4 workers (which actually is the number of cores of the machine) and then cannot benefit from higher parallelism; execution time even increases afterwards due to context switching overhead.
-On the opposite, increasing the degree of parallelism for the application stemming from the ProActive backend gives a linear speedup, because it balances the load between machines. 
+The execution time of the application stemming from the ProActive backend is sharply 
+decreasing for the first added machines and then decreases at a slower rate. On the other 
+hand, the application stemming from the Java backend has an optimal degree of parallelism 
+of 4 workers (i.e., the number of cores of the machine); execution time even increases 
+afterwards due to context switching.
+On the opposite, increasing the degree of parallelism for the application stemming from 
+the ProActive backend gives a linear speedup, because it balances the load between 
+machines. 
 
-Figure~\ref{fig:bench-native} compares now the performance of the generated ProActive code to a hand-written version. 
+Figure~\ref{fig:bench-native} compares  the performance of the generated ProActive code 
+to a hand-written version. 
 In the generated program, we have manually replaced the translation of functional ABS types 
-(integers, booleans, lists, maps) with corresponding standard Java types, similar to the code that the Java 8 backend for ABS would produce. 
+(integers, booleans, lists, maps) with standard Java types, similarly to the 
+code the Java 8 backend produces. 
 %Indeed, our point here was to evaluate the additional communication cost of our translation, not the performance of ABS types compared to standard Java types.
 %\footnote{As can be noticed on the generated ProActive of Figures~\ref{fig:bench-usecase} and~\ref{fig:bench-native}, there is an order of magnitude of difference depending on the types used; fixing this is  
 %on-going~\cite{ref:ABS-Java-translate}.}
-In this context, we can see that the overhead introduced by the ProActive backend is rather low since it is generally kept under 10\%.
-At the biggest stage, the application translated with the ProActive backend starts to have a higher overhead because it involves too much communication. 
+The overhead introduced by the transaltion performed by the ProActive 
+backend is rather low since it is  kept under 10\% except when many machine are involved 
+and the communication rate is too high.
+%At the biggest stage, the application translated with the ProActive backend starts to 
+%have a higher overhead because it involves too much communication. 
 
 \subsection{Encore}
 %\TODO{clean up this introduction}
