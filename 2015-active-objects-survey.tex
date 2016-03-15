@@ -16,7 +16,7 @@
 % Package to generate and customize Algorithm as per ACM style
 \usepackage[ruled]{algorithm2e}
 \usepackage{tikz}
-\usepackage{ulem}
+\usepackage[normalem]{ulem}
 \usepackage{tabularx}
 \usepackage{graphicx}
 \usepackage{subcaption}
@@ -1490,17 +1490,20 @@ other by asynchronous message sends. Messages are appended to the receiver's mes
 and processed one at a time in FIFO order. % This property linearises
 % the execution of the active object. Tobias: I removed this since it did not make sense
 Active objects act like ``plain old Java objects'', except that
-they have an asynchronous interface. Active objects encapsulate
+they have an asynchronous interface.
+Active objects encapsulate
 passive objects, and operations on passive objects are synchronous. 
-%
+
 Each active object owns a local heap on which it can
 allocate passive objects. Ownership in this context means that the
 actor is responsible for keeping track on foreign dependencies on
 passive objects on its local heap, and eventually deallocate them. 
-The passive objects on a local heap may be shared with
-other active objects, or transferred, but are susceptible to data-races.
+Passive objects may be shared with other active objects, or transferred,
+but are susceptible to data-races.
+%The passive objects on a local heap may be shared with
+%other active objects, or transferred, but are susceptible to data-races.
 
-Encore is \emph{parallel by default}, as active objects are lightweight and provide coarse-grain parallelism,
+Encore is \emph{parallel by default}, as active objects provide coarse-grain parallelism,
 i.e., an active object cannot work on multiple method calls at the same time.
 %
 To create fine-grain parallel computations Encore supports the creation of tasks.
@@ -1593,7 +1596,7 @@ statement is somewhat limited in relation to ABS's as it only
 supports awaiting the fulfilment of a future, and not any boolean
 condition and differs from ProActive's \ec{await} (Section \ref{subsec:proactive-backend-abs}).
 Encore's support for future chaining however makes
-\ec{await} less useful as chaining allows triggering arbitrary operations on the fulfilment of future. 
+\ec{await} less useful as chaining allows triggering arbitrary operations on the fulfilment futures. 
 The type signatures of the operations
 are found below:
 
@@ -1667,9 +1670,9 @@ Futures created from tasks or methods calls on active objects can be lifted
 to the \parT{} abstraction via the \emph{lift} combinator (lift :: Fut t $\to$ Par t);
 the $\|$ construct ($\| :: Par \;t \to Par \;t \to Par \;t$) merges two \parT{}s
 into a new \parT{} collection. 
-This operation does not create a new threads but, exploits the inner parallelism
+This operation does not create new threads but, exploits the inner parallelism
 within the \parT{}s, i.e., the runtime can detect when there is a potential possibility
-for spawning more tasks, that work on different elements of the collection,
+for spawning more tasks, %that work on different elements of the collection,
 increasing the degree of asynchrony while keeping the throughput of the system.
 
 The \parT{} combinators are informally explained with the example from Fig.~\ref{fig:encore:factorisation},
@@ -1677,61 +1680,52 @@ which computes the LU and Cholesky factorisation in parallel, inverting these ma
 getting the diagonal of the first asynchronous computation that finishes inverting the matrix
 and terminating the remaining computations.
 %
-The LU and Cholesky factorisation are performed in parallel, spawning tasks (lines 26 -- 27), and the
-obtained futures are lifted and grouped into a \parT{} abstraction (line 28).
+The LU and Cholesky factorisation are performed in parallel, spawning tasks (lines 20 and 21), and the
+obtained futures are lifted and grouped into a \parT{} abstraction (line 22).
 %
-The inversion of the matrix is performed asynchronously, using the \emph{bind} ($>>=$) combinator.
+The inversion of the matrix is performed asynchronously, using the \emph{bind} ($>>=$) combinator (line 24).
 This combinator ($>>= :: Par \ t \to (t \to Par\ t') \to Par\ t'$) receives as second argument 
 a function that will be applied asynchronously to the items in the
-\parT{} collection (first argument), therefore creating pipeline parallelism. 
+\parT{} collection, therefore creating pipeline parallelism. 
 %
 Afterwards, with the prune combinator ($<< \; :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$),
 the \verb|getDiagonal| function is applied to the first computation that returns the inverted matrix,
-and the remaining computations are terminated --- safely stops speculative work.
+and the remaining computations are terminated --- safely stopping speculative work.
 
 \begin{figure}[t]
-\begin{parcolumns}{2}
+\begin{parcolumns}[colwidths={1=2.8in,2=3.1in}, distance=0em]{2}
 \colchunk{
 \begin{lstlisting}[style=encore, firstnumber=1,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]                                                           
-def luFact(Matrix m): [Factor] {
-    ...
-}                                                                              
+def luFact(m: Mtx): [Factor]
+    ...                                                                          
                                                                                 
-def choleskyFact(Matrix m): [Factor] {
+def choleskyFact(m: Mtx): [Factor]
     ...
-}
                                                                                 
-def matrixInv(f: [Factor])
-        : Par [Matrix] {
+def mtxInv(f: [Factor]) : Par [Mtx]
     ...
-}
 
-def getDiagonal(Fut (Maybe [Matrix]))
-        : Par [Factor] {
+def getDiagonal(f: Fut<Maybe [Mtx]>)
+: Par [Factor]
     ...
-}
+
 \end{lstlisting}
-}               
+}
 %
 \colchunk{
-\begin{lstlisting}[style=encore, firstnumber=18,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]                                                                                                                                           
-class Main {
+\begin{lstlisting}[style=encore, firstnumber=13,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]
+class Main
 
-  def getMatrix(): Matrix {                                                    
-      ...                                                                      
-  }                                                                            
+  def getMtx(): Mtx
+    ...
 
-  def main(): [Factor] {
-    let mtx = this.getMatrix()                                            
+  def main(): [Factor]
+    let mtx = this.getMtx()                                            
         fLU = async luFact(mtx)
         fChlsk = async choleskyFact(mtx)
         par = (lift fLU) || (lift fChlsk)
-    in {
-        getDiagonal << 
-            (par >>= matrixInversion)
-    }
-  }
-}
+    in
+        getDiagonal <<  (par >>= mtvInv)
 \end{lstlisting}
 }
 \colplacechunks
@@ -1749,28 +1743,32 @@ but we have highlighted the most important ones.
  provides a uniform interface, via parallel combinators,
 to manipulate a collection of futures and values. Complex coordination workflows
 can be easily expressed, including but not limited
-to data-pipeline and speculative parallelism. Furthermore, the Encore framework can
-increase the level of asynchrony of an application, spawning more lightweight tasks,
-when it detects optimisation possibilities within the \parT{} abstraction.
+to data-pipeline and speculative parallelism.
+%Furthermore, the Encore framework can
+%increase the level of asynchrony of an application, spawning more lightweight tasks,
+%when it detects optimisation possibilities within the \parT{} abstraction.
 
 
 \paragraph{Degree of Synchronisation}
 
 Like in ABS and in ASP, in Encore, synchronisation results of message passing and 
-synchronisation on futures.  \ec{get} and  \ec{await} provide the same 
-synchronisation possibilities and the same control on futures as in ABS: blocking until 
-the future is resolved or releasing the current thread if the future is not resolved. One 
-more original asynchronous constructs in Encore is the future chaining operator 
-($\rightsquigarrow$).
+synchronisation on futures \KIKO{ehm?}. Synchronisation constructs
+\ec{get} and  \ec{await} provide the same control over futures as the ABS language: 
+the former blocks the active object until the future is resolved and
+the latter releases the current thread of execution if the future is not resolved, so that the same
+active object can continue processing other messages.
+%
+Furthermore, Encore provides the future chaining operator  ($\rightsquigarrow$).
  $\rightsquigarrow$ registers a callback
-(anonymous function, aka lambda) to the future, continue processing the rest of
-the message. The callback would be called with the future content as the
-argument when the future is resolved. This construct allows chaining operation on futures 
+(anonymous function, aka lambda) to the future and continues processing the rest of
+the message. The callback is executed when the future is resolved,
+using the result of the future as the argument the callback.
+This construct allows chaining operation on futures 
 without creating synchronisation, similar to the default behaviour of 
-futures in AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349}
+futures in AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349},
 except that it is more explicit and easier to control for the 
 programmer. It is also a way to mimic transparent first-class 
-futures of ASP except that the callback request is only created when the future is 
+futures of ASP, except that the callback request is only created when the future is 
 resolved.
 
 \paragraph{Degree of transparency}
