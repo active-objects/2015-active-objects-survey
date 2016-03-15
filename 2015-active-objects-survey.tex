@@ -273,7 +273,6 @@ communicate without transfer of control. Message delivery is
 guaranteed but messages may arrive out of order.  This loose coupling
 makes Actor languages conceptually attractive for distributed
 programming. 
-\LUDO{added Erlang:}
 Erlang~\cite{Erlang-book} is one of the most successful actor language, especially 
 because of its adoption by programmers in the industry, and because of its massively 
 parallel execution model supporting  a huge number of independent actors. 
@@ -302,12 +301,13 @@ preserved.
  % Based on the application 
 %domains, where necessary, Rebeca is extended to provide other means of communication or 
 %safe synchronization.
- \sout{In contrast to how Erlang and Rebeca process asynchronous messages on the callee side,
- in the Actor-based extension of Scala \cite{haller2009scala}, messages are
- interpreted by the callee using pattern-matching.}
- \KIKO{I have modified the sentence, although I believe that this last sentence is
- that important and introduces one aspect of Scala which is never mentioned it again.
- I am missing a bit the reason of the comparison}
+% \sout{In contrast to how Erlang and Rebeca process asynchronous messages on the callee 
+%side,
+%The Actor-based extension of Scala \cite{haller2009scala} introduces pattern matching on 
+%the callee side t interpret and filter messages.}
+% \KIKO{I have modified the sentence, although I believe that this last sentence is
+% that important and introduces one aspect of Scala which is never mentioned it again.
+% I am missing a bit the reason of the comparison}
  
 Rebeca is 
 designed to be simple and analyzable. Efficient compositional verification 
@@ -351,6 +351,8 @@ distributed and concurrent systems, they restrict the language to
 ensure that reduction is confluent and deterministic. ASP constitutes
 the theoretical foundation for the ProActive language
 \cite{CH-book}.
+Later, ownership type systems have been proposed to
+alleviate unnecessary copying of passive objects \cite{clarke08aplas}. 
 
 The Java multithreaded model of computation can be integrated with
 active objects. In the Abstract Behavioral Specification Language ABS
@@ -369,7 +371,7 @@ taken by the Encore \cite{ref:encore} programming language which,
 as ASP, makes a distinction between active and passive objects --
 passive objects are owned by active objects.
 %
-However, unlike ASP, futures have an explicit type and, in terms of sharing,
+However, unlike ASP, 
 passive objects are passed by reference and are data race free
 via a capability type system~\cite{encore:kappa}.
 %
@@ -382,8 +384,6 @@ via a capability type system~\cite{encore:kappa}.
 %is no sharing of passive objects between active objects (when
 %communicated passive objects are copied), no data races occur, in
 %contrast to the multithreaded control of the cogs in ABS. 
-Previous work on ownership type systems have been proposed to
-alleviate unnecessary copying of passive objects \cite{clarke08aplas}. 
 
 All these languages have drawn attention on different areas.
 %
