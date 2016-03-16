@@ -1487,8 +1487,7 @@ instead of interfaces, provides a trait system \`a la Scala.
 \paragraph{Language description}
 In Encore, active objects have their own thread of control and communicate with each 
 other by asynchronous message sends. Messages are appended to the receiver's message queue
-and processed one at a time in FIFO order. % This property linearises
-% the execution of the active object. Tobias: I removed this since it did not make sense
+and processed one at a time in FIFO order.
 Active objects act like ``plain old Java objects'', except that
 they have an asynchronous interface.
 Active objects encapsulate
@@ -1564,7 +1563,7 @@ class Main
 \end{parcolumns}
 \caption{\label{fig:encore:example}Example of a Buffer implementation that uses traits, active and passive objects in Encore.}
 \end{figure}
-
+%
 In this example, the \ec{Buffer} class is an active object with
 a private \ec{queue} of type \ec{Queue}, which is a passive class. \ec{Queue}
 implements the \ec{TQueue} trait (line 12). A trait can be
@@ -1583,8 +1582,8 @@ side.
 
 \paragraph{Cooperative Scheduling of Active Objects}
 
-Encore supports versions of the \ec{suspend}, \ec{get}, and
-\ec{await} statements similar to ABS. 
+Encore supports versions of the \ec{suspend} (\ec{suspend :: void -> void}),
+\ec{get} (\ec{get :: Fut t -> t}), and \ec{await} (\ec{await :: Fut t -> void}) statements similar to ABS. 
 %In contrast with ABS, Encore
 %supports using suspend and await anywhere in a program, as opposed
 %to ABS which only permits calling these operations inside active objects.
@@ -1598,16 +1597,16 @@ supports awaiting the fulfilment of a future, and not any boolean
 condition and differs from ProActive's \ec{await} (Section \ref{subsec:proactive-backend-abs}).
 Encore's support for future chaining however makes
 \ec{await} less useful as chaining allows triggering arbitrary operations on the fulfilment futures. 
-The type signatures of the operations
-are found below:
-
-\begin{center}
-\begin{tabular}{rcl}
-\ec{suspend} & \ec{::} & \ec{void -> void} \\
-\ec{    get} & \ec{::} & \ec{Fut t -> t} \\
-\ec{  await} & \ec{::} & \ec{Fut t -> void} 
-\end{tabular}
-\end{center}
+%The type signatures of the operations
+%are found below:
+%
+%\begin{center}
+%\begin{tabular}{rcl}
+%\ec{suspend} & \ec{::} & \ec{void -> void} \\
+%\ec{    get} & \ec{::} & \ec{Fut t -> t} \\
+%\ec{  await} & \ec{::} & \ec{Fut t -> void} 
+%\end{tabular}
+%\end{center}
 
 A pictorial overview of the semantics of \ec{suspend}, \ec{await}
 and \ec{get} is found in Figures~\ref{fig:enc-suspend} and
@@ -1620,9 +1619,9 @@ appended to the object's queue.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[scale=.4]{pictures/enc-basic}
+  \includegraphics[scale=.35]{pictures/enc-basic}
 \qquad
-  \includegraphics[scale=.4]{pictures/enc-resume}
+  \includegraphics[scale=.35]{pictures/enc-resume}
   \caption{(Left) An Encore scheduler, local to one core. A
     scheduler has a queue of active objects with non-empty message
     queues. (Right) The state after the execution of \ec{suspend} in the left 
@@ -1633,9 +1632,9 @@ appended to the object's queue.
 \begin{figure}[t]
   \centering
 %  \includegraphics[scale=.4]{pictures/enc-get-await-fulfilled}
-  \includegraphics[scale=.4]{pictures/enc-get-unfulfilled}
+  \includegraphics[scale=.30]{pictures/enc-get-unfulfilled}
 \qquad
-  \includegraphics[scale=.4]{pictures/enc-await-unfulfilled}
+  \includegraphics[scale=.30]{pictures/enc-await-unfulfilled}
   \caption{(Left) An Encore program executing a \ec{get} on an
     unfulfilled future. This causes the currently executing
     active object to be unscheduled, only to be rescheduled after
@@ -1683,48 +1682,48 @@ and values and it is controlled via parallel combinators.
 
 The \parT{} combinators are informally explained with the example from Fig.~\ref{fig:encore:factorisation},
 which computes the LU and Cholesky factorisation in parallel, inverting these matrixes asynchronously,
-getting the diagonal of the first asynchronous computation that finishes inverting the matrix
+getting the diagonal of the first asynchronous computation that finishes the inversion of the matrix
 and terminating the remaining computations.
 %
-The LU and Cholesky factorisation are performed in parallel, spawning tasks (lines 20 and 21),
-lifting and grouping the futures into a \parT{} abstraction (line 22) via the \emph{lift} (lift :: Fut t $\to$ Par t)
+The LU and Cholesky factorisation are performed in parallel, spawning tasks (lines 6 and 7),
+lifting and grouping the futures into a \parT{} abstraction (line 8) via the \emph{lift} (lift :: Fut t $\to$ Par t)
 and $\|$ combinators ($\| :: Par \;t \to Par \;t \to Par \;t$) which lift the future to a \parT{} and
 merges two \parT{}s into a new \parT{} collection, respectively.
 %
 The inversion of the matrix is performed asynchronously, using the \bind{} combinator
-($\bind \ :: Par \ t \to (t \to Par\ t') \to Par\ t'$), which receives a function (second argument)
+($\bind \ :: Par \ t \to (t \to Par\ t') \to Par\ t'$), line 10, which receives a function (second argument)
 that is applied asynchronously to the items in the \parT{} collection --- creating pipeline parallelism. 
 %
-With the \prune{} combinator ($\prune \ :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$),
+With the \prune{} combinator ($\prune \ :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$), line 10,
 the \verb|getDiagonal| function is applied to the first computation that returns the inverted matrix,
 stopping the remaining computations --- safely stops speculative work.
 
 \begin{figure}[t]
-\begin{parcolumns}[colwidths={1=2.8in,2=3.1in}, distance=0em]{2}
-\colchunk{
-\begin{lstlisting}[style=encore, firstnumber=1,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]                                                           
-def luFact(m: Mtx): [Factor]
-    ...                                                                          
-                                                                                
-def choleskyFact(m: Mtx): [Factor]
-    ...
-                                                                                
-def mtxInv(f: [Factor]) : Par [Mtx]
-    ...
-
-def getDiagonal(f: Fut<Maybe [Mtx]>)
-: Par [Factor]
-    ...
-
-\end{lstlisting}
-}
+\centering
+%\begin{parcolumns}{1}
+%\begin{parcolumns}[colwidths={1=2.8in,2=3.1in}, distance=0em]{2}
+%\colchunk{
+%\begin{lstlisting}[style=encore, firstnumber=1,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]                                                           
+%def luFact(m: Mtx): [Factor]
+%    ...                                                                          
+%                                                                                
+%def choleskyFact(m: Mtx): [Factor]
+%    ...
+%                                                                                
+%def mtxInv(f: [Factor]) : Par [Mtx]
+%    ...
 %
-\colchunk{
-\begin{lstlisting}[style=encore, firstnumber=13,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]
+%def getDiagonal(f: Fut<Maybe [Mtx]>)
+%: Par [Factor]
+%    ...
+%
+%\end{lstlisting}
+%}
+%
+%\colchunk{
+\begin{lstlisting}[style=encore,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]
 class Main
-
-  def getMtx(): Mtx
-    ...
+  ...
 
   def main(): [Factor]
     let mtx = this.getMtx()                                            
@@ -1734,9 +1733,9 @@ class Main
     in
         getDiagonal <<  (par >>= mtvInv)
 \end{lstlisting}
-}
-\colplacechunks
-\end{parcolumns}
+%}
+%\colplacechunks
+%\end{parcolumns}
 \caption{\label{fig:encore:factorisation}Data-pipeline and speculative parallelism for matrix factorisation in Encore. }
 \end{figure}
 
@@ -1765,8 +1764,9 @@ but we have highlighted the most important ones.
 
 \paragraph{Degree of Synchronisation}
 
-Like in ABS and in ASP, in Encore, synchronisation results of message passing and 
-synchronisation on futures \KIKO{ehm?}. Synchronisation constructs
+%Like in ABS and in ASP, in Encore, synchronisation results of message passing and 
+%synchronisation on futures \KIKO{ehm?}. 
+In Encore, the synchronisation constructs
 \ec{get} and  \ec{await} provide the same control over futures as the ABS language: 
 the former blocks the active object until the future is resolved and
 the latter releases the current thread of execution if the future is not resolved, so that the same
@@ -1852,7 +1852,7 @@ active object topologies.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[scale=.30]{pictures/capabilities}
+  \includegraphics[scale=.25]{pictures/capabilities}
   \caption{Encore capability hierarchy.}
   \label{fig:capa-tree}
 \end{figure}
@@ -1876,7 +1876,6 @@ The currently supported tools are:
 \item Emacs and Atom editors with syntax highlighting and compiler error support
 \item Support for GDB / LLDB interactive debugger
 \item Vagrant support for rapid installation of Encore in a virtual machine
-\item Online sandbox of the language, that compiles and runs the program 
 \end{itemize}
 
 \section{Implementation of active objects}
