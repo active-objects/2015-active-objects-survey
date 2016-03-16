@@ -1492,7 +1492,7 @@ Active objects act like ``plain old Java objects'', except that
 they have an asynchronous interface.
 Active objects encapsulate
 passive objects, and operations on passive objects are synchronous. 
-
+%
 Each active object owns a local heap on which it can
 allocate passive objects. Ownership in this context means that the
 actor is responsible for keeping track on foreign dependencies on
@@ -1502,11 +1502,13 @@ but are susceptible to data-races.
 %The passive objects on a local heap may be shared with
 %other active objects, or transferred, but are susceptible to data-races.
 
-Encore is \emph{parallel by default}, as active objects provide coarse-grain parallelism,
-i.e., an active object cannot work on multiple method calls at the same time.
+Encore is \emph{parallel by default}, active objects provide coarse-grain parallelism although,
+an active object cannot work on multiple method calls at the same time;
 %
-To create fine-grain parallel computations Encore supports the creation of tasks.
-A task (\ec{async \{ e \}}) contains a body \verb|e| that is asynchronously executed
+Fine-grained parallel computations can be created via the notion of tasks
+%to create fine-grain parallel computations Encore supports the creation of tasks.
+%A task (\ec{async \{ e \}}) contains a body \verb|e| that is asynchronously executed
+(\ec{async \{ e \}}), which contain a body \verb|e| that is asynchronously executed
 and, whose return value is immediately a future. Tasks are more lightweight
 that actors (memory-wise) and increase the level of asynchrony on the system.
 
@@ -1736,7 +1738,11 @@ class Main
 %}
 %\colplacechunks
 %\end{parcolumns}
-\caption{\label{fig:encore:factorisation}Data-pipeline and speculative parallelism for matrix factorisation in Encore. }
+\caption{\label{fig:encore:factorisation}Data-pipeline and speculative parallelism in matrix factorisation.
+The types of the functions are $\mathit{getMtx :: Mxt}$, $\mathit{luFact :: Mtx \to [Factor]}$, 
+$\mathit{choleskyFact :: Mtx \to [Factor]}$, 
+$\mathit{mtxInv :: [Factor] \to Par [Mtx]}$ and
+$\mathit{getDiagonal :: Fut<Maybe [Mtx]> \to Par [Factor]>}$.}
 \end{figure}
 
 The \parT{} collection and its combinators have been designed to perform
