@@ -1517,75 +1517,11 @@ Fine-grained parallel computations can be created via the notion of tasks
 and, whose return value is immediately a future. Tasks are more lightweight
 that actors (memory-wise) and increase the level of asynchrony on the system.
 
-Method calls on active objects and spawning of tasks immediately return a future value
-that, unlike ProActive, has the explicit type \ec{Fut t}, for
-some \ec{t}. Futures support future chaining,
-and both \ec{get} and \ec{await} operations similar to ABS.
-%
-These operations are explained in detail later (in \emph{Cooperate Scheduling of Active Objects}).
-
-The example below (Fig.~\ref{fig:encore:example}) shows a buffer implementation
-using features of the Encore language.
-%
-\begin{figure}[t]
-\begin{parcolumns}{2}
-\colchunk{
-\begin{lstlisting}[style=encore, firstnumber=1, lastline=14,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible, showlines=true]                                                           
-trait TQueue {
-  requires top
-  
-  def enqueue(x: int): void
-    this.top = new Data(x, this.top)
-}
-
-passive class Data { 
-  ... 
-}    
-
-passive class Queue : TQueue {
-  top: Link
-}  
-\end{lstlisting}
-}
-%
-\colchunk{
-\begin{lstlisting}[style=encore, firstnumber=14,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]                                                           
-class Buffer
-   queue: Queue
-   
-  def init(): void
-    this.queue = new Queue()
-    
-  def put(item: Data): void
-    this.queue.enqueue(item)
-
-class Main
-  def main(): void
-    let buffer = new Buffer()
-        data = new Data(21)
-     in buffer ! put(data)
-\end{lstlisting}
-}
-\colplacechunks
-\end{parcolumns}
-\caption{\label{fig:encore:example}Example of a Buffer implementation that uses traits, active and passive objects in Encore.}
-\end{figure}
-%
-In this example, the \ec{Buffer} class is an active object with
-a private \ec{queue} of type \ec{Queue}, which is a passive class. \ec{Queue}
-implements the \ec{TQueue} trait (line 12). A trait can be
-thought of as a Java interface with defined methods and may require some attributes to be present
-in implementing classes. For instance, \ec{TQueue}
-requires the existence of an attribute \ec{top} and provides the implementation
-of the \ec{enqueue} method (lines 1 -- 6). Any passive object of type \ec{Queue} has an implementation
-of methods defined in the traits it extends, in this case, the \ec{enqueue} method. The \ec{Main}
-class is the entry point of the program and creates an active object (\ec{buffer}, line 25) and
-some data (line 26); the method call (line 27) \ec{buffer ! put(data)} is a
-uni-directional message send, i.e., it does not
-return a future. If it was rewritten as \ec{buffer.put(data)}, it would return a \ec{Fut void}
-value, which would allow the called to detect when the put message is finished processing on the receiver
-side. 
-
+Method calls on active objects and spawning of tasks immediately return a future
+value that, unlike ProActive, has the explicit type \ec{Fut t}, for some \ec{t}.
+Futures support future chaining, and both \ec{get} and \ec{await} operations
+similar to ABS. These operations are explained in details in the following
+section \emph{Cooperate Scheduling of Active Objects}.
 
 \paragraph{Cooperative Scheduling of Active Objects}
 
