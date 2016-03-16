@@ -1496,32 +1496,28 @@ and processed one at a time in FIFO order.
 Active objects act like ``plain old Java objects'', except that
 they have an asynchronous interface.
 Active objects encapsulate
-passive objects, and operations on passive objects are synchronous. 
+passive objects, and operations on passive objects are synchronous.
 %
-Each active object owns a local heap on which it can
-allocate passive objects. Ownership in this context means that the
-actor is responsible for keeping track on foreign dependencies on
-passive objects on its local heap, and eventually deallocate them. 
-Passive objects may be shared with other active objects, or transferred,
-but are susceptible to data-races.
-%The passive objects on a local heap may be shared with
-%other active objects, or transferred, but are susceptible to data-races.
+Each active object owns a local heap on which it can allocate passive objects.
+Ownership in this context means that the actor is responsible for keeping track
+of foreign dependencies on passive objects on its local heap, and eventually
+deallocate them. Passive objects may be shared with other active objects, and
+concurrent read/write access to them is supported given the aforementioned
+capability system is used.
 
-Encore is \emph{parallel by default}, active objects provide coarse-grain parallelism although,
-an active object cannot work on multiple method calls at the same time;
-%
-Fine-grained parallel computations can be created via the notion of tasks
-%to create fine-grain parallel computations Encore supports the creation of tasks.
-%A task (\ec{async \{ e \}}) contains a body \verb|e| that is asynchronously executed
-(\ec{async \{ e \}}), which contain a body \verb|e| that is asynchronously executed
-and, whose return value is immediately a future. Tasks are more lightweight
-that actors (memory-wise) and increase the level of asynchrony on the system.
+Encore is \emph{parallel by default}. On coarse-grain parallelism, different
+active objects could run concurrently, while within the same active object, the
+execution is sequential. Fine-grained parallel computations can be created via
+the notion of tasks (\ec{async \{ e \}}), which contains a body \verb|e| that is
+asynchronously executed and, returns a future type value immediately. Tasks are
+more lightweight than actors (memory-wise) and could increase the level of
+asynchrony on the system.
 
-Method calls on active objects and spawning of tasks immediately return a future
-value that, unlike ProActive, has the explicit type \ec{Fut t}, for some \ec{t}.
-Futures support future chaining, and both \ec{get} and \ec{await} operations
-similar to ABS. These operations are explained in details in the following
-section \emph{Cooperate Scheduling of Active Objects}.
+Values resulted from method calls on active objects and spawning of tasks,
+unlike ProActive, have the explicit future type \ec{Fut t}. Futures support
+future chaining, and \ec{get} and \ec{await} operations similar to ABS. These
+operations are explained in details in the following section \emph{Cooperate
+Scheduling of Active Objects}.
 
 \paragraph{Cooperative Scheduling of Active Objects}
 
