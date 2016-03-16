@@ -854,7 +854,7 @@ these toolsets and libraries are integrated in Afra, the modeling and model chec
 of Rebeca family models. 
 Rebeca has been taught in different courses at different universities, including 
 Reykjavik University, Sharif University, University of Tehran, and University of Illinois 
-at Urbana-Campaign. Afra is an \textsc{Eclipse} plug-in that is used by students of these 
+at Urbana-Campaign. Afra is an Eclipse plug-in that is used by students of these 
 classes, and provides the following facilities: \LUDO{do we really want to all list the 
 universities where each language is taught???}
 %, Afra is an integrated tool which has been used in teaching classes different universities (Tehran, sharif, RU, UIUC)visualize and step through the counter example - queue overflow - . 
@@ -900,15 +900,13 @@ family refer to Table~\ref{tab::Rebecacomparison}.
 \lstset{ morekeywords={module,export,import, from, interface, class,
     implements, await, get, new, local,release, suspend} }
 
-\paragraph{General presentation and objective of the language} ABS (\emph{A}bstract
-\emph{B}ehavioral \emph{S}pecification) \cite{JHSSS10} \VLAD{TODO: The first time ABS is mentioned I think it should be first the full title followed by acronym in paranthesis} is an
-object-oriented, concurrent modeling language developed since 2009 in
-a series of EC-funded research
+\paragraph{General presentation and objective of the language}
+The \emph{A}bstract \emph{B}ehavioral \emph{S}pecification language
+(ABS) \cite{JHSSS10} is an object-oriented, concurrent modeling
+language developed since 2009 in a series of EC-funded research
 projects.\footnote{\url{www.hats-project.eu},
-  \url{www.envisage-project.eu}} Its ancestors include \textsc{Creol}
-\cite{Elinar2006} and \textsc{JCoBox} \cite{SchaeferP10b}. 
-\KIKO{General comment: the other parts of the paper are not using textsc when
-naming languages. We should be consistent with this.}
+  \url{www.envisage-project.eu}} Its ancestors include Creol
+\cite{Elinar2006} and JCoBox \cite{SchaeferP10b}.
 
 In contrast to design-oriented or architectural languages, ABS code is
 fully executable. There is a simulator as well as several code
@@ -984,27 +982,34 @@ displayed. Based on parametric (first-order) abstract data types, a
 simple, pure, first-order functional language with pattern matching
 and strict evaluation is defined. On top of that are objects and a
 standard imperative layer. So far, this is very much like
-\textsc{Scala}-light.
+Scala-light.
 
 The central issue for achieving automated, scalable analysis is the
 design of the concurrency model. Formal analysis of multi-threaded
-languages with interleaving semantics, for example, \textsc{Java} \KIKO{Why uppercase?},
-while principally possible \cite{BlomHuisman14}, is highly complex and
-seems to be out of scope at the moment for relaxed memory consistency
+languages with interleaving semantics, for example, Java, while
+principally possible \cite{BlomHuisman14}, is highly complex and seems
+to be out of scope at the moment for relaxed memory consistency
 models. To achieve feasibility, the concurrency model of ABS carefully
-restricts the possible interactions among concurrent tasks while still
-allowing to describe complex, realistic behavior of asynchronous
-systems. \KIKO{Tasks are mentioned but have not been defined 
-At this point, the reader may understand tasks as C\# tasks. This is explained with
-the example afterwards. I believe it may make sense to explain this and the COG
-concept before.} 
+restricts the possible interactions between concurrent tasks, which stem
+from method activations, while still allowing to describe complex,
+realistic behavior of asynchronous systems.
+% \KIKO{Tasks are mentioned but have not been defined At this point,
+% the reader may understand tasks as C\# tasks. This is explained with
+% the example afterwards. I believe it may make sense to explain this
+% and the COG concept before.}
 %
 More precisely, the ABS concurrency model is based on cooperative
 scheduling. This means that no task is preempted (interrupted) unless
 its modeler explicitly allows to do that. There are two expressions in
-ABS that explicitly release control: \lstinline{release} and
+ABS that explicitly release control:
+\lstinline{release} and
 \lstinline{await}. The former is unconditional while the latter has a
-Boolean argument and can be used to synchronize with another task. \VLAD{I think it is important here to mention that task results are captured in futures and used for synchronization to better understand synchronization between tasks}
+Boolean argument and can be used to synchronize with another task. In
+particular, synchronization can depend on the resolution of futures; i.e.,
+on the presence of return values from asynchronous method calls.
+% \VLAD{I think it is important here to mention that task results are
+% captured in futures and used for synchronization to better
+% understand synchronization between tasks}
 
 \begin{figure}
   \centering
@@ -1188,7 +1193,7 @@ method calls (getter/setter methods).
 ABS has a fully formal, small step operational semantics
 \cite{hats-d1.2} that permits formal soundness theorems for the
 various analyses that are available for ABS. This semantics is
-directly expressed in terms of rewrite rules in \textsc{Maude} format
+directly expressed in terms of rewrite rules in Maude format
 \cite{ClavelDELMMT07} which yields a sound interpreter for ABS.
 
 In addition there is an axiomatic semantics in the form of a program
@@ -1209,7 +1214,7 @@ a wide range of tools available. Most of them support the full ABS
 language and are fully automatic. An overview of several of the tools
 is available as \cite{BFH14,WongAMPSS12}.
 
-There is an \textsc{Eclipse} plug-in that provides a development
+There is an Eclipse plug-in that provides a development
 environment for ABS and integrates most tools, see
 \url{http://tools.hats-project.eu/eclipseplugin/installation.html}. An
 alternative is the web-based ABS collaboratory at
