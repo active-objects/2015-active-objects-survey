@@ -2011,7 +2011,7 @@ To study the improvement given by Java 8 features, we benchmark a simple example
 	\caption{Perfomance figures of the Two Java Backends for Cooperative Scheduling}
 \end{figure}
 
-When performing the runs for the old Java Backend, a series of 10000 messages to the same object requires the immediate creation of a corresponding number of threads, which results in the program running out of memory, thus making the HPC and Big Data applications that want to benefit from ABS cooperative scheduling feature, unusable. While the Java 8 backend clearly performs better by minimizing the number of live threads at runtime, the challenge to handle cooperative schduling of a large number of messages that are suspended and \textbf{not} released remains an open research question.
+When performing the runs for the old Java Backend, a series of 10000 messages to the same object requires the immediate creation of a corresponding number of threads, which results in the program running out of memory, thus making the HPC and Big Data applications that want to benefit from ABS cooperative scheduling feature, unusable. While the Java 8 backend clea rly performs better by minimizing the number of live threads at runtime, the challenge to handle cooperative schduling of a large number of messages that are suspended and \textbf{not} released remains an open research question.
 
 
 \subsection{ProActive}\label{sec:implem-proactive}
