@@ -895,7 +895,7 @@ codes   \cite{DBLP:journals/scp/ReynissonSACJIS14}
 
 For the summary of the mentioned aspects and comparing the features the members of Rebeca 
 family refer to Table~\ref{tab::Rebecacomparison}.
-\subsubsection{ABS}
+\subsubsection{ABS}\label{sec:abs-lang}
 
 \lstset{ morekeywords={module,export,import, from, interface, class,
     implements, await, get, new, local,release, suspend} }
@@ -1521,40 +1521,31 @@ Scheduling of Active Objects}.
 
 \paragraph{Cooperative Scheduling of Active Objects}
 
-Encore supports versions of the \ec{suspend} (\ec{suspend :: void -> void}),
-\ec{get} (\ec{get :: Fut t -> t}), and \ec{await} (\ec{await :: Fut t -> void}) statements similar to ABS. 
+Similar to ABS, Encore supports three operators for cross-message flow control,
+namely \ec{suspend} (\ec{suspend :: void -> void}), \ec{get} (\ec{get :: Fut t
+-> t}), and \ec{await} (\ec{await :: Fut t -> void}).
+%
 %In contrast with ABS, Encore
 %supports using suspend and await anywhere in a program, as opposed
 %to ABS which only permits calling these operations inside active objects.
-%\LUDO{I am still not sure what is meant here: in abs all objects are kind of  active 
+%\LUDO{I am still not sure what is meant here: in abs all objects are kind of  active
 %no?}.
 %This is due to underlying  technical reasons
 %described in the implementation sections of Encore and ABS
-%\TW{Make it so! :) Encore threads yadayada.}. 
-Encore's \ec{await} statement is somewhat limited in relation to ABS's as it only
-supports awaiting the fulfilment of a future, and not any boolean
-condition and differs from ProActive's \ec{await} (Section \ref{subsec:proactive-backend-abs}).
-Encore's support for future chaining however makes
-\ec{await} less useful as chaining allows triggering arbitrary operations on the fulfilment futures. 
-%The type signatures of the operations
-%are found below:
+%\TW{Make it so! :) Encore threads yadayada.}.
 %
-%\begin{center}
-%\begin{tabular}{rcl}
-%\ec{suspend} & \ec{::} & \ec{void -> void} \\
-%\ec{    get} & \ec{::} & \ec{Fut t -> t} \\
-%\ec{  await} & \ec{::} & \ec{Fut t -> void} 
-%\end{tabular}
-%\end{center}
+Encore's \ec{await} statement is somewhat limited as it only supports awaiting
+the fulfillment of a future not any boolean condition like ABS does (Section
+\ref{sec:abs-lang}). Encore's support for future chaining however makes
+\ec{await} less useful as chaining allows triggering arbitrary operations on the
+fulfillment futures.
 
-A pictorial overview of the semantics of \ec{suspend}, \ec{await}
-and \ec{get} is found in Figures~\ref{fig:enc-suspend} and
-\ref{fig:enc-get-await}. It shows how the operations may involve
-\emph{descheduling} an object (removed from round-robin scheduler
-queue), \emph{blocking} (no processing of other messages in the
-object's queue), and whether a resuming message is prepended or
-appended to the object's queue.
-
+A pictorial overview of the semantics of \ec{suspend}, \ec{await} and \ec{get}
+could be found in Figures~\ref{fig:enc-suspend} and \ref{fig:enc-get-await}. It
+shows how these operations may involve \emph{descheduling} (removed from
+round-robin scheduler queue) and \emph{blocking} (no processing of other
+messages in the active object's queue) of an active object, and whether a
+resuming message is prepended or appended to the active object's message queue.
 
 \begin{figure}[t]
   \centering
