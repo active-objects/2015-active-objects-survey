@@ -1698,26 +1698,24 @@ but we have highlighted the most important ones.
 
 \paragraph{Degree of Synchronisation}
 
-%Like in ABS and in ASP, in Encore, synchronisation results of message passing and 
-%synchronisation on futures \KIKO{ehm?}. 
-In Encore, the synchronisation constructs
-\ec{get} and  \ec{await} provide the same control over futures as the ABS language: 
-the former blocks the active object until the future is resolved and
-the latter releases the current thread of execution if the future is not resolved, so that the same
-active object can continue processing other messages.
+%Like in ABS and in ASP, in Encore, synchronisation results of message passing and
+%synchronisation on futures \KIKO{ehm?}.
+In Encore, the synchronisation constructs \ec{get} and \ec{await} provide the
+same control over futures as the ABS language: the former blocks the active
+object until the future is resolved and the latter releases the current thread
+of execution if the future is not resolved, so that the same active object can
+continue processing other messages.
 %
-Furthermore, Encore provides the future chaining operator  ($\rightsquigarrow$).
- $\rightsquigarrow$ registers a callback
-(anonymous function, aka lambda) to the future and continues processing the rest of
-the message. The callback is executed when the future is resolved,
-using the result of the future as the argument the callback.
-This construct allows chaining operation on futures 
-without creating synchronisation, similar to the default behaviour of 
-futures in AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349},
-except that it is more explicit and easier to control for the 
-programmer. It is also a way to mimic transparent first-class 
-futures of ASP, except that the callback request is only created when the future is 
-resolved.
+Furthermore, Encore provides the future chaining operator ($\rightsquigarrow$),
+which registers a callback (anonymous function, aka lambda) to the future and
+continues processing the rest of the message. The callback is executed when the
+future is resolved, using the result of the future as the argument to the
+callback. This construct allows chaining operation on futures without creating
+synchronisation, similar to the default behaviour of futures in
+AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349}, except that it is more
+explicit and easier to control for the programmer. It is also a way to mimic
+transparent first-class futures of ASP, except that the callback request is only
+created when the future is resolved.
 
 \paragraph{Degree of transparency}
 
