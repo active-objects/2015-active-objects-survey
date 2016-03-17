@@ -932,50 +932,80 @@ There are extensions of ABS to model product variability
 the present article.
 
 \begin{figure}
+\centering
+\begin{minipage}{.56\textwidth}
   \centering
 \begin{tikzpicture}[scale=1]\small
 \node[rectangle, 
           ,shading=axis,shading angle=180,top color=white,bottom color=black!25, line width=2pt,
-          minimum width=9cm, minimum height=.6cm, draw] (ass) at (0,4.5) 
+          minimum width=7.4cm, minimum height=.6cm, draw] (ass) at (0,4.5) 
           {History-Based Behavioral Interface Specification};
 
 \node[rectangle, 
           ,shading=axis,shading angle=180,top color=white,bottom color=brown!20, line width=2pt,
-          minimum width=9cm, minimum height=0.6cm, draw] (mod)
+          minimum width=7.4cm, minimum height=0.6cm, draw] (mod)
           at (0,3.9) {Syntactic Modules}; 
 
 \node[rectangle, 
           ,shading=axis,shading angle=180,top color=white,bottom color=blue!40, line width=2pt,
-          minimum width=9cm, minimum height=0.6cm, draw] (async)
+          minimum width=7.4cm, minimum height=0.6cm, draw] (async)
           at (0,3.3) {Asynchronous Actor-Based Communication}; 
 
 \node[rectangle, 
           shading=axis,shading angle=180,top color=white,bottom color=blue!20, line width=2pt,
-          minimum width=9cm, minimum height=0.6cm, draw] (cog)
+          minimum width=7.4cm, minimum height=0.6cm, draw] (cog)
           at (0,2.7) {Concurrent Object Groups (COGs)}; 
 
 \node[rectangle,
           shading=axis,shading angle=180,top color=white,bottom color=green!40, line width=2pt,
-          minimum width=9cm, minimum height=0.6cm, draw] (imp) at
+          minimum width=7.4cm, minimum height=0.6cm, draw] (imp) at
           (0,2.1){Imperative Language};
 
 \node[rectangle,
           shading=axis,shading angle=180,top color=white,bottom color=green!20, line width=2pt,
-          minimum width=9cm, minimum height=0.6cm, draw] (object) at
+          minimum width=7.4cm, minimum height=0.6cm, draw] (object) at
           (0,1.5){Object Model};
 \node[rectangle, 
           shading=axis,shading angle=180,top color=white,bottom color=yellow!60, line width=2pt,
-          minimum width=9cm, 
+          minimum width=7.4cm, 
           minimum height=.6cm, draw] (exp) at (0,0.9) {Pure
             Functional Programs};
 
 \node[rectangle
           ,shading=axis,shading angle=180,top color=white,bottom color=yellow!40, line width=2pt,
-          minimum width=9cm, minimum height=0.6cm, draw] (adt) at
+          minimum width=7.4cm, minimum height=0.6cm, draw] (adt) at
           (0,0.3){Algebraic (Parametric) Data Types};
 \end{tikzpicture}
 \caption{Syntax layers of the ABS language}
 \label{fig:layer}
+\end{minipage}
+\begin{minipage}{.43\textwidth}
+  \centering
+  \begin{lstlisting}[numbers=left,xleftmargin=4ex,escapechar=\%]
+module Services;
+import Data, init, modify 
+		from CustomerData;
+
+interface Serv {
+  Unit process(Fut<Data> fd);
+}
+class Service implements Serv {
+  Unit process(Fut<Data> fd) {
+    await fd?; %\label{abs:process:awaitd}%
+    Data rd = fd.get;
+    rd.modify(); %\label{abs:process:sync}%
+  }
+}
+{ // main block
+Serv s = new local Service(); %\label{abs:main:begin}%
+Data d = new local Data(); 
+Fut<Data> fd = d!init(); %\label{abs:main:init}%
+s!process(fd); %\label{abs:main:end}%
+}
+\end{lstlisting}  
+  \caption{A simple ABS model}
+  \label{fig:abs-simple}
+\end{minipage}
 \end{figure}
 
 \paragraph{Language description} 
@@ -1006,33 +1036,34 @@ ABS that explicitly release control: \lstinline{release} and
 \lstinline{await}. The former is unconditional while the latter has a
 Boolean argument and can be used to synchronize with another task. \VLAD{I think it is important here to mention that task results are captured in futures and used for synchronization to better understand synchronization between tasks}
 
-\begin{figure}
-  \centering
-\begin{lstlisting}[numbers=left,xleftmargin=4ex,escapechar=\%]
-module Services;
-import Data, init, modify from CustomerData;
-
-interface Server {
-  Unit process(Fut<Data> fd);
-}
-
-class Service implements Server {
-  Unit process(Fut<Data> fd) {
-    await fd?; %\label{abs:process:awaitd}%
-    Data rd = fd.get;
-    rd.modify(); %\label{abs:process:sync}%
-  }
-}
-{ // main block
-Server s = new local Service(); %\label{abs:main:begin}%
-Data d = new local Data(); 
-Fut<Data> fd = d!init(); %\label{abs:main:init}%
-s!process(fd); %\label{abs:main:end}%
-}
-\end{lstlisting}  
-  \caption{A simple ABS model}
-  \label{fig:abs-simple}
-\end{figure}
+%\begin{figure}
+%  \centering
+%\begin{lstlisting}[numbers=left,xleftmargin=4ex,escapechar=\%]
+%module Services;
+%import Data, init, modify 
+%		from CustomerData;
+%
+%interface Server {
+%  Unit process(Fut<Data> fd);
+%}
+%
+%class Service implements Server {
+%  Unit process(Fut<Data> fd) {
+%    await fd?; %\label{abs:process:awaitd}%
+%    Data rd = fd.get;
+%    rd.modify(); %\label{abs:process:sync}%
+%  }
+%}
+%{ // main block
+%Server s = new local Service(); %\label{abs:main:begin}%
+%Data d = new local Data(); 
+%Fut<Data> fd = d!init(); %\label{abs:main:init}%
+%s!process(fd); %\label{abs:main:end}%
+%}
+%\end{lstlisting}  
+%  \caption{A simple ABS model}
+%  \label{fig:abs-simple}
+%\end{figure}
 
 %% Besser producer/consumer?
 
