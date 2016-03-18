@@ -1965,13 +1965,20 @@ The first direction is still in progress, as we have a fundamental technical lim
 \end{enumerate}  
 
 \begin{figure}
-	\label{abs8:coop}
-	\centering
-	\includegraphics[scale=0.5]{./Sched.png}
+\centering
+\begin{minipage}{.49\textwidth}
+  \centering
+	\includegraphics[scale=0.4]{pictures/abs8sched.png}
 	\caption{Cooperative Scheduling Solution}
-	\label{cd}
+	\label{abs8:coop}
+\end{minipage}
+\begin{minipage}{.49\textwidth}
+  \centering
+   	\includegraphics[scale=0.55]{./pictures/absj8ex.png}
+	\caption{Old vs Java 8 Backend for ABS \TODO{Cut figure in the width}}
+	\label{abs8:cd}
+\end{minipage}
 \end{figure}
-
 
 The only challenge now is when an execution of multiple synchronous calls is preempted. This results in a call stack and context that need to be saved within a thread. To do this the executing thread from the pool is suspended and will compete again, upon release, with the other available tasks in the COG for selection by the Sweeper Thread to be made available to the thread pool. However the Sweeper Thread gives priority to live threads ready for execution against new messages that have not yet become threads.
 
@@ -1980,13 +1987,6 @@ In the Java 8 backend for ABS, objects are organized into COGs, each running on 
 
 \paragraph{Active Object Scheduling Example}
 To study the improvement given by Java 8 features, we benchmark a simple example that is illustrated in Figure \TODO{Figure} . In the example we have one COG \TODO{Justine: draw the COG} that contains an object which receives a large number of messages which are stored in its queue. This message recursively calls a function that creates a large stack frame after which a message is sent to a different COG \TODO{Justine: draw the COG + the message} to run in parallel a CPU intensive trigonometric function. The object is then suspended to await the result of this function, resulting in a large stack frame that needs to be saved in order to allow the next message from the queue to run on the COG.  We vary the number of recursive calls, the total number of messages in the object's queue and the complexity of the function, in order to observe a comparison with the old Java backend. The results are presented in Figure \ref{abs8:cd} The performance figures presented are for one object that is running between 10 and 10000 method invocations, each with a varying stack frame (between 1 and 1000 recursive calls) and awaits the completion of a trigonometric function that reiterates a random number (1-1000) of times before completing.  
-
-\begin{figure}
-	\label{abs8:cd}
-	\centering
-	\includegraphics[scale=0.6]{./pictures/absj8ex.png}
-	\caption{Perfomance figures of the Two Java Backends for Cooperative Scheduling}
-\end{figure}
 
 When performing the runs for the old Java Backend, a series of 10000 messages to the same object requires the immediate creation of a corresponding number of threads, which results in the program running out of memory, thus making the HPC and Big Data applications that want to benefit from ABS cooperative scheduling feature, unusable. While the Java 8 backend clea rly performs better by minimizing the number of live threads at runtime, the challenge to handle cooperative schduling of a large number of messages that are suspended and \textbf{not} released remains an open research question.
 
