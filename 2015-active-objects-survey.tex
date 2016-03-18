@@ -2503,6 +2503,27 @@ In this paper, we have showed many implementations of active object languages, a
 Throughout the description of implementations for the presented languages, we could perceive the good point for each of them. Typically, ProActive, the Java 8 backend for ABS, the ProActive backend for ABS, and Encore are the languages and implementations that target efficiency of the program execution. However, each of them address efficiency with a different approach. ProActive programs clearly target HPC applications: setting the program environment is heavy but the distributed execution is efficient on the whole; in particular, a few active objects coexist in the application. The Java 8 backend for ABS provides light threads and enables instantiation of many active objects on the same machine. It also allows active objects to achieve faster communications than in ProActive. At a finer grain, Encore provides optimized constructs with an efficiency of the program at a low-level. On a completely different aspect, Rebeca and ABS by itself have a wide range of verification tools and are not much concerned by the program execution but rather by the program properties. It does not mean that bridging the gap between those two categories of languages is useless, on the contrary it allows program verification and program efficiency to be reconciled and to benefit to a large range of programmers.
 }
 
+\KIKO{With the advent of manycore computers, the active object paradigm has been reborned as
+one of the best candidates to express safe asynchronous parallel and distributed computations.
+In this paper, we have covered the flourishment of the active object paradigm in its last 15 years,
+and each of the reviewed languages have been specialised to fulfil a specific goal. In this context,
+languages such as Rebeca and ABS started with a strong focus on model checking and verification,
+and have been moving into a fairly efficient runnable implementation. On the other hand, 
+ProActive and Encore have been focus on an efficient implementation in the distributed
+and manycore computers, respectively. 
+%
+These four languages share the same ideas, the active object paradigm,
+but have addressed different challenges motivated on their design decisions.
+In the implementation section,
+it has been shown how the semantics of each language have influenced its
+implementation, how different design decisions created new challenges and
+how these have been addressed and its limitations.
+%
+This paper has shown different flavours of the active object paradigm and has,
+as one of its goals, been written to serve as reference for language designers and
+implementors.
+}
+
 %\input{survey-parts/introduction.tex}
 %\input{survey-parts/example.tex}
 %\input{survey-parts/conclusion.tex}
