@@ -1518,11 +1518,11 @@ computations and low-level data parallelism} via parallel combinators.
 %\TW{Make sure to revisit all of these pillars properly in the text. (And that it is easy to find them.)}
 On top of these key ingredients, Encore stays loyal to the object-oriented paradigm
 where active objects and futures can be seen as normal Java objects and,
-instead of interfaces, provides a trait system \`a la Scala.
+instead of interfaces, has a trait system \`a la Scala.
 
 \paragraph{Language description}
-In Encore, active objects have their own thread of control and communicate with each 
-other by asynchronous message sends. Messages are appended to the receiver's message queue
+In Encore, active objects have their own thread of control and communicate
+by asynchronous message sends. Messages are appended to the receiver's message queue
 and processed one at a time in FIFO order.
 Active objects act like ``plain old Java objects'', except that
 they have an asynchronous interface.
@@ -1547,7 +1547,7 @@ asynchrony on the system.
 Values resulted from method calls on active objects and spawning of tasks,
 unlike ProActive, have the explicit future type \ec{Fut t}. Futures support
 future chaining, and \ec{get} and \ec{await} operations similar to ABS. These
-operations are explained in details in the following section \emph{Cooperate
+operations are explained in detail in the following section \emph{Cooperate
 Scheduling of Active Objects}.
 
 \paragraph{Cooperative Scheduling of Active Objects}
@@ -1555,15 +1555,6 @@ Scheduling of Active Objects}.
 Similar to ABS, Encore supports three operators for cross-message flow control,
 namely \ec{suspend} (\ec{suspend :: void -> void}), \ec{get} (\ec{get :: Fut t
 -> t}), and \ec{await} (\ec{await :: Fut t -> void}).
-%
-%In contrast with ABS, Encore
-%supports using suspend and await anywhere in a program, as opposed
-%to ABS which only permits calling these operations inside active objects.
-%\LUDO{I am still not sure what is meant here: in abs all objects are kind of  active
-%no?}.
-%This is due to underlying  technical reasons
-%described in the implementation sections of Encore and ABS
-%\TW{Make it so! :) Encore threads yadayada.}.
 %
 Encore's \ec{await} statement is somewhat limited as it only supports awaiting
 the fulfillment of a future not any boolean condition like ABS does (Section
@@ -1643,13 +1634,15 @@ and values and it is controlled via parallel combinators.
 
 The \parT{} combinators are informally explained with the example from Fig.~\ref{fig:encore:factorisation},
 which computes the LU and Cholesky factorisation in parallel, inverting these matrixes asynchronously,
-getting the diagonal of the first asynchronous computation that finishes the inversion of the matrix
+getting the diagonal of the first asynchronous computation that finishes the inversion % of the matrix
 and terminating the remaining computations.
 %
-The LU and Cholesky factorisation are performed in parallel, spawning tasks (lines 6 and 7),
-lifting and grouping the futures into a \parT{} abstraction (line 8) via the \emph{lift} (lift :: Fut t $\to$ Par t)
-and $\|$ combinators ($\| :: Par \;t \to Par \;t \to Par \;t$) which lift the future to a \parT{} and
-merges two \parT{}s into a new \parT{} collection, respectively.
+The LU and Cholesky factorisation are performed in parallel, spawning tasks (lines 6 and 7).
+The resulting futures are lifted (lift :: Fut t $\to$ Par t) and grouped within
+the same \parT{} collection ($\| :: Par \;t \to Par \;t \to Par \;t$), line 8.
+%lifting and grouping the futures into a \parT{} abstraction (line 8) via the \emph{lift} (lift :: Fut t $\to$ Par t)
+%and $\|$ combinators ($\| :: Par \;t \to Par \;t \to Par \;t$) which lift the future to a \parT{} and
+%merges two \parT{}s into a new \parT{} collection, respectively.
 %
 The inversion of the matrix is performed asynchronously, using the \bind{} combinator
 ($\bind \ :: Par \ t \to (t \to Par\ t') \to Par\ t'$), line 10, which receives a function (second argument)
