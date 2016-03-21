@@ -2336,7 +2336,7 @@ garbage collector~\cite{DBLP:conf/oopsla/ClebschD13} and actor library among oth
 %
 The Encore runtime (EncoreRT), extends the PonyRT with new features
 such as futures, the \parT{} abstraction, a task library and the notion of
-\emph{encore threads} (explained later), among other things. These features
+\emph{encore threads} (explained below). These features
 are part of the runtime and therefore, written in C.
 %
 On top of these libraries rests the Encore Standard Library, which is
@@ -2359,40 +2359,42 @@ messages to process.
 
 On system start-up, the runtime maps physical cores to schedulers,
 saving the overhead of creating and context switching over a large number
-of threads, although this can be override, if desired, via the command line.
+of threads, although this can be overridden if desired.
 %
 Each scheduler runs in a loop, scheduling active objects until the whole program
 terminates. In each iteration of the loop, the scheduler performs three procedures.
 Firstly, the scheduler pops an active object from the beginning of
 the queue. Secondly, it hands over the control to the active object so that it can
-process messages in the mailbox, if any. The active object can only process one
-message at a time, to ensure fairness. Thirdly, if a message is indeed
+process messages in its mailbox. The active object can only process one
+message at a time to ensure fairness. Thirdly, if a message is indeed
 processed in previous step, the active object is pushed to the end of the scheduler's queue;
 otherwise, the active object is unscheduled due to having an empty mailbox. The
 unscheduled active objects are rescheduled if other active objects send
 messages to them. Furthermore, in the second step, new active objects could be created, and
-they would be pushed to the end of queue belonging to the current scheduler,
-to avoid unnecessary synchronization. 
+they would be pushed to the end of queue of the current scheduler. 
 %
 Active objects can be migrated from one scheduler to another via work stealing,
-which acts as load-balancer. This only happens whenever a scheduler runs out of active objects.
+which acts as load-balancer; this only happens when a scheduler runs out of active 
+objects.
 
 
 Active objects in Encore are implemented by a lightweight abstraction called \emph{encore thread},
 which resembles green threads. Each active object is assigned an \emph{encore thread}
 which provides a thread-of-control to the active object, so that it can process messages in its message queue.
 This implementation detail, unlike in ProActive and ABS, make Encore capable of
-running thousands of active objects in the same machine.
+running thousands of active objects on the same machine.
 
 As described in Section~\ref{sec:encore}, when the active object processes a message
 and a synchronisation construct is involved, the running method may be paused
-until (e.g.) a future is fulfilled and resumed afterwards. Unlike the ABS solution that relies
-on creating new threads (section~\ref{sec:implem-java-8}),
+until a future is fulfilled and resumed afterwards. Unlike the ProActive backend for ABS 
+that relies
+on creating new threads,
 Encore opts for handling stacks, which can be attached to \emph{encore threads}. Based on this idea,
 the current stack is put aside and a new stack is given to the Encore thread, so that it
 can continue running some other or the same active object using the new stack.
-To make this process more efficient, Encore has a stack pool that allows reuse of unused stacks. 
-Upon fulfilment of the awaiting future, the Encore thread
+To make this process more efficient, Encore has a stack pool that allows reusing  unused 
+stacks. 
+Upon fulfilment of the awaited future, the Encore thread
 can continue processing the paused execution and, after finishing, the stack
 is collected and returned to the stack pool for future reuse.
 
@@ -2422,7 +2424,7 @@ are immune of this problem for obvious reasons.
 Following this line, a locked mutable passive object provides locking guarantees
 on the object, which prevents data races.
 %
-In a slightly more advanced usage scenario, we might want to share part of the mutable passive
+In a slightly more advanced usage scenario, we might share part of the mutable passive
 object so that multiple active objects could work on different parts of the same
 passive object, concurrently. This would be safe as well.
 %
@@ -2438,7 +2440,7 @@ pattern match on it.
 \paragraph{Garbage collection}
 
 Encore borrows the garbage collection part from PonyRT
-with the necessary extension to accommodate future values, which is not available in Pony. Garbage
+with the necessary extension to accommodate future values. Garbage
 collection consists of two parts, collecting active objects, which is covered
 in~\cite{DBLP:conf/oopsla/ClebschD13}, and collecting passive objects.
 
