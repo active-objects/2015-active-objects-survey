@@ -1544,7 +1544,7 @@ asynchronously executed and, returns a future type value immediately. Tasks are
 more lightweight than actors (memory-wise) and increase the degree of
 asynchrony on the system.
 
-unlike ProActive, values resulting from method calls on active objects and spawning of 
+Unlike ProActive, values resulting from method calls on active objects and spawning of
 tasks
  have the explicit future type \ec{Fut t}. Futures support
 future chaining, and \ec{get} and \ec{await} operations similar to ABS. These
@@ -1556,9 +1556,9 @@ Similar to ABS, Encore supports three operators for cross-message flow control,
 namely \ec{suspend} (\ec{suspend :: void -> void}), \ec{get} (\ec{get :: Fut t
 -> t}), and \ec{await} (\ec{await :: Fut t -> void}).
 %
-Encore's \ec{await} statement only supports awaiting
-the fulfillment of a future not any boolean condition like ABS does (Section
-\ref{sec:abs-lang}). Encore's support for future chaining however makes
+Encore's \ec{await} statement only supports awaiting on
+the fulfillment of a future, unlike ABS which supports awaiting on any boolean
+condition (Section~\ref{sec:abs-lang}). Encore's support for future chaining however makes
 \ec{await} less useful as chaining allows triggering arbitrary operations on the
 fulfillment futures.
 Figures~\ref{fig:enc-suspend} and \ref{fig:enc-get-await} illustrate the semantics of 
@@ -1650,52 +1650,30 @@ The inversion of the matrix is performed asynchronously, using the \bind{} combi
 that is applied asynchronously to the items in the \parT{} collection --- creating pipeline parallelism. 
 %
 With the \prune{} combinator ($\prune \ :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$), line 10,
-the \verb|getDiagonal| function is applied to the first computation that returns the inverted matrix,
+the \verb|getDiagonalMtx| function is applied to the first computation that returns the inverted matrix,
 stopping the remaining computations --- safely stops speculative work.
 
 \begin{figure}[t]
 \centering
-%\begin{parcolumns}{1}
-%\begin{parcolumns}[colwidths={1=2.8in,2=3.1in}, distance=0em]{2}
-%\colchunk{
-%\begin{lstlisting}[style=encore, firstnumber=1,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]                                                           
-%def luFact(m: Mtx): [Factor]
-%    ...                                                                          
-%                                                                                
-%def choleskyFact(m: Mtx): [Factor]
-%    ...
-%                                                                                
-%def mtxInv(f: [Factor]) : Par [Mtx]
-%    ...
-%
-%def getDiagonal(f: Fut<Maybe [Mtx]>)
-%: Par [Factor]
-%    ...
-%
-%\end{lstlisting}
-%}
-%
-%\colchunk{
+
 \begin{lstlisting}[style=encore,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]
-class Main
+class Mtx
   ...
 
-  def main(): [Factor]
-    let mtx = this.getMtx()                                            
+  def computeFastestDiagonal(): Par Mtx
+    let mtx = this.getMtx()
         fLU = async luFact(mtx)
         fChlsk = async choleskyFact(mtx)
         par = (lift fLU) || (lift fChlsk)
     in
-        getDiagonal <<  (par >>= mtvInv)
+        getDiagonalMtx <<  (par >>= mtvInv)
 \end{lstlisting}
-%}
-%\colplacechunks
-%\end{parcolumns}
+
 \caption{\label{fig:encore:factorisation}Data-pipeline and speculative parallelism in matrix factorisation.
-The types of the functions are $\mathit{getMtx :: Mxt}$, $\mathit{luFact :: Mtx \to [Factor]}$, 
-$\mathit{choleskyFact :: Mtx \to [Factor]}$, 
+The types of the functions are $\mathit{getMtx :: Mtx}$, $\mathit{luFact :: Mtx \to [Factor]}$,
+$\mathit{choleskyFact :: Mtx \to [Factor]}$,
 $\mathit{mtxInv :: [Factor] \to Par [Mtx]}$ and
-$\mathit{getDiagonal :: Fut<Maybe [Mtx]> \to Par [Factor]>}$.}
+$\mathit{getDiagonalMtx :: Fut\!<\!\!Maybe [Mtx] \!\!> \to Par\; Mtx}$.}
 \end{figure}
 
 The \parT{} collection and its combinators have been designed to perform
@@ -1745,8 +1723,11 @@ created when the future is resolved.
 \paragraph{Degree of transparency}
 
 In Encore, non-future variables and future variables
-are distinguished statically, e.g.\ \ec{int} vs \ec{Fut int}.  \ec{get} converts future
-type to non-future type  by extracting the content explicitly. Both in future management
+are distinguished statically, e.g.\ \ec{int} vs \ec{Fut int}.
+The \ec{get} operation explicitly extracts the content from the future type
+%\ec{get} converts a future
+%type to non-future type  by extracting the content explicitly.
+Both in future management
 and with parallel combinators, the programmer is exposed to the concurrent computations
 being handled in Encore. However, especially when using future chaining or parallel
 combinators, the scheduling and ordering of operations is handled automatically, and the
@@ -2381,8 +2362,8 @@ objects.
 Active objects in Encore are implemented by a lightweight abstraction called \emph{encore thread},
 which resembles green threads. Each active object is assigned an \emph{encore thread}
 which provides a thread-of-control to the active object, so that it can process messages in its message queue.
-This implementation detail, unlike in ProActive and ABS, make Encore capable of
-running thousands of active objects on the same machine.
+This implementation detail %, unlike in ProActive and ABS, 
+makes Encore capable of running thousands of active objects on the same machine.
 
 As described in Section~\ref{sec:encore}, when the active object processes a message
 and a synchronisation construct is involved, the running method may be paused
@@ -2408,7 +2389,7 @@ is collected and returned to the stack pool for future reuse.
 \paragraph{Data sharing and object referencing}
 
 In Encore, active and passive objects are shared by reference, as opposed to
-ProActive which performs deep copying of the object (\ref{sec:implem-proactive}). 
+ProActive which performs deep copying of the object (Section~\ref{sec:implem-proactive}).
 In practice this means that sharing large objects in Encore poses no performance issues.
 %
 On the other hand, care must be taken when sharing passive objects,
