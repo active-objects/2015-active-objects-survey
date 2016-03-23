@@ -1989,8 +1989,7 @@ But as ProActive features multiactive objects, this number can be higher, as the
 As Java threads are pretty heavy, the ProActive scheduler implementation puts a particular effort on optimizing thread usage. 
 Firstly, a thread pool is instantiated at active object start-up to ensure a basic thread reuse policy. 
 Secondly, when the number of threads is limited at the application level (through multiactive object annotations), the limit literally maps to Java threads, so a fine performance tuning can be achieved at the application level. 
-Additionally, threads that are waiting for a future can be temporarily reused to process another request, by stacking another method call on it. 
-This is also configurable at the application level. 
+Additionally, threads that are waiting for a future can be temporarily reused to process the request that will indirectly fulfil the waited future. This can be done during the wait-by-necessity. 
 So to conclude, in ProActive thread creation and thread scheduling are almost completely exposed to the programmer, allowing him to have a great control on the performance of ProActive applications.
 
 \paragraph{Data sharing and object referencing}
