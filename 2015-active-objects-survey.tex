@@ -1215,7 +1215,7 @@ is also controlled.)
 \paragraph{Degree of transparency}
 
 ABS is an abstract language and implementation-specific aspects
-including scheduling, message queueing, object representation are
+including scheduling, message queueing, and object representation are
 hidden from the modeler. Abstract data types and interfaces can be
 used to postpone detailed design decisions while still permitting
 analysis of those aspects of a model that are fully specified.  In ABS
@@ -1234,16 +1234,16 @@ call a method in a remote COG with a local class argument results in a
 runtime error. Within the same COG all tasks have acess to a common
 heap and can modify shared data. 
 \LUDO{the rest is OK but I would mention that all objects of the COG are accessible (via 
-nmethod calls) if this is indeed true}
+method calls) if this is indeed true}
 However, objects have strictly
 private visibility, that is, they can only directly access their own
 fields. The fields of any other objects must be accessed by explicit
-method calls (getter/setter methods).
+method calls.
 
 \paragraph{Formal semantics and support}
 
 ABS has a fully formal, small step operational semantics
-\cite{hats-d1.2} that permits formal soundness theorems for the
+\cite{JHSSS10,hats-d1.2} that permits formal soundness theorems for the
 various analyses that are available for ABS. This semantics is
 directly expressed in terms of rewrite rules in Maude format
 \cite{ClavelDELMMT07} which yields a sound interpreter for ABS.
@@ -1279,7 +1279,8 @@ list of currently supported tools for ABS:
   including compiler error location;
 \item simulator/interpreter with interactive debugger;
 \item visualization of ABS model execution as sequence diagram;
-\item code generator backends for Erlang, Haskell, ProActive~\cite{rochas:hal-01065072}Java
+\item code generator backends for Erlang, Haskell,
+  ProActive~\cite{rochas:hal-01065072}, Java
   8~\cite{serbanescuNABN14a};
 \item a glass box test case generator for \emph{concurrent} models \cite{AlbertAGM15};
 \item a sound deadlock analysis \cite{CGM:SoSym2014};
@@ -1302,11 +1303,13 @@ is a middleware that supports application deployment on distributed infrastructu
 as clusters, grids and clouds. Several choices for the design of the language can be
 explained by these practical concerns.
 
-One of the design choices for ASP and ProActive is to ensure maximal transparency for the 
-programmer: active objects and futures are manipulated like usual Java objects. The 
-ProActive middleware automatically triggers asynchronous remote invocations and performs automatically blocking synchronisation when 
-needed. ProActive is thus intended to Java programmers that are not particularly experts 
-in concurrent and distributed programming. 
+One of the design choices for ASP and ProActive is to ensure maximal
+transparency for the programmer: active objects and futures are
+manipulated like usual Java objects. The ProActive middleware
+automatically triggers asynchronous remote invocations and performs
+automatically blocking synchronisation when needed. ProActive is thus
+intended to Java programmers that are not particularly experts in
+concurrent and distributed programming.
 
 Another choice is that active objects are coarse grain entities. We create a dedicated 
 thread for each of them and they come with a quite heavy machinery  for managing each 
