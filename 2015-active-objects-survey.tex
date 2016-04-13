@@ -1705,7 +1705,7 @@ Active objects provide coarse grain parallelism via futures but do not offer
 high-level language constructs for low-level coordination of parallel computations.
 In order to express complex coordination workflows, such as pipeline and
 speculative parallelism, Encore incorporates
-\parT{} collections and associated parallel combinators.
+\parT{} collections and associated parallel combinators~\cite{ref:encore,party-coordination}.
 A \parT{} collection is an abstraction that can contain asynchronous computations
 and values; it is controlled via parallel combinators. 
 \parT{} computations have type \ec{Par t} (\ec{t} is a polymorphic type).
@@ -1780,7 +1780,7 @@ and can express complex coordination workflows.
 %
 %This creates a collection that never blocks and executes operations on demand,
 %when the values are available. 
-More combinators are available \cite{ref:encore}
+More combinators are available~\cite{ref:encore}
 but we have highlighted the most important ones. 
 %
 %\parT{} integrates well in the active object model, as it
@@ -1886,7 +1886,7 @@ active object topologies.
 \paragraph{Formalization and semantics}
 The Encore concurrency model has been formalized \cite{ref:encore} using
 a small step operational semantics. Parallel combinators have been formalized as well,
-including a soundness proof with the implicit task parallelism model \cite{encore:parallel-combinators-thesis}.
+including a soundness proof with the implicit task parallelism model \cite{encore:parallel-combinators-thesis,party-coordination}.
 The capability type system has been formalized with proofs of soundness and data-race freedom \cite{encore:kappa}.
 
 \paragraph{Implementation: programming and execution support}
