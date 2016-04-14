@@ -116,7 +116,7 @@ To fill
 	Some actor languages provide a strong integration	with the object-oriented concepts;
 	they are sometimes called active-object languages. This paper reviews four major actor
 	and active-object languages and compares them according to some well-chosen dimensions
-	that cover both the programming paradigms and their implementation.
+	that cover either the programming paradigms or their implementation.
 \end{abstract}
 \category{D.3.2}{Programming languages}{Language Classifications}[Concurrent, 
 distributed, and parallel languages ]
@@ -197,10 +197,6 @@ distributed, and parallel languages ]
 \maketitle
 
 
-\TODO{TODO LIST}
-
-
-
 \NOTE{Page limit is 35 pages}
 
 
@@ -212,7 +208,16 @@ programming models for concurrent and distributed systems. What is difficult? Wh
 features are important in concurrent? in distributed systems?
 
 
-\section{Active object Languages}
+
+This paper is organised as follows. Section~\ref{AOlanguages} presents an overview of the 
+actor and active object languages; it first presents those languages from an historical 
+perspective, and then focuses on some of those languages, presenting the principles of 
+those languages, the approach each of them advocates, and the tools they provide.
+Section~\ref{sec-implementation} focuses on the implementation and runtime support for 
+the 
+active-object languages. Finally Section~\ref{sec-conclusion} concludes this article.
+
+\section{Active object Languages}\label{AOlanguages}
 
 \subsection{An historical view of Actor and active-object languages}
 
@@ -1833,7 +1838,7 @@ The currently supported tools are:
 \item Vagrant support for rapid installation of Encore in a virtual machine
 \end{itemize}
 
-\section{Implementation of active objects}
+\section{Implementation of active objects}\label{sec-implementation}
 This section describes the implementation of the different active object programming 
 models described previously. The implementation of a 
 programming language can be provided from scratch or can also be given as an API in a 
@@ -2525,7 +2530,7 @@ runs one garbage collector for each process. %It uses general garbage collection
 This way, as each Rebeca actor is mapped to one Erlang process, we can say that per actor garbage collection takes place in translated codes. %In addition, the intra process garbage collection only analyses large processes (i.e., processes which consumes more than 20K of memory). So, 
 In memory pressure, all of the Rebeca actors are analyzed to this aim as they are long-lived large processes.
 
-\section{Lessons Learned and Conclusion}
+\section{Lessons Learned and Conclusion}\label{sec-conclusion}
 
 \JS{There is an increased parallelism in new active object programming languages. 
 They bring new challenges such as efficient data sharing: more work is dedicated to mix and find a balance between data copy and safe shared memory. 
