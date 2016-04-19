@@ -203,10 +203,74 @@ distributed, and parallel languages ]
 
 \section{Introduction}
 
-A global introduction to the common problems in programming distributed systems. Safety 
-issues, common bugs and efficiency issues. A first overview of the families of 
-programming models for concurrent and distributed systems. What is difficult? What 
-features are important in concurrent? in distributed systems?
+Designing a programming language for concurrent systems is a difficult task. The 
+programming abstractions generally provided in concurrent programming libraries are in 
+general extremely low-level and difficult to reason about, both from the point of view of 
+the programmer and from the point of view of verification tools. This article focuses on 
+one family of concurrent languages: active-object languages.
+
+The first and most important characteristic of this family is inherited from the 
+actor paradigm. It relies on splitting the entities created when running the program 
+into actors. Each actor is an independent entity that behaves  autonomously and 
+only communicate with other actors through asynchronous messages. Information sharing is 
+then made much simpler, and programming and analysis is much less error prone.
+
+Among those actor-based languages we focus here on one special category that use by 
+asynchronous method call as the communication paradigm. Such 
+languages are sometimes called \emph{active object} languages. This second difference is 
+a little more subtle as the basic unit of concurrency is the same in all actor languages 
+so there is generally just a subtle difference in the expressiveness of the different 
+languages. But what makes this difference important is the programming abstractions given 
+to the programmer. By providing ``communications by asynchronous method calls'' the 
+active object languages provide a programming model that is very well integrated with the 
+notion of object-oriented programming and with programming abstractions that are well 
+known by the programmers.
+
+In this article, we first explain the historical context that led to the existence and 
+the importance of those languages. We then focus on four languages that share the above 
+characteristics and represent very well this family of languages. Starting from Rebeca, 
+that is the closest to the original actor model while already providing communication by 
+some form of asynchronous method invocation. The three other languages, ABS, ASP, and 
+Encore are exactly representative of active object frameworks and additionally provide 
+replies to requests in the form of \emph{futures}.
+
+All the languages presented here come with a strong support for formal methods and 
+verification techniques, but in Rebeca and ABS this is clearly the first focus of the 
+language, and they are considered originally as modelisation languages. Actor not only 
+provide a convenient abstraction for programming but they also ease program analysis by 
+naturally providing structuring entities for a compositional analysis. 
+
+On the contrary, 
+ASP and Encore come with very optimised implementations of the language and it is 
+interesting to notice that both of them allow also the programmer to depart from the pure 
+actor model by providing multithreading local to an actor, either inside the treatment of 
+a request thanks to the parallel combinators of Encore or by running several requests in 
+parallel in multi-threaded active objects provided by ASP. In both cases the extension of 
+the language is provided in such a way that it relies on the same programming 
+abstractions as classical active-objects and for this reasons, it is still very easy to 
+write safe and efficient programs.
+% 
+%.
+%I think that in the intro we should try to motivate and justify the languages presented 
+%in this paper, which then are put in a historical context
+%in the following section.
+%What they have, for example, in common is that they are based on asynchronous *method* 
+%calls, instead of the more basic 
+%asynchronous messaging and corresponding event-driven computation of many other actor 
+%models/languages like Scala, Erlang?, and Actor-based libraries
+%like Akka, etc. (this other stuff we then don’t need to mention anymore in the next 
+%section which then focusses completely on our stuff in a historical context). As such 
+%our 
+%languages aim at integration of the Actor-based concurrency model with object-oriented 
+%method calls and thus supports
+%the programming to interfaces discipline. This we could emphasise in the intro, together 
+%with the need of other object-oriented concurrency models
+%(than that of multithreading) to support, for example, distributed applications.
+%
+%A global introduction to the common problems in programming distributed systems. Safety 
+%issues, common bugs and efficiency issues. A first overview of the families of 
+%programming models for concurrent and distributed systems. What is difficult? What 
+%features are important in concurrent? in distributed systems?
 
 
 
