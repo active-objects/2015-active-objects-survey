@@ -82,13 +82,13 @@
 \title{A Survey of Active Objects and Actors}
 \author{Frank DE BOER and Vlad SERBANESCU
 \affil{Centrum Wiskunde and Informatica}
-Crystal Din and Reiner Hähnle
+Crystal Chang DIN and Reiner H\"AHNLE
 \affil{TU Darmstadt, Dept. of Computer Science}
 Ludovic HENRIO and Justine ROCHAS
 \affil{Univ. Nice Sophia Antipolis, CNRS, I3S, UMR 7271}
-Einar Broch Johnsen
+Einar Broch JOHNSEN
 \affil{Department of Informatics, University of Oslo}
-Ehsan Khamespanah and  Marjan Sirjani
+Ehsan KHAMESPANAH and  Marjan SIRJANI
 \affil{Reykjavik University}
 Kiko FERNANDEZ-REYES and Albert Mingkun YANG
 \affil{Uppsala University}}
@@ -203,51 +203,60 @@ distributed, and parallel languages ]
 
 \section{Introduction}
 
-Designing a programming language for concurrent systems is a difficult task. The 
-programming abstractions generally provided in concurrent programming libraries are often extremely low-level and difficult to reason about, both from the point of view of 
-the programmer and for verification tools. This article focuses on 
-one family of concurrent programming languages: active-object languages.
-The first and most important characteristic of this family of languages is inherited from the 
-actor paradigm. It relies on splitting the program into well-defined entities called actors. Each actor is an independent entity that behaves autonomously and that communicate with other actors through asynchronous messages. Information sharing is 
-then simplified, and programming and analysis is much less error prone.
+Designing a programming language for concurrent systems is a difficult
+task. The programming abstractions generally provided in concurrent
+programming libraries are often extremely low-level and difficult to
+reason about, both from the point of view of the programmer and for
+verification tools. This article focuses on one family of concurrent
+programming languages: active-object languages.  The first and most
+important characteristic of this family of languages is inherited from
+the actor paradigm. It relies on splitting the program into
+well-defined entities called actors. Each actor is an independent
+entity that behaves autonomously and that communicate with other
+actors through asynchronous messages. Information sharing is then
+simplified, and programming and analysis is much less error prone.
 
-Among those actor-based languages we focus here on one special category that uses 
-asynchronous method call as communication paradigm. Such 
-languages are sometimes called \emph{active object} languages. This second difference is 
-a little more subtle as the basic unit of concurrency is the same in all actor languages.
-Generally, there is just a subtle difference in the expressiveness of the different 
-languages. However what makes a bigger difference is the programming abstractions given 
-to the programmer. By providing ``communications by asynchronous method calls'' the 
-active object languages provide a programming model that is very well integrated with the 
-notion of object-oriented programming and with programming abstractions that are well 
-known by the programmers.
+Among those actor-based languages we focus here on one special
+category that uses asynchronous method call as communication
+paradigm. Such languages are sometimes called \emph{active object}
+languages. This second difference is a little more subtle as the basic
+unit of concurrency is the same in all actor languages.  Generally,
+there is just a subtle difference in the expressiveness of the
+different languages. However what makes a bigger difference is the
+programming abstractions given to the programmer. By providing
+``communications by asynchronous method calls'' the active object
+languages provide a programming model that is very well integrated
+with the notion of object-oriented programming and with programming
+abstractions that are well known by the programmers.
 
-In this article, we first explain the historical context that led to the existence and 
-the importance of those languages. We then focus on four languages that share the above 
-characteristics and represent very well this family of languages. We start from Rebeca, 
-that is the closest language to the original actor model, while already providing communication by 
-some form of asynchronous method invocation. The three other languages, ABS, ASP, and 
-Encore are exactly representative of active object frameworks. Additionally, they provide 
-replies to requests in the form of \emph{futures}.
+In this article, we first explain the historical context that led to
+the existence and the importance of those languages. We then focus on
+four languages that share the above characteristics and represent very
+well this family of languages. We start from Rebeca, that is the
+closest language to the original actor model, while already providing
+communication by some form of asynchronous method invocation. The
+three other languages, ABS, ASP, and Encore are exactly representative
+of active object frameworks. Additionally, they provide replies to
+requests in the form of \emph{futures}.
 
-All the languages presented here come with a strong support for formal methods and 
-verification techniques, although Rebeca and ABS make it the first focus of the 
-language, as they are originally considered a modelling languages. Actors do not only 
-provide a convenient abstraction for programming but they also ease program analysis by 
-naturally providing structured entities, in particular for a compositional analysis. 
+All the languages presented here come with a strong support for formal
+methods and verification techniques, although Rebeca and ABS make it
+the first focus of the language, as they are originally considered a
+modelling languages. Actors do not only provide a convenient
+abstraction for programming but they also ease program analysis by
+naturally providing structured entities, in particular for a
+compositional analysis.
 
-On the contrary, 
-ASP and Encore come with very optimised implementations of the language and it is 
-interesting to notice that both of them also allow the programmer to depart from the pure 
-actor model by providing local multi-threading to an actor, either inside the treatment of 
-a request
-(parallel combinators of Encore)
-or by running several requests in 
-parallel 
-(multi-threaded active objects of ASP). In both cases, the extension of 
-the language is provided in such a way that it relies on the same programming 
-abstractions as classical active objects and for this reason, it is still very easy to 
-write safe and efficient programs.
+On the contrary, ASP and Encore come with very optimised
+implementations of the language and it is interesting to notice that
+both of them also allow the programmer to depart from the pure actor
+model by providing local multi-threading to an actor, either inside
+the treatment of a request (parallel combinators of Encore) or by
+running several requests in parallel (multi-threaded active objects of
+ASP). In both cases, the extension of the language is provided in such
+a way that it relies on the same programming abstractions as classical
+active objects and for this reason, it is still very easy to write
+safe and efficient programs.
 % 
 %.
 %I think that in the intro we should try to motivate and justify the languages presented 
@@ -356,51 +365,35 @@ and encapsulate both data and a single thread of control, and
 communicate without transfer of control. Message delivery is
 guaranteed but messages may arrive out of order.  This loose coupling
 makes Actor languages conceptually attractive for distributed
-programming. 
-Erlang~\cite{Erlang-book} is one of the most successful actor language, especially 
-because of its adoption by programmers in the industry, and because of its massively 
-parallel execution model supporting  a huge number of independent actors. 
- Active objects integrate the basic Actor model with
-object-oriented concepts. This integration can be realized by
-modelling a message as an asynchronous method call, thus fixing the
-interpretation of a message by a corresponding method definition. 
- In
- Rebeca \cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/jucs/SirjaniBM05} 
-the methods are run to completion without any
-further synchronization mechanism and do not return values. Like in
-the original Actor model, returning values from a method call can be
-modelled by another asynchronous message;
-%Rebeca is an 
-%actor-based language with a FIFO point-to-point communication and message service. 
-%Actors are encapsulated units of concurrency, with no shared variables. Communication takes place by asynchronous message passing, with non-blocking send and receive statements. 
-%In Rebeca, computation is message-driven, a message is taken from the top of the message 
-%queue and is executed non-preemptively. In addition, instead of having a soup of 
-%messages 
-%like in Agha's actor model, 
-unlike the original Actor model, in Rebeca the order of messages between any two actors is 
-preserved. 
-%A network where messages can be lost or arrive out-of-order, can be modeled using an 
-%actor that behaves like the intermediate medium. The same as the original actor mode, 
-%``while'' loops or periodic events are modeled by sending messages to itself. 
- % Based on the application 
-%domains, where necessary, Rebeca is extended to provide other means of communication or 
-%safe synchronization.
-% \sout{In contrast to how Erlang and Rebeca process asynchronous messages on the callee 
-%side,
-%The Actor-based extension of Scala \cite{haller2009scala} introduces pattern matching on 
-%the callee side t interpret and filter messages.}
-% \KIKO{I have modified the sentence, although I believe that this last sentence is
-% that important and introduces one aspect of Scala which is never mentioned it again.
-% I am missing a bit the reason of the comparison}
+programming.  Erlang~\cite{Erlang-book} is one of the most successful
+actor languages, especially because of its adoption by programmers in
+the industry, and because of its massively parallel execution model
+supporting a huge number of independent actors.  Active objects
+integrate the basic Actor model with object-oriented concepts. This
+integration can be realized by modelling a message as an asynchronous
+method call, thus fixing the interpretation of a message by a
+corresponding method definition.  In Rebeca
+\cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/jucs/SirjaniBM05} the
+methods are run to completion without any further synchronization
+mechanism and do not return values. Like in the original Actor model,
+returning values from a method call can be modelled by another
+asynchronous message; unlike the original Actor model, in Rebeca the
+order of messages between any two actors is preserved.
+% The Actor-based extension of Scala \cite{haller2009scala} introduces
+% pattern matching on the callee side to interpret and filter
+% messages.}  \KIKO{I have modified the sentence, although I believe
+% that this last sentence is that important and introduces one aspect
+% of Scala which is never mentioned it again.  I am missing a bit the
+% reason of the comparison}
  
-Rebeca is 
-designed to be simple and analyzable. Efficient compositional verification 
-\cite{DBLP:journals/jucs/SirjaniMSB05} and specific state space reduction techniques 
-\cite{DBLP:journals/acta/JaghooriSMKM10}  are created based on the following 
-characteristics of the model: no shared variable, no blocking send or receive, 
-single-threaded actors, and non-preemptive execution of each message (execution of a 
-message  will not 
-interfere with  execution of another one).
+Rebeca is designed to be simple and analyzable. Efficient
+compositional verification \cite{DBLP:journals/jucs/SirjaniMSB05} and
+specific state space reduction techniques
+\cite{DBLP:journals/acta/JaghooriSMKM10} are created based on the
+following characteristics of the model: no shared variables, no
+blocking send or receive, single-threaded actors, and non-preemptive
+execution of each message (execution of a message will not interfere
+with execution of another one).
 
 Pushing the notion of method calls further by directly supporting
 return values leads to the notion of future variables.  Futures were
@@ -423,7 +416,7 @@ methods of an active object by an explicit statement which allows the
 release of control.  This gives rise to a coroutine like execution of
 the method activations of an active object which encapsulates a single
 thread of control. This model of computation supports a compositional
-proof theory \cite{deBoerDJ07}.
+proof theory \cite{SDE:BoerCJ07}.
 
 
 Caromel, Henrio, and Serpette~\cite{CHS:POPL04} present ASP, an
@@ -1222,16 +1215,17 @@ can be seen in Line~\ref{abs:main:end}, it is possible to pass futures
 as parameters. This makes it possible to use the result of an
 asynchronous call in different places without copying it.
 
-After execution of the main block finished, two tasks in the current
-COG are waiting, corresponding to the calls to \lstinline{init()} and
-\lstinline{process()}, respectively. None of them could have started
-while the main block was still executing, because there was no
-synchronization expression in the latter. ABS does not determine which
-of \lstinline{init()} and \lstinline{process()} is started first. In
-fact, ABS can be parameterized with different scheduling strategies,
-which can be programmed at the functional layer \cite{bjork13isse}.
-The semantics leaves the scheduling open, so the static analyzers of
-ABS take all possible scheduling sequences into account.
+After the execution of the main block has finished, two tasks in the
+current COG are waiting, corresponding to the calls to
+\lstinline{init()} and \lstinline{process()}, respectively. None of
+them could have started while the main block was still executing,
+because there was no synchronization expression in the latter. ABS
+does not determine which of \lstinline{init()} and
+\lstinline{process()} is started first. In fact, ABS can be
+parameterized with different scheduling strategies, which can be
+programmed at the functional layer \cite{bjork13isse}.  The semantics
+leaves the scheduling open, so the static analyzers of ABS take all
+possible scheduling sequences into account.
 
 A first synchronisation point is reached in
 Line~\ref{abs:process:awaitd} of \lstinline{process()}. It ensures
@@ -1246,8 +1240,9 @@ in ABS is as follows:
   \lstinline{Fut<T> fx = o!m(); ... ; await fx?; T x = fx.get;}
 \end{center}
 
-In many cases of simple control flow, \lstinline{await} and \lstinline{get} follow an
-asynchronous call directly. For this common situation the abbreviation
+In many cases of simple control flow, \lstinline{await} and
+\lstinline{get} follow an asynchronous call directly. For this common
+situation the abbreviation
 \begin{center}
   \lstinline{T x = await o!m();}
 \end{center}
@@ -1296,18 +1291,22 @@ interleaving, but he still remains within a compositional proof theory
 \cite{SDE:BoerCJ07}.
 
 \paragraph{Degree of data sharing}
-\LUDO{I do not understantd this first part. I thought all AOs were accessible from any 
-COG and all other data was immutable and thus safe; can you explain better}
-Between different COGs no data sharing is possible. The attempt to
-call a method in a remote COG with a local class argument results in a
-runtime error. Within the same COG all tasks have acess to a common
-heap and can modify shared data. 
-\LUDO{the rest is OK but I would mention that all objects of the COG are accessible (via 
-method calls) if this is indeed true}
-However, objects have strictly
-private visibility, that is, they can only directly access their own
-fields. The fields of any other objects must be accessed by explicit
-method calls.
+There is no designated active object in a COG; thus, values from the
+functional language of ABS are copied with a method call whereas any
+object are shared (i.e., the pointer is copied), independent of
+whether the called object is local or remote.
+% \LUDO{I do not understantd this first part. I thought all AOs were accessible from any 
+% COG and all other data was immutable and thus safe; can you explain better}
+% Between different COGs no data sharing is possible. The attempt to
+% call a method in a remote COG with a local class argument results in a
+% runtime error. 
+% Within the same COG all tasks have access to a common
+% heap and can modify shared data. 
+% \LUDO{the rest is OK but I would mention that all objects of the COG are accessible (via 
+% method calls) if this is indeed true}
+All objects in ABS have strictly private visibility, that is, they can
+only access their own fields directly. The fields of any other object
+must be accessed via explicit method calls.
 
 \paragraph{Formal semantics and support}
 
@@ -2645,7 +2644,7 @@ implementors.
 
 % Bibliography
 \bibliographystyle{ACM-Reference-Format-Journals}
-\bibliography{2015-active-objects-survey,biblio,envisage,rebeca}
+\bibliography{2015-active-objects-survey,envisage,biblio,rebeca}
                              % Sample .bib file with references that match those in
                              % the 'Specifications Document (V1.5)' as well containing
                              % 'legacy' bibs and bibs with 'alternate codings'.
