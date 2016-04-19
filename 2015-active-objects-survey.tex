@@ -241,11 +241,10 @@ ASP and Encore come with very optimised implementations of the language and it i
 interesting to notice that both of them also allow the programmer to depart from the pure 
 actor model by providing local multi-threading to an actor, either inside the treatment of 
 a request
-% thanks to the parallel combinators of Encore 
+(parallel combinators of Encore)
 or by running several requests in 
 parallel 
-%in multi-threaded active objects provided by ASP
-. In both cases, the extension of 
+(multi-threaded active objects of ASP). In both cases, the extension of 
 the language is provided in such a way that it relies on the same programming 
 abstractions as classical active objects and for this reason, it is still very easy to 
 write safe and efficient programs.
@@ -275,11 +274,12 @@ write safe and efficient programs.
 
 
 This paper is organised as follows. Section~\ref{AOlanguages} presents an overview of the 
-actor and active object languages; it first presents those languages from an historical 
-perspective, and then focuses on some of those languages, presenting their principles, the approach they advocate, and the tools they provide.
+actor and active object languages; it first adopts an historical 
+perspective, and then focuses on the four chosen languages, presenting their principles, 
+the approach they advocate, and the tools they provide.
 Section~\ref{sec-implementation} focuses on the implementation and runtime support for 
 the 
-active object languages. Finally Section~\ref{sec-conclusion} concludes this article.
+presented languages and Section~\ref{sec-conclusion} provides a conclusion.
 
 \section{Active object Languages}\label{AOlanguages}
 
