@@ -1291,10 +1291,11 @@ interleaving, but he still remains within a compositional proof theory
 \cite{SDE:BoerCJ07}.
 
 \paragraph{Degree of data sharing}
-There is no designated active object in a COG; thus, values from the
-functional language of ABS are copied with a method call whereas any
-object are shared (i.e., the pointer is copied), independent of
-whether the called object is local or remote.
+There is no designated active object in a COG, all objects may be
+accessed remotely. Thus, values from the functional language of ABS
+are passed by copy with a method call whereas all objects are passed
+by reference (i.e., the pointer is copied), independent of whether the
+called object is local or remote.
 % \LUDO{I do not understantd this first part. I thought all AOs were accessible from any 
 % COG and all other data was immutable and thus safe; can you explain better}
 % Between different COGs no data sharing is possible. The attempt to
