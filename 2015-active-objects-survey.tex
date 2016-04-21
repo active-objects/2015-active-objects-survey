@@ -88,8 +88,10 @@ Ludovic HENRIO and Justine ROCHAS
 \affil{Univ. Nice Sophia Antipolis, CNRS, I3S, UMR 7271}
 Einar Broch JOHNSEN
 \affil{Department of Informatics, University of Oslo}
-Ehsan KHAMESPANAH and  Marjan SIRJANI
+Marjan SIRJANI
 \affil{Reykjavik University}
+Ehsan KHAMESPANAH
+\affil{University of Tehran}
 Kiko FERNANDEZ-REYES and Albert Mingkun YANG
 \affil{Uppsala University}}
 
@@ -621,7 +623,7 @@ non-experts. %Also, a high expressiveness can be expected for a language targeti
 
 \subsubsection{Rebeca}
 \paragraph{General presentation and objective of the language} 
-Rebeca (\emph{\underline{Re}active O\underline{b}j\underline{ec}ts L\underline{a}nguage}) is an actor-based modeling language designed in 2001 \cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/fuin/SirjaniMSB04}, as an imperative interpretation of Agha's actor model,  provided with formal semantics and supported by model checking tools~\cite{DBLP:journals/jucs/SirjaniBM05,DBLP:conf/birthday/SirjaniJ11}. Rebeca is designed for modeling and verification of concurrent and distributed systems with the goal to bridge the gap between software engineers and formal methods community, by being a usable and at the same time analyzable modeling language. 
+Rebeca (\emph{\underline{Re}active O\underline{b}j\underline{ec}ts L\underline{a}nguage}) is an actor-based modeling language designed in 2001 \cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/fuin/SirjaniMSB04}, as an imperative interpretation of Agha's actor model, provided with formal semantics and supported by model checking tools~\cite{DBLP:journals/jucs/SirjaniBM05,DBLP:conf/birthday/SirjaniJ11}. Rebeca is designed for modeling and verification of concurrent and distributed systems with the goal to bridge the gap between software engineers and formal methods community, by being a usable and at the same time analyzable modeling language. 
 
 As usability has been a primary goal in designing Rebeca, the syntax is shifted to be 
 Java-like,  the computation and communication model of the core language is kept simple, 
@@ -630,12 +632,15 @@ shared variable between actors and with asynchronous message passing (there is n
 blocking send or receive statement).
 Because of the simple structure of the language, learning Rebeca is easy. Furthermore, using model checking tools needs far less expertise comparing to deduction-based analysis techniques.
 %
-Semantics of Rebeca helps analyzability,  Rebeca actors are isolated and hence various abstractions, and modular and compositional verification become less problematic to apply. Any tight coupling between the building modules of a model, like shared variables, wait statements, and synchronous message calls, can make the analysis more difficult.
-
+Semantics of Rebeca helps analyzability,  Rebeca actors are isolated and hence various abstractions, and modular and compositional verification become less problematic to apply. 
+%Ehsan:
+%Any tight coupling between the building modules of a model, like shared variables, wait statements, and synchronous message calls, can make the analysis more difficult.
 Rebeca offers  perfect modeling capabilities and efficient model checking tools for 
 concurrent distributed,  event-based applications with pure asynchronous message passing. 
 Even so, sometimes synchronization among components, or different communication models  
-are vital and the modeling of some applications becomes cumbersome. Following the 
+are vital and the modeling of some applications becomes cumbersome. 
+
+Following the 
 strategy of ``pay for what you need'', while core Rebeca is kept simple,   the language 
 is extended in different dimensions, creating the Rebeca family, to support modeling and 
 analysis of a wider variety  of application domains. 
@@ -663,40 +668,42 @@ Timed Rebeca
 We describe Rebeca using an example of a Media Service system, depicted in Fig.~\ref{fig:rebeca-example}. In this example, there are some clients 
 %which want to watch movies. They 
 that send requests for watching movies to a dispatcher and the dispatcher 
-non-deterministically redirects the request to media servers. A media server starts 
-streaming upon receiving a request from the dispatcher. The Rebeca model of Media Service 
-consists of a number of \emph{reactive classes}, which are \texttt{MediaServer}, 
+non-deterministically redirects the request to media servers. 
+%Ehsan:
+%A media server starts streaming upon receiving a request from the dispatcher. 
+The Rebeca model of Media Service 
+consists of a number of \emph{reactive classes}, which are \texttt{Server}, 
 \texttt{Dispatcher}, and \texttt{Client}, each describing the type of a certain number of 
 \emph{actors} (also called \emph{rebecs} in Rebeca). A reactive class declares a set of 
-\emph{state variables} (line 2). The local state of each actor is defined by the values 
-of its state variables and the contents of its message queue. Following the actor model, 
-communication is realised by asynchronous message passing. Each actor has a set of 
-\emph{knownrebecs} of known actors to which it can send messages. For 
+\emph{state variables} (line 14). 
+%Ehsan:
+%The local state of each actor is defined by the values of its state variables and the contents of its message queue. Following the actor model, communication is realised by asynchronous message passing. 
+Each actor has a set of 
+%\emph{knownrebecs} of 
+known actors to which it can send messages. For 
 example, an actor of type \texttt{Dispatcher} knows three actors of type 
-\texttt{MediaServer} (line 8), to which it can send \texttt{requestForMovie} message 
-(lines 12-14). Each reactive class of a Rebeca model may have a constructor. Constructors 
-have the same name as the declaring reactive class and does not have return value (lines 
-3 and 21). Their  task is initializing the actor's state variables (line 3) and putting 
-initially needed messages in the queue of that actor (line 21). %A properly written 
+\texttt{Server} (line 2), to which it can send \texttt{reqForMovie} message 
+(lines 6-8). Each reactive class of a Rebeca model may have a constructor. Constructors 
+have the same name as the declaring reactive class and does not have return value. Their  task is initializing the actor's state variables (line 16) and putting 
+initially needed messages in the queue of that actor (line 22). %A properly written 
 %constructor leaves the resulting actor in a valid state. -> LUDEO REMOVED: in which 
 %language this is not true?
 
 Message servers are defined in reactive classes in a similar way that methods are written in Java.
 %Reactive classes declare the messages to which they can respond to, using Java-like syntax of defining methods. 
-In contrast to the Java methods, \emph{message servers} of Rebeca does not have return value and their declarations start with keyword \texttt{msgsrv}. 
+In contrast to the Java methods, message servers of Rebeca does not have return value and their declarations start with keyword \texttt{msgsrv}. 
 %
-A message server is executed upon receiving the  corresponding message,  
-and may include assignment statements,  conditional statements (lines 11 to 15), and  
-message sending (lines 4 and 22).
-Loops and periodic behavior is modeled by sending messages to itself (line 23). Since the communication is asynchronous, each actor has a \emph{message queue} from which it takes the next message to serve. The ordering of the messages in the message queues is first-in first-out.
+A message server is executed upon receiving its corresponding message,  
+and may include assignment, conditional (lines 5-9), and  
+message sending statements (lines 18 and 24).
+Loops and periodic behavior is modeled by sending messages to itself (line 26). Since the communication is asynchronous, each actor has a \emph{message queue} from which it takes the next message to serve. The ordering of the messages in the message queues is first-in first-out.
 %based on the arrival times of messages. 
-An actor takes the first message from its message queue, executes its corresponding message server in  a non-preemptive way, and then takes the next message. The actor stays idle only if there is no other message in the queue.
+An actor takes the first message from its message queue, executes its corresponding message server non-preemptively, and then takes the next message. The actor stays idle only if there is no other message in the queue.
 %, and continues in.(or waits for the next message to arrive) and so on. 
-A message server may include a \emph{nondeterministic assignment} statement which is used to model the nondeterminism in the behavior of a message server (line 10).
-
+A message server may include a \emph{nondeterministic assignment} statement which is used to model the nondeterminism in the behavior of a message server (line 5).
 Finally, the \texttt{main} block instantiates the 
 actors of the model. In the Media Service model, seven actors are created, receiving 
-their known rebecs and the parameters' values of their constructors (lines 27-29).
+their known actors and the parameters' values of their constructors (lines 29-31).
 
 
 \lstdefinelanguage{rebeca}{
@@ -730,36 +737,38 @@ their known rebecs and the parameters' values of their constructors (lines 27-29
 }
 
 \begin{figure}
-\begin{lstlisting}[language=rebeca]
-reactiveclass MediaServer (5) {
-	statevars {	byte maximumClient; }
-	MediaServer(byte maxC) { maximumClient maxC; }
-	msgsrv requestForMovie(Client client) { client.receiveMovie(); }
-}
-
+\begin{lstlisting}[language=rebeca, multicols=2]
 reactiveclass Dispatcher (5) {
-	knownrebecs { MediaServer m1, m2, m3; }
-	msgsrv requestForMovie(Client client) {
+	knownrebecs { Server m1, m2, m3; }
+	msgsrv reqForMovie(Client client) {
 		byte selectedServer = ?(1, 2, 3);
 		switch (selectedServer) {
-			case 1: m1.requestForMovie(client); break;
-			case 2: m2.requestForMovie(client); break;
-			case 3: m3.requestForMovie(client); break;
+			case 1: m1.reqForMovie(client);
+			case 2: m2.reqForMovie(client);
+			case 3: m3.reqForMovie(client);
 		}
 	}
 }
 
-reactiveclass Client(2) {
-	knownrebecs { Dispatcher dispatcher; }
-	Client() { self.watchMovie(); }
-	msgsrv watchMovie() { dispatcher.requestForMovie(self); }
-	msgsrv receiveMovie() { self.watchMovie(); }
+reactiveclass Server (5) {
+	statevars {	byte maxClient; }
+	Server(byte maxC) 
+		{ maxClient = maxC; }
+	msgsrv reqForMovie(Client client) 
+		{ client.receiveMovie(); }
 }
-
+reactiveclass Client(2) {
+	knownrebecs { Dispatcher disp; }
+	Client() { self.watchMovie(); }
+	msgsrv watchMovie() 
+		{ disp.reqForMovie(self); }
+	msgsrv receiveMovie() 
+		{ self.watchMovie(); }
+}
 main {
-	MediaServer server1():(2), server2():(3), server3():(2);
-	Dispatcher dispatcher(server1, server2, server3):();
-	Client client1(dispatcher):(), client2(dispatcher):(), client3(dispatcher):();
+	Server s1():(2),s2():(3),s3():(2);
+	Dispatcher di(s1,s2,s3):();
+	Client c1(di):(),c2(di):(),c3(di):();
 }
 \end{lstlisting}  
 \caption{A simple Rebeca model}
@@ -777,28 +786,25 @@ Rebeca.
 %analysis tool sets of  Rebeca family support automatic deadlock-freedom check for the 
 %models.  
 In Rebeca, arrival of a message to its receiver message queue is guaranteed and the order 
-of the messages sent by one actor to the same actor is preserved creating some form of 
+of the messages sent by one actor to another actor is preserved creating some form of 
 guaranteed order of execution.
 
 %Marjan
 % rebeca extensions
-In  Extended Rebeca \cite{DBLP:conf/acsd/SirjaniBMS05,DBLP:journals/jucs/SirjaniBM05}, Rebeca is enriched with a concept of component as a collection of rebecs that are more tightly coupled, rebecs inside a component can be synchronized by a handshaking communication mechanism. 
+In  Extended Rebeca \cite{DBLP:conf/acsd/SirjaniBMS05,DBLP:journals/jucs/SirjaniBM05}, Rebeca is enriched with a concept of component as a collection of actors that are more tightly coupled, actors inside a component can be synchronized by a handshaking communication mechanism. 
 %At the highest level of abstraction, components only interact asynchronously via broadcasting anonymous messages. At a lower level of abstraction (within a component), computations, on the one hand are driven by asynchronous messages, and on the other hand can be synchronized by a handshaking communication mechanism. 
 
 %RebecaSys
-\LUDO{I do not really understand this paragraph and hoew this is related to 
-synchronisation -- after skype: explain better vraiable protection, then the rest should 
-follow}
+%\LUDO{I do not really understand this paragraph and hoew this is related to synchronisation -- after skype: explain better vraiable protection, then the rest should follow}
 In RebecaSys, the syntax is extended with \textit{wait} statements, and a block of 
-\textit{global variables} at the beginning of the model.  RebecaSys is defined as a 
-back-end language,  SystemC codes are automatically mapped to RebecaSys and then are 
-formally verified. As a RebecaSys model is only created from a SystemC model 
-automatically, a controlled way of using global variables  is enforced, so, racing is 
-avoided. Hardware/Software co-design languages support a cycle-based synchronization 
-among all parallel processes. For example, if more than one module or process can write 
-in a SystemC variable then two global variables in RebecaSys are defined, for pre- and 
-post- values for each cycle.  
-A wait statement is also added, where a rebec waits until a Boolean expression becomes true. 
+\textit{global variables} at the beginning of the model. %RebecaSys is defined as a back-end language, SystemC codes are automatically mapped to RebecaSys and then are formally verified. 
+%Ehsan
+%As a RebecaSys model is only created from a SystemC model automatically, a controlled way of using global variables  is enforced, so, racing is avoided. Hardware/Software co-design languages support a cycle-based synchronization among all parallel processes. For example, if more than one module or process can write in a SystemC variable then two global variables in RebecaSys are defined, for pre- and post- values for each cycle. A wait statement is also added, where a rebec waits until a Boolean expression becomes true. 
+%Ehsan
+Global variables are shared variables among actors. All of actors are allowed to read/write values from/to global variables. Wait statements are used to force actors wait until the given Boolean expression of wait statements become true. This way, providing synchronization among actors, using wait statements on expressions of global variables, is possible. 
+%Ehsan:
+%RebecaSys is defined as a back-end language, SystemC codes are automatically mapped to RebecaSys and then are formally verified. 
+
 %This way we could keep the same model checking tools and techniques (including reduction techniques)
 % ... multiple writer will be two variable, for pre-post, 
 %Wait until a boolean expression becomes true.
@@ -806,26 +812,14 @@ A wait statement is also added, where a rebec waits until a Boolean expression b
 %Variable Rebeca: 
 
 
-In Broadcasting Rebeca,
-broadcast statement is added to Rebeca, but there is no known rebecs, so direct message 
-sending to an actor is impossible.
+In Broadcasting Rebeca, broadcast statement is added to Rebeca, but there is no known actors, so direct message sending to an actor is impossible.
 % there is no shared variable or synchronization
- Wireless Rebeca is an extension of Broadcasting Rebeca where in addition to broadcast to all, there are possibilities of multicast to neighbors and unicast to sender.
-Neighbours of an actor are actors which sent messages to it. Here, unlike in Rebeca, we have possibility of a message getting lost, as a neighbor may move out of the reach of an actor.
-\LUDO{what is your message here concerning synchronisation? -- after skype: have to say 
-that this is asynchronous communication again but no point-to-point???} 
+Wireless Rebeca is an extension of Broadcasting Rebeca where in addition to broadcast to all, there are possibilities of multicast to neighbors and unicast to sender. Neighbors of an actor are actors which sent messages to it. %Here, unlike in Rebeca, we have possibility of a message getting lost, as a neighbor may move out of the reach of an actor.
+%\LUDO{what is your message here concerning synchronisation? -- after skype: have to say 
+%that this is asynchronous communication again but no point-to-point???} 
+So, there is no more synchronization among actors in Broadcasting and Wireless Rebeca as the communication is asynchronous but not in actor-to-actor way.
 
-In most actor language, the status of the queue cannot be precisely introspected; this 
-limits expressiveness but prevents the creation of highly unpredictable behaviors. In 
-practice several actor languages allows filtering and pattern matching on the service of 
-message that seems to be a reasonable compromise. \LUDO{I added this intro as it is kind 
-of related with the first version of ASP that related determinacy with message filtering 
-... but perhaps it is a little too complicated}
-For example in Rebeca, the modeler cannot peek into the  message queues and have 
-information about a message without taking the message. 
-In modeling various applications, it is observed that sometimes a pattern-matching 
-mechanism for choosing a message to take from the queue, like what is provided by 
-Erlang,  could be very handy.
+%In most actor language, the status of the queue cannot be precisely introspected; this limits expressiveness but prevents the creation of highly unpredictable behaviors. In practice several actor languages allows filtering and pattern matching on the service of message that seems to be a reasonable compromise. \LUDO{I added this intro as it is kind of related with the first version of ASP that related determinacy with message filtering ... but perhaps it is a little too complicated} For example in Rebeca, the modeler cannot peek into the  message queues and have information about a message without taking the message. In modeling various applications, it is observed that sometimes a pattern-matching mechanism for choosing a message to take from the queue, like what is provided by Erlang, could be very handy.
 
 
 \paragraph{Degree of transparency}
@@ -929,11 +923,7 @@ There is a wide range of analysis and mapping toolsets for Rebeca family models 
 accessible from the Rebeca home page, see \url{http://rebeca-lang.org}. The majority of 
 these toolsets and libraries are integrated in Afra, the modeling and model checking IDE 
 of Rebeca family models. 
-Rebeca has been taught in different courses at different universities, including 
-Reykjavik University, Sharif University, University of Tehran, and University of Illinois 
-at Urbana-Campaign. Afra is an Eclipse plug-in that is used by students of these 
-classes, and provides the following facilities: \LUDO{do we really want to all list the 
-universities where each language is taught???}
+% Rebeca has been taught in different courses at different universities, including Reykjavik University, Sharif University, University of Tehran, and University of Illinois at Urbana-Campaign. Afra is an Eclipse plug-in that is used by students of these classes, and provides the following facilities: \LUDO{do we really want to all list the universities where each language is taught???}
 %, Afra is an integrated tool which has been used in teaching classes different universities (Tehran, sharif, RU, UIUC)visualize and step through the counter example - queue overflow - . 
 \begin{itemize}
 \item Eclipse-based editor with syntax highlighting for writing the models and  properties
@@ -972,6 +962,7 @@ codes   \cite{DBLP:journals/scp/ReynissonSACJIS14}
 
 For the summary of the mentioned aspects and comparing the features the members of Rebeca 
 family refer to Table~\ref{tab::Rebecacomparison}.
+
 \subsubsection{ABS}\label{sec:abs-lang}
 
 \lstset{ morekeywords={module,export,import, from, interface, class,
