@@ -488,11 +488,11 @@ available.
 
 
 
-Plus a small (or bigger) note on : 
+\TODO{ do we add a smallnote on : 
 E programming language, 
-Kilim, Akka, Go,
+Kilim, Akka, Go?}
 \TODO{Reiner: Panini}
-\TODO{Not sure all of them should be cited but we will decide later}
+%\TODO{Not sure all of them should be cited but we will decide later}
 
 
 
@@ -777,23 +777,30 @@ main {
 
 \paragraph{Degree of synchronisation} 
 Conforming the Agha's actor model, the only communication mechanism among actors of 
-Rebeca is asynchronous message passing. So, there is no synchronization among actors of 
-Rebeca. 
+Rebeca is asynchronous message passing. %So, there is no synchronization among actors of 
+%Rebeca. 
 % Ludo: removed : I am not sure this is really related to synchronisation
 %The only condition that you may consider as a deadlock, is when all the message queues 
 %of all actors are empty. 
 % In this case, all the actors will stay idle and having progress is impossible. The 
 %analysis tool sets of  Rebeca family support automatic deadlock-freedom check for the 
 %models.  
-In Rebeca, arrival of a message to its receiver message queue is guaranteed and the order 
-of the messages sent by one actor to another actor is preserved creating some form of 
-guaranteed order of execution.
-
+However, Rebeca ensures a FIFO point-to-point ordering of messages guaranteeing some 
+execution order.
+%In Rebeca, arrival of a message to its receiver message queue is guaranteed and the 
+%order 
+%of the messages sent by one actor to another actor is preserved creating some form of 
+%guaranteed order of execution.
 %Marjan
 % rebeca extensions
-In  Extended Rebeca \cite{DBLP:conf/acsd/SirjaniBMS05,DBLP:journals/jucs/SirjaniBM05}, Rebeca is enriched with a concept of component as a collection of actors that are more tightly coupled, actors inside a component can be synchronized by a handshaking communication mechanism. 
-%At the highest level of abstraction, components only interact asynchronously via broadcasting anonymous messages. At a lower level of abstraction (within a component), computations, on the one hand are driven by asynchronous messages, and on the other hand can be synchronized by a handshaking communication mechanism. 
-
+In  Extended Rebeca \cite{DBLP:conf/acsd/SirjaniBMS05,DBLP:journals/jucs/SirjaniBM05}, 
+Rebeca is enriched with a concept of component as a collection of actors that are more 
+tightly coupled, actors inside a component can be synchronized by a handshaking 
+communication mechanism guaranteeing some causal ordering of messages. 
+%At the highest level of abstraction, components only interact asynchronously via 
+%broadcasting anonymous messages. At a lower level of abstraction (within a component), 
+%computations, on the one hand are driven by asynchronous messages, and on the other hand 
+%can be synchronized by a handshaking communication mechanism. 
 %RebecaSys
 %\LUDO{I do not really understand this paragraph and hoew this is related to synchronisation -- after skype: explain better vraiable protection, then the rest should follow}
 In RebecaSys, the syntax is extended with \textit{wait} statements, and a block of 
@@ -801,7 +808,10 @@ In RebecaSys, the syntax is extended with \textit{wait} statements, and a block 
 %Ehsan
 %As a RebecaSys model is only created from a SystemC model automatically, a controlled way of using global variables  is enforced, so, racing is avoided. Hardware/Software co-design languages support a cycle-based synchronization among all parallel processes. For example, if more than one module or process can write in a SystemC variable then two global variables in RebecaSys are defined, for pre- and post- values for each cycle. A wait statement is also added, where a rebec waits until a Boolean expression becomes true. 
 %Ehsan
-Global variables are shared variables among actors. All of actors are allowed to read/write values from/to global variables. Wait statements are used to force actors wait until the given Boolean expression of wait statements become true. This way, providing synchronization among actors, using wait statements on expressions of global variables, is possible. 
+Global variables are shared variables among actors. All of actors are allowed to 
+read/write values from/to global variables. Wait statements allow some synchronisation 
+between actors and more precisely they allow one actor to wait until a given Boolean 
+expression becomes true. 
 %Ehsan:
 %RebecaSys is defined as a back-end language, SystemC codes are automatically mapped to RebecaSys and then are formally verified. 
 
@@ -817,7 +827,8 @@ In Broadcasting Rebeca, broadcast statement is added to Rebeca, but there is no 
 Wireless Rebeca is an extension of Broadcasting Rebeca where in addition to broadcast to all, there are possibilities of multicast to neighbors and unicast to sender. Neighbors of an actor are actors which sent messages to it. %Here, unlike in Rebeca, we have possibility of a message getting lost, as a neighbor may move out of the reach of an actor.
 %\LUDO{what is your message here concerning synchronisation? -- after skype: have to say 
 %that this is asynchronous communication again but no point-to-point???} 
-So, there is no more synchronization among actors in Broadcasting and Wireless Rebeca as the communication is asynchronous but not in actor-to-actor way.
+So, there is no more synchronization between two given actors in Broadcasting and 
+Wireless Rebeca.
 
 %In most actor language, the status of the queue cannot be precisely introspected; this limits expressiveness but prevents the creation of highly unpredictable behaviors. In practice several actor languages allows filtering and pattern matching on the service of message that seems to be a reasonable compromise. \LUDO{I added this intro as it is kind of related with the first version of ASP that related determinacy with message filtering ... but perhaps it is a little too complicated} For example in Rebeca, the modeler cannot peek into the  message queues and have information about a message without taking the message. In modeling various applications, it is observed that sometimes a pattern-matching mechanism for choosing a message to take from the queue, like what is provided by Erlang, could be very handy.
 
@@ -2563,11 +2574,14 @@ object among processes. Upon communication, the sent message and its parameters 
 stored in the message bag of the receiver actor which is located in its dedicated memory 
 space. %So, a copy of the parameters is stored in the receiver's memory space. %This 
 %%mechanism is called copying message passing of Erlang. 
-\LUDO{the end is not clear to me}
-Although, passing reference of actors using this mechanism does not result in sending the deep-copy of actors and only reference to actors are copied and are sent. The references to actors are allowed to be used for message sending not for sharing data of actors.
+%\LUDO{the end is not clear to me}
+%Although, passing reference of actors using this mechanism does not result in sending 
+%the deep-copy of actors and only reference to actors are copied and are sent. 
+The references to actors are allowed to be used for message sending not for sharing data 
+of actors.
 
 \paragraph{Error handling}
-In the current version of Rebeca, there is no mechanism for exception handling and the 
+In the current version of Rebeca, there is no mechanism for exception handling; the 
 programmer must rely on traditional messages to deal with errors. %So, modelers have to 
 %handle exceptions manually. In other words, exception handling is not a special case in 
 %Rebeca models and they must be implemented the same as ordinary parts of message servers 
@@ -2587,34 +2601,45 @@ In memory pressure, all of the Rebeca actors are analyzed to this aim as they ar
 
 \section{Lessons Learned and Conclusion}\label{sec-conclusion}
 
-\JS{There is an increased parallelism in new active object programming languages. 
-They bring new challenges such as efficient data sharing: more work is dedicated to mix and find a balance between data copy and safe shared memory. 
-Latest active object languages also take more into account distribution of the the code, and consider data locality. 
-Such languages do not systematically assume that there exists a global memory, which then lead to more efficient implementations of those languages.
-In this paper, we have showed many implementations of active object languages, and even several of them for the same language semantics (e.g. ABS backends). Those implementations are not simply a duplication for different technologies: each of them is targeted at a particular execution context and at particular use cases where they perform the best compared to other implementations.
-Throughout the description of implementations for the presented languages, we could perceive the good point for each of them. Typically, ProActive, the Java 8 backend for ABS, the ProActive backend for ABS, and Encore are the languages and implementations that target efficiency of the program execution. However, each of them address efficiency with a different approach. ProActive programs clearly target HPC applications: setting the program environment is heavy but the distributed execution is efficient on the whole; in particular, a few active objects coexist in the application. The Java 8 backend for ABS provides light threads and enables instantiation of many active objects on the same machine. It also allows active objects to achieve faster communications than in ProActive. At a finer grain, Encore provides optimized constructs with an efficiency of the program at a low-level. On a completely different aspect, Rebeca and ABS by itself have a wide range of verification tools and are not much concerned by the program execution but rather by the program properties. It does not mean that bridging the gap between those two categories of languages is useless, on the contrary it allows program verification and program efficiency to be reconciled and to benefit to a large range of programmers.
-}
+%\JS{There is an increased parallelism in new active object programming languages. 
+%
+%}
 
-\KIKO{With the advent of manycore computers, the active object paradigm has been reborned as
+%\KIKO{
+	With the advent of manycore computers and of large-scale cloud computing, the active 
+	object paradigm has been reborned as
 one of the best candidates to express safe asynchronous parallel and distributed computations.
 In this paper, we have covered the flourishment of the active object paradigm in its last 15 years,
-and each of the reviewed languages have been specialised to fulfil a specific goal. In this context,
+and each of the reviewed languages have been specialised to fulfill a specific goal. In 
+this context,
 languages such as Rebeca and ABS started with a strong focus on model checking and verification,
 and have been moving into a fairly efficient runnable implementation. On the other hand, 
-ProActive and Encore have been focus on an efficient implementation in the distributed
+ProActive and Encore have focused on an efficient implementation in the distributed
 and manycore computers, respectively. 
 %
-These four languages share the same ideas, the active object paradigm,
+These four languages share the same original programming model, the active object 
+paradigm,
 but have addressed different challenges motivated on their design decisions.
 In the implementation section,
 it has been shown how the semantics of each language have influenced its
 implementation, how different design decisions created new challenges and
-how these have been addressed and its limitations.
+how these have been addressed and its limitations. 
+One of the way the languages can be distinguished is int the way they handle
+ efficient data sharing, and how each language finds a balance between data copy and safe 
+ shared memory. 
 %
+
 This paper has shown different flavours of the active object paradigm and has,
 as one of its goals, been written to serve as reference for language designers and
 implementors.
-}
+In particular, we focused on the different approaches to efficiency. ProActive programs 
+clearly target HPC applications: setting the program environment is heavy but the 
+distributed execution is efficient on the whole;  a few active objects coexist in the 
+application. The Java 8 backend for ABS provides light threads and enables instantiation 
+of many active objects on the same machine. It also allows active objects to achieve 
+faster communications than in ProActive. At a finer grain, Encore provides optimized 
+constructs with an efficiency of the program at a low-level. 
+%}
 
 %\input{survey-parts/introduction.tex}
 %\input{survey-parts/example.tex}
