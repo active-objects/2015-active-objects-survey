@@ -2593,11 +2593,17 @@ programmer must rely on traditional messages to deal with errors. %So, modelers 
 
 \paragraph{Garbage collection}
 Rebeca borrows the default garbage collector of Erlang without any modification, which 
-runs one garbage collector for each process. %It uses general garbage collection 
+runs one garbage collector for each process which handles garbage collection internal to 
+each actor. %It uses general garbage collection 
 %algorithm (dividing memory to young and old generations) for each process. 
-\LUDO{I do not understand the last two sentences}
-This way, as each Rebeca actor is mapped to one Erlang process, we can say that per actor garbage collection takes place in translated codes. %In addition, the intra process garbage collection only analyses large processes (i.e., processes which consumes more than 20K of memory). So, 
-In memory pressure, all of the Rebeca actors are analyzed to this aim as they are long-lived large processes.
+%\LUDO{I do not understand the last two sentences}
+%This way, as each Rebeca actor is mapped to one Erlang process, we can say that per 
+%actor garbage collection takes place in translated codes. %In addition, the intra 
+%%process 
+%%garbage collection only analyses large processes (i.e., processes which consumes more 
+%%than 20K of memory). So, 
+%In memory pressure, all of the Rebeca actors are analyzed to this aim as they are 
+%long-lived large processes.
 
 \section{Lessons Learned and Conclusion}\label{sec-conclusion}
 
