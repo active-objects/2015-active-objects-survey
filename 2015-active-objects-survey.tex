@@ -332,54 +332,54 @@ thread of control, it was developed to simulate real-world
 A major remaining challenge in the development of high-level
 programming languages is the high-level specification of concurrent
 and parallel threads of control and their synchronization.  In process
-calculi like CSP \cite{Hoare85} and CCS \cite{Milner89}
-independent threads of control communicate data synchronously, e.g.,
-via channels.  The Ada programming language \cite{bal89acmsurv}
-extends this model of synchronous communication by a rendez-vous
-interpretation of the execution of procedure calls and returns.  In
-the shared-variable model of concurrency, threads of control
-communicate and synchronize directly via shared data. For example in
-the popular object-oriented language Java \cite{goetz06java} such a
-thread of control consists of a stack of procedure (method) calls,
-extending the sequential thread of control of Simula and Smalltalk
-from one to multiple threads in an manner resembling operating
-systems.
+calculi like CSP \cite{Hoare85} and CCS \cite{Milner89} independent
+threads of control communicate data synchronously, e.g., via channels.
+The Ada programming language \cite{bal89acmsurv} extends this model of
+synchronous communication by a rendez-vous interpretation of the
+execution of procedure calls and returns.  In the shared-variable
+model of concurrency, threads of control communicate and synchronize
+directly via shared data. For example, in the popular object-oriented
+language Java a thread of control consists of a stack of procedure
+(method) calls, extending the sequential thread of control of Simula
+and Smalltalk from one to multiple threads in a manner resembling
+operating systems \cite{goetz06java}.
 
 The shared-variable model of concurrency underlying the Java language
 requires that the developer ensures so-called ``thread safety'';
-without enough synchronization, data races between threads make the
-program behavior ``unpredictable and sometimes surprising''
-\cite{goetz06java}. 
-To avoid races, complex low-level synchronization
-mechanisms are required which may in turn give rise to deadlocks and
-thread starvation.  The execution of multithreaded programs depends on
-an underlying, intricate, and fine-grained granularity of
-interleaving, which makes multithreaded programs very difficult to
-understand and verify.  Further, since data, as represented statically
-by classes, and control, as represented at run-time by threads, are
-decoupled, this model of concurrency is also unintuitive and
-difficult to use in a distributed setting.
+insufficient synchronization causes data races between threads,
+rendering program behavior ``unpredictable and sometimes surprising''
+\cite{goetz06java}.  To avoid data races, complex low-level
+synchronization mechanisms are used which in turn may give rise to
+deadlocks and thread starvation.  The result of executing
+multi-threaded programs depends on intricate and fine-grained
+granularity of interleaving. This causes their behavior to be
+difficult to understand and to verify.  In addition, the
+multi-threaded concurrency model decouples data (represented
+statically by classes) and control (represented at runtime by
+threads), which is unintuitive and difficult to use in a distributed
+setting.
 
-
-In contrast to the above synchronous communication mechanisms, the
-Actor model of computation \cite{Agha86-book} is based on loosely
-coupled processes and asynchronous message passing.  Actors integrate
-and encapsulate both data and a single thread of control, and
-communicate without transfer of control. Message delivery is
-guaranteed but messages may arrive out of order.  This loose coupling
-makes Actor languages conceptually attractive for distributed
+The Actor model of computation \cite{Agha86-book} departs from the
+synchronous communication mechanisms described above and is based on
+loosely coupled processes as well as asynchronous message passing.
+Actors integrate and encapsulate both data and a single thread of
+control, and communicate without transfer of control. Message delivery
+is guaranteed but messages may arrive out of order.  This loose
+coupling makes Actor languages conceptually attractive for distributed
 programming.  Erlang~\cite{Erlang-book} is one of the most successful
 actor languages, especially because of its adoption by programmers in
 the industry, and because of its massively parallel execution model
-supporting a huge number of independent actors.  Active objects
-integrate the basic Actor model with object-oriented concepts. This
-integration can be realized by modelling a message as an asynchronous
-method call, thus fixing the interpretation of a message by a
-corresponding method definition.  In Rebeca
-\cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/jucs/SirjaniBM05} the
+supporting a huge number of independent actors.  
+
+Active object languages integrate the basic Actor model with
+object-oriented concepts. This integration can be realized by
+modelling a message as an asynchronous method call, thus fixing the
+interpretation of a message by a corresponding method definition.  In
+Rebeca
+\cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/jucs/SirjaniBM05}
 methods are run to completion without any further synchronization
 mechanism and do not return values. Like in the original Actor model,
-returning values from a method call can be modelled by another
+returning values from a method call can be modelled by a further
 asynchronous message; unlike the original Actor model, in Rebeca the
 order of messages between any two actors is preserved.
 % The Actor-based extension of Scala \cite{haller2009scala} introduces
@@ -388,72 +388,72 @@ order of messages between any two actors is preserved.
 % that this last sentence is that important and introduces one aspect
 % of Scala which is never mentioned it again.  I am missing a bit the
 % reason of the comparison}
- 
-Rebeca is designed to be simple and analyzable. Efficient
-compositional verification \cite{DBLP:journals/jucs/SirjaniMSB05} and
-specific state space reduction techniques
-\cite{DBLP:journals/acta/JaghooriSMKM10} are created based on the
-following characteristics of the model: no shared variables, no
-blocking send or receive, single-threaded actors, and non-preemptive
-execution of each message (execution of a message will not interfere
-with execution of another one).
+
+% Reiner: the following para is too specific for this intro. Moved it
+% to the Rebeca section
+%
+% Rebeca is designed to be simple and analyzable. Efficient
+% compositional verification \cite{DBLP:journals/jucs/SirjaniMSB05} and
+% specific state space reduction techniques
+% \cite{DBLP:journals/acta/JaghooriSMKM10} are created based on the
+% following characteristics of the model: no shared variables, no
+% blocking send or receive, single-threaded actors, and non-preemptive
+% execution of each message (execution of a message will not interfere
+% with execution of another one).
 
 Pushing the notion of method calls further by directly supporting
 return values leads to the notion of future variables.  Futures were
 originally discovered by Baker and Hewitt in the
-70s~\cite{BakerHH77}, and later rediscovered by Liskov and
-Shrira as promises in Argus~\cite{Liskov88} and by Halstead in the
-context of MultiLisp~\cite{Halstead:1985:MLC:4472.4478} before finding their way
+1970s~\cite{BakerHH77}, later rediscovered by Liskov and Shrira as
+promises in Argus~\cite{Liskov88}, by Halstead in
+MultiLisp~\cite{Halstead:1985:MLC:4472.4478}, before finding their way
 into object-oriented languages such as
-Concurrent\-Smalltalk~\cite{Yokote87}, ABCL~\cite{Yonezawa:1986:OCP:28697.28722},
-Eiffel$/\!/$~\cite{Caromel96}, and CJava~\cite{Cugola97}. A future may
-be understood as a mailbox which will eventually contain the return
-values from a method call. Thus the calling method may proceed with
-its computation and pick up the reply later. However, this requires
-additional synchronization by means of a blocking get-operation on the
-future.
+Concurrent\-Smalltalk~\cite{Yokote87},
+ABCL~\cite{Yonezawa:1986:OCP:28697.28722},
+Eiffel$/\!/$~\cite{Caromel96}, and CJava~\cite{Cugola97}. 
 
-In Creol \cite{johnsen03nik,johnsen07sosym} a powerful further
-synchronization mechanism is provided by cooperative scheduling of the
-methods of an active object by an explicit statement which allows the
-release of control.  This gives rise to a coroutine like execution of
-the method activations of an active object which encapsulates a single
-thread of control. This model of computation supports a compositional
-proof theory \cite{SDE:BoerCJ07}.
-
-
-Caromel, Henrio, and Serpette~\cite{CHS:POPL04} present ASP, an
-imperative, asynchronous object calculus with transparent futures.
-Their active objects may have internal passive objects which can be
-passed between active objects by first deep copying the entire
-(passive) object graph.  To manage the complexity of reasoning about
-distributed and concurrent systems, they restrict the language to
-ensure that reduction is confluent and deterministic. ASP constitutes
-the theoretical foundation for the ProActive language
-\cite{CH-book}.
-Later, ownership type systems have been proposed to
-alleviate unnecessary copying of passive objects \cite{clarke08aplas}. 
-
-The Java multithreaded model of computation can be integrated with
-active objects. In the Abstract Behavioral Specification Language ABS
-\cite{JHSSS10} this is done by combining Creol's cooperative
-scheduling model with the structuring mechanism of concurrent object
-groups (cogs) \cite{SchaeferP10b}.  Such a group of active objects
-consists of a pool of threads each of which is generated from an
-external asynchronous call and extended as a stack of internal
-synchronous method calls.  Within such a pool only one thread is
-executing at a time, but the granularity of interleaving is fully
-controlled by the high-level release statements of the cooperative
-scheduling.
-
-Another approach on integrating active objects in object-oriented languages is
-taken by the Encore \cite{ref:encore} programming language which,
-as ASP, makes a distinction between active and passive objects --
-passive objects are owned by active objects.
+A future can be pictured as a mailbox that will eventually contain the
+return value from a method call. Hence, the calling method may proceed
+with its computation and pick up the reply later. This, however,
+requires additional synchronization by means of a blocking
+get-operation on the future.
 %
-However, unlike ASP, 
-passive objects are passed by reference and are data race free
-via a capability type system~\cite{encore:kappa}.
+In Creol \cite{johnsen03nik,johnsen07sosym} such a synchronization
+mechanism is provided by cooperative scheduling of the methods of an
+active object with an explicit statement allowing the release of
+control.  This allows coroutine-like method call execution inside an
+active object which encapsulates a single thread of
+control. Cooperative scheduling permits a compositional proof theory
+\cite{SDE:BoerCJ07}.
+
+Java's multi-threaded concurrency model can be integrated with active
+objects on the basis of cooperative scheduling. In the Abstract
+Behavioral Specification (ABS) language \cite{JHSSS10} Creol's
+cooperative scheduling is combined with the structuring mechanism of
+concurrent object groups \cite{SchaeferP10b}, originally developed for
+Java.  A group of active objects consists of threads pool generated by
+(external) asynchronous calls and extended as a stack of (internal)
+synchronous method calls.  Within a pool at most one thread is
+executing at any time and the granularity of interleaving is
+explicitly modelled in the code with cooperative scheduling
+statements.
+
+Caromel et al.~\citeyear{CHS:POPL04} designed ASP, an imperative,
+asynchronous object calculus with transparent futures.  Their active
+objects may have internal passive objects which are passed between
+active objects by deep copying the entire (passive) object graph.
+Unnecessary copying can be avoided with ownership type systems
+\cite{clarke08aplas}.  To limit the complexity of reasoning in a
+distributed and concurrent setting, ASP is restricted to ensure that
+reduction is confluent and deterministic. ASP constitutes the
+theoretical foundation for the ProActive language \cite{CH-book}.
+
+Like ASP, the Encore programming language \cite{ref:encore} integrates
+active objects into an object-oriented model and distinguishes among
+active and passive objects (passive objects are owned by active ones).
+%
+Unlike ASP, passive objects are passed by reference and are data race
+free via a capability type system~\cite{encore:kappa}.
 %
 %Both the Encore \cite{ref:encore} and the ProActive languages
 %support the distinction between active and passive objects. Passive
@@ -467,11 +467,11 @@ via a capability type system~\cite{encore:kappa}.
 
 All these languages have drawn attention on different areas.
 %
-For instance, ABS is an executable modelling language with a focus on analysis and
-property-preserving code generation while, both Encore and ProActive, aim at
-efficient runtime systems for active object languages where
-Encore targets multicore platforms and ProActive has also been applied for the
-distributed setting.
+For instance, ABS is an executable modelling language with a focus on
+analysis and property-preserving code generation while, both Encore
+and ProActive, aim at efficient runtime systems for active object
+languages where Encore targets multicore platforms and ProActive has
+also been applied for the distributed setting.
 
 \paragraph{Further interesting languages}
 
@@ -621,10 +621,31 @@ non-experts. %Also, a high expressiveness can be expected for a language targeti
 
 \subsection{A Focus on Some Active-object Languages}
 
-
 \subsubsection{Rebeca}
 \paragraph{General presentation and objective of the language} 
-Rebeca (\emph{\underline{Re}active O\underline{b}j\underline{ec}ts L\underline{a}nguage}) is an actor-based modeling language designed in 2001 \cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/fuin/SirjaniMSB04}, as an imperative interpretation of Agha's actor model, provided with formal semantics and supported by model checking tools~\cite{DBLP:journals/jucs/SirjaniBM05,DBLP:conf/birthday/SirjaniJ11}. Rebeca is designed for modeling and verification of concurrent and distributed systems with the goal to bridge the gap between software engineers and formal methods community, by being a usable and at the same time analyzable modeling language. 
+
+Rebeca (\emph{\underline{Re}active O\underline{b}j\underline{ec}ts
+  L\underline{a}nguage}) is an actor-based modeling language designed
+in 2001
+\cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/fuin/SirjaniMSB04}, as
+an imperative interpretation of Agha's actor model, provided with
+formal semantics and supported by model checking
+tools~\cite{DBLP:journals/jucs/SirjaniBM05,DBLP:conf/birthday/SirjaniJ11}. Rebeca
+is designed for modeling and verification of concurrent and
+distributed systems with the goal to bridge the gap between software
+engineers and formal methods community, by being a usable and at the
+same time analyzable modeling language.
+
+\TODO{Reiner: I moved this para from the intro of Sect. 2, needs to be
+  integrated with previous para} Rebeca is designed to be simple and
+analyzable. Efficient compositional verification
+\cite{DBLP:journals/jucs/SirjaniMSB05} and specific state space
+reduction techniques \cite{DBLP:journals/acta/JaghooriSMKM10} are
+created based on the following characteristics of the model: no shared
+variables, no blocking send or receive, single-threaded actors, and
+non-preemptive execution of each message (execution of a message will
+not interfere with execution of another one).
+
 
 As usability has been a primary goal in designing Rebeca, the syntax is shifted to be 
 Java-like,  the computation and communication model of the core language is kept simple, 
