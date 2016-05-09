@@ -206,59 +206,61 @@ distributed, and parallel languages ]
 \section{Introduction}
 
 Designing a programming language for concurrent systems is a difficult
-task. The programming abstractions generally provided in concurrent
-programming libraries are often extremely low-level and difficult to
-reason about, both from the point of view of the programmer and for
-verification tools. This article focuses on one family of concurrent
-programming languages: active-object languages.  The first and most
-important characteristic of this family of languages is inherited from
-the actor paradigm. It relies on splitting the program into
-well-defined entities called actors. Each actor is an independent
-entity that behaves autonomously and that communicate with other
-actors through asynchronous messages. Information sharing is then
-simplified, and programming and analysis is much less error prone.
+task. The programming abstractions provided in concurrent programming
+libraries are often rather low-level and difficult to reason about,
+both from the point of view of the programmer and for verification
+tools. This article focuses on one family of concurrent programming
+languages that tries to mitigate this problem: active-object
+languages.  The first and most important characteristic of this family
+of languages is inherited from the actor paradigm. It relies on
+splitting the program into well-defined entities called actors. Each
+actor is an independent entity that behaves autonomously and that
+communicate with other actors through asynchronous
+messages. Information sharing is then simplified, programming is less
+error prone, and analysis becomes much easier.
 
-Among those actor-based languages we focus here on one special
-category that uses asynchronous method call as communication
+Within actor-based languages we focus in this survey on one specific
+category that uses asynchronous method calls as communication
 paradigm. Such languages are sometimes called \emph{active object}
-languages. This second difference is a little more subtle as the basic
-unit of concurrency is the same in all actor languages.  Generally,
-there is just a subtle difference in the expressiveness of the
-different languages. However what makes a bigger difference is the
-programming abstractions given to the programmer. By providing
-``communications by asynchronous method calls'' the active object
-languages provide a programming model that is very well integrated
-with the notion of object-oriented programming and with programming
-abstractions that are well known by the programmers.
+languages. Compared to the basic unit of concurrency, which is the
+same in all actor languages, the way to call methods seems to pose a
+rather subtle distinction. And indeed, this causes merely minor
+differences regarding expressiveness of the different languages,
+however, it causes considerable differences in terms of the
+abstractions given to the programmer. By providing
+\emph{communications by asynchronous method calls} active object
+languages provide a programming model that is tightly integrated with
+the notion of object-oriented programming and its programming
+abstractions that are familiar to most programmers.
 
-In this article, we first explain the historical context that led to
-the existence and the importance of those languages. We then focus on
-four languages that share the above characteristics and represent very
-well this family of languages. We start from Rebeca, that is the
-closest language to the original actor model, while already providing
-communication by some form of asynchronous method invocation. The
-three other languages, ABS, ASP, and Encore are exactly representative
-of active object frameworks. Additionally, they provide replies to
-requests in the form of \emph{futures}.
+We start this survey by giving the historical context that led to the
+existence of active object languages and that justifies their
+importance. We then focus on four languages that are representative of
+this language family. We start with Rebeca, which is closest to the
+original actor model, but nevertheless provides communication by a
+form of asynchronous method invocation. The three other
+languages---ABS, ASP, and Encore---are precise representatives of
+active object frameworks. Additionally, each of them implements
+replies to asynchronous requests in the form of \emph{futures}.
 
-All the languages presented here come with a strong support for formal
-methods and verification techniques, although Rebeca and ABS make it
-the first focus of the language, as they are originally considered a
-modelling languages. Actors do not only provide a convenient
-abstraction for programming but they also ease program analysis by
-naturally providing structured entities, in particular for a
-compositional analysis.
+All languages presented here come with strong support for formal
+methods and verification techniques; Rebeca and ABS even make this
+their focus, having been conceived as modelling languages: actors do
+not merely provide a convenient programming abstraction but also
+greatly simplify static program analysis by naturally providing
+structured entities that can serve as the basis for a compositional
+analysis.
 
-On the contrary, ASP and Encore come with very optimised
-implementations of the language and it is interesting to notice that
-both of them also allow the programmer to depart from the pure actor
-model by providing local multi-threading to an actor, either inside
-the treatment of a request (parallel combinators of Encore) or by
-running several requests in parallel (multi-threaded active objects of
-ASP). In both cases, the extension of the language is provided in such
-a way that it relies on the same programming abstractions as classical
-active objects and for this reason, it is still very easy to write
-safe and efficient programs.
+ASP and Encore instead put the focus on highly optimised, efficient
+implementations. It is interesting to notice that both of them (and,
+to a certain extent also ABS) allow the programmer to depart from the
+pure actor model by providing local multi-threading to an actor,
+either inside the treatment of a request (parallel combinators of
+Encore) or by running several requests in parallel (multi-threaded
+active objects of ASP). In each case, the extension of the language is
+provided in such a way that it relies on the same programming
+abstractions as classical active objects and for this reason, it is
+still very easy to write safe and efficient programs.
 % 
 %.
 %I think that in the intro we should try to motivate and justify the languages presented 
@@ -282,24 +284,23 @@ safe and efficient programs.
 %programming models for concurrent and distributed systems. What is difficult? What 
 %features are important in concurrent? in distributed systems?
 
-
-
-This paper is organised as follows. Section~\ref{AOlanguages} presents an overview of the 
-actor and active object languages; it first adopts an historical 
-perspective, and then focuses on the four chosen languages, presenting their principles, 
-the approach they advocate, and the tools they provide.
-Section~\ref{sec-implementation} focuses on the implementation and runtime support for 
-the 
-presented languages and Section~\ref{sec-conclusion} provides a conclusion.
+This paper is organised as follows. Section~\ref{AOlanguages} presents
+an overview of the actor and active object languages; it first adopts
+a historical perspective, and then focuses on the four chosen
+languages, presenting their principles, the approach they advocate,
+and the tools they provide.  Section~\ref{sec-implementation} focuses
+on the implementation and runtime support for the presented languages
+and Section~\ref{sec-conclusion} provides a conclusion.
 
 \section{Active object Languages}\label{AOlanguages}
 
-\subsection{An historical view of Actor and active-object languages}
+\subsection{A historical view of Actor and active-object languages}
 
-We present the languages discussed in this overview paper in a
-historical context.  The general development of high-level programming
-languages is driven by the quest for suitable abstractions of the
-low-level implementation details of the specific underlying hardware
+% We present the languages discussed in this overview paper in a
+% historical context.
+The development of high-level programming languages is generally
+driven by the quest for suitable abstractions of the low-level
+implementation details of the specific underlying hardware
 architectures, i.e., machine instructions.  The basic abstraction of
 the machine instructions for reading from and writing to memory
 locations which underlies imperative programming is the
