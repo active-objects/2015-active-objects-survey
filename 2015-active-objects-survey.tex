@@ -292,9 +292,11 @@ and the tools they provide.  Section~\ref{sec-implementation} focuses
 on the implementation and runtime support for the presented languages
 and Section~\ref{sec-conclusion} provides a conclusion.
 
-\section{Active object Languages}\label{AOlanguages}
+\section{Active object Languages}
+\label{AOlanguages}
 
-\subsection{A historical view of Actor and active-object languages}
+\subsection{A brief history of Actor and active object languages}
+\label{sec:brief-history}
 
 % We present the languages discussed in this overview paper in a
 % historical context.
@@ -465,14 +467,17 @@ race-free thanks to a capability type system~\cite{encore:kappa}.
 %communicated passive objects are copied), no data races occur, in
 %contrast to the multithreaded control of the cogs in ABS. 
 
-In the following we discuss four representative active object
+\paragraph{Selection of representative languages.}
+In the remaining article we discuss four representative active object
 languages in detail. Our selection strives to cover different aspects:
 modelling languages designed for analysis (ABS, Rebeca) vs.\ languages
 optimized for efficient execution (Encore, ProActive/ASP); close to
 the classical actor model and distributed systems (Rebeca, partially
 ABS, ProActive/ASP) vs.\ targeted at multicore platforms (Encore);
 code generation (ABS) vs.\ runtime environment (Encore,
-ProActive/ASP).
+ProActive/ASP). We have also made sure that the four languages
+discussed in detail have left the experimental stage and are available
+in stable, public distributions.
 
 % All these languages have drawn attention on different areas.
 % %
@@ -502,13 +507,11 @@ coarse-grained than in active object languages and there are no
 explicit synchronization statements. Akka \cite{AkkaBook} is a
 scalable library for implementing actors on top of Java and Scala.
 
-\TODO{ do we add a smallnote on : 
-% Reiner: rather obscure, there is not even a paper on it
+% \TODO{ do we add a smallnote on: Kilim, Go?}
+% Reiner: rather obscure, there is not even a paper on it:
 % E programming language, 
-Kilim, Go?}
 %\TODO{Reiner: Panini}
 %\TODO{Not sure all of them should be cited but we will decide later}
-
 
 \subsection{Dimensions of Comparison between Languages}
 
@@ -518,155 +521,171 @@ their design.
 %Those dimensions of comparison will  be used in the following to present 
 %the different languages.
 
-\paragraph{Objective of the language} Identifying the objective of the
-language, for which purpose it was created, is crucial to understand
-the design of a programming language and the trade-offs that had to be
-taken between different aspects.  For example, the performance of the
-language can be a crucial factor for which another aspect can be
-neglected, such as the accessibility of the language to
-non-experts. %Also, a high expressiveness can be expected for a language targeting
-%several 
-%platforms. 
-%Having a precise objective for a language generally defines the trade-offs 
-%that have to be taken between 
-%several aspects. 
-%and for this reason, 
-%in the following each language description 
-%will start by a brief presentation of the language's objectives.
+\paragraph{Objective of the language} 
+Identifying the objective of the language, for which purpose it was
+created, is crucial to understand the design of a programming language
+and the trade-offs that had to be taken between different aspects.
+For example, the performance of the language can be a crucial factor
+for which another aspect can be given less priority, such as the
+accessibility of the language to non-experts.
+% Also, a high expressiveness can be expected for a language targeting
+% several platforms.  Having a precise objective for a language
+% generally defines the trade-offs that have to be taken between
+% several aspects.  and for this reason, in the following each
+% language description will start by a brief presentation of the
+% language's objectives.
 
 \paragraph{Degree of synchronisation} 
-	The way a concurrent programming language is  designed highly 
-	depends on the degree of synchronisation that can be expressed in it. Each language has a 
-	different set of synchronisation primitives, although for active object languages, 
-	there is a narrow set of such primitives. In some languages, inspired from pure actors, there is no synchronisation primitive: concurrent entities evolve in a completely 
-	asynchronous manner and there is no particular instruction waiting for some event to happen. The 
-	only synchronisation between processes is due to the causal dependency created by the 
-	flow of messages. 
-%	In this case, a forged synchronisation 
-%	can be obtained by choosing the set of messages an actor can handle at a given point 
-%	in time. 
-	On the other hand, many active object languages use futures as a synchronisation 
-	mechanism. 
-	A future represents a
-	result that has not been computed yet. When the result is computed, it can be 
-	automatically available or explicitly retrieved, depending on the language design; we then say that the
-	future is \emph{resolved}. A process can also block waiting for a future to be resolved.
-	In active object languages, futures represent the result of asynchronous 
-	invocations. In most of those languages, an access to a future is a  
-	synchronisation point. Somehow such a synchronisation makes 
-	programming easier as it keeps a sequential workflow that the programmer can trust.
-	Several active object languages also support cooperative scheduling: a thread can be 
-	suspended to handle another message, and resumed later. The suspension can be 
-	triggered when checking whether a future
-	is resolved or not. This breaks the sequential processing of a message, but also 
-	allows 
-	programs to be more efficient and less deadlock-prone.
+There is a close relation between the design of a concurrent
+programming language and the degree of synchronisation that can be
+expressed in it. Each language has a different set of synchronisation
+primitives, even though for active object languages the choices are
+limited. In some languages, inspired by pure actors, there is no
+synchronisation primitive: concurrent entities evolve in a completely
+asynchronous manner and there is no particular instruction waiting for
+some event to happen. The only synchronisation between processes is
+due to the causal dependency created by the flow of messages.
+% In this case, a forged synchronisation can be obtained by choosing
+% the set of messages an actor can handle at a given point in time.
 
-	\paragraph{Degree of transparency} Another difference between languages 
-	is the number and the complexity of the programming abstractions the programmer has 
-	to 
-	know; among them some are explicitly visible in the program and some are 
-	hidden: they are transparent. For example,  if futures are transparent
-	variables which contain futures are not explicitly distinguished with a special 
-	static type, additionally there is no 
-	explicit instruction for accessing a future: an access to a future object is blocking 
-	if the future is not resolved yet.
-%some active object languages 
-%feature transparent asynchronous method invocations, i.e. asynchronous method 
-%invocations that are 
-%syntactically identical to synchronous ones. S
-	In general, the more transparency, the easier it is to write 	simple programs, 
-	because the programmer do not need to know all the intricacies of the 
-	programming model and because parallelism can be provided automatically. However, for
-	complex programs, the benefits of transparency is weakened, as exposing 
-	the programmer to the programming abstractions that are used can make 
-	programming, debugging,
-	or optimization easier. 
+Many active object languages use futures as a synchronisation
+mechanism.  A future represents a result that has not been computed
+yet. Once the result has been computed, it can be automatically
+available or explicitly retrieved, depending on the language design;
+in each case we say that the future is \emph{resolved}.  A process can
+also block waiting for a future to be resolved.  
+%
+In active object languages futures represent the result of
+asynchronous invocations. Usually a future access is a synchronisation
+point. This kind of intransparent synchronisation can make concurrent
+programming easier, as it ensures a sequential workflow that the
+programmer rely upon.
+
+Several active object languages support cooperative scheduling: a
+thread can be suspended to handle another message\footnote{The terms
+  \emph{message} and \emph{method call} are used interchangeably in
+  the literature on active object languages, depending on the
+  tradition that influenced language development.  Here we adopt
+  the terminology that is standard for the language under
+  discussion.} and resumed later.  Suspension can be triggered when
+checking whether a future is resolved or not. This breaks the
+sequential processing of a message (call), but also allows programs to
+be more efficient and less deadlock-prone.
+
+\paragraph{Degree of transparency} 
+This aspect concerns the number and complexity of the programming
+abstractions a programmer has to know.  Some of them are explicitly
+visible in the program and some are hidden: they are transparent. For
+example, if futures are transparent, then variables that relate to
+futures are not explicitly distinguished with a static type.  In this
+case, there is also no explicit instruction for accessing a future: an
+object access is blocking if the future is not resolved yet.
+% some active object languages feature transparent asynchronous method
+% invocations, i.e. asynchronous method invocations that are
+% syntactically identical to synchronous ones. S
+
+In general, the more transparency, the easier it is to write simple
+programs, because the programmer does not need to know the specifics
+of the concurrency model and parallelism is provided
+automatically. However, for complex programs, the benefits of
+transparency are weaker, because exposing the programming abstractions
+can make programming, debugging, or optimization easier.
 	
+\paragraph{Degree of data sharing} 
+Data sharing is a crucial aspect of concurrent and distributed
+programming. Depending on the target application domain and the
+potential for distributed execution, the constraints regarding data
+sharing can vary a lot.  The most efficient way to communicate data
+between different cores of the same machine is to share the data,
+whereas in a distributed setting, copying data to different consumers
+is often more efficient, as it avoids communication overhead.  
 
-	\paragraph{Degree of data sharing} Data sharing is a crucial aspect of concurrent and 
-	distributed programming. Depending on the target application domain and the potential 
-	for distributed execution, the constraints regarding data sharing can be vary a lot 
-	and be stronger or weaker. 		
-	The most efficient way to communicate data between 
-	different cores of the same machine is to share the data, whether in a distributed 
-	setting, copying the information to the different consumers of the data is often more
-	efficient as it avoids additional communications for peaking the data source. 	
-	Aside efficiency, the complexity of the language implementation varies 	
-	accordingly to the degree of data sharing. For example, copying data raises the 
-	problem of 
-	data consistency as data modifications may not be reflected on all copies.  
-	But on the other hand, shared data access involves additional communication to the 
-	shared memory, and additional synchronisation and delays. In practice, active object 
-	and actor languages that have distributed runtimes often use a ``no shared memory'' 
-	approach that favors 	
-	data copies for objects, and that accepts a few entities that are globally 
-	known and shared. On the contrary, when all objects are shared and accessible from 
-	anywhere, the data consistency is simpler to obtain, but 
-	the communication overhead is higher in distributed 
-	settings. 
-	%Encore is probably the richest language from this point of view, aiming at a 
-	%precise control of data sharing including entities that can explicitly be shared 
-	%between different actors.
+Efficiency aside, the complexity of the language implementation varies
+according to the degree of data sharing. For example, copying data
+raises the problem of data consistency as data modifications may not
+be reflected on all copies.  On the other hand, shared data access
+makes data consistency easier to obtain, but creates additional
+communication about the shared memory, additional synchronisation, and
+delays. In practice, active object and actor languages with
+distributed runtime systems often use a ``no shared memory'' approach
+favoring data copies with very few globally known and shared entities.
+% Reiner: I commented this out, it seems repetitive to the above text
+%
+% On the contrary, when all objects are shared and accessible from
+% anywhere, the data consistency is simpler to obtain, but the
+% communication overhead is higher in distributed settings.
+%
+% Encore is probably the richest language from this point of view,
+% aiming at a precise control of data sharing including entities that
+% can explicitly be shared between different actors.
 
-	\paragraph{Formal semantics and support} To reason on the 
-	properties of a language, a formal semantics is required. Most of the 
-	active object languages have a well-defined formal semantics; this is probably due to 
-	the fact that  active object and actor models were designed to make concurrent 
-	entities run safer. Formal semantics 
-	can then be used in several ways, either to prove generic properties that makes 
-	programming easier, or to prove the correctness of some 
-	implementation or some optimisations, or to implement formal tools for the analysis 
-	of programs. A language that has a formal semantics is overall more 
-	trustworthy; this is why we  take this point 
-	of comparison into account. 
+\paragraph{Formal semantics} 
+To establish formal properties of a language as well as for formal
+verification, a formal semantics is required. Most active object
+languages do have one. This is probably due to the fact that active
+object and actor models were created to make concurrent entities run
+more safely. A formal semantics can then be used to prove generic
+language properties that help programming (for example, data
+race-freedom), to prove the soundness of an implementation or of
+optimisations, and to implement tools for the formal analysis of
+programs. All these aspects have the potential to increase the
+trustworthiness in a language and the programs written in it.
+% A language with a formal semantics is overall more trustworthy; this
+% is why we take this point of comparison into account.
 	
-	\paragraph{Implementation and tooling support} We believe it is important to 
-	compare the active object languages relatively to the  tools they 
-	provide. Indeed, the implementation of an active object language and of the 
-	associated tools is also a factor to 
-	take into account because it might explain some constraints related to the underlying 
-	technologies that are used. Finally, the tooling support 
-	around a programming language ranges from utilities to help the programmer 
-	designing, writing, and 
-	analysing their programs, to utilities to support the deployment and execution of these 
-	programs. This point of comparison and the previous one  ensure the sustainability 
-	of the programming language.
+\paragraph{Implementation and tooling support} An important dimension
+of language comparison concerns the tool suite that is provided. Some
+active object languages have been designed with certain tool support
+in mind and this can explain some of the design decisions that were
+taken.  The tool support around a programming language ranges from
+utilities to help the programmer designing, writing, analysing,
+optimizing, and verifying their programs to utilities to support the
+deployment and execution of these programs. 
+% Reiner : I don't understand this:
+%
+% This point of comparison and the previous one ensure the
+% sustainability of the programming language.
 
-\subsection{A Focus on Some Active-object Languages}
+\subsection{Representative Examples of Active Object Languages}
+
+We give detailed presentations of the four languages singled out at
+the end of Section~\ref{sec:brief-history}. To ease comparison, each
+presentation follows the dimensions introduced in the previous
+section.
 
 \subsubsection{Rebeca}
-\paragraph{General presentation and objective of the language} 
+
+\paragraph{General presentation and objective of the language}
 
 Rebeca (\emph{\underline{Re}active O\underline{b}j\underline{ec}ts
-  L\underline{a}nguage}) is an actor-based modeling language designed
+  L\underline{a}nguage}) is an actor-based modeling language created
 in 2001
 \cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/fuin/SirjaniMSB04}, as
-an imperative interpretation of Agha's actor model, provided with
-formal semantics and supported by model checking
-tools~\cite{DBLP:journals/jucs/SirjaniBM05,DBLP:conf/birthday/SirjaniJ11}. Rebeca
-is designed for modeling and verification of concurrent and
+an imperative interpretation of Agha's actor model \cite{Agha86-book}.
+
+Rebeca is designed for modeling and verification of concurrent and
 distributed systems with the goal to bridge the gap between software
-engineers and formal methods community, by being a usable and at the
-same time analyzable modeling language.
+engineers and the formal methods community, by being a usable and at
+the same time analyzable modeling language.  It has a formal semantics
+and admits efficient compositional verification based on model
+checking~\cite{DBLP:journals/jucs/SirjaniBM05,DBLP:conf/birthday/SirjaniJ11}
+with state space reduction techniques
+\cite{DBLP:journals/acta/JaghooriSMKM10}. Efficient analysis relies on
+a number of restrictions: no shared variables, no blocking send or
+receive, single-threaded actors, and non-preemptive message execution
+(execution of several messages does not interfere with each other).
 
-\TODO{Reiner: I moved this para from the intro of Sect. 2, needs to be
-  integrated with previous para} Rebeca is designed to be simple and
-analyzable. Efficient compositional verification
-\cite{DBLP:journals/jucs/SirjaniMSB05} and specific state space
-reduction techniques \cite{DBLP:journals/acta/JaghooriSMKM10} are
-created based on the following characteristics of the model: no shared
-variables, no blocking send or receive, single-threaded actors, and
-non-preemptive execution of each message (execution of a message will
-not interfere with execution of another one).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-As usability has been a primary goal in designing Rebeca, the syntax is shifted to be 
-Java-like,  the computation and communication model of the core language is kept simple, 
-and the analysis support is the model checking. Rebeca is an actor-based language without 
-shared variable between actors and with asynchronous message passing (there is no 
-blocking send or receive statement).
-Because of the simple structure of the language, learning Rebeca is easy. Furthermore, using model checking tools needs far less expertise comparing to deduction-based analysis techniques.
+As usability has been a primary goal in designing Rebeca, the syntax
+is shifted to be Java-like, the computation and communication model of
+the core language is kept simple, and the analysis support is the
+model checking. Rebeca is an actor-based language without shared
+variable between actors and with asynchronous message passing (there
+is no blocking send or receive statement).  Because of the simple
+structure of the language, learning Rebeca is easy. Furthermore, using
+model checking tools needs far less expertise comparing to
+deduction-based analysis techniques.
 %
 Semantics of Rebeca helps analyzability,  Rebeca actors are isolated and hence various abstractions, and modular and compositional verification become less problematic to apply. 
 %Ehsan:
