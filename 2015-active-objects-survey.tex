@@ -452,8 +452,8 @@ Like ASP, the Encore programming language \cite{ref:encore} integrates
 active objects into an object-oriented model and distinguishes among
 active and passive objects (passive objects are owned by active ones).
 %
-Unlike ASP, passive objects are passed by reference and are data race
-free via a capability type system~\cite{encore:kappa}.
+Unlike ASP, passive objects are passed by reference and are data
+race-free thanks to a capability type system~\cite{encore:kappa}.
 %
 %Both the Encore \cite{ref:encore} and the ProActive languages
 %support the distinction between active and passive objects. Passive
@@ -465,52 +465,66 @@ free via a capability type system~\cite{encore:kappa}.
 %communicated passive objects are copied), no data races occur, in
 %contrast to the multithreaded control of the cogs in ABS. 
 
-All these languages have drawn attention on different areas.
-%
-For instance, ABS is an executable modelling language with a focus on
-analysis and property-preserving code generation while, both Encore
-and ProActive, aim at efficient runtime systems for active object
-languages where Encore targets multicore platforms and ProActive has
-also been applied for the distributed setting.
+In the following we discuss four representative active object
+languages in detail. Our selection strives to cover different aspects:
+modelling languages designed for analysis (ABS, Rebeca) vs.\ languages
+optimized for efficient execution (Encore, ProActive/ASP); close to
+the classical actor model and distributed systems (Rebeca, partially
+ABS, ProActive/ASP) vs.\ targeted at multicore platforms (Encore);
+code generation (ABS) vs.\ runtime environment (Encore,
+ProActive/ASP).
 
-\paragraph{Further interesting languages}
+% All these languages have drawn attention on different areas.
+% %
+% For instance, ABS is an executable modelling language with a focus on
+% analysis and property-preserving code generation while, both Encore
+% and ProActive, aim at efficient runtime systems for active object
+% languages where Encore targets multicore platforms and ProActive has
+% also been applied for the distributed setting.
 
-In parallel with this track of languages, other languages emerged, diverging more from 
-the classical active-object model. 
-JAC~\cite{ref:jac} stands for Java Annotations for Concurrency, it relies on a set of 
-Java annotation allowing the programmer to specify what parallelism can occur inside a 
-Java object with a relatively high-level perspective. It is also possible to encode some 
-kinds of actors in JAC. AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349} provide 
-actors with fully asynchronous futures: contrarily to other active object languages, 
-futures do not provide a classical synchronisation pattern,  instead a call on a 
-future triggers an asynchronous invocation that will be executed when the future is 
-available.
+\paragraph{Other high-level concurrent languages}
 
-
-
+There are several other programming languages that introduce
+high-level abstractions for concurrent programming that deviate from
+the active object approach.  JAC~\cite{ref:jac} stands for Java
+Annotations for Concurrency. It provides Java annotations that allow
+the programmer to specify the kind of parallelism that can occur
+inside a Java object from a relatively high-level perspective. It is
+possible to encode versions of actors in
+JAC. AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349}, provides
+actors with fully asynchronous futures: they do not provide a
+synchronisation pattern, but instead a call on a future triggers an
+asynchronous invocation that will be executed when the future is
+available. In Panini \cite{LinRajan13} concurrent behavior is
+specified by composing modules (called ``capsules'') that by
+themselves behave sequentially. The granularity of concurrency is more
+coarse-grained than in active object languages and there are no
+explicit synchronization statements. Akka \cite{AkkaBook} is a
+scalable library for implementing actors on top of Java and Scala.
 
 \TODO{ do we add a smallnote on : 
-E programming language, 
-Kilim, Akka, Go?}
-\TODO{Reiner: Panini}
+% Reiner: rather obscure, there is not even a paper on it
+% E programming language, 
+Kilim, Go?}
+%\TODO{Reiner: Panini}
 %\TODO{Not sure all of them should be cited but we will decide later}
 
 
-
-
 \subsection{Dimensions of Comparison between Languages}
-Before presenting in details different active object languages, we  
-define the key points that we consider as important regarding the design of actor 
-programming languages. 
+
+Before we discuss details of different active object languages, we
+define the key points that we consider as important when comparing
+their design.
 %Those dimensions of comparison will  be used in the following to present 
 %the different languages.
 
-\paragraph{Objective of the language} Identifying the objective of the language, for
-which purpose it was created, is crucial to understand the design of a programming 
-language and the trade-offs that had to be taken between different aspects.  For example, 
-the performance of the language can be a crucial factor 
-for which another aspect can be neglected, such as the accessibility of the language to 
-non-experts. %Also, a high expressiveness can be expected for a language targeting 
+\paragraph{Objective of the language} Identifying the objective of the
+language, for which purpose it was created, is crucial to understand
+the design of a programming language and the trade-offs that had to be
+taken between different aspects.  For example, the performance of the
+language can be a crucial factor for which another aspect can be
+neglected, such as the accessibility of the language to
+non-experts. %Also, a high expressiveness can be expected for a language targeting
 %several 
 %platforms. 
 %Having a precise objective for a language generally defines the trade-offs 
