@@ -908,98 +908,99 @@ In Timed Rebeca and Probabilistic Timed Rebeca, the message queue is changed int
 
 \paragraph{Degree of data sharing}
 %Following the actor's definition, 
-There is no shared variable among actors in Rebeca. Parameters in sending messages among actors are passed by value.
+There are no shared variables among actors in Rebeca. Parameters in  messages sent among actors are passed by value.
 %, so, the value of parameters are sent to the other actors not their references. 
-This  is also valid when a reference to an actor is sent as a parameter. In this case, the sent reference is created by shallow-copy of the original reference, i.e., avoiding creation of a new actor because of message passing (e.g. Fig~\ref{fig:rebeca-example} line 9) .
+This  is even the case if a reference to an actor is passed as a parameter. In this case, the sent reference is created by shallow-copy of the original reference, i.e., avoiding creation of a new actor because of message passing (e.g., Fig.~\ref{fig:rebeca-example}, line \ref{line:rebec:reqForMovieEnd}) .
 %Marjan: compare with ASP?
 % GALS Extended Rebeca
 % RebecaSys
 %None of the languages in Rebeca family allows shared variables.
 In RebecaSys, a block of global variables can be defined at the beginning of the model, 
-but these variables are used in a controlled way as explained above.
+but these variables are used in a controlled manner as explained above.
 %\TODO{Ludo: check again when I understand better the previous section on rebecasys}
 
-\paragraph{Formal semantics and support}
-To support analyzability and develop formal verification tools, Rebeca and its extensions are all equipped with formal semantics.
+\paragraph{Formal semantics}
+To support analyzability and develop formal verification tools, Rebeca and its extensions all are equipped with formal semantics.
 %One the main goal of Rebeca family languages is formal modeling and verification of actor-based models. So, all of the extensions of Rebeca are equipped with formal semantics. 
-Formal semantics of Rebeca is presented in \cite{DBLP:journals/fuin/SirjaniMSB04}, and  the model checking toolset of Rebeca is developed based on this semantics. 
+The semantics of Rebeca is defined in \cite{DBLP:journals/fuin/SirjaniMSB04} and  the model checking toolset of Rebeca is developed based on it. 
 %Later, it is presented in Algebra of Communicating Processes (ACP) for better support of reduction techniques \cite{DBLP:conf/acsd/HojjatSMG07}. 
-An ACP (Algebra of Communicating Processes) semantics is also presented in \cite{DBLP:conf/acsd/HojjatSMG07}.
+An ACP (Algebra of Communicating Processes) semantics is defined in \cite{DBLP:conf/acsd/HojjatSMG07}.
 %
 % Marjan: if we mention BRebeca we have to mention others too
 %Semantics of broadcasting Rebeca is presented as SOS (Structural Operational Semantics) rules in \cite{DBLP:conf/fsen/YousefiGK15} to provide a solid basis for its model checking toolset. 
 %
-Semantics of Timed Rebeca is presented as timed automata \cite{DBLP:journals/scp/KhamespanahSSKI15}, timed transition system \cite{DBLP:conf/facs2/KhamespanahSVK15}, real-time Maude \cite{DBLP:journals/scp/Sabahi-KavianiK15}, and floating time transition system \cite{DBLP:conf/facs2/KhamespanahSVK15}.
-Floating time transition system is an innovative semantics for real-time actors, that results in a significant amount of reduction in time and memory consumption while verifying timed actor models. 
+The semantics of Timed Rebeca is defined in terms of timed automata \cite{DBLP:journals/scp/KhamespanahSSKI15}, timed transition systems \cite{DBLP:conf/facs2/KhamespanahSVK15}, real-time Maude \cite{DBLP:journals/scp/Sabahi-KavianiK15}, and floating time transition systems \cite{DBLP:conf/facs2/KhamespanahSVK15}.
+Floating time transition systems constitute an innovative semantics for real-time actors,  resulting in a significant amount of reduction in time and memory consumption while verifying timed actor models. 
 %It is also presented in real-time Maude to support the analysis of dynamically creating real-time actors \cite{DBLP:journals/scp/Sabahi-KavianiK15}. 
-Formal semantics of Probabilistic Timed Rebeca is presented as TMDP in \cite{DBLP:journals/eceasst/JafariKSH14}. 
-
+Formal semantics of Probabilistic Timed Rebeca is defined interms of Timed Markov Decision Processes in \cite{DBLP:journals/eceasst/JafariKSH14}. 
 
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}m{#1}}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
 \begin{table}
-	\tbl{Summary of dimensions of comparison for  members of Rebeca family  
-	\label{tab::Rebecacomparison}}{%
-		
-		\scriptsize
-		\begin{tabular}{|L{1.8cm}|L{1.7cm}|L{1.3cm}|L{1.9cm}|L{1.3cm}|L{1.6cm}|L{1.2cm}|}
-			\hline
-			& \textbf{Objective} & \textbf{ Synchronization} & \textbf{Transparency} & 
-			\textbf{Data Sharing} & \textbf{Formal Semantics} & \textbf{Tool Support} \\
-			\hline
-			\textbf{Rebeca (R)} & modeling and verification of distributed concurrent 
-			systems & None & (Full) message queues and  interleaving of executions  & 
-			None & SOS, ACP & Afra integrated tool, various back-ends \\
-			\hline
-			\textbf{Extended Rebeca (ER)} &  Globally Asynchronous-Locally Synchronous 
-			Systems & local synchronous messages & As in Rebeca & None & SOS & None \\
-			\hline
-			\textbf{RebecaSys (RS)} & Hardware / Software Co-Design & wait statement & As 
-			in Rebeca + synchronization over global variables & Global variables & LTS & 
-			Model Checking, Simulation \\
-			\hline
-			\textbf{Variable Rebeca (VR)} & Product-lines of actors & None & As in Rebeca 
-			+ feature inclusion for selected product & None & SOS & Needs help of an 
-			expert\\
-			\hline
-			\textbf{Broadcasting Rebeca (BR)} & Actors with broadcasting abilities & None 
-			& As in Rebeca + broadcasting to all actors mechanism & None & SOS & Model 
-			Checking \\
-			\hline
-			\textbf{Wireless Rebeca (WR)} & Ad-hoc mobile networks & None & As in BRebeca 
-			+ handling the connectivity of nodes + multi-casting & None & SOS & Model 
-			Checking \\
-			\hline
-			\textbf{Timed Rebeca (TR)} & Realtime actors & delay statement & As in Rebeca 
-			+ Progress of time  & None & SOS, RT Maude, Timed Automata, FTTS & Afra 
-			integrated tool, various back-ends \\
-			\hline
-			\textbf{Probabilistic Timed Rebeca (PTR)} & Probabilistic readtime actors & 
-			As in TRebeca & As in TRebeca & None & SOS & Back-ends (IMCA \& Prism) \\
-			\hline
-		\end{tabular}
-	}
+  \tbl{Summary of dimensions of comparison for  members of Rebeca family  
+    \label{tab::Rebecacomparison}}{%
+    \scriptsize
+    \begin{tabular}{|L{1.8cm}|L{1.7cm}|L{1.2cm}|L{1.9cm}|L{1.1cm}|L{1.4cm}|L{1.2cm}|}
+      \hline
+      & \textbf{Objective} & \textbf{Synchro\-nization} & \textbf{Transparency} & 
+      \textbf{Data Sharing} & \textbf{Formal Semantics} & \textbf{Tool Support} \\
+      \hline
+      \textbf{Rebeca (R)} & Modeling and verification of distributed, concurrent 
+                            systems & None & (Full) message queues and  interleaving of execution  & 
+                                                                                                     None & SOS, ACP & Afra integrated tool, various backends \\
+      \hline
+      \textbf{Extended Rebeca (ER)} &  Globally asynchronous-locally synchronous 
+                                      systems & Locally synchronous messages & As in Rebeca & None & SOS & None \\
+      \hline
+      \textbf{RebecaSys (RS)} & Hardware/ software co-design & Wait statement & As 
+                                                                                in Rebeca + synchronization over global variables & Global variables & LTS & 
+                                                                                                                                                             Model Checking, Simulation \\
+      \hline
+      \textbf{Variable Rebeca (VR)} & Product lines of actors & None & As in Rebeca 
+                                                                       + feature inclusion for selected product & None & SOS & Needs help of an 
+                                                                                                                               expert\\
+      \hline
+      \textbf{Broadcasting Rebeca (BR)} & Actors with broadcasting abilities & None 
+                                                      & As in Rebeca + broadcasting to all actors mechanism & None & SOS & Model 
+                                                                                                                           Checking \\
+      \hline
+      \textbf{Wireless Rebeca (WR)} & Ad-hoc mobile networks & None & As in BR 
+                                                                      + handling the connectivity of nodes + multi-casting & None & SOS & Model 
+                                                                                                                                          Checking \\
+      \hline
+      \textbf{Timed Rebeca (TR)} & Realtime actors & Delay statement & As in Rebeca 
+                                                                       + Progress of time  & None & SOS,\newline RT Maude, Timed Automata, FTTS & Afra 
+                                                                                                                                          integrated tool, various backends \\
+      \hline
+      \textbf{Probabilistic Timed Rebeca (PTR)} & Probabilistic readtime actors & 
+                                                                                  As in TRebeca & As in TR & None & SOS & Backends IMCA and Prism \\
+      \hline
+    \end{tabular}
+  }
 \end{table}
 
+\TODO{Question from Reiner: please explain entry Tool Support for VR}
+
 \paragraph{Implementation and tooling support}
-There is a wide range of analysis and mapping toolsets for Rebeca family models which are 
-accessible from the Rebeca home page, see \url{http://rebeca-lang.org}. The majority of 
-these toolsets and libraries are integrated in Afra, the modeling and model checking IDE 
-of Rebeca family models. 
+There is a wide range of analysis and mapping tool sets for Rebeca family models:\footnote{These are 
+accessible from the Rebeca home page, see \url{http://rebeca-lang.org}}
 % Rebeca has been taught in different courses at different universities, including Reykjavik University, Sharif University, University of Tehran, and University of Illinois at Urbana-Campaign. Afra is an Eclipse plug-in that is used by students of these classes, and provides the following facilities: \LUDO{do we really want to all list the universities where each language is taught???}
 %, Afra is an integrated tool which has been used in teaching classes different universities (Tehran, sharif, RU, UIUC)visualize and step through the counter example - queue overflow - . 
 \begin{itemize}
-\item Eclipse-based editor with syntax highlighting for writing the models and  properties
+\item Eclipse-based editor with syntax highlighting for writing models and  properties
 \item Compiler and build system integrated with error location mechanism of Eclipse
 \item Model checking tool for  LTL and CTL model checking of Rebeca,
-and  Floating Time Transition System generator and analyzer for Timed Rebeca
+as well as Floating Time Transition System generator and analyzer for Timed Rebeca
 \item State space generators compatible with CADP and $\mu$CRL analysis and 
-visualization toolsets
+visualization tool sets
 \item Facilities for traversing counter examples in case of property violation
 \end{itemize}
 
-Additionally, there are other stand-alone tool-sets for the analysis of Rebeca  
+The majority of 
+these tools and libraries are integrated into Afra, the modeling and model checking IDE 
+for Rebeca family models. 
+Additionally, there are various stand-alone tools for the analysis of Rebeca  
 models:
 \begin{itemize}
 \item Simulator backend tool for Rebeca and Timed Rebeca models, generating  Erlang 
@@ -1020,12 +1021,10 @@ codes   \cite{DBLP:journals/scp/ReynissonSACJIS14}
 \item Bounded Rational LTL model checker of Rebeca  \cite{DBLP:conf/fsen/BehjatiSA09}
 
 \item Guided search engine for deadlock detection in Rebeca models \cite{DBLP:conf/facs2/SigurdarsonSBR12}
-
 \end{itemize}
 
-
-For the summary of the mentioned aspects and comparing the features the members of Rebeca 
-family refer to Table~\ref{tab::Rebecacomparison}.
+The various dimensions of comparison for members of the Rebeca
+language family are summarized in Table~\ref{tab::Rebecacomparison}.
 
 \subsubsection{ABS}\label{sec:abs-lang}
 
@@ -1036,7 +1035,7 @@ family refer to Table~\ref{tab::Rebecacomparison}.
 The \emph{A}bstract \emph{B}ehavioral \emph{S}pecification language
 (ABS) \cite{JHSSS10} is an object-oriented, concurrent modeling
 language developed since 2009 in a series of EC-funded research
-projects.\footnote{\url{www.hats-project.eu},
+projects.\footnote{HATS, see \url{www.hats-project.eu}, Envisage, see
   \url{www.envisage-project.eu}} Its ancestors include Creol
 \cite{Elinar2006} and JCoBox \cite{SchaeferP10b}.
 
@@ -1106,7 +1105,7 @@ the present article.
           minimum width=7.4cm, minimum height=0.6cm, draw] (adt) at
           (0,0.3){Algebraic (Parametric) Data Types};
 \end{tikzpicture}
-\caption{Syntax layers of the ABS language}
+\caption{Conceptual layers of the ABS language}
 \label{fig:layer}
 \end{minipage}
 \begin{minipage}{.43\textwidth}
@@ -1114,7 +1113,7 @@ the present article.
   \begin{lstlisting}[numbers=left,xleftmargin=4ex,escapechar=\%]
 module Services;
 import Data, init, modify 
-		from CustomerData;
+  from CustomerData;
 
 interface Serv {
   Unit process(Fut<Data> fd);
@@ -1253,20 +1252,22 @@ object in the current COG. Without \lstinline{local} a new COG is
 created together with the object. The next line declares and creates a
 data object (note that interface \lstinline{Data} must be imported) in
 the same COG. Hence, \lstinline{s} and \lstinline{d} share the same
-heap. Line~\ref{abs:main:init} calls an initialization method
+heap. line~\ref{abs:main:init} calls an initialization method
 (implementation not shown) on the data. The notation ``\lstinline{!}''
 signifies an asynchronous call. Its effect is to create a new task in
 the COG of \lstinline{d} that executes the code of
-\lstinline{init()}. Note that an ABS supports the programming to
-interfaces paradigm and has no other hiding mechanism than interfaces:
-an object may implement several interfaces, so each pointer to the
-object is typed by an interface controlling the methods available on
-that pointer. Fields are not accessible via interfaces.  Asynchronous
-calls do not interrupt the caller, so the statement following the call
-is immediately executed. Therefore, we need a handle by which to
-retrieve the result of an asynchronous call once its result has been
+\lstinline{init()}. 
+
+ABS implements the ``programming-to-interfaces'' principle and has no
+other hiding mechanism than interfaces: an object may implement
+several interfaces, so each pointer to the object is typed by an
+interface controlling the methods available on that pointer. Fields
+are not accessible via interfaces.  Asynchronous calls do not
+interrupt the caller, so the statement following the call is
+immediately executed. Therefore, we need a handle by which to retrieve
+the result of an asynchronous call once its result has been
 computed. In ABS the type of such handles have a future annotation. As
-can be seen in Line~\ref{abs:main:end}, it is possible to pass futures
+can be seen in line~\ref{abs:main:end}, it is possible to pass futures
 as parameters. This makes it possible to use the result of an
 asynchronous call in different places without copying it.
 
@@ -1279,12 +1280,12 @@ does not determine which of \lstinline{init()} and
 \lstinline{process()} is started first. In fact, ABS can be
 parameterized with different scheduling strategies, which can be
 programmed at the functional layer \cite{bjork13isse}.  The semantics
-leaves the scheduling open, so the static analyzers of ABS take all
+leaves scheduling open, so the static analyzers of ABS take all
 possible scheduling sequences into account.
 
-A first synchronisation point is reached in
-Line~\ref{abs:process:awaitd} of \lstinline{process()}. It ensures
-that the value of the future \lstinline{fd} is available. If
+A first synchronisation point in the example is reached at
+line~\ref{abs:process:awaitd} in the body of \lstinline{process()}. It
+ensures that the value of the future \lstinline{fd} is available. If
 \lstinline{init()} had not been scheduled before, it will be now. Once
 the value of \lstinline{fd} is available, it is retrieved with a
 \lstinline{get} expression. Note that \lstinline{rd} and \lstinline{d}
@@ -1303,8 +1304,8 @@ situation the abbreviation
 \end{center}
 is provided, which avoids the declaration of an explicit future.
 
-Line~\ref{abs:process:sync} contains a synchronous call which is also
-possible in ABS. It results in a stack-like behavior, i.e., it yields
+line~\ref{abs:process:sync} contains a synchronous call which is also
+supported in ABS. It results in a stack-like behavior, i.e., it yields
 the processor to the callee and blocks the caller until it
 returns. Obviously, here we are interested only in the side effect
 that \lstinline{modify()} has. Synchronous calls are only permitted in
@@ -1317,7 +1318,7 @@ If one attemps to retrieve a future value that is not yet ready, this
 results in blockage of its COG until the value becomes
 available. Obviously, this can easily lead to deadlocks. Many
 deadlocks can be avoided by guarding \lstinline{get} expressions with
-an \lstinline{await} (Line~\ref{abs:process:awaitd}). Clearly, not all
+an \lstinline{await} (line~\ref{abs:process:awaitd}). Clearly, not all
 deadlocks can be prevented in this manner. In practice, however,
 deadlocks are easy to avoid, because synchronisation points are
 explicit. In addition, ABS comes with an automated deadlock analysis
@@ -1364,24 +1365,24 @@ All objects in ABS have strictly private visibility, that is, they can
 only access their own fields directly. The fields of any other object
 must be accessed via explicit method calls.
 
-\paragraph{Formal semantics and support}
+\paragraph{Formal semantics}
 
-ABS has a fully formal, small step operational semantics
-\cite{JHSSS10,hats-d1.2} that permits formal soundness theorems for the
-various analyses that are available for ABS. This semantics is
-directly expressed in terms of rewrite rules in Maude format
-\cite{ClavelDELMMT07} which yields a sound interpreter for ABS.
+ABS has a small step operational semantics \cite{JHSSS10,hats-d1.2}
+that permits to prove soundness theorems for the various analyses that
+are available for ABS. This semantics is directly expressed in terms
+of rewrite rules in Maude format \cite{ClavelDELMMT07} which yields a
+sound interpreter for ABS.
 
 In addition there is an axiomatic semantics in the form of a program
 logic~\cite{ref:key}. The behavior of interfaces and classes can be
-specified by invariants over the histories of symbolic states as contracts 
-between processes. 
-Because preemption is excluded in ABS it is sufficient to establish
-invariants upon object creations, at explicit synchronisation points and 
-upon the termination of methods.  It is possible to prove a composition 
-theorem for ABS about the relation between local and global invariants
-\cite{Din14fac}. This makes it possible to prove global behavioral
-properties of an ABS model by (method-)local reasoning.
+specified by invariants over the histories of symbolic states as
+contracts between processes.  Because preemption is excluded in ABS it
+is sufficient to establish invariants upon object creation, at
+explicit synchronisation points and upon the termination of methods.
+It is possible to prove a composition theorem for ABS about the
+relation between local and global invariants \cite{Din14fac}. This
+makes it possible to prove global behavioral properties of an ABS
+model by (method-)local reasoning.
 
 \paragraph{Implementation and tooling support}
 
@@ -1390,29 +1391,33 @@ a wide range of tools available. Most of them support the full ABS
 language and are fully automatic. An overview of several of the tools
 is available as \cite{BFH14,WongAMPSS12}.
 
-There is an Eclipse plug-in that provides a development
-environment for ABS and integrates most tools, see
-\url{http://tools.hats-project.eu/eclipseplugin/installation.html}. An
-alternative is the web-based ABS collaboratory at
-\url{http://ei.abs-models.org:8082/clients/web/} which requires no
-installation and also permits to try out most ABS tools.  Here is a
-list of currently supported tools for ABS:
+There is an Eclipse plug-in that provides a development environment
+for ABS and integrates most tools. An alternative is the web-based ABS
+collaboratory that runs in a browser and permits to try out most ABS
+tools. It can be used either as a service or installed
+locally. Download and installation instruction for ABS tools are at
+\url{http://abs-models.org/installation/}. Here is a list of currently
+supported tools for ABS:
 
 \begin{itemize}
-\item editor with syntax highlighting and integrated build system,
-  including compiler error location;
-\item simulator/interpreter with interactive debugger;
-\item visualization of ABS model execution as sequence diagram;
-\item code generator backends for Erlang, Haskell,
-  ProActive~\cite{rochas:hal-01065072}, Java
-  8~\cite{serbanescuNABN14a};
-\item a glass box test case generator for \emph{concurrent} models \cite{AlbertAGM15};
-\item a sound deadlock analysis \cite{CGM:SoSym2014};
-\item a worst-case resource analysis that can be parameterized with a
-  cost model for execution time, memory consumption, transmission
-  size, peak cost and various other cost categories \cite{AlbertAFGGMPR14};
-\item a deductive verification tool for expressive, history-based
-  property specifications \cite{ref:key}
+\item An editor with syntax highlighting and integrated build system,
+  including compiler error location
+\item An ABS simulator/interpreter with interactive debugger
+\item Visualization of ABS model execution as sequence diagram
+\item Code generator backends for Erlang, Haskell,
+  ProActive~\cite{rochas:hal-01065072} (see also
+  Sect.~\ref{subsec:proactive-backend-abs}), Java
+  8~\cite{serbanescuNABN14a}.
+\item A glass box test case generator for \emph{concurrent} models
+  \cite{AlbertAGM15}
+\item A sound deadlock analysis \cite{CGM:SoSym2014}
+\item A worst-case resource analysis tool that can be parameterized
+  with a cost model for execution time, memory consumption,
+  transmission size, peak cost and various other cost categories
+  \cite{AlbertAFGGMPR14}
+\item A deductive verification tool for expressive, history-based
+  specifications \cite{ref:key} to prove properties for an
+  \emph{unbounded} number of objects and tasks
 \end{itemize}
 
 
