@@ -1423,7 +1423,7 @@ supported tools for ABS:
 
 \subsubsection{ProActive and ASP}
 \paragraph{General presentation and objective of the language}
-ASP~\cite{CH-book} is an active object programming language especially designed for
+ASP~\cite{CH-book} is an active object programming language specifically designed for
 programming and deploying distributed systems. ProActive is a Java library implementing the semantics
 of the ASP calculus. The language is designed taking the constraints of distributed
 programming into account, and relies on Remote Method Invocation as the communication layer even though
@@ -1437,15 +1437,17 @@ transparency for the programmer: active objects and futures are
 manipulated like usual Java objects. The ProActive middleware
 automatically triggers asynchronous remote invocations and performs
 automatically blocking synchronisation when needed. ProActive is thus
-intended to Java programmers that are not particularly experts in
+particularly intended for Java programmers that are not experts in
 concurrent and distributed programming.
 
-Another choice is that active objects are coarse grain entities. We create a dedicated 
-thread for each of them and they come with a quite heavy machinery  for managing each 
-object and communicating between objects. The machinery ensures all the distributed 
-nature of the computation. As a consequence, using the ProActive library, 
-it is not possible to instantiate thousands of active objects on the same core. Of course 
-the number of passive objects is not particularly restricted.
+A further design choice is that active objects are coarse grained
+entities. We create a dedicated thread for each of them and they come
+with a quite heavy machinery for managing each object and
+communicating between them. This machinery fully ensures the
+distributed nature of the computation. As a consequence, using the
+ProActive library, it is not possible to instantiate thousands of
+active objects on the same core. Of course the number of passive
+objects is not specially restricted.
 
 Since 2010, ASP features
 \emph{multi-active objects}~\cite{HHI2013:mao} meaning that in each active object, several
@@ -1456,7 +1458,7 @@ parallelism.
 \paragraph{Language description}
 In ASP, active objects coexist with objects that are not active; we call them 
 \emph{passive} objects. An active object together with its 
-service thread(s) its passive objects, and its request queue is called an activity. 
+service thread(s), its passive objects, and its request queue is called an activity. 
 Each passive object is placed under the responsibility of an active object.
 Only active objects are accessible between activities. The 
 objects that are not active are only accessible within an activity; if those 
@@ -1473,17 +1475,17 @@ In ASP, futures are first-class: they can be passed between activities. In this 
 when the future is resolved, the result is automatically updated at all locations.
 
 ProActive offers an API to create active objects, 
-and a runtime for handling ASP features. The following is an example of ProActive program:
+and a runtime for handling ASP features. The following is an example of a ProActive program:
 \lstset{
 	emph={parameters,node}, 
 	emphstyle=\itshape
 } 
-\begin{lstlisting}
+\begin{lstlisting}[numbers=none,xleftmargin=3ex]
 O o = PAActiveObject.newActive(O.class, parameters, node);
 T t = PAActiveObject.newActive(T.class, parameters, node);
-V v = t.bar(); 	// implicit asynchronous method call
-o.foo(v); 	// v can be passed without blocking
-v.foobar(); 	// potential wait-by-necessity on v
+V v = t.bar(); // implicit asynchronous method call
+o.foo(v);       // v can be passed without blocking
+v.foobar();     // potential wait-by-necessity on v
 \end{lstlisting}
 %%% THE FOLLOWING MIGHT BE TOO DETAILLED %%%
  An active object is created using \code{newActive}, instead of the \code{new} of Java.
@@ -1503,22 +1505,21 @@ v.foobar(); 	// potential wait-by-necessity on v
  The principle of the multi-active object programming model is to execute multiple
  requests of an active object in parallel, while controlling the concurrency. 
  In practice, the 
- programmer can declare which requests (i.e. which methods of the active object) can be 
+ programmer can declare which requests (i.e., which methods of the active object) can be 
  safely executed in parallel. Such requests are 
   called \emph{compatible} requests. The internal scheduler of an active object will allocate by default
  as many threads as necessary to run compatible requests in parallel.
   In 
  ProActive, multi-active object features
-  can be used through a metalanguage, based on Java annotations. The 
+  can be used through a meta language, based on Java annotations. The 
  following is an
- example of multiactive object annotations in ProActive: 
- \lstset{morekeywords={@DefineGroups,@Compatible,@DefineRules,@Group,@MemberOf} }
-\begin{lstlisting}
+ example of multi-active object annotations in ProActive: 
+\lstset{morekeywords={DefineGroups,Compatible,DefineRules,Group,MemberOf} }
+\begin{lstlisting}[numbers=none,xleftmargin=3ex]
 @Group(name="group1", selfCompatible=true)
 @Group(name="group2", selfCompatible=false)
 @Compatible({"group1", "group2"})
 public class MyClass {
-  ...
   @MemberOf("group1")   
   public ... method1(...) { ... }
   
@@ -1527,38 +1528,40 @@ public class MyClass {
 }
 \end{lstlisting}
 In this example, two groups of requests are defined, each of them holding one method. 
-The two groups are declared to be compatible (so as their method, by extension). The 
+The two groups are declared to be compatible (and so are their methods, by extension). The 
 \code{selfCompatible} parameter defines whether two different requests of the same group 
 are allowed to run in parallel. At runtime, a ready request is automatically executed if 
 it is compatible (i) with requests that are already executing and (ii) with older 
-requests in the queue. The first condition (i) prevents data races. The second condition (ii) preserves the ordering of non-compatible 
-requests. The second condition (ii) also prevents starvation that would arise if many requests of a group 
-$G$, 
-that are only compatible with executing requests keep overtaking requests of another 
-group $G'$, with which they would not be compatible. 
+requests in the queue. The first condition prevents data races. The second condition preserves the ordering of incompatible 
+requests. It also prevents starvation which would arise when requests of a group 
+$G$ that are merely compatible with currently executing requests are continously overtaking requests of another 
+group $G'$ with which they are incompatible. 
 
-Without annotations, a multi-active object is a mono-threaded active object,
+Without any annotations, a multi-active object is a mono-threaded active object,
 without
 any local parallelism nor any possible race condition. Programming a mono-threaded active object-based application with ProActive is thus extremely simple. If some
 parallelism is desired, a compatibility should be declared between requests
-that can be safely interleaved and for which execution order do not matter.
-To define a compatibility between two requests, the programmer can also use runtime information such as the request parameters or the object's 
-state. Programming a multi-active object-based application with ProActive is thus a bit more difficult than programming mono-threaded ProActive active objects, but it is less complicated than programming with raw threads and low-level synchronization mechanisms while giving a competing parallelism compared to those ancient techniques.
-However, if even more parallelism, out of the scope of request compatibility, is required, the programmer can still define more requests as compatible, and prevent unexpected behaviours with traditional low-level Java synchronisation 
-primitives, this mixed approach goes beyond the traditional 
+that can be safely interleaved and for which execution order does not matter.
+
+To define compatibility between two requests the programmer can also use runtime information such as the request parameters or the object's 
+state. Programming a multi-active object-based application with ProActive is thus somewhat more difficult than programming mono-threaded ProActive active objects, but it is far less complex than programming with raw threads and low-level synchronization mechanisms while, at the same time, providing a considerable degree of parallelism.
+If even more parallelism, beyond what is possible with request compatibility, is required, then the programmer can  define further requests as compatible and prevent undesired behaviour with traditional low-level Java synchronisation 
+primitives. Such a mixed approach goes beyond the traditional 
 active-object model.
 
-Other high-level specifications are available in multiactive
-objects~\cite{henrio:hal-00916293}, such as request priority. To avoid thread explosion,
-it is also possible to set a limit on the number of threads running in parallel.  The
-limit can be applied in two ways: a hard limit restrains the overall number of threads
-whereas a soft limit only counts threads that are not in wait-by-necessity. 
+Further high-level specifications are available in multi-active
+objects, such as request priority~\cite{henrio:hal-00916293}. To avoid thread explosion,
+it is possible to set a limit on the number of threads running in parallel.  That
+ can be either a hard limit restraining the overall number of threads or
+ a soft limit that only counts threads  not in wait-by-necessity. 
 Additionally, threads can be limited per group.
 
-As a conclusion, ASP and ProActive are based on the multiactive object programming
+To summarize, ASP and ProActive are based on the multi-active object programming
 model.
-This model is well adapted to non-expert because it provides high-level features for distribution 
+This model is  suitable for non-experts, because it provides high-level features for distribution 
 and safe concurrency.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \paragraph{Degree of synchronisation}
 In ASP, the only blocking synchronisation is the wait-by-necessity on a future. In this case, as requests run until completion, potential deadlocks can arise in 
