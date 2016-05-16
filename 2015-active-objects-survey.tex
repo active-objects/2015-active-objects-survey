@@ -1561,72 +1561,75 @@ model.
 This model is  suitable for non-experts, because it provides high-level features for distribution 
 and safe concurrency.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \paragraph{Degree of synchronisation}
-In ASP, the only blocking synchronisation is the wait-by-necessity on a future. In this case, as requests run until completion, potential deadlocks can arise in 
+In ASP, the only blocking synchronisation is wait-by-necessity on a future. As requests run until completion, potential deadlocks can arise in 
 case of reentrant calls, especially if no compatibility annotation is specified. 
-However, synchronisation only occur when the future value is actually needed and, in 
+However, synchronisation only occurs when the future value is actually needed and, in 
 particular, future references can safely be transmitted between activities without 
 requiring any additional synchronisation, which limits blocking synchronisation leading 
 to deadlocks.
 Deadlocks can also be removed by using multi-active objects especially with no limit or a 
-soft limit of the number of threads. In particular,
-when a thread becomes in wait-by-necessity, it is not counted in the soft thread limit of 
-the active object any more, so the wait-by-necessity event potentially causes the start 
+soft limit of the number of threads. Specifically,
+when a thread enters wait-by-necessity, it is not counted in the soft thread limit of 
+the active object anymore, so the wait-by-necessity event potentially causes the start 
 of another request.
 
 \paragraph{Degree of transparency}
-In ASP the programmer is not explicitly exposed at all to the notion of future and in a moderate way to the notion of active object (at active object creation time only). The syntax is the same as the syntax for sequential 
-programming, there is no specific construct for waiting a future value or performing an 
-asynchronous call. Very often a sequential code can be reused unchanged in a distributed 
+In ASP the programmer is not exposed at all to the notion of a future and in a limited manner to the notion of an active object (at object creation time only). The syntax is the same as  for sequential 
+programming, there is no specific construct for awaiting a future value or for performing an 
+asynchronous call. Frequently, sequential code can be reused unchanged in a distributed 
 setting.
-
-When dealing with multiactive objects, the programmer is exposed to the notion of 
-parallel treatment of requests, the programming model becomes more explicit concerning 
+%
+When dealing with multi-active objects, the programmer is exposed to the notion of 
+parallel treatment of requests. In this case the programming model becomes more explicit concerning 
 concurrency aspects. 
 
 \paragraph{Degree of data sharing}
 ASP follows a strict policy of absence of sharing between active objects. Objects that are 
-not active objects and are passed by copy between activities (as request parameters or request 
-results). Of course this mechanism applies also to objects that referenced by passed 
-objects; a deep-copy mechanism is used ensuring that, when objects are transmitted 
-between activities, they are copied as well as all their dependency on the destination 
-side. This mechanism, which is the one used by RMI, slows down request invocation in practice because 
-of the time spent to transmit data, but accelerates request treatment because there is no 
-need to contact another activity to get the value of the request parameters. Note that 
+not active objects are passed by copy between activities (as request parameters or request 
+results). Of course, this  applies also to objects that are referenced by passed 
+objects: a deep-copy mechanism  ensures that, when objects are transmitted 
+between activities, they are copied together with all their dependants on the destination 
+side. This mechanism, also used by RMI, slows down request invocation, because 
+of the time spent to transmit data, but it accelerates request treatment, because there is no 
+need to contact another activity to obtain the value of the request parameters. Note that 
 active object and future references are passed by reference.
 
-There is no coherency ensured between the different copies of a passive object, thus if 
-the user wants to ensure that an object has a unique coherent state, he should not 
-transmit it by copy, and in this case transmitting an active-object reference instead would be the best choice.
+Coherency  between different copies of a passive object is not guaranteed.  If 
+a user wants to ensure that an object has a unique coherent state, he should not 
+transmit it by copy:  transmitting it as an active-object reference instead would be the best choice.
 
-\paragraph{Formal semantics and support}
+\paragraph{Formal semantics}
 
-Several papers formalise the semantics of ASP. The first of them formalised the 
-mono-threaded part of the language and proved some determinacy 
-properties~\cite{CHS:POPL04}. In particular, this paper proved that the order of future 
-updates has no influence on the execution and that the only source of non-determinacy in 
-mono-threaded ASP is when two activities can send a request to the same destination.
-A functional fragment of the calculus has also been 
-formalised in Isabelle/HOL~\cite{HKL:SCP11}. A specific semantics has been exhibited in 
-order to evaluate a functional ASP program without risk of having a deadlock; the absence 
-of deadlock has been proved in Isabelle/HOL.
-The full semantics of imperative ASP with multi-threaded activities is published 
-in~\cite{HHI2013:mao}.
+Several papers formalise the semantics of ASP. Caromel et
+al.~\citeyear{CHS:POPL04} formalise the mono-threaded part of the
+language and prove determinacy properties. In particular, they prove
+that the order of future updates has no influence on the execution and
+that the only source of non-determinacy in mono-threaded ASP is when
+two activities can send a request to the same destination.  
+%
+A functional fragment of the calculus has been formalised in
+Isabelle/HOL~\cite{HKL:SCP11}. A specific semantics has been designed
+to evaluate a functional ASP program without risk of 
+deadlock; the absence of deadlocks is proved in Isabelle/HOL.
+The full semantics of imperative ASP with multi-threaded activities is
+contained in~\cite{HHI2013:mao}.
 
 
 \paragraph{Implementation and tooling support}
+
 ProActive is the Java library implementing ASP semantics. 
-In ProActive, in order to transparently handle active objects and futures, a proxy is created for each of them. Proxies encapsulate all needed code to perform asynchronous, remote method invocations and wait-by-necessity behaviour. Whenever an active object or a future is given as parameter of a call to an active object,  it is in fact their proxy that is copied. This way, all copies of a proxy of an active object/future points to this same active object/future. 
-Another particular aspect of ProActive deals with
+In ProActive, in order to transparently handle active objects and futures, a proxy is created for each of them. Proxies encapsulate all code required to perform asynchronous, remote method invocations and wait-by-necessity behaviour. 
+
+Whenever an active object or a future is given as call parameter to an active object,  it is in fact their proxy that is copied. Hence, all copies of a proxy of an active object/future point to the same active object/future. 
+A further aspect of ProActive deals with
 the deployment of ASP active objects on distributed infrastructures. The design choices of the programming language typically target a high performance of distributed ProActive applications. 
-In order to settle active objects on distributed infrastructures, ProActive features a deployment specification mechanism. The goal of this mechanism is to make the physical deployment independent from the the deployment logic. This is possible by having a binding from virtual node names, used in the source code, pointing to machine addresses or names. In practice, this binding is implemented in XML configuration files. Also, since the binding is made at \emph{deployment time}, changing infrastructure for a given ProActive application is only localised in a few files and does not require application recompilation. 
-Several machines can be aggregated under a single virtual node name in the deployment logic, for example to provide the virtual node with some properties or non functional deployment options (such as fault tolerance or logging).
+ To deploy active objects on distributed infrastructures, ProActive features a deployment specification mechanism. Its goal is to make the physical deployment independent from the the deployment logic. This is possible by having a binding from virtual node names, used in the source code, pointing to machine addresses or names. In practice, this binding is implemented in XML configuration files. Since the binding is made at \emph{deployment time}, changing infrastructure for a given ProActive application is  localised in few files and does not require application recompilation. 
+Several machines can be aggregated under a single virtual node name in the deployment logic, for example, to provide the virtual node with certain properties or non-functional deployment options (such as fault tolerance or logging).
 
 
 As shown in~\cite{BHR2014:gcm}, ProActive active objects, and active objects in general,
-provide a convenient programming model for component based composition of distributed
+provide a convenient programming model for component-based composition of distributed
 applications. The ProActive library implements the GCM distributed component model. In
 this context, the Vercors
 platform~\cite{HKM-FASE16} provides
@@ -1660,9 +1663,11 @@ other hand generate an executable ProActive/GCM code corresponding to the design
 
 \subsubsection{Encore}\label{sec:encore}
 
-\paragraph{General presentation} Encore \cite{ref:encore}
+\paragraph{General presentation} 
+
+Encore \cite{ref:encore}
 is a general purpose parallel language based on active objects
-developed since 2014 by the \Upscale project.\footnote{EU project FP7-612985 \Upscale:
+developed since 2014 in the \Upscale project.\footnote{EU project FP7-612985 \Upscale:
 From Inherent Concurrency to Massive Parallelism through Type-based~Optimisations.} 
 The language has been designed to excel at scalability and rests on four pillar concepts: 
 \textit{parallel by default} using the
