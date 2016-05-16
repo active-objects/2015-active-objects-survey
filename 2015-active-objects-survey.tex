@@ -1997,52 +1997,64 @@ The currently supported Encore tools are:
 \end{itemize}
 
 \section{Implementation of active objects}\label{sec-implementation}
-This section describes the implementation of the different active object programming 
-models described previously. The implementation of a 
-programming language can be provided from scratch or can also be given as an API in a 
-more mainstream language. Another way to implement an active object language is to 
-systematically translate any of its programs into another language; this is possible 
-through a language backend: a translator that captures the semantics of the source 
-language. The advantage of this solution is that an active object language can then have 
-several independent backends targeting different execution platforms and, by this means, 
-fitting the largest needs. 
+
+This section describes the implementation of the active object
+programming models introduced above.  Active object languages claim to
+support more intuitive, easier-to-use concurrent programming models
+than traditional programming languages, while retaining the latters'
+efficiency (or even improve upon it). Hence, implementation aspects of
+active object languages are equally important than their design,
+constituting an essential part of this survey.
+
+The implementation of a programming language can be from scratch with
+a full compiler tool chain or it can be implemented as an API inside a
+mature language. A third way to implement an active object language is
+to cross-translate it to another language with a code generation
+backend, i.e., a translator that captures the semantics of the source
+language. The advantage of the latter solution is that several
+backends can be supported, targeting different execution platforms,
+optimized for differing interests.
 
 \subsection{Dimensions of Comparison between Implementations}
-Several points need to be considered regarding the language runtime and how to implement 
-efficiently the language semantics. We will use the points described below to compare 
-active object implementations. 
-%For each active object implementation, we want to address \TODO{update number of points} 
-%five points, among them: how threads are created and handled to achieve the right 
-%scheduling, how object are referenced throughout an active object-based application and 
-%how objects and data are effectively shared. We describe them below.
+
+Several dimensions need to be considered regarding the runtime system
+and how to implement efficiently the language semantics. We will use
+the aspects described below to compare active object implementations.
+% For each active object implementation, we want to address
+% \TODO{update number of points} five points, among them: how threads
+% are created and handled to achieve the right scheduling, how object
+% are referenced throughout an active object-based application and how
+% objects and data are effectively shared. We describe them below.
 
 \paragraph{Thread creation and scheduling}
 % Virtual threads %
-The active object languages that are implemented on top of an existing programming 
-language (or runtime) have to comply to the constraints given by the underlying platform. 
-In the case of multi-threading, some underlying platforms feature light threads
-whereas in some frameworks like Java each thread is a physical one. In this case, one can 
-consider implementing light 
-threads on top of the underlying threads. Featuring light thread is also 
-crucial if the goal of the given active object language is to scale in the number of 
-active objects located on the same machine, or to cope with cooperative multithreading if 
-a lot of tasks can be interrupted. 
-% Continuations %
-%This notion of virtual threads is particularly important when implementing an active 
-%object language which features cooperative scheduling of requests: a thread  must stop 
-%executing when a request is paused and must resume afterwards. 
-This is a programming 
-challenge when it comes to implement this behavior in programming languages that do not 
-support thread serialization, like Java. 
-Concerning this dimension, the following questions are raised in general: how active 
-objects and requests are mapped to threads? Should the thread be a physical thread or a 
-virtual one? 
-%Depending on these choices, some 
-%scheduling between different active objects or different requests might have to be 
-%considered.
 
-%how active objects are mapped to threads and the scheduling levels within an object and 
-%BETWEEN objects
+The active object languages that are implemented on top of an existing
+programming language (or runtime system) have to comply to the
+constraints given by the underlying platform.  In the case of
+multi-threading, some underlying platforms feature light threads
+whereas in some frameworks like Java each thread is a physical one. In
+this case, one can consider implementing light threads on top of the
+underlying threads. Featuring light thread is also crucial if the goal
+of the given active object language is to scale in the number of
+active objects located on the same machine, or to cope with
+cooperative multithreading if a lot of tasks can be interrupted.
+% Continuations %
+% This notion of virtual threads is particularly important when
+% implementing an active object language which features cooperative
+% scheduling of requests: a thread must stop executing when a request
+% is paused and must resume afterwards.
+This is a programming challenge when it comes to implement this
+behavior in programming languages that do not support thread
+serialization, like Java.  Concerning this dimension, the following
+questions are raised in general: how active objects and requests are
+mapped to threads? Should the thread be a physical thread or a virtual
+one?
+% Depending on these choices, some scheduling between different active
+% objects or different requests might have to be considered.
+
+% how active objects are mapped to threads and the scheduling levels
+% within an object and BETWEEN objects
 
 \paragraph{Data sharing and object referencing}
 This point answers to the question ``Are objects shared between active objects, and 
