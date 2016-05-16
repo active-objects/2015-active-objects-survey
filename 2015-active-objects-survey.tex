@@ -38,6 +38,7 @@
 \newcommand{\TW}[1]{\textcolor{magenta}{\textbf{[Tobias:#1]}}}
 \newcommand{\JS}[1]{\textcolor{gray}{\textbf{[Justine:#1]}}}
 \newcommand{\VLAD}[1]{\textcolor{orange}{\textbf{[Vlad:#1]}}}
+\newcommand{\RH}[1]{\textcolor{purple}{\textbf{[Reiner:~#1]}}}
 \newcommand{\parT}{\texttt{ParT}}
 
 %% For bold syntax highlighting in the Encore chapter
@@ -867,7 +868,7 @@ Global variables are shared variables among actors. All  actors are allowed to
 read/write values from/to global variables. Wait statements allow some synchronisation 
 between actors and more precisely they allow one actor to wait until a given Boolean 
 expression becomes true. 
-\TODO{Question from Reiner: please clarify what ``wait'' means: does the actor release the processor?}
+\RH{Please clarify what ``wait'' means: does the actor release the processor?}
 %Ehsan:
 %RebecaSys is defined as a back-end language, SystemC codes are automatically mapped to RebecaSys and then are formally verified. 
 
@@ -980,7 +981,7 @@ Formal semantics of Probabilistic Timed Rebeca is defined interms of Timed Marko
   }
 \end{table}
 
-\TODO{Question from Reiner: please explain entry Tool Support for VR}
+\RH{please explain entry ``Tool Support'' for (VR)}
 
 \paragraph{Implementation and tooling support}
 There is a wide range of analysis and mapping tool sets for Rebeca family models:\footnote{These are 
@@ -1681,6 +1682,7 @@ where active objects and futures can be seen as normal  objects and,
 instead of interfaces, has a trait system \`a la Scala.
 
 \paragraph{Language description}
+
 In Encore, active objects have their own thread of control and communicate
 by asynchronous messages. Messages are appended to the receiver's message queue
 and processed one at a time in FIFO order.
@@ -1693,22 +1695,21 @@ Each active object owns a local heap on which it can allocate passive objects.
 Ownership in this context means that the actor is responsible for keeping track
 of foreign dependencies on passive objects on its local heap, and eventually
 deallocate them. Passive objects may be shared between two active objects, and
-concurrent read/write access to them is supported given the aforementioned
+concurrent read/write access to them is supported, given the aforementioned
 capability system is used.
 
 Encore is \emph{parallel by default}. On coarse-grain parallelism, different
 active objects could run concurrently, while within the same active object, the
 execution is sequential. Fine-grained parallel computations can be created via
-the notion of tasks (\ec{async \{ e \}}), which contains a body \verb|e| that is
-asynchronously executed and, returns a future type value immediately. Tasks are
+the notion of tasks, for example, the code (\ec{async \{ e \}}) contains a body \verb|e| that is
+asynchronously executed and returns a future type value immediately. Tasks are
 more lightweight than actors (memory-wise) and increase the degree of
-asynchrony on the system.
+asynchrony in a system.
 
 Unlike ProActive, values resulting from method calls on active objects and spawning of
 tasks
  have the explicit future type \ec{Fut t}. Futures support
-future chaining, and \ec{get} and \ec{await} operations similar to ABS. These
-operations are explained in detail below.
+future chaining as well as \ec{get} and \ec{await} operations similar to ABS. This is explained in detail below.
 
 \paragraph{Cooperative Scheduling of Active Objects}
 
@@ -1721,9 +1722,9 @@ the fulfillment of a future, unlike ABS which supports awaiting on any boolean
 condition (Section~\ref{sec:abs-lang}). Encore's support for future chaining however makes
 \ec{await} less useful as chaining allows triggering arbitrary operations on the
 fulfillment futures.
-Figures~\ref{fig:enc-suspend} and \ref{fig:enc-get-await} illustrate the semantics of 
-\ec{suspend}, \ec{await}, and \ec{get}. It
-shows how these operations  involve \emph{descheduling} (removed from
+Figs.~\ref{fig:enc-suspend} and \ref{fig:enc-get-await} illustrate the semantics of 
+\ec{suspend}, \ec{await}, and \ec{get}. They illustrate
+how these operations  involve \emph{descheduling} (removed from
 round-robin scheduler queue) and \emph{blocking} (no processing of other
 messages in the active object's queue) of an active object, and whether a
 resuming message is prepended or appended to the active object's message queue.
@@ -1761,6 +1762,7 @@ resuming message is prepended or appended to the active object's message queue.
   \label{fig:enc-get-await}
 \end{figure}
 
+\RH{this description is more detailed than those for the other languages. On the other hand, the scheduling mechanism of Encore is nearly identical to that of ABS. I suggest to either drastically shorten this paragraph or render it applicable to both ABS and Encore.}
 
 \paragraph{Parallelism Inside Active Objects}
 
@@ -1769,7 +1771,7 @@ resuming message is prepended or appended to the active object's message queue.
 
 Active objects provide coarse grain parallelism via futures but do not offer
 high-level language constructs for low-level coordination of parallel computations.
-In order to express complex coordination workflows, such as pipeline and
+ To express complex coordination workflows, such as pipeline and
 speculative parallelism, Encore incorporates
 \parT{} collections and associated parallel combinators~\cite{ref:encore,party-coordination}.
 A \parT{} collection is an abstraction that can contain asynchronous computations
@@ -1791,27 +1793,30 @@ and values; it is controlled via parallel combinators.
 %for spawning more tasks,
 %increasing the degree of asynchrony while keeping the throughput of the system.
 
-The \parT{} combinators are informally explained with the example from Fig.~\ref{fig:encore:factorisation},
-which computes the LU and Cholesky factorisation in parallel, inverting these matrices 
-asynchronously,
-getting the diagonal of the first asynchronous computation that finishes the inversion % 
-%of the matrix
-and terminating the remaining computations.
-%
-The LU and Cholesky factorisation are performed in parallel, spawning tasks (lines 6 and 7).
+We explain the \parT{} combinators with the example from Fig.~\ref{fig:encore:factorisation}.
+It first computes the LU and Cholesky factorisation in parallel, 
+% Reiner: this explanation doesn't help
+% inverting these matrices 
+% asynchronously,
+% getting the diagonal of the first asynchronous computation that finishes the inversion % 
+% %of the matrix
+% and terminating the remaining computations.
+% %
+% The LU and Cholesky factorisation are performed in parallel, 
+spawning tasks (lines \ref{line:encore:flu}, \ref{line:encore:chl}).
 The resulting futures are lifted (lift :: Fut t $\to$ Par t) and grouped within
-the same \parT{} collection ($\| :: Par \;t \to Par \;t \to Par \;t$), line 8.
+the same \parT{} collection ($\| :: Par \;t \to Par \;t \to Par \;t$), line \ref{line:encore:par}.
 %lifting and grouping the futures into a \parT{} abstraction (line 8) via the \emph{lift} (lift :: Fut t $\to$ Par t)
 %and $\|$ combinators ($\| :: Par \;t \to Par \;t \to Par \;t$) which lift the future to a \parT{} and
 %merges two \parT{}s into a new \parT{} collection, respectively.
 %
-The inversion of the matrix is performed asynchronously, using the \bind{} combinator
-($\bind \ :: Par \ t \to (t \to Par\ t') \to Par\ t'$), line 10, which receives a function (second argument)
-that is applied asynchronously to the items in the \parT{} collection --- creating pipeline parallelism. 
+Then an inversion of the matrix is performed asynchronously, using the \bind{} combinator
+($\bind \ :: Par \ t \to (t \to Par\ t') \to Par\ t'$), line \ref{line:encore:pipe}, which receives a function (second argument)
+that is applied asynchronously to the items in the \parT{} collection, creating pipeline parallelism. 
 %
-With the \prune{} combinator ($\prune \ :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$), line 10,
+With the \prune{} combinator ($\prune \ :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$), line \ref{line:encore:pipe},
 the \verb|getDiagonalMtx| function is applied to the first computation that returns the inverted matrix,
-stopping the remaining computations --- safely stops speculative work.
+stopping the remaining computations, i.e., safely stopping speculative work.
 
 \begin{figure}[t]
 \centering
@@ -1819,14 +1824,13 @@ stopping the remaining computations --- safely stops speculative work.
 \begin{lstlisting}[style=encore,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]
 class Mtx
   ...
-
   def computeFastestDiagonal(): Par Mtx
     let mtx = this.getMtx()
-        fLU = async luFact(mtx)
-        fChlsk = async choleskyFact(mtx)
-        par = (lift fLU) || (lift fChlsk)
+        %\label{line:encore:flu}%fLU = async luFact(mtx)
+        %\label{line:encore:chl}%ffChlsk = async choleskyFact(mtx)
+        %\label{line:encore:par}%par = (lift fLU) || (lift fChlsk)
     in
-        getDiagonalMtx <<  (par >>= mtvInv)
+        %\label{line:encore:pipe}%getDiagonalMtx <<  (par >>= mtvInv)
 \end{lstlisting}
 
 \caption{\label{fig:encore:factorisation}Data-pipeline and speculative parallelism in matrix factorisation.
@@ -1837,7 +1841,7 @@ $\mathit{getDiagonalMtx :: Fut\!<\!\!Maybe [Mtx] \!\!> \to Par\; Mtx}$.}
 \end{figure}
 
 The \parT{} collection and its combinators have been designed to perform
-operations asynchronously --- without stopping the current thread of execution.
+operations asynchronously, without stopping the current thread of execution.
 %
 \parT{} integrates well in the active object model, as it
 provides a uniform interface, via parallel combinators,
@@ -1846,8 +1850,7 @@ and can express complex coordination workflows.
 %
 %This creates a collection that never blocks and executes operations on demand,
 %when the values are available. 
-More combinators are available~\cite{ref:encore}
-but we have highlighted the most important ones. 
+We have highlighted the most important combinators, others are available~\cite{ref:encore}. 
 %
 %\parT{} integrates well in the active object model, as it
 %provides a uniform interface, via parallel combinators,
@@ -1864,7 +1867,7 @@ but we have highlighted the most important ones.
 %Like in ABS and in ASP, in Encore, synchronisation results of message passing and
 %synchronisation on futures \KIKO{ehm?}.
 In Encore, the synchronisation constructs \ec{get} and \ec{await} provide the
-same control over futures as the ABS language: the former blocks the active
+same control over futures as in the ABS language: the former blocks the active
 object until the future is resolved and the latter releases the current thread
 of execution if the future is not resolved, so that the same active object can
 continue processing other messages.
@@ -1873,7 +1876,7 @@ Furthermore, Encore provides the future chaining operator ($\rightsquigarrow$),
 which registers a callback (anonymous function, aka lambda) to the future and
 continues processing the rest of the message. The callback is executed when the
 future is resolved, using the result of the future as the argument to the
-callback. This construct allows chaining operation on futures without creating
+callback. This construct allows chaining operations on futures without creating
 synchronisation, similar to the default behaviour of futures in
 AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349}, except that it is more
 explicit and easier to control for the programmer. It is also a way to mimic
@@ -1883,12 +1886,11 @@ created when the future is resolved.
 \paragraph{Degree of transparency}
 
 In Encore, non-future variables and future variables
-are distinguished statically, e.g.\ \ec{int} vs \ec{Fut int}.
-The \ec{get} operation explicitly extracts the content from the future type
+are distinguished statically, e.g.\ \ec{int} vs.\ \ec{Fut int}.
+The \ec{get} operation explicitly extracts the content from the future type.
 %\ec{get} converts a future
 %type to non-future type  by extracting the content explicitly.
-Both in future management
-and with parallel combinators, the programmer is exposed to the concurrent computations
+In future management, as well as with parallel combinators, the programmer is exposed to the concurrent computations
 being handled in Encore. However, especially when using future chaining or parallel
 combinators, the scheduling and ordering of operations is handled automatically, and the
 programmer only expresses concurrency from a high-level point of view.
@@ -1906,28 +1908,28 @@ changes the protection level. For instance, by changing the \textit{kind} from \
 to \textit{lock-free}, the interface changes the protection from an actor-like to a 
 lock-free implementation. Like in RebecaSys, this creates controlled data sharing.
 
-The Encore capabilities form the hierarchy seen in
-Figure~\ref{fig:capa-tree}. Exclusive capabilities are local to
-one thread only and linear capabilities may be transferred between
-concurrent computations without data-races of dynamic means of
+The Encore capabilities form the hierarchy  in
+Fig.~\ref{fig:capa-tree}. Exclusive capabilities are local to
+one thread and linear capabilities may be transferred between
+concurrent computations without data races by dynamic means of
 concurrency control.
 %
 Shared capabilities may be shared across
-concurrent computations because these capabilities encapsulate
-some means of protection against concurrent accesses: pessimistic
+concurrent computations, because they encapsulate
+a means of protection against concurrent access: pessimistic
 capabilities like locks and actors serialise computation;
 %
 optimistic capabilities like STM and lock-free capabilities allow
-parallel operations but use some form of roll-back scheme when
-conflicts are detected.
+parallel operations, but use a roll-back schema when
+conflicts arise.
 %
 Immutable and read-only capabilities are
 always safe to access concurrently because of the absence of
 writes.
 %
 Finally, subordinate capabilities allow constructing
-aggregates of objects whose data-race freedom stems from their
-proper encapsulation inside some other capability.
+aggregates of objects whose data race-freedom stems from their
+proper encapsulation inside  another capability.
 
 Encore capabilities are created from traits, and importantly,
 different traits in the same class can construct different
@@ -1944,29 +1946,53 @@ active object topologies.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[scale=.25]{pictures/capabilities}
-  \caption{Encore capability hierarchy.}
+\begin{tikzpicture}[font=\sf\scriptsize,align=center,rounded corners]
+  \node[draw,text width=10.75cm] {Capabilities\\%
+    \mbox{\tikz{\node[draw,text width=2.25cm,minimum height=3.5cm] {Exclusive\\[1cm]          
+          \mbox{\tikz{\node[draw,text width=2cm,minimum height=1cm] {Linear};}}
+          \mbox{\tikz{\node[draw,text width=2cm,minimum height=1cm] {Thread-Local};}}
+        };}}
+    \mbox{\tikz{\node[draw,text width=5.25cm,minimum height=3.5cm] {Shared\\
+          \mbox{\tikz{\node[draw,text width=2.3cm,minimum height=1.5cm] {Oblivious\\   
+                \mbox{\tikz{\node[draw,text width=2cm,minimum height=.5cm] {Immutable};}}
+                \mbox{\tikz{\node[draw,text width=2cm,minimum height=.5cm] {Read-Only};}}
+              };}}
+          \mbox{\tikz{\node[draw,text width=2.3cm,minimum height=1.5cm] {Unsafe\\[.85cm] \mbox{}        
+              };}}\\
+          \mbox{\tikz{\node[draw,text width=2.3cm,minimum height=1.5cm] {Optimistic\\  
+                \mbox{\tikz{\node[draw,text width=2cm,minimum height=.5cm] {Lock-Free};}}
+                \mbox{\tikz{\node[draw,text width=2cm,minimum height=.5cm] {STM};}}
+              };}}
+          \mbox{\tikz{\node[draw,text width=2.3cm,minimum height=1.5cm] {Pessimistic\\ 
+                \mbox{\tikz{\node[draw,text width=2cm,minimum height=.5cm] {Locked};}}
+                \mbox{\tikz{\node[draw,text width=2cm,minimum height=.5cm] {Active};}}
+              };}}
+        };}}
+    \mbox{\tikz{\node[draw,text width=2.25cm,minimum height=3.5cm] {Subordinate\\[2.75cm] \mbox{}};}}
+  };
+\end{tikzpicture}
+%  \includegraphics[scale=.25]{pictures/capabilities}
+  \caption{Encore capability hierarchy}
   \label{fig:capa-tree}
 \end{figure}
 
-\paragraph{Formalization and semantics}
-The Encore concurrency model has been formalized \cite{ref:encore} using
-a small step operational semantics. Parallel combinators have been formalized as well,
+\paragraph{Formal semantics}
+The Encore concurrency model is formalized \cite{ref:encore} using
+a small step operational semantics. Parallel combinators are formalized as well,
 including a soundness proof with the implicit task parallelism model \cite{encore:parallel-combinators-thesis,party-coordination}.
-The capability type system has been formalized with proofs of soundness and data-race freedom \cite{encore:kappa}.
+The capability type system is formalized with proofs of soundness and data race-freedom \cite{encore:kappa}.
 
-\paragraph{Implementation: programming and execution support}
-Encore is a relatively new programming language and there is still some
-limited tooling support. However, the Encore compiler can emit a
-highly understandable C code.
-This C code can be analysed and debug using any available tool that
+\paragraph{Implementation and tooling support}
+Encore is a relatively new programming language and there is
+limited tooling support. However, the Encore compiler can emit 
+readable C code which
+ can be analysed and debugged using any available tool that
 works with the C11 standard. 
-
-The currently supported tools are:
+The currently supported Encore tools are:
 
 \begin{itemize}
 \item Emacs and Atom editors with syntax highlighting and compiler error support
-\item Support for GDB / LLDB interactive debugger
+\item Support for the GDB/LLDB interactive debugger
 \item Vagrant support for rapid installation of Encore in a virtual machine
 \end{itemize}
 
