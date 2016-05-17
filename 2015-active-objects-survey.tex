@@ -201,7 +201,7 @@ distributed, and parallel languages ]
 \maketitle
 
 
-\NOTE{Page limit is 35 pages}
+% \NOTE{Page limit is 35 pages}
 
 
 \section{Introduction}
@@ -2923,47 +2923,65 @@ each actor. %It uses general garbage collection
 
 %\KIKO{
 
-With the advent of manycore computers and of large-scale cloud
-computing, the active object paradigm has been reborned as one of the
-best candidates to express safe asynchronous parallel and distributed
-computations.  In this paper, we have covered the flourishment of the
-active object paradigm in its last 15 years, and each of the reviewed
-languages have been specialised to fulfill a specific goal. In this
-context, languages such as Rebeca and ABS started with a strong focus
-on model checking and verification, and have been moving into a fairly
-efficient runnable implementation. On the other hand, ProActive and
-Encore have focused on an efficient implementation in the distributed
-and manycore computers, respectively.
+With the advent of many-core computers and large-scale cloud
+computing, the active object paradigm evolved out of actor-based
+concurrency as one of the most promising candidates to model
+asynchronously parallel and distributed computations in a safe manner.
 %
-These four languages share the same original programming model, the
-active object paradigm, but have addressed different challenges
-motivated on their design decisions.  In the implementation section,
-it has been shown how the semantics of each language have influenced
-its implementation, how different design decisions created new
-challenges and how these have been addressed and its limitations.  One
-of the way the languages can be distinguished is int the way they
-handle efficient data sharing, and how each language finds a balance
-between data copy and safe shared memory.
-%
+We retraced the unfolding of the active object paradigm during the
+past fifteen years by focusing on four representative active object
+languages. We are convinced that active object concepts will
+eventually make their way into mainstream programming languages (the
+adoption of an actor system in Scala is a first indicator). Therefore,
+it is essential to understand the tradeoffs involved in their design
+and implementation.
 
-This paper has shown different flavours of the active object paradigm
-and has, as one of its goals, been written to serve as reference for
-language designers and implementors.  In particular, we focused on the
-different approaches to efficiency. ProActive programs clearly target
-HPC applications: setting the program environment is heavy but the
-distributed execution is efficient on the whole; a few active objects
-coexist in the application. The Java 8 backend for ABS provides light
-threads and enables instantiation of many active objects on the same
-machine. It also allows active objects to achieve faster
-communications than in ProActive. At a finer grain, Encore provides
-optimized constructs with an efficiency of the program at a low-level.
+The four languages reviewed here in detail start out from the same
+programming model, the active object paradigm, but they address
+different challenges, motivated in the context of different design
+goals.
+
+The Rebeca and the ABS language started with a strong focus on
+tool-based formal analysis and verification, but recently added fairly
+efficient implementations. For this both languages rely on cross
+translation.
+%
+On the other hand, ProActive and Encore focused on efficient
+implementation on distributed and many-core computer architectures,
+respectively. Both come with ``native'' implementations based on
+extensions of existing frameworks.
+
+In Section~\ref{sec-implementation} it was shown how the semantics of
+each language influenced its implementation, how different design
+decisions create new challenges, how these have been addressed, and
+which limitations remain.  One important dimension along which the
+languages can be distinguished is how they handle efficient data
+sharing, and how each language finds a balance between copying and
+safe shared memory.
+
+ProActive programs targets HPC applications: setting up the program
+environment is complex, but the distributed execution is efficient on
+the whole; a few active objects co-exist in an application. The Java 8
+backend for ABS provides light threads and enables instantiation of
+many active objects on the same machine. It also permits active
+objects to achieve faster communication than in ProActive. At a finer
+grain, Encore provides optimized constructs that allow safe and
+efficienct programming at a low level of abstraction.
+
+It is noteworthy that all four languages are equipped with a formal
+semantics, which is the basis for unambigous implementations and for
+far reaching tool support in terms of static analysis tools, test
+generators, optimizers, etc. For several of the languages discussed
+here meta properties of the formal semantics were proven, such as type
+safety or data race-freedom.
+
+We hope that the tradeoffs and options discussed in this survey can
+serve as a future reference for designers and implementors of
+programming languages that make use of the active object paradigm.
 
 %}
 
-\RH{Write something about the expectation that active object concepts
-  will eventually make their way into mainstream programming
-  languages. Therefore, it is important to understand the tradeoffs in
-  their design and implementation.}
+
 
 %\input{survey-parts/introduction.tex}
 %\input{survey-parts/example.tex}
