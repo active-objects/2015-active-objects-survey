@@ -2856,7 +2856,7 @@ in~\cite{DBLP:conf/oopsla/ClebschD13}, and collecting passive objects.
 
 \subsection{Erlang backend for Rebeca}
 
-Execution of Rebeca models is done by translating Rebeca models to Erlang code 
+Execution of Rebeca models is performed by translating Rebeca models to Erlang code 
 \cite{DBLP:journals/scp/ReynissonSACJIS14}. Erlang is a dynamically-typed general-purpose 
 programming language for development of distributed, real-time and fault-tolerant 
 applications; it provides an actor-based concurrency model. Having the same concurrency 
@@ -2864,29 +2864,32 @@ model, translating Rebeca models to Erlang is realised by direct mapping of lang
 constructs as shown in \cite{DBLP:journals/scp/ReynissonSACJIS14}.
 
 \paragraph{Thread Creation and Scheduling}
+
 Actors, as the only concurrent elements of Rebeca models, are mapped to processes in 
-Erlang, concurrently executing elements which are extremely lighter than OS-level threads 
-(more than 100,000 of them can be run in a single computer) \cite{Erlang-book}. The 
+Erlang, concurrently executing elements that are very much lighter than OS-level threads 
+(more than 100,000 of them can be run on a single computer) \cite{Erlang-book}. The 
 programming facilities of Erlang for developing concurrent applications (i.e., spawn, 
-``!'', and receive) allow processes to create new processes and communicate through 
-asynchronous message passing. This facilities are used for translating Rebeca models to 
-Erlang codes without needing any modification. The generated processes are scheduled 
-using the default scheduler of Erlang, called reduction-based scheduler.
+``!'', and receive) allow processes to create new processes and to communicate through 
+asynchronous message passing. These capabilities are used to translate Rebeca models to 
+Erlang code without the need for modification. The generated processes are scheduled 
+by the default scheduler of Erlang, the so-called reduction-based scheduler.
 %To model the actors scheduler of Rebeca, reduction-based scheduler of Erlang is used. Using reduction-based scheduler, an Erlang process is allowed to execute for a time slice of approximately 2000 reductions before a context switch occurs. A reduction corresponds to the execution of one of the Erlang's built-in functions.% So, a single reduction is not a constant value.
 
 \paragraph{Data Sharing and Object Referencing}
-Reserving a dedicated memory space for each process in Erlang, avoids having any shared 
-object among processes. Upon communication, the sent message and its parameters must be 
+
+Reserving a dedicated memory space for each process in Erlang avoids the need for shared 
+objects among processes. When object communication happens, the sent message and its parameters must be 
 stored in the message bag of the receiver actor which is located in its dedicated memory 
 space. %So, a copy of the parameters is stored in the receiver's memory space. %This 
 %%mechanism is called copying message passing of Erlang. 
 %\LUDO{the end is not clear to me}
 %Although, passing reference of actors using this mechanism does not result in sending 
 %the deep-copy of actors and only reference to actors are copied and are sent. 
-The references to actors are allowed to be used for message sending not for sharing data 
-of actors.
+References to actors are permitted for the purpose of sending messages
+(although not for sharing data among actors).
 
 \paragraph{Error handling}
+
 In the current version of Rebeca, there is no mechanism for exception handling; the 
 programmer must rely on traditional messages to deal with errors. %So, modelers have to 
 %handle exceptions manually. In other words, exception handling is not a special case in 
@@ -2898,8 +2901,9 @@ programmer must rely on traditional messages to deal with errors. %So, modelers 
 
 
 \paragraph{Garbage collection}
+
 Rebeca borrows the default garbage collector of Erlang without any modification, which 
-runs one garbage collector for each process which handles garbage collection internal to 
+runs one garbage collector for each process,  handling garbage collection internally within 
 each actor. %It uses general garbage collection 
 %algorithm (dividing memory to young and old generations) for each process. 
 %\LUDO{I do not understand the last two sentences}
@@ -2918,39 +2922,42 @@ each actor. %It uses general garbage collection
 %}
 
 %\KIKO{
-	With the advent of manycore computers and of large-scale cloud computing, the active 
-	object paradigm has been reborned as
-one of the best candidates to express safe asynchronous parallel and distributed computations.
-In this paper, we have covered the flourishment of the active object paradigm in its last 15 years,
-and each of the reviewed languages have been specialised to fulfill a specific goal. In 
-this context,
-languages such as Rebeca and ABS started with a strong focus on model checking and verification,
-and have been moving into a fairly efficient runnable implementation. On the other hand, 
-ProActive and Encore have focused on an efficient implementation in the distributed
-and manycore computers, respectively. 
+
+With the advent of manycore computers and of large-scale cloud
+computing, the active object paradigm has been reborned as one of the
+best candidates to express safe asynchronous parallel and distributed
+computations.  In this paper, we have covered the flourishment of the
+active object paradigm in its last 15 years, and each of the reviewed
+languages have been specialised to fulfill a specific goal. In this
+context, languages such as Rebeca and ABS started with a strong focus
+on model checking and verification, and have been moving into a fairly
+efficient runnable implementation. On the other hand, ProActive and
+Encore have focused on an efficient implementation in the distributed
+and manycore computers, respectively.
 %
-These four languages share the same original programming model, the active object 
-paradigm,
-but have addressed different challenges motivated on their design decisions.
-In the implementation section,
-it has been shown how the semantics of each language have influenced its
-implementation, how different design decisions created new challenges and
-how these have been addressed and its limitations. 
-One of the way the languages can be distinguished is int the way they handle
- efficient data sharing, and how each language finds a balance between data copy and safe 
- shared memory. 
+These four languages share the same original programming model, the
+active object paradigm, but have addressed different challenges
+motivated on their design decisions.  In the implementation section,
+it has been shown how the semantics of each language have influenced
+its implementation, how different design decisions created new
+challenges and how these have been addressed and its limitations.  One
+of the way the languages can be distinguished is int the way they
+handle efficient data sharing, and how each language finds a balance
+between data copy and safe shared memory.
 %
 
-This paper has shown different flavours of the active object paradigm and has,
-as one of its goals, been written to serve as reference for language designers and
-implementors.
-In particular, we focused on the different approaches to efficiency. ProActive programs 
-clearly target HPC applications: setting the program environment is heavy but the 
-distributed execution is efficient on the whole;  a few active objects coexist in the 
-application. The Java 8 backend for ABS provides light threads and enables instantiation 
-of many active objects on the same machine. It also allows active objects to achieve 
-faster communications than in ProActive. At a finer grain, Encore provides optimized 
-constructs with an efficiency of the program at a low-level. 
+This paper has shown different flavours of the active object paradigm
+and has, as one of its goals, been written to serve as reference for
+language designers and implementors.  In particular, we focused on the
+different approaches to efficiency. ProActive programs clearly target
+HPC applications: setting the program environment is heavy but the
+distributed execution is efficient on the whole; a few active objects
+coexist in the application. The Java 8 backend for ABS provides light
+threads and enables instantiation of many active objects on the same
+machine. It also allows active objects to achieve faster
+communications than in ProActive. At a finer grain, Encore provides
+optimized constructs with an efficiency of the program at a low-level.
+
 %}
 
 \RH{Write something about the expectation that active object concepts
