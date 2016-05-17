@@ -2322,60 +2322,59 @@ challenge to handle cooperative schduling of a large number of
 messages that are suspended and \textbf{not} released remains an open
 research question.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \subsection{ProActive}
 \label{sec:implem-proactive}
 
-The ProActive library is all written in standard Java and provides an
-implementation for the ASP programming model.  By default, it uses the
-remote method invocation Java package to implement the communication
+The ProActive library is completely written in standard Java and provides an
+implementation for the ASP programming model.  By default, it uses 
+ Java's remote method invocation package to implement the communication
 layer between active objects, although other communication protocols
-are possible.  This fact drives most of the implementation
-singularities mentioned below.
+are possible.  This fact accounts for most of the implementation
+specifics mentioned below.
 
 \paragraph{Thread creation and scheduling}
 
 In ProActive, an active object with no compatibility rule defined will
-be associated to one Java thread to process the requests.
+be associated with a single Java thread to process the requests.
 Furthermore, there is a Java thread to handle request reception in
 each active object.  Java threads are mapped to operating system
 threads, thus ProActive uses at least two threads per active object.
-But as ProActive features multiactive objects, this number can be
+But as ProActive features multi-active objects, this number can be
 higher, as the active object scheduler can create Java threads on the
-fly to process a compatible request.  As Java threads are pretty
-heavy, the ProActive scheduler implementation puts a particular effort
-on optimizing thread usage.  Firstly, a thread pool is instantiated at
-active object start-up to ensure a basic thread reuse policy.
-Secondly, when the number of threads is limited at the application
-level (through multiactive object annotations), the limit literally
-maps to Java threads, so a fine performance tuning can be achieved at
-the application level.  Additionally, threads that are waiting for a
+fly to process a compatible request.  Since Java threads are rather
+heavy, the ProActive scheduler implementation makes a particular effort
+in optimizing thread usage.  First, a thread pool is instantiated at
+active object startup to ensure a basic thread reuse policy.
+Second, when the number of threads is limited at the application
+level (through multi-active object annotations), that limit literally
+maps to Java threads, such that fine performance tuning can be achieved at
+the application level.  In addition, threads waiting for a
 future can be temporarily reused to process the request that will
-indirectly fulfil the waited future. This can be done during the
-wait-by-necessity.  So to conclude, in ProActive thread creation and
+indirectly fulfil the awaited future. This can be done during
+wait-by-necessity.   To summarize, in ProActive thread creation and
 thread scheduling are almost completely exposed to the programmer,
-allowing him to have a great control on the performance of ProActive
+allowing him to have far ranging control over the performance of ProActive
 applications.
 
 \paragraph{Data sharing and object referencing}
-% LUDO: I shhortenned the part that was common with ASP
-like in ASP, ProActive differentiates active and passive objects in a way that is much 
+
+% LUDO: I shhortened the part that was common with ASP
+Like ASP ProActive differentiates between active and passive objects in a way that is mostly 
 transparent to 
 the programmer, except that passive objects are passed by copy when communicated between 
-active objects while referneces between active objects can be shared and accessed from 
+active objects, while references between active objects can be shared and accessed from 
 anywhere.
-The first reason for this behavior is that ProActive is based on Java RMI, and Java RMI 
-is based on parameters copy.
-The second reason is because of distribution: affording a consistent distributed memory 
+The first reason for this behavior is that ProActive is based on Java RMI, which in turn  
+is based on parameter copy.
+The second reason is distribution: provision of a consistent distributed memory 
 is too costly for HPC, which is the primary target of ProActive.
-Of course data is shared between the several threads of a multi-active object.
+Of course, data is shared between the several threads of a multi-active objects.
 
-This sharing pattern is thus naturally implemented using RMI and Java serialization that 
-performs a deep copy of the parameters transmitted between objects. Future and active 
-objects are implemented by a proxy that can be passed by referenced and is serialized as 
+This sharing pattern is thus naturally implemented using RMI and Java serialization  
+performing a deep copy of the parameters transmitted between objects. Future and active 
+objects are implemented by a proxy that can be passed by reference and is serialized as 
 a reference (without any copy of other objects referenced). The serialization mechanism 
-is also used to track the multiple references to the same future and to implement 
+is also used to track  multiple references to the same future and to implement 
 efficient future update strategies~\cite{HKRZ:Coregrid:2010}.
 %
 %In the case of active objects, they can be indeed shared between active objects but this 
@@ -2393,44 +2392,52 @@ efficient future update strategies~\cite{HKRZ:Coregrid:2010}.
 %definition or by classical locking mechanisms.
 
 %Once again, ProActive object referencing is driven by the underlying technology legacy. 
-In RMI, remote objects are globally referenced in what is known as the RMI registry: a mapping from remote object names to remote object stubs, that can be copied and used anywhere in order to target the remote object. 
+In RMI remote objects are globally referenced in what is known as the RMI registry: a mapping from remote object names to remote object stubs that can be copied and used anywhere  to access the remote object. 
 Networking communication is ensured by the rmi protocol. 
-Consequently, in ProActive, all active objects are referenced in a RMI registry, and can be accessed this way from any other object communicating through the rmi protocol. 
-For objects that are not active objects, traditional Java object references are used as 
+Consequently, in ProActive all active objects are referenced in an RMI registry and can be accessed in this way from any other object through the rmi protocol. 
+For non-active objects traditional Java object references are used as 
 they are only referenced within the same active object.
-In conclusion, two types of object references exist in ProActive: global references, retrievable from the RMI registry, and local references, manipulable like classical references in programming languages. 
+To summarize, two types of object references exist in ProActive: global references, retrievable from the RMI registry, and local references, acting like standard references types. 
+
+\RH{Isn't the ``rmi'' protocol not rather called JRMP?}
 
 \paragraph{Error handling}
+
 Distributed environments are prone to failures. 
 Since ProActive targets distributed environments, a particular effort was made in producing robust ProActive applications by design. 
-For that, the ProActive library includes two different error handling aspects. 
-First, an exception chaining mechanism was developed on top of RemoteException, which is 
-the basic RMI exception, in order to have a readable feedback when ProActive applications 
-crash. Also a specific API has been developed to compensate for the difficulty to deal 
-with asynchronous exception and the lack of control on the Java exception 
+To this end, the ProActive library includes two  error handling mechanisms. 
+First, an exception chaining mechanism was developed on top of \texttt{RemoteException},  
+the basic RMI exception, in order to obtain readable feedback when ProActive applications 
+crash. Second, a specific API has been developed to compensate for the difficulty of dealing 
+with asynchronous exceptions and the lack of control over the Java exception 
 mechanism~\cite{CC-ECOOPWS2005}. 
-Another aspect of the ProActive library consists in continuing the execution of the application in presence of some failed active objects, for example if a machine hosting some active objects of the application crashes. 
-For this purpose, ProActive implements a  fault tolerance protocol specific to the active 
+
+A further aspect of the ProActive library concerns  continuing  execution of an application in presence of  failed active objects, for example, when a machine hosting an active object of the application crashes. 
+For this purpose ProActive implements a  fault tolerant protocol specific to the active 
 object semantics. It enables a set of failed active objects to restart  from the latest 
 checkpoint. 
-The checkpoints are taken per active object, based on the communications between them. 
-This strategy is coupled with the logging of events received by the active object, to ensure a deterministic reexecution. 
+Checkpoints are recorded per active object, based on the communications between them. 
+This strategy is coupled with the logging of events received by the active object to ensure a deterministic reexecution. 
 The fault tolerant protocol is complete for applications that only feature mono-threaded active objects. 
-It is under development for applications that feature multiactive objects.
+It is under development for applications that feature multi-active objects.
 
 \paragraph{Garbage collection}
+
 Handling garbage collection in ProActive is deeply linked with how objects are referenced. 
-Firstly, to ensure garbage collection of regular objects, no particular attention is needed, simply because the given Java garbage collector will take care of them. 
-Indeed, as a regular object cannot be referenced by several active objects, it is guaranteed that no reference to this object exists in another JVM, so classical garbage collection is enough.
-However, in the case of active objects, we cannot directly know if it still exists a reference to an active object, because many proxies of an active object can be disseminated throughout the network.
+To ensure garbage collection of regular objects no particular mechanism is needed,  because the  Java garbage collector will take care of that. 
+Since a regular object cannot be referenced by more than one active object, it is guaranteed that no reference to this object exists in another JVM, hence, standard garbage collection suffices.
+However, for an active object, we cannot directly know whether a reference to it still exists, because many proxies to it can be disseminated throughout the network.
 An adapted algorithm to garbage collect active objects was developed in ProActive. 
 It is based on the detection of useless active objects (those that are idle and only 
-referenced by idle active objects). This is detected as some form of common agreement 
-based on the reference graph between active objects~\cite{CCH:Middleware07}. Garbage 
-collection of passive objects can safely rely on the Java garbage collector.
+referenced by idle active objects). This is detected as a form of common agreement 
+based on the reference graph between active objects~\cite{CCH:Middleware07}. 
+% RH: repetitive sentence, deleted:
+% Garbage collection of passive objects can safely rely on the Java
+% garbage collector.
 
 \subsection{ProActive backend for ABS}
 \label{subsec:proactive-backend-abs}
+
 The ProActive backend for ABS generates ProActive code 
 corresponding to an ABS program. The goal of the ProActive backend is to provide a fully 
 working execution of ABS models in distributed environments, with less optimization than 

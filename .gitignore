@@ -8,3 +8,4 @@
 survey-parts/*.aux
 *.aux
 *.toc
+auto/
