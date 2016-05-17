@@ -2758,6 +2758,7 @@ written in Encore itself.
 %we will refer to the EncoreRT and PonyRT indistinctively.
 
 \paragraph{Thread creation and scheduling}
+
 In Encore, the runtime has schedulers whose
 responsibility is to schedule active objects. Each scheduler owns a queue
 of active objects and each active object owns its own mailbox, which contains
@@ -2769,20 +2770,19 @@ of threads, although this can be overridden if desired.
 %
 Each scheduler runs in a loop, scheduling active objects until the whole program
 terminates. In each iteration of the loop, the scheduler performs three procedures.
-Firstly, the scheduler pops an active object from the beginning of
-the queue. Secondly, it hands over the control to the active object so that it can
+First, the scheduler pops an active object from the beginning of
+the queue. Second, it hands over  control to the active object so that it can
 process messages in its mailbox. The active object can only process one
-message at a time to ensure fairness. Thirdly, if a message is indeed
-processed in previous step, the active object is pushed to the end of the scheduler's queue;
+message at a time to ensure fairness. Third, if a message is indeed
+processed in the previous step, the active object is pushed to the end of the scheduler's queue;
 otherwise, the active object is unscheduled due to having an empty mailbox. The
-unscheduled active objects are rescheduled if other active objects send
+unscheduled active objects are rescheduled when other active objects send
 messages to them. Furthermore, in the second step, new active objects could be created, and
 they would be pushed to the end of queue of the current scheduler. 
 %
 Active objects can be migrated from one scheduler to another via work stealing,
-which acts as load-balancer; this only happens when a scheduler runs out of active 
+which realizes a load balancer; this only happens when a scheduler runs out of active 
 objects.
-
 
 Active objects in Encore are implemented by a lightweight abstraction called \emph{encore thread},
 which resembles green threads. Each active object is assigned an \emph{encore thread}
@@ -2834,8 +2834,12 @@ In a slightly more advanced usage scenario, we might share part of the mutable p
 object so that multiple active objects could work on different parts of the same
 passive object, concurrently. This would be safe as well.
 %
-The capability system has been formalised with proofs of soundness and data race
-freedom \cite{encore:kappa} and is a work in progress, not available yet in the compiler.
+The capability system is work in progress, not yet available in the
+compiler.
+% Note (RH): repeated statement:
+%
+% has been formalised with proofs of soundness and data race
+% freedom \cite{encore:kappa} and is a work in progress, not available yet in the compiler.
 
 \paragraph{Error handling}
 
@@ -2851,6 +2855,7 @@ collection consists of two parts, collecting active objects, which is covered
 in~\cite{DBLP:conf/oopsla/ClebschD13}, and collecting passive objects.
 
 \subsection{Erlang backend for Rebeca}
+
 Execution of Rebeca models is done by translating Rebeca models to Erlang code 
 \cite{DBLP:journals/scp/ReynissonSACJIS14}. Erlang is a dynamically-typed general-purpose 
 programming language for development of distributed, real-time and fault-tolerant 
