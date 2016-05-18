@@ -2438,7 +2438,7 @@ based on the reference graph between active objects~\cite{CCH:Middleware07}.
 \label{subsec:proactive-backend-abs}
 
 The ProActive backend for ABS generates ProActive code 
-corresponding to an ABS program. The goal of the ProActive backend is to provide a fully 
+corresponding to an ABS program~\cite{rochas:hal-01065072}. The goal of the ProActive backend is to provide a fully 
 working execution of ABS models in distributed environments, with less optimization than 
 necessary for the Java 8 backend. Since the two languages are based on different active 
 object models, the 
@@ -2463,24 +2463,22 @@ Thus, on the
  class with a map from object identifiers to object references.
  The 
 translation introduces indirection through COGs that are accessible by remote reference.
-This configuration of objects is illustrated in Fig.~\ref{fig:ABS-to-PA-new}, where a COG is created through a new \code{Server} object.
+This configuration of objects is illustrated in Fig.~\ref{fig:ABS-to-PA-new}, where a COG 2 is created through a new \code{Server} object.
 
 \begin{figure}[t]
 		\begin{subfigure}[b]{0.43\linewidth}
-                 \includegraphics[scale=0.3]{pictures/ABS-to-PA-new.png} 
+                 \includegraphics[scale=0.3]{pictures/ABS-to-PA-new.pdf} 
                 \caption{ABS new in ProActive}
                 \label{fig:ABS-to-PA-new}
         \end{subfigure}
         \begin{subfigure}[b]{0.50\linewidth}
-                  \includegraphics[scale=0.3]{pictures/ABS-to-PA-call.png} 
+                  \includegraphics[scale=0.3]{pictures/ABS-to-PA-call.pdf} 
                 \caption{ABS asynchronous method call in ProActive}
                 \label{fig:ABS-to-PA-call}
         \end{subfigure}
  \caption{Representation of ABS objects and calls in ProActive} 
 \label{fig:graph}
 \end{figure}
-
-\RH{Please label COGs consistently throughout the article. I suggest to use numbers: COG 1, COG 2, \ldots; please write ``COG'', not ``cog'' everywhere.}
 
 %\begin{figure}
 %	\centering
@@ -2562,9 +2560,9 @@ backend has to handle more idle threads than the Java 8 backend.
 % whereas in the ProActive backend each COG has its own thread pool. In conclusion, the 
 % ProActive backend has to handle more idle threads than the Java 8 backend. We explain 
 % below in more details how we implement ABS preemption constructs in ProActive.
-\RH{I removed the references to points 1--4, because they don't appear
-  in Section~\ref{sec:implem-java-8}, which is confusing. Copy of
-  original text is preserved, but commented out.}
+%\RH{I removed the references to points 1--4, because they don't appear
+%  in Section~\ref{sec:implem-java-8}, which is confusing. Copy of
+%  original text is preserved, but commented out.}
 
 The central idea to implement ABS preemption in ProActive is to
 exploit thread limits: a hard limit restricts the total number of
@@ -2577,7 +2575,12 @@ of one.  Hence, there is at most one active thread at any time that
 serves requests in a COG multi-active object: requests do not run in
 parallel but interleave upon wait-by-necessity. In a similar manner we
 can simulate the blocking of \lstinline{get} by a suitable (hard)
-limit.
+limit. The implementation details can be found in~\cite{rochas:hal-01065072}.
+We have formally proven that all ABS constructs are correctly translated by the ProActive 
+backend, i.e., the ASP translation simulates all  rules of ABS' operational
+semantics, and  all translated ASP configurations correspond to a valid ABS 
+execution. 
+The conclusion of this work is that we could correctly simulate constructs of ABS that do not exist in ProActive. The proof of correctness highlights the differences of the two languages, especially regarding futures. In ProActive the synchronisation is not done upon request termination like in ABS. Somehow, we compared the data flow synchronisation of ProActive (where futures are transparently updated) to the control flow synchronisation of ABS. In the ProActive translation of an ABS program, a future might be updated before than in the ABS case, because an explicit future read not been performed yet. This is an intrinsic difference of the two languages, that cannot be exactly simulated.
 
 % \smallskip
 % $\bullet$ \textit{Translation of  \code{await} statement on futures.}
@@ -2639,13 +2642,10 @@ limit.
 % %%% RM
 % \smallskip
 
-\RH{I have shortened the explanation to the paragraph above, which to
-  me, seems detailed enough. Please check. Original text is just commented out.}
+%\RH{I have shortened the explanation to the paragraph above, which to
+%  me, seems detailed enough. Please check. Original text is just commented out.}
 
-We have formally proven that all ABS constructs are correctly translated by the ProActive 
-backend, i.e., the ASP translation simulates all  rules of ABS' operational
-semantics, and  all translated ASP configurations correspond to a valid ABS 
-execution. 
+
 %%%% Without the figures, the text could be like the one below %%%%
 %In addition, we have performed two experimental evaluations on an ABS 
 %application translated with the ProActive backend, that show that (i) the translated 
