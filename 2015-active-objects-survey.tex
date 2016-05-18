@@ -2246,7 +2246,8 @@ classes will be automatically loaded on all machines that require an
 object of a particular type, such that remote objects can invoke
 methods on serialized references they receive.
 
-\paragraph{Active Object scheduling example}
+\paragraph{Example and experiments}
+
 
 To measure the improvement provided by Java 8 features we benchmark a
 simple example that is illustrated in Fig.~\ref{abs8:sf}. In the
@@ -2572,15 +2573,33 @@ generic caller method of a COG that executes all other methods to be
 compatible with itself, i.e., many of such methods are allowed to run
 in parallel. Then we impose on this set of methods a soft thread limit
 of one.  Hence, there is at most one active thread at any time that
-serves requests in a COG multi-active object: requests do not run in
-parallel but interleave upon wait-by-necessity (simulation of \lstinline{await}). In a similar manner we
-can simulate the blocking of \lstinline{get} by a suitable (hard)
-limit. The implementation details can be found in~\cite{rochas:hal-report}.
-We have formally proven that all ABS constructs are correctly translated by the ProActive 
-backend, i.e., the ASP translation simulates all  rules of ABS' operational
-semantics, and  all translated ASP configurations correspond to a valid ABS 
-execution. 
-The conclusion of this work is that we could correctly simulate constructs of ABS that do not exist in ProActive. The proof of correctness highlights the differences of the two languages, especially regarding futures. In ProActive the synchronisation is not done upon request termination like in ABS. Somehow, we compared the data flow synchronisation of ProActive (where futures are transparently updated) to the control flow synchronisation of ABS. In the ProActive translation of an ABS program, a future might be updated before than in the ABS case, because an explicit future read not been performed yet. This is an intrinsic difference of the two languages, that cannot be exactly simulated.
+serves requests in a COG multi-active object.
+Requests do not run in
+parallel but interleave upon wait-by-necessity: \lstinline{await} on a future is 
+translated into 
+access to a future, that frees the current active thread (soft limit).
+Concerning blocking \lstinline{get} statement, they are also translated to future access 
+but the current active thread is not released (a hard
+limit is ensured). 
+
+This work highlights the differences of the two 
+languages, especially regarding futures. In ProActive the synchronisation is data-flow 
+oriented as futures are transparently accessed and updated, and wait-by-necessity can 
+only be released upon access to some data. In ABS synchronisation on future is 
+control-flow oriented: a future access succeeds 
+upon request termination. However, in most programs a future access is used to retrieve 
+information and the control-flow synchronisation of ABS corresponds to a data-flow 
+synchronisation; however, syntactically, there exist programs that do not behave the same.
+%Somehow, we compared the data flow synchronisation 
+%of ProActive (where futures are transparently updated) to the control flow 
+%synchronisation of ABS. In the ProActive translation of an ABS program, a future might 
+%be 
+%updated before than in the ABS case, because an explicit future read not been performed 
+%yet. This is an intrinsic difference of the two languages, that cannot be exactly 
+%simulated.
+We have formally proven~\cite{rochas:hal-01065072} that all ABS programs are faithfully 
+simulated by the ProActive backend; the proof highlights the differences between future 
+access semantics. 
 
 % \smallskip
 % $\bullet$ \textit{Translation of  \code{await} statement on futures.}
@@ -2652,27 +2671,26 @@ The conclusion of this work is that we could correctly simulate constructs of AB
 %application run in a distributed environment indeed outperforms traditional ABS program 
 %execution, and (ii) that the overhead introduced by the translation is always kept under 
 %10\% compared to a native ProActive application.
-
-For evaluation purposes we use a representative HPC application,
+\paragraph{Example and experiments}
+We use a representative HPC application,
 pattern matching of a DNA sequence programmed in the MapReduce
 model~\cite{Dean:2008:MSD:1327452.1327492}. The case study is
 computation-intensive and relies less on active object communication
-than the experiment reported in Section~\ref{sec:implem-java-8}. This
-is adequate, because ProActive active objects rely on physical threads
+than the experiment reported in Section~\ref{sec:implem-java-8}. Indeed, ProActive  
+relies on physical threads for active objects
 and data copying occurs in each communication, hence, ProActive is
 better suited for computation-intensive scenarios rather than
 communication-intensive ones.
-
 We compared performance of the code generated with the ProActive
-backend for ABS run in distributed mode, the code generated with the
+backend~\cite{rochas:hal-report} for ABS run in distributed mode, the code generated with 
+the
 legacy Java backend of ABS run on a single machine, and native code
-written in ProActive to illustrate the performance of the ProActive
-library.
+written in ProActive.
 %
-Map instances (workers) are created in their own COG to make them work
-in parallel.  We consider a searched pattern of 250 bytes, and a
-database of 5 MB of DNA sequences.  Each map searches for the maximum
-matching sequence of a chunk.  Then, a reducer outputs the global
+Map instances (workers) are created in their own COG.  
+We search a pattern of 250 bytes inside a
+database of 5 MB. Each map searches for the maximum
+matching sequence of a chunk and a reducer outputs the global
 maximum matching sequence.  We report the global execution time. In
 ProActive we instantiate two workers on each machine (each machine has
 two dual-core CPUs).
@@ -2695,7 +2713,7 @@ two dual-core CPUs).
 \end{figure}
 
 Fig.~\ref{fig:bench-usecase} shows execution times of both ABS
-backends application from 2 to 50 workers, therefore using from 1 to
+backends application from 2 to 50 workers,  using from 1 to
 25 physical machines with ProActive.  The execution times of the
 ProActive backend are sharply decreasing for the first few added
 machines and then decrease at a slower rate. On the other hand, the
