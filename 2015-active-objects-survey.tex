@@ -2394,13 +2394,11 @@ efficient future update strategies~\cite{HKRZ:Coregrid:2010}.
 
 %Once again, ProActive object referencing is driven by the underlying technology legacy. 
 In RMI remote objects are globally referenced in what is known as the RMI registry: a mapping from remote object names to remote object stubs that can be copied and used anywhere  to access the remote object. 
-Networking communication is ensured by the rmi protocol. 
-Consequently, in ProActive all active objects are referenced in an RMI registry and can be accessed in this way from any other object through the rmi protocol. 
+Networking communication is ensured by the RMI-JRMP protocol. 
+Consequently, in ProActive all active objects are referenced in an RMI registry and can be accessed in this way from any other object through the adapted protocol. 
 For non-active objects traditional Java object references are used as 
 they are only referenced within the same active object.
 To summarize, two types of object references exist in ProActive: global references, retrievable from the RMI registry, and local references, acting like standard references types. 
-
-\RH{Isn't the ``rmi'' protocol not rather called JRMP?}
 
 \paragraph{Error handling}
 
