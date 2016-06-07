@@ -1169,7 +1169,9 @@ ABS that explicitly release control:
 \lstinline{await}. The former is unconditional while the latter has a
 Boolean argument and can be used to synchronize with another task. In
 particular, synchronization can depend on the resolution of futures; i.e.,
-on the presence of return values from asynchronous method calls.
+on the presence of return values from asynchronous method calls. 
+Section~\ref{sec:implem-java-8} illustrates a possible implementation of cooperative 
+scheduling for ABS.
 % \VLAD{I think it is important here to mention that task results are
 % captured in futures and used for synchronization to better
 % understand synchronization between tasks}
@@ -1722,48 +1724,14 @@ Encore's \ec{await} statement only supports awaiting on
 the fulfillment of a future, unlike ABS which supports awaiting on any boolean
 condition (Section~\ref{sec:abs-lang}). Encore's support for future chaining however makes
 \ec{await} less useful as chaining allows triggering arbitrary operations on the
-fulfillment futures.
-Figs.~\ref{fig:enc-suspend} and \ref{fig:enc-get-await} illustrate the semantics of 
-\ec{suspend}, \ec{await}, and \ec{get}. They illustrate
-how these operations  involve \emph{descheduling} (removed from
-round-robin scheduler queue) and \emph{blocking} (no processing of other
-messages in the active object's queue) of an active object, and whether a
-resuming message is prepended or appended to the active object's message queue.
+fulfillment futures. Encore scheduling of requests is explained in details in 
+Section~\ref{encore-implem}.
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[scale=.35]{pictures/enc-basic}
-\qquad
-  \includegraphics[scale=.35]{pictures/enc-resume}
-  \caption{(Left) An Encore scheduler, local to one core. A
-    scheduler has a queue of active objects with non-empty message
-    queues. (Right) The state after the execution of \ec{suspend} in the left 
-    configuration.}
-  \label{fig:enc-suspend}
-\end{figure}
-
-\begin{figure}[t]
-  \centering
-%  \includegraphics[scale=.4]{pictures/enc-get-await-fulfilled}
-  \includegraphics[scale=.30]{pictures/enc-get-unfulfilled}
-\qquad
-  \includegraphics[scale=.30]{pictures/enc-await-unfulfilled}
-  \caption{(Left) An Encore program executing a \ec{get} on an
-    unfulfilled future. This causes the currently executing
-    active object to be unscheduled, only to be rescheduled after
-    the future has been fulfilled. Once the object gets to the
-    head of the scheduling queue after this point, the \ec{get}
-    operation returns and the program continues from this point.
-    with non-empty message queues. (Right) An Encore program
-    executing an \ec{await} on an unfulfilled future. In
-    difference with \ec{get}, the active object is only
-    unscheduled if it does not have any messages in its message
-    queue, and once the future is fulfilled, the resuming method
-    is placed at the end of the active object's queue.}
-  \label{fig:enc-get-await}
-\end{figure}
-
-\RH{this description is more detailed than those for the other languages. On the other hand, the scheduling mechanism of Encore is nearly identical to that of ABS. I suggest to either drastically shorten this paragraph or render it applicable to both ABS and Encore.}
+%\RH{this description is more detailed than those for the other languages. On the other 
+%hand, the scheduling mechanism of Encore is nearly identical to that of ABS. I suggest 
+%to 
+%either drastically shorten this paragraph or render it applicable to both ABS and 
+%Encore.}
 
 \paragraph{Parallelism Inside Active Objects}
 
@@ -2740,7 +2708,7 @@ and the communication rate is high.
 
 \RH{I think it would be really useful to compare against the Java 8 backend as well!}
 
-\subsection{Encore}
+\subsection{Encore}\label{encore-implem}
 %\TODO{clean up this introduction}
 %explicit bytecode operations?
 %particular accent on data sharing since lots of care has been put is designing an efficient data sharing in Encore.
@@ -2806,9 +2774,50 @@ which provides a thread-of-control to the active object, so that it can process 
 This implementation detail %, unlike in ProActive and ABS, 
 makes Encore capable of running thousands of active objects on the same machine.
 
-As described in Section~\ref{sec:encore}, when the active object processes a message
-and a synchronisation construct is involved, the running method may be paused
-until a future is fulfilled and resumed afterwards. Unlike the ProActive backend for ABS 
+Figs.~\ref{fig:enc-suspend} and \ref{fig:enc-get-await} illustrate the semantics of 
+\ec{suspend}, \ec{await}, and \ec{get}. They illustrate
+how these operations  involve \emph{descheduling} (removed from
+round-robin scheduler queue) and \emph{blocking} (no processing of other
+messages in the active object's queue) of an active object, and whether a
+resuming message is prepended or appended to the active object's message queue.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[scale=.35]{pictures/enc-basic}
+	\qquad
+	\includegraphics[scale=.35]{pictures/enc-resume}
+	\caption{(Left) An Encore scheduler, local to one core. A
+		scheduler has a queue of active objects with non-empty message
+		queues. (Right) The state after the execution of \ec{suspend} in the left 
+		configuration.}
+	\label{fig:enc-suspend}
+\end{figure}
+
+\begin{figure}[t]
+	\centering
+	%  \includegraphics[scale=.4]{pictures/enc-get-await-fulfilled}
+	\includegraphics[scale=.30]{pictures/enc-get-unfulfilled}
+	\qquad
+	\includegraphics[scale=.30]{pictures/enc-await-unfulfilled}
+	\caption{(Left) An Encore program executing a \ec{get} on an
+		unfulfilled future. This causes the currently executing
+		active object to be unscheduled, only to be rescheduled after
+		the future has been fulfilled. Once the object gets to the
+		head of the scheduling queue after this point, the \ec{get}
+		operation returns and the program continues from this point.
+		with non-empty message queues. (Right) An Encore program
+		executing an \ec{await} on an unfulfilled future. In
+		difference with \ec{get}, the active object is only
+		unscheduled if it does not have any messages in its message
+		queue, and once the future is fulfilled, the resuming method
+		is placed at the end of the active object's queue.}
+	\label{fig:enc-get-await}
+\end{figure}
+%As described in Section~\ref{sec:encore}, when the active object processes a message
+%and a synchronisation construct is involved, the running method may be paused
+%until a future is fulfilled and resumed afterwards.
+
+ Unlike the ProActive backend for ABS 
 that relies
 on creating new threads,
 Encore opts for handling stacks, which can be attached to \emph{encore threads}. Based on this idea,
