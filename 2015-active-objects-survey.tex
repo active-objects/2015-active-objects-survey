@@ -868,8 +868,8 @@ In RebecaSys, the syntax is extended with \textit{wait} statements, and a block 
 Global variables are shared variables among actors. All  actors are allowed to 
 read/write values from/to global variables. Wait statements allow some synchronisation 
 between actors and more precisely they allow one actor to wait until a given Boolean 
-expression becomes true. 
-\RH{Please clarify what ``wait'' means: does the actor release the processor?}
+expression becomes true. Note that, wait statements release the processor, associated to the actor.
+%\RH{Please clarify what ``wait'' means: does the actor release the processor?}
 %Ehsan:
 %RebecaSys is defined as a back-end language, SystemC codes are automatically mapped to RebecaSys and then are formally verified. 
 
@@ -960,8 +960,8 @@ Formal semantics of Probabilistic Timed Rebeca is defined interms of Timed Marko
                                                                                                                                                              Model Checking, Simulation \\
       \hline
       \textbf{Variable Rebeca (VR)} & Product lines of actors & None & As in Rebeca 
-                                                                       + feature inclusion for selected product & None & SOS & Needs help of an 
-                                                                                                                               expert\\
+                                                                       + feature inclusion for selected product & None & SOS & Rebeca tool (after manual mapping to Rebeca) 
+                                                                       \\
       \hline
       \textbf{Broadcasting Rebeca (BR)} & Actors with broadcasting abilities & None 
                                                       & As in Rebeca + broadcasting to all actors mechanism & None & SOS & Model 
@@ -982,7 +982,7 @@ Formal semantics of Probabilistic Timed Rebeca is defined interms of Timed Marko
   }
 \end{table}
 
-\RH{please explain entry ``Tool Support'' for (VR)}
+%\RH{please explain entry ``Tool Support'' for (VR)}
 
 \paragraph{Implementation and tooling support}
 There is a wide range of analysis and mapping tool sets for Rebeca family models:\footnote{These are 
