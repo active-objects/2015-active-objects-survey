@@ -868,7 +868,8 @@ In RebecaSys, the syntax is extended with \textit{wait} statements, and a block 
 Global variables are shared variables among actors. All  actors are allowed to 
 read/write values from/to global variables. Wait statements allow some synchronisation 
 between actors and more precisely they allow one actor to wait until a given Boolean 
-expression becomes true. Note that, wait statements release the processor, associated to the actor.
+expression becomes true. More precisely, wait statements release the processor associated 
+to the actor.
 %\RH{Please clarify what ``wait'' means: does the actor release the processor?}
 %Ehsan:
 %RebecaSys is defined as a back-end language, SystemC codes are automatically mapped to RebecaSys and then are formally verified. 
@@ -943,7 +944,7 @@ Formal semantics of Probabilistic Timed Rebeca is defined interms of Timed Marko
   \tbl{Summary of dimensions of comparison for  members of Rebeca family  
     \label{tab::Rebecacomparison}}{%
     \scriptsize
-    \begin{tabular}{|L{1.8cm}|L{1.7cm}|L{1.2cm}|L{1.9cm}|L{1.1cm}|L{1.4cm}|L{1.2cm}|}
+    \begin{tabular}{|L{1.8cm}@{\,}|L{1.8cm}@{\,}|L{1.2cm}|L{2.4cm}@{\,}|L{1.1cm}|L{1.3cm}@{\,}|L{1.6cm}|}
       \hline
       & \textbf{Objective} & \textbf{Synchro\-nization} & \textbf{Transparency} & 
       \textbf{Data Sharing} & \textbf{Formal Semantics} & \textbf{Tool Support} \\
@@ -968,7 +969,11 @@ Formal semantics of Probabilistic Timed Rebeca is defined interms of Timed Marko
                                                                                                                            Checking \\
       \hline
       \textbf{Wireless Rebeca (WR)} & Ad-hoc mobile networks & None & As in BR 
-                                                                      + handling the connectivity of nodes + multi-casting & None & SOS & Model 
+                                                                      + handling  
+                                                                      connectivity of 
+                                                                      nodes + 
+                                                                      multi-casting & 
+                                                                      None & SOS & Model 
                                                                                                                                           Checking \\
       \hline
       \textbf{Timed Rebeca (TR)} & Realtime actors & Delay statement & As in Rebeca 
