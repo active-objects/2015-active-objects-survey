@@ -213,10 +213,10 @@ task. The programming abstractions provided in concurrent programming
 libraries are often rather low-level and difficult to reason about,
 both from the point of view of the programmer and for verification
 tools. This article focuses on one family of concurrent programming
-languages that tries to mitigate this problem: active-object
+languages that tries to mitigate this problem: active object
 languages.  The first and most important characteristic of this family
 of languages is inherited from the actor paradigm. It relies on
-organising the program in terms of well-defined entities called actors. Each
+organizing the program in terms of well-defined entities called actors. Each
 actor is an independent entity that behaves autonomously and that
 communicates with other actors through asynchronous
 messages. Information sharing is then simplified, programming is less
@@ -248,13 +248,13 @@ replies to asynchronous method calls in the form of \emph{futures}.
 
 All languages presented here come with strong support for formal
 methods and verification techniques; Rebeca and ABS even make this
-their main focus, having been conceived as modelling languages: actors do
+their main focus, having been conceived as modeling languages: actors do
 not merely provide a convenient programming abstraction but also
 greatly simplify static program analysis by naturally providing
 structured entities that can serve as the basis for compositional
 analyses.
 
-ASP and Encore instead put the focus on highly optimised, efficient
+ASP and Encore instead put the focus on highly optimized, efficient
 implementations. It is interesting to notice that both of them (and,
 to a certain extent also ABS) allow the programmer to depart from the
 pure actor model by providing local multi-threading to an actor,
@@ -265,7 +265,7 @@ provided in such a way that it relies on the same programming
 abstractions as classical active objects and for this reason, it is
 still very easy to write safe and efficient programs.
 
-This paper is organised as follows. Section~\ref{AOlanguages} presents
+This paper is organized as follows. Section~\ref{AOlanguages} presents
 an overview of the actor and active object languages; it first adopts
 a historical perspective, and then focuses on the four chosen
 languages, presenting their design principles, the approach they
@@ -355,14 +355,14 @@ parallel execution model supporting a huge number of independent
 actors.
 
 Active object languages integrate the basic Actor model with
-object-oriented concepts. This integration can be realized by
-modelling a message as an asynchronous method call, thus fixing the
+object-oriented concepts. This integration can be realized by modeling
+a message as an asynchronous method call, thus fixing the
 interpretation of a message by a corresponding method definition.  In
 Rebeca
 \cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/jucs/SirjaniBM05}
 methods are run to completion without any further synchronization
 mechanism and do not return values. Like in the original Actor model,
-returning values from a method call can be modelled by another
+returning values from a method call can be modeled by another
 asynchronous message; unlike the original Actor model, in Rebeca the
 order of messages between any two actors is preserved.
 
@@ -433,7 +433,7 @@ in stable, public distributions.
 
 % All these languages have drawn attention on different areas.
 % %
-% For instance, ABS is an executable modelling language with a focus on
+% For instance, ABS is an executable modeling language with a focus on
 % analysis and property-preserving code generation while, both Encore
 % and ProActive, aim at efficient runtime systems for active object
 % languages where Encore targets multicore platforms and ProActive has
@@ -627,7 +627,7 @@ a number of restrictions: no shared variables, no blocking send or
 receive, single-threaded actors, and non-preemptive message execution
 (the execution of different messages does not interfere).
 
-As usability has been a primary goal in designing Rebeca, the conrete
+As usability has been a primary goal in designing Rebeca, the concrete
 syntax appears as Java-like, the computation and communication model
 of the core language is kept simple, and the analysis support is in
 the form of model checking. Rebeca is an actor-based language without
@@ -665,7 +665,7 @@ requirements of each application domain.  Timed Rebeca
 \cite{DBLP:journals/corr/abs-1108-0228,DBLP:journals/scp/ReynissonSACJIS14}
 extends Rebeca to capture real-time behavior and is supported by
 customized efficient analysis tools. Finally, probabilistic behavior
-can be modelled with Probabilistic Timed Rebeca
+can be modeled with Probabilistic Timed Rebeca
 \cite{DBLP:journals/eceasst/JafariKSH14} and analyzed using back-end
 tools.
 
@@ -856,7 +856,7 @@ transition systems \cite{DBLP:conf/facs2/KhamespanahSVK15}.  Floating
 time transition systems constitute an innovative semantics for
 real-time actors, resulting in a significant amount of reduction in
 time and memory consumption while verifying timed actor models.
-Formal semantics of Probabilistic Timed Rebeca is defined interms of
+Formal semantics of Probabilistic Timed Rebeca is defined in terms of
 Timed Markov Decision Processes in
 \cite{DBLP:journals/eceasst/JafariKSH14}.
 
@@ -903,7 +903,7 @@ Timed Markov Decision Processes in
                                                                        + Progress of time  & None & SOS,\newline RT Maude, Timed Automata, FTTS & Afra 
                                                                                                                                           integrated tool, various backends \\
       \hline
-      \textbf{Probabilistic Timed Rebeca (PTR)} & Probabilistic readtime actors & 
+      \textbf{Probabilistic Timed Rebeca (PTR)} & Probabilistic real-time actors & 
                                                                                   As in TRebeca & As in TR & None & SOS & Backends IMCA and Prism \\
       \hline
     \end{tabular}
@@ -1235,7 +1235,7 @@ whether to call a method synchronously or asynchronously.  Note that the entire
 stack will be suspended in the case of a processor release.
 
 \paragraph{Degree of synchronisation} 
-If one attemps to retrieve a future value that is not yet ready, this
+If one attempts to retrieve a future value that is not yet ready, this
 results in the blockage of its COG until the value becomes
 available. Obviously, this can easily lead to deadlocks. Many
 deadlocks can be avoided by guarding \lstinline{get} expressions with
@@ -1440,16 +1440,17 @@ public class MyClass {
   public ... method2(...) { ... }
 }
 \end{lstlisting}
-In this example, two groups of requests are defined, each with one method.  The two groups are declared to be compatible (and
-so are their methods, by extension). The \code{selfCompatible}
-parameter defines whether two different requests of the same group are
-allowed to run in parallel. At runtime, a ready request is
-automatically executed if it is compatible (i) with requests that are
-already executing and (ii) with older requests in the queue. The first
+In this example, two groups of requests are defined, each with one
+method.  The two groups are declared to be compatible (and so are
+their methods, by extension). The \code{selfCompatible} parameter
+defines whether two different requests of the same group are allowed
+to run in parallel. At runtime, a ready request is automatically
+executed if it is compatible (i) with requests that are already
+executing and (ii) with older requests in the queue. The first
 condition prevents data races. The second condition preserves the
 ordering of incompatible requests. It also prevents starvation which
 would arise when requests of a group $G$ that are merely compatible
-with currently executing requests are continously overtaking requests
+with currently executing requests are continuously overtaking requests
 of another group $G'$ with which they are incompatible.
 
 Without any annotations, a multi-active object is a mono-threaded
@@ -1468,7 +1469,7 @@ than programming with raw threads and low-level synchronization
 mechanisms while, at the same time, providing a considerable degree of
 parallelism.  If even more parallelism, beyond what is possible with
 request compatibility, is required, then the programmer can define
-further requests as compatible and prevent undesired behaviour with
+further requests as compatible and prevent undesired behavior with
 traditional low-level Java synchronisation primitives. Such a mixed
 approach goes beyond the traditional active object model.
 
@@ -1515,7 +1516,7 @@ ASP follows a strict policy of absence of sharing between active objects. Object
 not active objects are passed by copy between activities (as request parameters or request 
 results). Of course, this  applies also to objects that are referenced by passed 
 objects: a deep-copy mechanism  ensures that, when objects are transmitted 
-between activities, they are copied together with all their dependants on the destination 
+between activities, they are copied together with all their dependents on the destination 
 side. This mechanism, also used by RMI, slows down request invocation, because 
 of the time spent to transmit data, but it accelerates request treatment, because there is no 
 need to contact another activity to obtain the value of the request parameters. Note that 
@@ -1523,7 +1524,7 @@ active object and future references are passed by reference.
 
 Coherency  between different copies of a passive object is not guaranteed.  If 
 a user wants to ensure that an object has a unique coherent state, he should not 
-transmit it by copy:  transmitting it as an active-object reference instead would be the best choice.
+transmit it by copy:  transmitting it as an active object reference instead would be the best choice.
 
 \paragraph{Formal semantics}
 
@@ -1534,7 +1535,7 @@ that the order of future updates has no influence on the execution and
 that the only source of non-determinacy in mono-threaded ASP is when
 two activities can send a request to the same destination.  
 %
-A functional fragment of the calculus has been formalised in
+A functional fragment of the calculus has been formalized in
 Isabelle/HOL~\cite{HKL:SCP11}. A specific semantics has been designed
 to evaluate a functional ASP program without risk of deadlock; the
 absence of deadlocks is proved in Isabelle/HOL.  The full semantics of
@@ -1564,7 +1565,7 @@ having a binding from virtual node names, used in the source code,
 pointing to machine addresses or names. In practice, this binding is
 implemented in XML configuration files. Since the binding is made at
 \emph{deployment time}, changing infrastructure for a given ProActive
-application is localised in few files and does not require application
+application is localized in few files and does not require application
 recompilation.  Several machines can be aggregated under a single
 virtual node name in the deployment logic, for example, to provide the
 virtual node with certain properties or non-functional deployment
@@ -1772,30 +1773,28 @@ active object until the future is resolved and the latter releases the
 current thread of execution if the future is not resolved, so that the
 same active object can continue processing other messages.
 %
-Furthermore, Encore provides the \emph{future chaining} operator ($\rightsquigarrow$),
-which registers a callback (as an anonymous function, aka lambda) to the future and
-continues processing the rest of the message. The callback is executed when the
-future is resolved, using the result of the future as the argument to the
-callback. This construct allows chaining operations on futures without creating
-synchronisation, similar to the default behaviour of futures in
-AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349}, except that it is more
-explicit and easier to control for the programmer. It is also a way to mimic
-transparent first-class futures of ASP, except that the callback request is only
-created when the future is resolved.
+Furthermore, Encore provides the \emph{future chaining} operator
+($\rightsquigarrow$), which registers a callback (as an anonymous
+function, aka lambda) to the future and continues processing the rest
+of the message. The callback is executed when the future is resolved,
+using the result of the future as the argument to the callback. This
+construct allows chaining operations on futures without creating
+synchronisation, similar to the default behavior of futures in
+AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349}, except that it
+is more explicit and easier to control for the programmer. It is also
+a way to mimic transparent first-class futures of ASP, except that the
+callback request is only created when the future is resolved.
 
 \paragraph{Degree of transparency}
 
-In Encore, regular
-% non-future variables 
-and future variables are distinguished statically (e.g., \ec{int} vs.\
-\ec{Fut int}).  The \ec{get} operation explicitly extracts the content
-from the future type.
-%\ec{get} converts a future
-%type to non-future type  by extracting the content explicitly.
-Both in future management and with parallel combinators, the programmer is exposed to the concurrent computations
-being handled in Encore. However, especially when using future chaining or parallel
-combinators, the scheduling and ordering of operations is handled automatically, and the
-programmer only expresses concurrency from a high-level point of view.
+In Encore, regular and future variables are distinguished statically
+(e.g., \ec{int} vs.\ \ec{Fut int}).  The \ec{get} operation explicitly
+extracts the content from the future type.  Both in future management
+and with parallel combinators, the programmer is exposed to the
+concurrent computations being handled in Encore. However, especially
+when using future chaining or parallel combinators, the scheduling and
+ordering of operations is handled automatically, and the programmer
+only expresses concurrency from a high-level point of view.
 
 \paragraph{Data sharing}
 
@@ -1820,7 +1819,7 @@ concurrency control.
 \emph{Shared capabilities} may be shared across
 concurrent computations, because they encapsulate
 a means of protection against concurrent access: \emph{pessimistic
-capabilities} like locks and actors serialise computation;
+capabilities} like locks and actors serialize computation;
 %
 \emph{optimistic capabilities} like STM and lock-free capabilities allow
 parallel operations, but use a roll-back schema when
@@ -1879,18 +1878,19 @@ constrained active object topologies.
 \end{figure}
 
 \paragraph{Formal semantics}
-The Encore concurrency model is formalized \cite{ref:encore} using
-a small step operational semantics. Parallel combinators are formalized as well,
-including a soundness proof with the implicit task parallelism model \cite{encore:parallel-combinators-thesis,party-coordination}.
-The capability type system is formalized with proofs of soundness and data race-freedom \cite{encore:kappa}.
+The Encore concurrency model is formalized \cite{ref:encore} using a
+small step operational semantics. Parallel combinators are formalized
+as well, including a soundness proof with the implicit task
+parallelism model
+\cite{encore:parallel-combinators-thesis,party-coordination}.  The
+capability type system is formalized with proofs of soundness and data
+race-freedom \cite{encore:kappa}.
 
 \paragraph{Implementation and tooling support}
-Encore is a relatively new programming language and there is
-limited tooling support. However, the Encore compiler can emit 
-readable C code which
- can be analysed and debugged using any available tool that
-works with the C11 standard. 
-The currently supported Encore tools are:
+Encore is a relatively new programming language and there is limited
+tooling support. However, the Encore compiler can emit readable C code
+which can be analyzed and debugged using any available tool that works
+with the C11 standard.  The currently supported Encore tools are:
 
 \begin{itemize}
 \item Emacs and Atom editors with syntax highlighting and compiler error support
@@ -1903,7 +1903,7 @@ The currently supported Encore tools are:
 This section describes the implementation of the active object
 programming models introduced above.  Active object languages claim to
 support more intuitive, easier-to-use concurrent programming models
-than traditional programming languages, while retaining the latters'
+than traditional programming languages, while retaining the latter's
 efficiency (or even improve upon it). Hence, implementation aspects of
 active object languages are as important as their design. Their
 discussion exhibits a number of difficult, partially unsolved,
@@ -1979,7 +1979,7 @@ be copied when exchanged between active objects, and objects that can
 be shared safely (e.g., immutable objects).  Accessing objects in
 another activity might cause communication overhead and request
 treatment delays, while copying objects might lengthen the initial
-request invocation, because of the serialisation time, but fastens the
+request invocation, because of the serialization time, but fastens the
 request treatment. Handling copied objects also involves coherency
 issues.
 % Different languages take different choices on which objects are
@@ -2068,7 +2068,7 @@ threads originating from the methods invoked by that object. In ABS,
 however, at most one method executes at any time on an object, so the
 creation of a new thread for each fine-grained ABS method call is
 wasteful. It scales badly due to the huge number of threads that
-occupy a large portion of the heap and seeriously compromised
+occupy a large portion of the heap and seriously compromised
 the performance of previous Java backends for ABS.
 
 \paragraph{Cooperative Scheduling of Active Objects using Java 8}
@@ -2221,7 +2221,7 @@ of threads, resulting in the program running out of memory. This makes
 ABS unusable for HPC and Big Data applications that want to benefit
 from cooperative scheduling. While the Java 8 backend clearly performs
 better by minimizing the number of live threads at runtime, the
-challenge to handle cooperative schduling of a large number of
+challenge to handle cooperative scheduling of a large number of
 messages that are suspended and \textbf{not} released remains an open
 research question.
 
@@ -2261,24 +2261,25 @@ applications.
 
 \paragraph{Data sharing and object referencing}
 
-% LUDO: I shhortened the part that was common with ASP
-Like ASP ProActive differentiates between active and passive objects in a way that is mostly 
-transparent to 
-the programmer, except that passive objects are passed by copy when communicated between 
-active objects, while references between active objects can be shared and accessed from 
-anywhere.
-The first reason for this behavior is that ProActive is based on Java RMI, which in turn  
-is based on parameter copy.
-The second reason is distribution: provision of a consistent distributed memory 
-is too costly for HPC, which is the primary target of ProActive.
-Of course, data is shared between the several threads of a multi-active objects.
+Like ASP ProActive differentiates between active and passive objects
+in a way that is mostly transparent to the programmer, except that
+passive objects are passed by copy when communicated between active
+objects, while references between active objects can be shared and
+accessed from anywhere.  The first reason for this behavior is that
+ProActive is based on Java RMI, which in turn is based on parameter
+copy.  The second reason is distribution: provision of a consistent
+distributed memory is too costly for HPC, which is the primary target
+of ProActive.  Of course, data is shared between the several threads
+of a multi-active objects.
 
-This sharing pattern is thus naturally implemented using RMI and Java serialization  
-performing a deep copy of the parameters transmitted between objects. Future and active 
-objects are implemented by a proxy that can be passed by reference and is serialized as 
-a reference (without any copy of other objects referenced). The serialization mechanism 
-is also used to track  multiple references to the same future and to implement 
-efficient future update strategies~\cite{HKRZ:Coregrid:2010}.
+This sharing pattern is thus naturally implemented using RMI and Java
+serialization performing a deep copy of the parameters transmitted
+between objects. Future and active objects are implemented by a proxy
+that can be passed by reference and is serialized as a reference
+(without any copy of other objects referenced). The serialization
+mechanism is also used to track multiple references to the same future
+and to implement efficient future update
+strategies~\cite{HKRZ:Coregrid:2010}.
 %
 %In the case of active objects, they can be indeed shared between active objects but this 
 %does not imply safety issues since request reception is centralized and request 
@@ -2701,7 +2702,8 @@ objects.
 Active objects in Encore are implemented by a lightweight abstraction called \emph{encore thread},
 which resembles green threads. Each active object is assigned an \emph{encore thread}
 which provides a thread-of-control to the active object, so that it can process messages in its message queue.
-This implementation detail %, unlike in ProActive and ABS, 
+This implementation detail 
+%, unlike in ProActive and ABS, 
 makes Encore capable of running thousands of active objects on the same machine.
 
 Figs.~\ref{fig:enc-suspend} and \ref{fig:enc-get-await} illustrate the semantics of 
@@ -2753,7 +2755,7 @@ threads, Encore opts for handling stacks, which can be attached to
 aside and a new stack is given to the Encore thread, so that it can
 continue running some other or the same active object using the new
 stack.  To make this process more efficient, Encore has a stack pool
-that allows reusing unused stacks.  Upon fulfilment of the awaited
+that allows reusing unused stacks.  Upon resolution of the awaited
 future, the Encore thread can continue processing the paused execution
 and, after finishing, the stack is collected and returned to the stack
 pool for future reuse.
@@ -2814,7 +2816,7 @@ Execution of Rebeca models is performed by translating Rebeca models to Erlang c
 \cite{DBLP:journals/scp/ReynissonSACJIS14}. Erlang is a dynamically-typed general-purpose 
 programming language for development of distributed, real-time and fault-tolerant 
 applications; it provides an actor-based concurrency model. Having the same concurrency 
-model, translating Rebeca models to Erlang is realised by direct mapping of language 
+model, translating Rebeca models to Erlang is realized by direct mapping of language 
 constructs as shown in \cite{DBLP:journals/scp/ReynissonSACJIS14}.
 
 \paragraph{Thread Creation and Scheduling}
@@ -2920,10 +2922,10 @@ backend for ABS provides light threads and enables instantiation of
 many active objects on the same machine. It also permits active
 objects to achieve faster communication than in ProActive. At a finer
 granularity, Encore provides optimized constructs that allow safe and
-efficienct programming at a low level of abstraction.
+efficient programming at a low level of abstraction.
 
 It is noteworthy that all four languages are equipped with a formal
-semantics, which is the basis for unambigous implementations and for
+semantics, which is the basis for unambiguous implementations and for
 far reaching tool support in terms of static analysis tools, test
 generators, optimizers, etc. For several of the languages discussed
 here meta properties of the formal semantics were proven, such as type
@@ -2932,8 +2934,6 @@ safety or data race-freedom.
 We hope that the tradeoffs and options discussed in this survey can
 serve as a future reference for designers and implementors of
 programming languages that make use of the active object paradigm.
-
-%}
 
 
 
