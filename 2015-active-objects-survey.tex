@@ -2556,28 +2556,31 @@ copying occurs in each communication, ProActive is better suited for
 computation-intensive scenarios than for communication-intensive ones.
 We compared performance of the code generated with the ProActive
 backend~\cite{rochas:hal-report} for ABS run in distributed mode, the
-code generated with the legacy Java backend of ABS run on a single
-machine, and native code written in ProActive.
+code generated with the Java 8 backend of ABS run on a single
+machine, and native code written manually in ProActive for the same algorithm.
 %
 Map instances (workers) are created in their own COG.  We search a
 pattern of 250 bytes inside a database of 5 MB. Each map searches for
 the maximum matching sequence of a chunk and a reducer outputs the
 global maximum matching sequence.  We report the global execution
-time. In ProActive we instantiate two workers on each machine (each
-machine has two dual-core CPUs).
+time. When deploying with ProActive, we instantiate two workers on each machine (each
+machine has two dual-core CPUs). In the generated
+program, we manually replaced the translation of functional ABS types
+(integers, booleans, lists, maps) with standard Java types, similar to
+the code the Java 8 backend produces.
 % All used machines have 2 dual core CPUs at 2.6GHz, and 8 GB of
 % RAM\footnote{We use a cluster of Grid5000 platform:
 % \url{http://grid5000.fr}}.
 
 \begin{figure}[t]
 		\begin{subfigure}[b]{0.50\linewidth}
-                 \includegraphics[scale=0.31]{pictures/usecase-final.png} 
-                \caption{Against existing solution}
+                 \includegraphics[scale=0.31]{pictures/usecase-pa-java-8.pdf} 
+                \caption{Against Java 8 backend}
                 \label{fig:bench-usecase}
         \end{subfigure}
         \begin{subfigure}[b]{0.50\linewidth}
-                  \includegraphics[scale=0.31]{pictures/native-final.png} 
-                \caption{Against native code}
+                  \includegraphics[scale=0.31]{pictures/native-finalV2.png} 
+                \caption{Against native ProActive code}
                 \label{fig:bench-native}
         \end{subfigure}
  \caption{Execution time of DNA-matching ABS application} 
@@ -2587,19 +2590,18 @@ Fig.~\ref{fig:bench-usecase} shows the execution times of both ABS
 backends for the application ranging from 2 to 50 workers, using from
 1 to 25 physical machines with ProActive.  The execution times of the
 ProActive backend are sharply decreasing for the first few added
-machines and then decrease at a slower rate. The code generated with
-the legacy Java backend has an optimal degree of parallelism of 4
-workers (i.e., the number of cores of the machine); execution time
-even increases afterwards due to context switching.  In contrast to
+machines and then decrease at a slower rate. The first instance added in the Java 8 
+backend also improve significantly the performance of the program and the Java 8 backend 
+performs better with one or two workers. Then, thanks to the 
+efficient thread management of the Java 8 backend, the performance stays stable until 30 
+workers. Finally with a high number of instances the degree of parallelism becomes 
+harmful.  In contrast to
 this, increasing the degree of parallelism for the ProActive backend
 results in a linear speedup, because it balances the load between
-machines.
+machines and benefits from distribution.
 
 Figure~\ref{fig:bench-native} compares the performance of the
-generated ProActive code to a hand-written version.  In the generated
-program, we manually replaced the translation of functional ABS types
-(integers, booleans, lists, maps) with standard Java types, similar to
-the code the Java 8 backend produces.
+generated ProActive code to a hand-written version.  
 % Indeed, our point here was to evaluate the additional communication
 % cost of our translation, not the performance of ABS types compared
 % to standard Java types.  \footnote{As can be noticed on the
@@ -2613,8 +2615,6 @@ and the communication rate is high.
 % At the biggest stage, the application translated with the ProActive
 % backend starts to have a higher overhead because it involves too
 % much communication.
-
-\RH{I think it would be really useful to compare against the Java 8 backend as well!}
 
 \subsection{Encore}\label{encore-implem}
 
