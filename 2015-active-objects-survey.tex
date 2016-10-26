@@ -2030,14 +2030,14 @@ to be a major implementation challenge before Java~8, because a
 straightforward implementation would match a Java thread to each
 method call and a thread pool to each object. Hence, an asynchronous
 method call caused the creation of a new thread inside a thread pool
-along with the start of this thread executing the method. Here is a
+along with the start of this thread executing the method. Here there is a
 mismatch, because a Java object is a thread pool containing the
 threads originating from the methods invoked by that object. In ABS,
 however, at most one method executes on an object at any time, so
 creating a new thread for each fine-grained ABS method call is
 wasteful. It scaled badly due to the huge number of threads that
 occupy a large portion of the heap and seriously compromised the
-performance of previous Java backends for ABS.
+performance of previous Java backends for ABS. 
 
 \paragraph{Cooperative scheduling of active objects using Java 8}
 
@@ -2045,10 +2045,18 @@ New features of Java 8 allow method calls to be wrapped into
 lightweight lambda expressions such that they can be put into a
 scheduling queue of an \texttt{ExecutorService} to which the running
 objects are mapped, significantly reducing the number of idle threads
-at runtime.  The only drawback is that if a method call contains a
+at runtime. The current implementation, illustrated in Fig.~\ref{abs8:coop}
+shows active objects having a demand-driven approach
+and only creating a physical thread once they have a method to execute inside their queue and
+the \texttt{ExecutorService} has a thread available in its pool. Finally, when all messages are
+blocked or the active object's queue is empty the thread is ended and released back to the pool
+of the \texttt{ExecutorService}.
+ The only drawback is that if a method call contains a
 recursive stack of synchronous calls, this stack needs to be saved
-upon preemption. This scenario cannot be realized with lambda
-expressions.
+upon encountering an \texttt{await} statement  . This scenario cannot be realized with lambda
+expressions. To solve this problem,such a call stack would be modeled as continuation functions
+and then be saved as lambda expressions. These lambda expressions would be ordered, such that,
+once released, the continuations would execute and maintain the correct logic of the program.
 
 %% Note (RH): this is not the place for a detailed discussion of alternatives
 %
@@ -2068,20 +2076,21 @@ expressions.
 
 \begin{figure}
   \centering
-  \includegraphics[scale=0.45]{./pictures/abs8sched.png}
-  \caption{Cooperative scheduling solution}
+  \includegraphics[scale=0.45]{./pictures/ABS8dd.png}
+  \caption{Thread Creation and Scheduling}
   \label{abs8:coop}
 \end{figure}
 
-The current implementation, illustrated in Fig.~\ref{abs8:coop}, is
-based on the idea that on every preemption we try to optimize
-the suspension of the message thread until the call is released for
-continuation. In this scenario each asynchronous call is a message
-delivered to the callee's queue and all objects in the same COG
-compete for one thread. A sweeper thread decides which task from the
-existing queues is instantiated and becomes available for execution.
-A \emph{single} global thread pool executes available tasks based on a
-work stealing mechanism.
+
+
+%that on every preemption we try to optimize
+%the suspension of the message thread until the call is released for
+%continuation. In this scenario each asynchronous call is a message
+%delivered to the callee's queue and all objects in the same COG
+%compete for one thread. A sweeper thread decides which task from the
+%existing queues is instantiated and becomes available for execution.
+%A \emph{single} global thread pool executes available tasks based on a
+%work stealing mechanism.
 
 %\RH{Please replace cog B in Fig. 8 with vertical dots to save
 %  space. Replace cog with COG. Repace cog/Sweeper A with cog/sweeper
@@ -2135,7 +2144,9 @@ Fig.~\ref{abs8:ex}. The performance figures presented are for one
 object that is running 10--10000 method invocations, each with a
 varying stack frame (1--1000 recursive calls) and awaits the
 completion of a trigonometric function that reiterates a random number
-(1--1000 times) before completing.
+(1--1000 times) before completing. Finally we tested the backend in terms of scalability 
+and performance using a Map Reduce example which will be presented in Section \ref{sec:implem-proactive},
+together with the ProActive backend for ABS.
 
 \begin{figure}
 \centering
