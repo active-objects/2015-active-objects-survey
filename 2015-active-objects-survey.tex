@@ -2053,7 +2053,7 @@ blocked or the active object's queue is empty the thread is ended and released b
 of the \texttt{ExecutorService}.
  The only drawback is that if a method call contains a
 recursive stack of synchronous calls, this stack needs to be saved
-upon encountering an \texttt{await} statement  . This scenario cannot be realized with lambda
+upon encountering an \texttt{await} statement, which cannot be realized with lambda
 expressions. To solve this problem,such a call stack would be modeled as continuation functions
 and then be saved as lambda expressions. These lambda expressions would be ordered, such that,
 once released, the continuations would execute and maintain the correct logic of the program.
