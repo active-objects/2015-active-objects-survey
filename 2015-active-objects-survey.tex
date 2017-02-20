@@ -117,7 +117,7 @@ Kiko FERNANDEZ-REYES and Albert Mingkun YANG
   programming models appeared, each with different choices concerning
   synchronization and communication between parallel entities. Among
   them, the actor model is based on loosely coupled parallel entities
-  that communicate trough asynchronous messages thanks to the use of
+  that communicate through asynchronous messages thanks to the use of
   mailboxes.  Some actor languages provide a strong integration with
   the object-oriented concepts; they are often called active object
   languages. This paper reviews four major actor and active object
@@ -207,6 +207,12 @@ distributed, and parallel languages ]
 
 
 \section{Introduction}
+\TODO{Overall I think the introduction is lacking in giving a general direction to the 
+article. Why are active object languages becoming important today? What will I learn from 
+reading this article regarding the situation of active object languages in the current 
+state of the art? How do the four languages under analysis fit within the larger 
+community of active object languages or actor languages in general?
+	-->> EINAR}
 
 Designing a programming language for concurrent systems is a difficult
 task. The programming abstractions provided in concurrent programming
@@ -230,7 +236,7 @@ same in all actor languages, the way methods are called seems to pose
 a rather subtle distinction. Although this causes merely minor
 differences regarding expressiveness of the different languages,
 however, it causes considerable differences in terms of the
-abstractions given to the programmer. By supporting
+abstractions provided to the programmer. By supporting
 \emph{communication by asynchronous method calls}, active object
 languages provide a programming model that is tightly integrated with
 the object-oriented programming paradigm and its programming
@@ -244,7 +250,8 @@ original actor model, but nevertheless provides communication by a
 form of asynchronous method invocation. The three other
 languages---ABS, ASP, and Encore---are precise representatives of
 active object frameworks. Additionally, each of them implements
-replies to asynchronous method calls in the form of \emph{futures}.
+replies to asynchronous method calls in the form of \emph{futures} (See 
+Section~\ref{sec:brief-history}.
 
 All languages presented here come with strong support for formal
 methods and verification techniques; Rebeca and ABS even make this
@@ -264,6 +271,13 @@ active objects of ASP). In each case, the extension of the language is
 provided in such a way that it relies on the same programming
 abstractions as classical active objects and for this reason, it is
 still very easy to write safe and efficient programs.
+\TODO{"It is interesting to notice that both of them (and, to a certain extent also ABS) 
+allow the programmer to depart from the pure actor model by providing local 
+multi-threading" => I definitely think this is an interesting point that could be 
+explored further. How does local multi-threading impact the safety guarantees provided by 
+the original model? However, I feel that this is a bit out of place in the introduction.
+	-->> Move to the discussion section???
+	-->> LUDO}
 
 This paper is organized as follows. Section~\ref{AOlanguages} presents
 an overview of the actor and active object languages; it first adopts
@@ -279,6 +293,12 @@ Section~\ref{sec-conclusion} provides a conclusion.
 
 \subsection{A Brief History of Actor and Active Object Languages}
 \label{sec:brief-history}
+\TODO{FRANK: 
+	Reviewer 1 finds it too long but reviewer 2 likes it I suggest to shorten just a 
+	bit\\	
+	Page 3, beginning of 2.1: This is a too broad presentation starting by 
+high-level languages in general and ALGOL etc. Focus the history on the relevant 
+concepts.}
 
 The development of high-level programming languages is generally
 driven by the quest for suitable abstractions of the low-level
@@ -354,6 +374,13 @@ adoption by programmers in the industry, and because of its massively
 parallel execution model supporting a huge number of independent
 actors.
 
+\TODO{FRANK Page 4, 5th paragraph: The mentioning of Rebeca here is a bit unmotivated. 
+The conceptual structure of the following paragraphs can be improved.\\
+"We start with Rebeca, which is closest to the original actor model" => What do you mean 
+with original actor model? [Hewitt 73] or [Agha 86]? During the late 70s and early 80s a 
+number of variations on the actor model were developed, each with wide varying semantics.
+-->> FRANK}
+	
 Active object languages integrate the basic Actor model with
 object-oriented concepts. This integration can be realized by modeling
 a message as an asynchronous method call, thus fixing the
@@ -363,7 +390,7 @@ Rebeca
 methods are run to completion without any further synchronization
 mechanism and do not return values. Like in the original Actor model,
 returning values from a method call can be modeled by another
-asynchronous message; unlike the original Actor model, in Rebeca the
+asynchronous message; in Rebeca the
 order of messages between any two actors is preserved.
 
 Pushing the notion of method calls further by directly supporting
@@ -460,6 +487,23 @@ explicit synchronization statements. Akka
 \cite{haller2009scala,AkkaBook} is a scalable library for implementing
 actors on top of Java and Scala.
 
+
+\TODO{
+	The concurrency model of AmbientTalk is based on the E Programming Language [Miller 
+	2005] which implements a communicating event-loop (CEL) actor model. Other than 
+	asynchronous futures (called promises in E) its most distinguishing feature is that 
+	objects are passed by eventual reference between actors rather then by copy. This 
+	helps support a POLA (principle of least authority) style of programming, by 
+	facilitating the creation of many small, object-level interfaces (each eventual 
+	reference acts as a new entry point to the actor), rather than a single large 
+	actor-level interface. AmbientTalk's concurrency model remains faithful to the 
+	communicating event-loop model of E but was designed as an ambient-oriented 
+	programming (AmOP) language. It adds to the CEL model a number of new primitives to 
+	handle disconnecting and reconnecting nodes in a network where connections are 
+	volatile.\\
+	-->>[LUDO] what are we supposed to do? copy-paste?\\
+	-->> REINER}
+
 % \TODO{ do we add a smallnote on: Kilim, Go?}
 % Reiner: rather obscure, there is not even a paper on it:
 % E programming language, 
@@ -522,6 +566,16 @@ thread can be suspended to handle another message\footnote{The terms
 checking whether a future is resolved or not. This breaks the
 sequential processing of a message (call), but also allows programs to
 be more efficient and less deadlock-prone.
+
+
+\TODO{I agree with the different design dimension presented in this section. I think they 
+provide a good basis along which active object languages can be classified. Two minor 
+things I am missing is what the message ordering guarantees and the message delivery 
+guarantees are for each individual language.
+-->> [LUDO] I agree  I suggest to add “message ordering” as a subpart of Synchronization, 
+and a small sentence saying that all language guarantee message delivery at least in 
+their specification
+-->> ALSO ADD classification to language presentation}
 
 \paragraph{Degree of transparency} 
 This aspect concerns the number and complexity of the programming
@@ -668,7 +722,13 @@ customized efficient analysis tools. Finally, probabilistic behavior
 can be modeled with Probabilistic Timed Rebeca
 \cite{DBLP:journals/eceasst/JafariKSH14} and analyzed using back-end
 tools.
-
+\TODO{Table I gives a good overview of the different variations of the Rebeca language. 
+However, some of the individual extensions are not properly motivated. Are the different 
+extensions orthogonal to each other or can they be combined? What are the trade-offs of 
+each design and how to they fit within the larger picture?
+	-->> MARJAN see how you can handle this without spending half a page presenting all 
+	the languages
+}
 
 \paragraph{Language description} 
 We describe Rebeca using an example of a Media Service system,
@@ -702,7 +762,12 @@ conditionals (lines
 sending statements (lines \ref{line:rebec:send:receiveMovie},
 \ref{line:rebec:send:reqForMovie}).  Loops and periodic behavior are
 modeled by sending messages to oneself (line
-\ref{line:rebec:send:self}). Since communication is asynchronous,
+\ref{line:rebec:send:self}). 
+\TODO{"Loops and periodic behavior are modeled by sending messages to oneself" => The 
+downside of using selfsending to implement loops is that these messages can be 
+interleaved with other messages from active objects not participating in the loop.
+	-->>MARJAN}
+Since communication is asynchronous,
 each actor has a \emph{message queue} from which it takes the next
 message to serve. The ordering of the messages in the message queues
 is first-in first-out.  An actor takes the first message from its
@@ -711,7 +776,9 @@ non-preemptively, and then takes the next message. The actor stays
 idle only if there is no other message in the queue.  A message server
 may include a \emph{non-deterministic assignment} statement which is
 used to model the nondeterminism in the behavior of a message server
-(line \ref{line:rebec:switchStart}).  Finally, the \texttt{main} block
+(line \ref{line:rebec:switchStart}).\TODO{MARJAN Page 8, line -3: … a message server 
+(line 5). —> line 4 ??
+}  Finally, the \texttt{main} block
 instantiates the actors of the model. In the Media Service model,
 seven actors are created, receiving their known actors and the
 parameters' values of their constructors (lines
@@ -784,6 +851,9 @@ main {
 	|\label{line:rebec:mainEnd}|Client c1(di):(),c2(di):(),c3(di):();
 }
 \end{lstlisting}  
+\TODO{MARJAN Page 8, Fig. 1: I couldn’t find an explanation of the number in parentheses 
+in the first line of a reactive class declaration. 
+}
 \caption{A simple Rebeca model}
 \label{fig:rebeca-example}
 \end{figure}
@@ -837,7 +907,14 @@ messages sent among actors are passed by value.  This is even the case
 if a reference to an actor is passed as a parameter; the sent
 reference is created as a shallow copy of the original reference,
 i.e., avoiding the creation of a new actor (e.g.,
-Fig.~\ref{fig:rebeca-example}, line \ref{line:rebec:reqForMovieEnd}) .
+Fig.~\ref{fig:rebeca-example}, line \ref{line:rebec:reqForMovieEnd}).
+\TODO{"avoiding the creation of a new actor (e.g., Fig. 1, line 8)" => Is the correct 
+line referenced? I am not sure why that line specifically illustrates why no new actor is 
+created. I am assuming the creation of new actors is avoided because when passing a 
+reference to a rebec the active object and its associated runtime are not copied. Rather 
+a shallow copy of the reference is made.
+	-->>MARJAN
+}
 In RebecaSys, global variables can be defined and used in a controlled
 manner for wait statements as explained above.
 
@@ -1064,6 +1141,7 @@ s!process(fd); %\label{abs:main:end}%
 \end{minipage}
 \end{figure}
 
+
 \paragraph{Language description} 
 The language layers of ABS are displayed in Fig.~\ref{fig:layer}.
 Based on parametric (first-order) abstract data types, a simple, pure,
@@ -1092,6 +1170,13 @@ values from asynchronous method calls.
 Section~\ref{sec:implem-java-8} illustrates a possible implementation
 of cooperative scheduling for ABS.
 
+
+\TODO{Page 12: It took me some time to understand the concurrency model of ABS. It is 
+explained fairly low-level. Shouldn’t one first say that COGs process concurrently and 
+communicate via messages (like actors) and then talk about the concurrency within COGs 
+based on preemptively scheduled tasks. Starting the explanation with references to 
+interleaving semantics (page 12 top) was misleading to me. 
+	--> EINAR}
 
 %\begin{figure}
 %  \centering
@@ -1173,7 +1258,7 @@ object in the current COG. Without \lstinline{local} a new COG is
 created together with the object. The next line declares and creates a
 data object (note that interface \lstinline{Data} must be imported) in
 the same COG. Hence, \lstinline{s} and \lstinline{d} share the same
-heap. line~\ref{abs:main:init} calls an initialization method
+heap. Line~\ref{abs:main:init} calls an initialization method
 (implementation not shown) on the data. The notation ``\lstinline{!}''
 denotes an asynchronous call; its effect is to create a new task in
 the COG of \lstinline{d} that executes the code of
@@ -1305,9 +1390,9 @@ There is an Eclipse plug-in that provides a development environment
 for ABS and integrates most tools. An alternative is the web-based ABS
 collaboratory that runs in a browser and permits to try out most ABS
 tools. It can be used either as a service or installed
-locally. Download and installation instruction for ABS tools are at
-\url{http://abs-models.org/installation/}. Here is a list of currently
-supported tools for ABS:
+locally. Here is a list of currently
+supported tools for ABS\footnote{ABS tools are at
+	\url{http://abs-models.org/installation/}.}:
 
 \begin{itemize}
 \item An editor with syntax highlighting and integrated build system,
@@ -1332,6 +1417,7 @@ supported tools for ABS:
 
 
 \subsubsection{ProActive and ASP}
+\TODO{JUSTINE OR LUDO about generics???}
 \paragraph{General presentation and objective of the language}
 ASP~\cite{CH-book} is an active object programming language specifically designed for
 programming and deploying distributed systems. ProActive is a Java library implementing the semantics
@@ -1494,7 +1580,8 @@ annotation is specified.  However, synchronization only occurs when
 the future value is actually needed and, in particular, future
 references can safely be transmitted between activities without
 requiring any additional synchronization, which limits blocking
-synchronization leading to deadlocks.  Deadlocks can also be removed
+synchronization leading to deadlocks. The ProActive middleware handles transparently the 
+future value transmission~\cite{HKRZ:Coregrid:2010}. Deadlocks can also be removed
 by using multi-active objects especially with no limit or a soft limit
 of the number of threads. Specifically, when a thread enters
 wait-by-necessity, it is not counted in the soft thread limit of the
@@ -1626,6 +1713,12 @@ as normal objects and, instead of interfaces, has a trait system \`a
 la Scala.
 
 \paragraph{Language description}
+\TODO{Page 18: I had problems to understand the language description of Encore. It says: 
+„Active objects encapsulate passive objects, and …“ and later: „In Encore, passive 
+objects may be shared between active objects …“ The wording sounds contradictory to me. I 
+don’t understand what encapsulation of an objects means if it is shared. Maybe the 
+explanation can be improved.
+	-->> KIKO}
 
 In Encore, active objects have their own thread of control and
 communicate by asynchronous messages. Messages are appended to the
@@ -1796,7 +1889,15 @@ ordering of operations is handled automatically, and the programmer
 only expresses concurrency from a high-level point of view.
 
 \paragraph{Data sharing}
-
+\TODO{On line 51 you write that the "trait provides the interface-like feeling of OOP 
+languages [..]" The usage of OOP here is not entirely appropriate: the comparison breaks 
+down immediately when talking about prototype-based OOP languages like JavaScript. 
+Therefore, the formulation should be adjusted to be more careful, and perhaps talk about 
+"the interface-like feeling of statically-typed, Java-like OOP languages".\\
+-->  KIKO\\
+Note: Just  provide a careful formulation, I do not want a fight here even if the comment 
+is perhaps not very adequate
+}
 In Encore, active objects are protected by their own thread of control
 while passive objects are protected by a \textit{capability} type.
 Encore's type system sees passive objects as resources that
@@ -1908,7 +2009,7 @@ active object languages are as important as their design. Their
 discussion exhibits a number of difficult, partially unsolved,
 research questions. They constitute an essential part of this survey.
 
-The implementation of a programming language can be from scratch with
+The implementation of a programming language can be done in a standalone manner with
 a full compiler tool chain or it can be implemented as an API inside
 an established language. A third way to implement an active object
 language is to cross-translate it to another language with a code
@@ -1927,6 +2028,15 @@ implementations.
 Whenever meaningful, we show experiments illustrating under which
 conditions an implementation outperforms existing solutions.
 
+
+\TODO{Do all languages have support for distribution? I would expect this to have a large 
+impact on the implementation and definitely be a very relevant dimension along which the 
+different languages can be classified.\\
+--> VLAD (also check what was there ; not sure this should be cited as a new dimension 
+but it could be part of data sharing and object referencing)\\
+To the best of my knowledge : Encore and Rebeca has no support for distribution ; 
+ProActive has ; ABS is a bit more complicated depending on the backend}
+
 \subsection{Dimensions of Comparison between Implementations}
 
 \paragraph{Thread creation and scheduling}
@@ -1935,7 +2045,8 @@ Active object languages implemented on top of an existing programming
 language (or runtime system) must comply with the constraints given by
 the underlying platform.  In the case of multi-threading, some
 underlying platforms feature light threads, whereas in some frameworks
-(e.g., Java) each thread is a physical one. In that case, one can
+(e.g., Java) each thread is a physical one (i.e. a thread of the operating system). In 
+that case, one can
 consider implementing light threads on top of physical threads. Having
 light threads is crucial when the goal of an active object language is
 to scale to a large number of active objects located on the same
@@ -1953,14 +2064,14 @@ active objects and, if so, how.  Active objects encapsulate their
 state such that they are independent from each other.  In general,
 active objects prevent race conditions by allowing a single entity (an
 ABS COG or an active object) access to each object. This principle
-partitions the memory which limits or prevents data race conditions.
+partitions the memory which limits or prevents data races.
 In practice, this requires to distinguish between objects that can be
 remotely accessed (by asynchronous invocations), objects that have to
 be copied when exchanged between active objects, and objects that can
 be shared safely (e.g., immutable objects).  Accessing objects in
 another activity might cause communication overhead and delay the
 treatment of requests. Copying objects might lengthen the initial
-request invocation, because of the serialization time, but fastens the
+request invocation, because of the serialization time, but accelerates the
 request treatment. Handling copied objects also involves coherency
 issues.
 % Different languages take different choices on which objects are
@@ -2012,7 +2123,7 @@ implementations, because reference counting is scattered.
 
 The ABS language allows several programming paradigms and design
 patterns offering both a functional model as well as an
-object-oriented model.  Annotations allow to define custom schedulers
+object-oriented model.  Annotations allow  defining custom schedulers
 to ease the development of batch systems and workflows. The main goal
 of the Java~8 backend for ABS is to translate these models into
 production code to be executed in a parallel or distributed
@@ -2030,8 +2141,8 @@ to be a major implementation challenge before Java~8, because a
 straightforward implementation would match a Java thread to each
 method call and a thread pool to each object. Hence, an asynchronous
 method call caused the creation of a new thread inside a thread pool
-along with the start of this thread executing the method. Here there is a
-mismatch, because a Java object is a thread pool containing the
+along with the start of this thread executing the method. There is a
+mismatch because a Java object is a thread pool containing the
 threads originating from the methods invoked by that object. In ABS,
 however, at most one method executes on an object at any time, so
 creating a new thread for each fine-grained ABS method call is
@@ -2041,20 +2152,38 @@ performance of previous Java backends for ABS.
 
 \paragraph{Cooperative scheduling of active objects using Java 8}
 
+\TODO{The comparison between the Java 8 backend and the old Java backend feels out of 
+place. From the text I gather that the Java 8 backend seems to be a strict upgrade to the 
+old Java backend. The performance comparison between both does not seem relevant to this 
+article.\\
+	The comparison between the Java 8 and ProActive backend for ABS seems much more 
+	relevant as it highlights another design trade-off.\\
+	-->> VLAD\\
+	Note: I would rather  explain why the old Java backend is representative of a 
+	significant set of implementations of Active objects (you can include local ProActive 
+	here)
+	\\
+	Error handling and garbage collection are two dimensions that are not discussed for 
+	the Java 8 backend.\\
+	-->> VLAD\\
+}
+
 New features of Java 8 allow method calls to be wrapped into
 lightweight lambda expressions such that they can be put into a
 scheduling queue of an \texttt{ExecutorService} to which the running
 objects are mapped, significantly reducing the number of idle threads
 at runtime. The current implementation, illustrated in Fig.~\ref{abs8:coop}
 shows active objects having a demand-driven approach
-and only creating a physical thread once they have a method to execute inside their queue and
+and only creating a physical thread once they have a method to execute inside their queue 
+and
 the \texttt{ExecutorService} has a thread available in its pool. Finally, when all messages are
 blocked or the active object's queue is empty the thread is ended and released back to the pool
 of the \texttt{ExecutorService}.
  The only drawback is that if a method call contains a
 recursive stack of synchronous calls, this stack needs to be saved
 upon encountering an \texttt{await} statement, which cannot be realized with lambda
-expressions. To solve this problem,such a call stack would be modeled as continuation functions
+expressions. To solve this problem, such a call stack would be modeled as continuation 
+functions
 and then be saved as lambda expressions. These lambda expressions would be ordered, such that,
 once released, the continuations would execute and maintain the correct logic of the program.
 
@@ -2268,7 +2397,7 @@ the adapted protocol.  For non-active objects, traditional Java object
 references are used as they are only referenced within the same active
 object.  To summarize, two types of object references exist in
 ProActive: global references, retrievable from the RMI registry, and
-local references, acting like standard references types.
+local references, acting like standard reference types.
 
 \paragraph{Error handling}
 
@@ -2632,7 +2761,8 @@ and the communication rate is high.
 The Encore implementation consists of two major components, a
 source-to-source compiler (from Encore to C) implemented in Haskell,
 and the runtime system, implemented in C.  The Encore runtime stack
-(Fig.~\ref{fig:encore:stack}) is built around the runtime used by the
+(Fig.~\ref{fig:encore:stack}) is built around the runtime used by the \TODO{KIKO: Cite 
+ \cite{ClebschDBM15}???}
 Pony language (PonyRT), which includes an actor library and a fully
 concurrent garbage collector~\cite{DBLP:conf/oopsla/ClebschD13}.  The
 Encore runtime (EncoreRT) extends the PonyRT with new features such
@@ -2644,7 +2774,10 @@ rests the Encore Standard Library, which is written in Encore itself.
 \begin{figure}[t]
   \centering
   \includegraphics[width=2in, trim=0 4in 7in 0]{pictures/encore-stack}
-  \caption{\label{fig:encore:stack} Encore Runtime stack}
+  \caption{\label{fig:encore:stack} Encore Runtime stack \TODO{Page 29, Fig. 11: 
+  "Operative System" -> "Operating System"\\
+  	When printed, figure 11 is hardly readable.\\
+  		-->>  KIKO}}
 \end{figure}
 
 
