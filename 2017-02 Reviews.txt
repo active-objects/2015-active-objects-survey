@@ -2,6 +2,7 @@ SEMANTICS:
 X = DONE
 -->> = TODO
 -->> LUDO = assigned job
+-->> {} refto a GLOBAL TODO
 ++ Notes that might be useful in the reply
 
 ========================================
@@ -39,6 +40,7 @@ pages =	"71--75",
 
 	{4}  IMPROVE discussion comparison language -->> LUDO
 * I would have liked to see a summary table outlining the different design dimensions for each of the discussed programming languages at the end of this section. This would also be an ideal place to discuss the different trade-offs of these design choices.
+-->> dimensions were defined too informally and in a very comprehensive manner, I do not see how to put this in a table -->> TBD
 
 * ”The implementation of a programming language can be from scratch with a full compiler tool chain or it can be implemented as an API inside an established language. A third way to implement an active object language is to cross-translate it to another language with a code generation backend" => this is another implementation dimension that is hidden in the text and might be made explicit in the discussion.
 

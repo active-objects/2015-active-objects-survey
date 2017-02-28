@@ -255,29 +255,14 @@ Section~\ref{sec:brief-history}.
 
 All languages presented here come with strong support for formal
 methods and verification techniques; Rebeca and ABS even make this
-their main focus, having been conceived as modeling languages: actors do
+their main focus, having been conceived as modelling languages: actors do
 not merely provide a convenient programming abstraction but also
 greatly simplify static program analysis by naturally providing
 structured entities that can serve as the basis for compositional
 analyses.
-
 ASP and Encore instead put the focus on highly optimized, efficient
-implementations. It is interesting to notice that both of them (and,
-to a certain extent also ABS) allow the programmer to depart from the
-pure actor model by providing local multi-threading to an actor,
-either inside the treatment of a request (the parallel combinators of
-Encore) or by running several requests in parallel (the multi-threaded
-active objects of ASP). In each case, the extension of the language is
-provided in such a way that it relies on the same programming
-abstractions as classical active objects and for this reason, it is
-still very easy to write safe and efficient programs.
-\TODO{"It is interesting to notice that both of them (and, to a certain extent also ABS) 
-allow the programmer to depart from the pure actor model by providing local 
-multi-threading" => I definitely think this is an interesting point that could be 
-explored further. How does local multi-threading impact the safety guarantees provided by 
-the original model? However, I feel that this is a bit out of place in the introduction.
-	-->> Move to the discussion section???
-	-->> LUDO}
+implementations. 
+
 
 This paper is organized as follows. Section~\ref{AOlanguages} presents
 an overview of the actor and active object languages; it first adopts
@@ -285,7 +270,8 @@ a historical perspective, and then focuses on the four chosen
 languages, presenting their design principles, the approach they
 advocate, and the tools they provide.
 Section~\ref{sec-implementation} focuses on the implementation and
-runtime support for the presented languages and
+runtime support for the presented languages. Finally, Section~\ref{sec-discussion} 
+provides a discussion on the design of active object languages, and
 Section~\ref{sec-conclusion} provides a conclusion.
 
 \section{Active Object Languages}
@@ -567,15 +553,17 @@ checking whether a future is resolved or not. This breaks the
 sequential processing of a message (call), but also allows programs to
 be more efficient and less deadlock-prone.
 
-
-\TODO{I agree with the different design dimension presented in this section. I think they 
-provide a good basis along which active object languages can be classified. Two minor 
-things I am missing is what the message ordering guarantees and the message delivery 
-guarantees are for each individual language.
--->> [LUDO] I agree  I suggest to add “message ordering” as a subpart of Synchronization, 
-and a small sentence saying that all language guarantee message delivery at least in 
-their specification
--->> ALSO ADD classification to language presentation}
+Another synchronisation constraint that exist in some languages is related to message 
+ordering~\cite{CMT-DisComp96}. Ensuring an order of message reception, like 
+point-to-point FIFO adds some synchronisation and can lead to a loss of efficiency. The 
+counterpart is the gain in program properties. Indeed, message ordering allows the 
+programmer to rely on some order of message delivery which simplifies programming. Often 
+some order of message delivery is necessary for the execution of the application, 
+especially when the messages reach a stateful object. Ensuring by explicit 
+synchronisations that the 
+operations are done in the correct order is more costly and more constraining than 
+relying on a message ordering property.
+\TODO{LUDO?-->> ALSO ADD classification to language presentation}
 
 \paragraph{Degree of transparency} 
 This aspect concerns the number and complexity of the programming
@@ -2985,6 +2973,113 @@ each actor. %It uses general garbage collection
 %In memory pressure, all of the Rebeca actors are analyzed to this aim as they are 
 %long-lived large processes.
 
+\section{Discussion}
+The four languages reviewed here start out from the same
+programming model, the active object paradigm, but they address
+different challenges, motivated in the context of different design
+goals. We review below the different trade-offs that have been made in their design.
+
+The \emph{degree of synchronisation} is  a design choice that is central to the 
+design of parallel programming languages. The original actor model has a  semantics 
+where  communications are purely asynchronous and no strict 
+synchronisation exists. This resembles the principles of Rebeca. However in Rebeca, it 
+revealed useful to ensure FIFO message communication to provide some guarantees on 
+ordering of operations. From a global perspective, synchronisation hinders efficiency and 
+parallelism, but makes programming easier, and sometimes more efficient. The other 
+programming languages we presented allow the programs to synchronise on the result of a 
+method invocation through the use of futures. However, different synchronisation patterns 
+exist on futures: from strict synchronisation like the \texttt{get} operator if ABS to 
+asynchronous reaction to future fulfilment enabled by future chaining 
+in Encore. Two synchronisation patterns on futures presented in this article feature an 
+interesting compromise: the \texttt{await} operation of ABS and Encore enables 
+cooperative 
+multi-threading and let the program serve another request while the future is 
+awaited; and the wait-by-necessity synchronisation of ProActive that automatically waits 
+upon the 
+availability of useful data, wait-by-necessity allows the program to pass futures around 
+and never worry 
+about imbricated futures.
+Different \emph{communication paradigms} also have been investigated in the proposed 
+languages, 
+the extreme cases being the causally ordered communications ensured by ASP which makes 
+programming easier because of the ordering guaranteed to the programmer, and the full 
+asynchronous communication as described in the semantics of ABS which allows more 
+parallelism and better overlapping between communication and computation. However it is 
+interesting to note that even with an asynchronous communication as the default 
+semantics, many implementations of ABS ensure FIFO ordering of messages.
+
+The \emph{degree of transparency} is very much related to the syncronisation primitives. 
+In 
+practice there is for the moment mostly two extreme approaches: either everything is 
+very explicit and the user syntactically differentiates asynchronous invocations from 
+synchronous ones (e.g., $o!m()$ vs. $o.m()$ in ABS) or everything is hidden to the 
+programmer who programs active objects like if they were sequential objects and where 
+synchronisation on method results is hidden to the programmer. In Rebeca, explicitness is 
+even stronger as the remotely invokable methods are declared by a specific syntax and do 
+not 
+return a result.
+
+By principle and according to the Actor programming paradigm, active objects do not share 
+memory; however, at least some objects can be accessed by any other object.
+\emph{Data sharing} plays especially an important role in relation to the implementation. 
+Indeed, ASP that was designed in close relation to Java RMI because of the implementation 
+of the ProActive library, features a non-uniform active object model where some objects 
+are 
+active and can be invoked from anywhere and others are transmitted by copy. From another 
+point of view, ABS was designed as a specification language where each object can be 
+invoked by any other object; the first implementations of ABS did not support 
+distribution, and the distributed implementations have to provide a hierarchical way of 
+addressing objects in order to scale. Encore has a particular role here as it 
+is  focused on efficient local parallelism where it is possible to have efficient 
+addressing of many objects; this allows an implementation of passive objects 
+where no data is copied and a better efficiency is provided.
+
+
+All the languages presented here have a precise definition of their 
+semantics, and in particular they all 
+have a \emph{formal semantics} precisely specified. We believe that this formal 
+specification allowed the correct and effective implementation of  adequate tools. 
+Defining precisely the semantics of the languages also makes the comparison between the 
+different languages much more accurate.
+
+Both Rebeca and ABS started with a strong focus on tool-based formal
+analysis and verification, but recently added fairly efficient
+implementations. For this both languages rely on cross translation.
+On the other hand, ProActive and Encore focused on efficient
+implementation on distributed and many-core computer architectures,
+respectively. Both come with ``native'' implementations based on
+extensions of existing frameworks.
+
+ Rebeca is probably the language that features the most variety in the 
+variants of the languages that can be checked and the different language semantics that 
+can be verified. ABS on the contrary comes with very different analyses based on the same 
+semantics. Both languages show the advantage of adopting an active object programming 
+paradigm compared to standard models of distribution and concurrency concerning 
+ verifiability of programs. On the other side, ProActive and Encore mostly focused on the 
+execution support tools. While powerful verification tools also exist for those language, 
+significant efforts have been made on the efficiency of the local parallelism in Encore, 
+and on the support for effective large-scale distribution in ProActive.
+
+It is interesting to notice that both ABS and Encore allow the programmer to depart from 
+the
+pure actor model by providing local multi-threading to an actor,
+either inside the treatment of a request (the parallel combinators of
+Encore) or by running several requests in parallel (the multi-threaded
+active objects of ASP). In each case, the extension of the language is
+provided in such a way that it relies on the same programming
+abstractions as classical active objects and for this reason, it is
+still very easy to write safe and efficient programs. In both cases, multi-threading 
+allows the programs to gain efficiency by better using local concurrency, it also allows 
+the programmer to express some parallelism patterns that are difficult to write with 
+classical active objects. It is important to notice that, even if the strict 
+mono-threading policy of actors can be broken in those language, the programming language 
+still strictly guarantees that no data-race can exist between two different actors.
+
+
+\subsection*{Active object languages with industrial support: Akka and Orleans}
+\TODO{CRISTAL: Akka here if you agree???}
+
+
 \section{Lessons Learned and Conclusion}\label{sec-conclusion}
 
 %\JS{There is an increased parallelism in new active object programming languages. 
@@ -2992,6 +3087,19 @@ each actor. %It uses general garbage collection
 %}
 
 %\KIKO{
+
+
+
+
+\TODO{"It is interesting to notice that both of them (and, to a certain extent also ABS) 
+	allow the programmer to depart from the pure actor model by providing local 
+	multi-threading" => I definitely think this is an interesting point that could be 
+	explored further. How does local multi-threading impact the safety guarantees 
+	provided by 
+	the original model? However, I feel that this is a bit out of place in the 
+	introduction.
+	-->> Move to the discussion section???
+	-->> LUDO}
 
 With the advent of many-core computers and large-scale cloud
 computing, the active object paradigm evolved out of actor-based
@@ -3006,19 +3114,7 @@ adoption of an actor system in Scala is a first indicator). Therefore,
 it is essential to understand the trade-offs involved in their design
 and implementation.
 
-The four languages reviewed here in detail start out from the same
-programming model, the active object paradigm, but they address
-different challenges, motivated in the context of different design
-goals.
 
-Both Rebeca and ABS started with a strong focus on tool-based formal
-analysis and verification, but recently added fairly efficient
-implementations. For this both languages rely on cross translation.
-%
-On the other hand, ProActive and Encore focused on efficient
-implementation on distributed and many-core computer architectures,
-respectively. Both come with ``native'' implementations based on
-extensions of existing frameworks.
 
 In Section~\ref{sec-implementation} it was shown how the semantics of
 each language influenced its implementation, how different design
