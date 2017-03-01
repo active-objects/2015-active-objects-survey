@@ -10,7 +10,7 @@ X = DONE
 -->> GLOBAL TODOS (address several points and/or are major changes
 	{1} Add more precise comparison with akka (practical aspects) -->> REINER
 
-	{2} Add precise comparison with Orleans -->> LUDO
+	{2} Add precise comparison with Orleans -->> LUDO: DONE
 @InProceedings{BykovGKLPT11,
 title =	"Orleans: cloud computing for everyone",
 author =	"Sergey Bykov and Alan Geller and Gabriel Kliot and
@@ -34,21 +34,30 @@ number =	"5",
 volume =	"20",
 pages =	"71--75",
 }
+DONE
+++ a subsection of the discussion now presents Orleans
 
 	{3} show the maturity of Encore -->> KIKO
 
 
 	{4}  IMPROVE discussion comparison language -->> LUDO
+DONE
 * I would have liked to see a summary table outlining the different design dimensions for each of the discussed programming languages at the end of this section. This would also be an ideal place to discuss the different trade-offs of these design choices.
--->> dimensions were defined too informally and in a very comprehensive manner, I do not see how to put this in a table -->> TBD
+++ dimensions were defined too informally and in a very comprehensive manner, I do not see how to put this in a table -->> TBD
+++ however we reviewed all the dimensions and positioned the languages precisely according to them, and we analysed the different trade-offs that were possible
 
 * ”The implementation of a programming language can be from scratch with a full compiler tool chain or it can be implemented as an API inside an established language. A third way to implement an active object language is to cross-translate it to another language with a code generation backend" => this is another implementation dimension that is hidden in the text and might be made explicit in the discussion.
+++ ADDED a paragraph about this point in the discussion section positioning the implementations presented in this paper relatively to this aspect
 
 * a section with a summary table of the different design and implementation dimensions presented in the article accompanied by a comparison of the different trade-offs of each of the design choices.
+++ see above
 
 * The conclusion states that it is essential to understand the trade-offs involved in the design and implementation of active object languages. However, similar to the introduction, I feel these are not adequately highlighted here. If I were to design a novel active object language, how do I best navigate the design space presented in the article? What are the lessons learned? I feel all the different puzzle pieces are there but the bigger picture is missing.
+++ we believe the new discussion section solves this issue
+
 
 * - I mostly agree with the presentation of the different design dimensions that are used to classify the four different active object languages. However, I feel that the trade-offs of the different design points along this plane are not always adequately discussed. The paper often reads as a factual record of the four presented active object languages with little discussion afterwards. More specifically, I was missing a section with a summary table of the different design and implementation dimensions presented in the article accompanied by a comparison of the different trade-offs of each of the design choices.
+++ we believe the new discussion section solves this issue
 
 
 Referee: 1
@@ -335,17 +344,20 @@ NOTE: related to remark of Review 1
 
 X ”each of them implements replies to asynchronous method calls in the form of futures" => Forward reference to section 2.1 for readers that do not know futures.
 
-"It is interesting to notice that both of them (and, to a certain extent also ABS) allow the programmer to depart from the pure actor model by providing local multi-threading" => I definitely think this is an interesting point that could be explored further. How does local multi-threading impact the safety guarantees provided by the original model? However, I feel that this is a bit out of place in the introduction.
+X ”It is interesting to notice that both of them (and, to a certain extent also ABS) allow the programmer to depart from the pure actor model by providing local multi-threading" => I definitely think this is an interesting point that could be explored further. How does local multi-threading impact the safety guarantees provided by the original model? However, I feel that this is a bit out of place in the introduction.
 -->> Move to the discussion section??? {4}
 -->> LUDO
-
+DONE: MOVED AND EXPANDED
 
 == 2. Active Object Languages ==
 == 2.1 A Brief History of Actor and Active Object Languages ==
 
 Historically, I would argue that ABCL is one of the first languages that combines object oriented programming with asynchronous message passing and thus can be seen as the first active object language. The term "active object" is even coined in [Yonezawa 86]. The main distinction with the four languages discussed in the article is that ABCL implements a "uniform object model" where every object is a concurrent object. This is in contrast with the two-layer model (active vs passive objects) of later active object languages.
+++ We added a ref to [Yonezawa 86] when introducing active objects in this section.
+++ Concerning uniform vs. non-uniform, we delay the discussion about this point to the dimension definition, especially the data sharing aspect, and we mentionned the different models at this point.
 
 Also, actor languages were originally motivated within a artificial intelligence context. It was only later that it was identified as a general purpose concurrency model [Agha 90] because of the safety and liveness guarantees it provides.
+-->> FRANK: do we want to mention this???
 
 X ”unlike the original Actor model, in Rebeca the order of messages between any two actors is preserved" => Again, what is the original actor model in this case? What does it mean for the order to be preserved?
 ++ DONE: removed the “Unlike”
@@ -367,7 +379,7 @@ I agree with the different design dimension presented in this section. I think t
 == 2.3 Representative Examples of Active Object Languages ==
 
 I would have liked to see a summary table outlining the different design dimensions for each of the discussed programming languages at the end of this section. This would also be an ideal place to discuss the different trade-offs of these design choices.
-
+-->> {4}
 == 2.3.1 Rebeca ==
 Table I gives a good overview of the different variations of the Rebeca language. However, some of the individual extensions are not properly motivated. Are the different extensions orthogonal to each other or can they be combined? What are the trade-offs of each design and how to they fit within the larger picture?
 -->> MARJAN see how you can handle this without spending half a page presenting all the languages
