@@ -326,8 +326,8 @@ Detailed review:
 
 == 1. Introduction ==
 
-Overall I think the introduction is lacking in giving a general direction to the article. Why are active object languages becoming important today? What will I learn from reading this article regarding the situation of active object languages in the current state of the art? How do the four languages under analysis fit within the larger community of active object languages or actor languages in general?
--->> EINAR
+X Overall I think the introduction is lacking in giving a general direction to the article. Why are active object languages becoming important today? What will I learn from reading this article regarding the situation of active object languages in the current state of the art? How do the four languages under analysis fit within the larger community of active object languages or actor languages in general?
+-->> EINAR: Done.
 
 "We start with Rebeca, which is closest to the original actor model" => What do you mean with original actor model? [Hewitt 73] or [Agha 86]? During the late 70s and early 80s a number of variations on the actor model were developed, each with wide varying semantics.
 -->> FRANK
