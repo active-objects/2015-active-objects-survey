@@ -353,8 +353,11 @@ DONE: MOVED AND EXPANDED
 == 2.1 A Brief History of Actor and Active Object Languages ==
 
 Historically, I would argue that ABCL is one of the first languages that combines object oriented programming with asynchronous message passing and thus can be seen as the first active object language. The term "active object" is even coined in [Yonezawa 86]. The main distinction with the four languages discussed in the article is that ABCL implements a "uniform object model" where every object is a concurrent object. This is in contrast with the two-layer model (active vs passive objects) of later active object languages.
+++ We added a ref to [Yonezawa 86] when introducing active objects in this section.
+++ Concerning uniform vs. non-uniform, we delay the discussion about this point to the dimension definition, especially the data sharing aspect, and we mentionned the different models at this point.
 
 Also, actor languages were originally motivated within a artificial intelligence context. It was only later that it was identified as a general purpose concurrency model [Agha 90] because of the safety and liveness guarantees it provides.
+-->> FRANK: do we want to mention this???
 
 X ”unlike the original Actor model, in Rebeca the order of messages between any two actors is preserved" => Again, what is the original actor model in this case? What does it mean for the order to be preserved?
 ++ DONE: removed the “Unlike”
@@ -376,7 +379,7 @@ I agree with the different design dimension presented in this section. I think t
 == 2.3 Representative Examples of Active Object Languages ==
 
 I would have liked to see a summary table outlining the different design dimensions for each of the discussed programming languages at the end of this section. This would also be an ideal place to discuss the different trade-offs of these design choices.
-
+-->> {4}
 == 2.3.1 Rebeca ==
 Table I gives a good overview of the different variations of the Rebeca language. However, some of the individual extensions are not properly motivated. Are the different extensions orthogonal to each other or can they be combined? What are the trade-offs of each design and how to they fit within the larger picture?
 -->> MARJAN see how you can handle this without spending half a page presenting all the languages

@@ -286,6 +286,11 @@ Section~\ref{sec-conclusion} provides a conclusion.
 high-level languages in general and ALGOL etc. Focus the history on the relevant 
 concepts.}
 
+\TODO{Also, actor languages were originally motivated within a artificial intelligence 
+context. It was only later that it was identified as a general purpose concurrency model 
+[Agha 90] because of the safety and liveness guarantees it provides.
+-->> FRANK: do we want to mention this???}
+
 The development of high-level programming languages is generally
 driven by the quest for suitable abstractions of the low-level
 implementation details of the specific underlying hardware
@@ -368,7 +373,8 @@ number of variations on the actor model were developed, each with wide varying s
 -->> FRANK}
 	
 Active object languages integrate the basic Actor model with
-object-oriented concepts. This integration can be realized by modeling
+object-oriented concepts. This integration was first proposed in 
+ABCL~\cite{Yonezawa:1986:OCP:28697.28722}, it can be realized by modeling
 a message as an asynchronous method call, thus fixing the
 interpretation of a message by a corresponding method definition.  In
 Rebeca
@@ -584,6 +590,19 @@ of the concurrency model and parallelism is provided
 automatically. However, for complex programs, the benefits of
 transparency are weaker, because exposing the programming abstractions
 can make programming, debugging, or optimization easier.
+
+Data sharing is occurs between threads and is related to the question of which objects 
+are active.
+The first active object models were \emph{uniform} active object models where all objects 
+were active with their own thread and only communicating by asynchronous method 
+invocations. Later on, active object models were designed with more focus on efficient 
+access to objects. Two additional models were proposed. First, \emph{non-uniform} active 
+object 
+models, where some objects are full-fledge active object with their own threads, and 
+others are passive objects, i.e. standard objects. Second, concurrent object groups 
+provide a different alternative where all objects are accessible from anywhere but the 
+objects in the same group share the same thread and are synchronously accessible.
+\TODO{LUDO: mention this categorisation in the languages if we agree TBD}
 	
 \paragraph{Degree of data sharing} 
 Data sharing is a crucial aspect of concurrent and distributed
