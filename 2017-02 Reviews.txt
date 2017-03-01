@@ -101,8 +101,8 @@ Page 8, Fig. 1: I couldn’t find an explanation of the number in parentheses in
 Page 8, line -3: … a message server (line 5). —> line 4 ??
 -->> MARJAN
 
-Page 12: It took me some time to understand the concurrency model of ABS. It is explained fairly low-level. Shouldn’t one first say that COGs process concurrently and communicate via messages (like actors) and then talk about the concurrency within COGs based on preemptively scheduled tasks. Starting the explanation with references to interleaving semantics (page 12 top) was misleading to me. 
--->> EINAR
+X Page 12: It took me some time to understand the concurrency model of ABS. It is explained fairly low-level. Shouldn’t one first say that COGs process concurrently and communicate via messages (like actors) and then talk about the concurrency within COGs based on preemptively scheduled tasks. Starting the explanation with references to interleaving semantics (page 12 top) was misleading to me. 
+-->> EINAR: Done.
 
 X Page 12 midle: … the same heap. line 18 —> Line 18
 
