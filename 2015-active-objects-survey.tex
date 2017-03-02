@@ -207,12 +207,12 @@ distributed, and parallel languages ]
 
 
 \section{Introduction}
-\TODO{Overall I think the introduction is lacking in giving a general direction to the 
-article. Why are active object languages becoming important today? What will I learn from 
-reading this article regarding the situation of active object languages in the current 
-state of the art? How do the four languages under analysis fit within the larger 
-community of active object languages or actor languages in general?
-	-->> EINAR}
+% \TODO{Overall I think the introduction is lacking in giving a general direction to the 
+% article. Why are active object languages becoming important today? What will I learn from 
+% reading this article regarding the situation of active object languages in the current 
+% state of the art? How do the four languages under analysis fit within the larger 
+% community of active object languages or actor languages in general?
+% -->> EINAR}
 
 Designing a programming language for concurrent systems is a difficult
 task. The programming abstractions provided in concurrent programming
@@ -222,25 +222,38 @@ tools. This article focuses on one family of concurrent programming
 languages that tries to mitigate this problem: active object
 languages.  The first and most important characteristic of this family
 of languages is inherited from the actor paradigm. It relies on
-organizing the program in terms of well-defined entities called actors. Each
-actor is an independent entity that behaves autonomously and that
-communicates with other actors through asynchronous
-messages. Information sharing is then simplified, programming is less
-error prone, and analysis becomes much easier.
+organizing the program in terms of well-defined entities called
+actors. Each actor is an independent entity that behaves autonomously
+and that communicates with other actors through asynchronous
+messages. Actors execute concurrently and communicate asynchronously,
+without transfer of control. This makes the actor model attractive
+\cite{Agha86-book,Erlang-book}: Information sharing is then simplified,
+programming is less error prone, analysis becomes much easier, and
+programs scale better to parallel and distributed architectures
+because control threads are implicit rather than explicit in the
+programs.
 
 Within actor-based languages we focus in this survey on one specific
 category that uses asynchronous method calls as its communication
-paradigm. Such languages are often called \emph{active object}
-languages. Compared to the basic unit of concurrency, which is the
-same in all actor languages, the way methods are called seems to pose
-a rather subtle distinction. Although this causes merely minor
-differences regarding expressiveness of the different languages,
-however, it causes considerable differences in terms of the
-abstractions provided to the programmer. By supporting
-\emph{communication by asynchronous method calls}, active object
-languages provide a programming model that is tightly integrated with
-the object-oriented programming paradigm and its programming
-abstractions that are familiar to most programmers.
+paradigm. Languages in this category are often called \emph{active
+  object} languages. Whereas messages sent to actor are generally
+selected by pattern matching over the message queue, asynchronous
+method calls restrict the communication between active objects to
+messages which trigger method activations. Consequently messages to an
+actor can be indefinitely ignored if the actor never switches to an
+appropriate state, whereas asynchronous method calls to an active
+object can be statically guaranteed to be understood.  Whereas the
+basic unit of concurrency is the same in all actor languages, so the
+active object languages have the same attractive features as actor
+languages in general, the way methods are called seems to pose a
+rather subtle distinction. Although this causes merely minor
+differences regarding expressiveness of the different languages, it
+causes considerable differences in terms of the abstractions provided
+to the programmer. By supporting \emph{communication by asynchronous
+  method calls}, active object languages provide a programming model
+that is tightly integrated with the object-oriented programming
+paradigm and its programming abstractions that are familiar to most
+programmers.
 
 We start this survey by giving the historical context that led to the
 existence of active object languages and that justifies their
@@ -251,17 +264,25 @@ form of asynchronous method invocation. The three other
 languages---ABS, ASP, and Encore---are precise representatives of
 active object frameworks. Additionally, each of them implements
 replies to asynchronous method calls in the form of \emph{futures} (see 
-Section~\ref{sec:brief-history}).
+Section~\ref{sec:brief-history}), which enables advanced
+synchronization between the active objects.
 
 All languages presented here come with strong support for formal
 methods and verification techniques; Rebeca and ABS even make this
-their main focus, having been conceived as modelling languages: actors do
-not merely provide a convenient programming abstraction but also
+their main focus, having been conceived as modelling languages: actors
+do not merely provide a convenient programming abstraction but also
 greatly simplify static program analysis by naturally providing
 structured entities that can serve as the basis for compositional
-analyses.
-ASP and Encore instead put the focus on highly optimized, efficient
-implementations. 
+analyses.  ASP and Encore instead put the focus on highly optimized,
+efficient implementations. Whereas these languages all fit inside the
+category of active object languages, they propose different solutions
+for how they support synchronization and for how much internal
+concurrency they allow inside active objects. The languages are
+surveyed with respect to their objectives, level of formalization, and
+their implementation and tooling support. Furthermore, they are
+compared with respect to a number of \emph{dimensions} in the design
+space of active object languages: the degree of synchronization, the
+degree of transparency, and the degree of data sharing.
 
 
 This paper is organized as follows. Section~\ref{AOlanguages} presents
@@ -374,7 +395,7 @@ number of variations on the actor model were developed, each with wide varying s
 	
 Active object languages integrate the basic Actor model with
 object-oriented concepts. This integration was first proposed in 
-ABCL~\cite{Yonezawa:1986:OCP:28697.28722}, it can be realized by modeling
+ABCL~\cite{Yonezawa:1986:OCP:28697.28722}. It can be realized by modeling
 a message as an asynchronous method call, thus fixing the
 interpretation of a message by a corresponding method definition.  In
 Rebeca
@@ -591,7 +612,7 @@ automatically. However, for complex programs, the benefits of
 transparency are weaker, because exposing the programming abstractions
 can make programming, debugging, or optimization easier.
 
-Data sharing is occurs between threads and is related to the question of which objects 
+Data sharing occurs between threads and is related to the question of which objects 
 are active.
 The first active object models were \emph{uniform} active object models where all objects 
 were active with their own thread and only communicating by asynchronous method 
@@ -3015,7 +3036,7 @@ synchronisation exists. This resembles the principles of Rebeca. However in Rebe
 revealed useful to ensure FIFO message communication to provide some guarantees on 
 ordering of operations. From a global perspective, synchronisation hinders efficiency and 
 parallelism, but makes programming easier, and sometimes more efficient. The other 
-programming languages we presented allow the programs to synchronise on the result of a 
+programming languages we presented allow the programs to synchronize on the result of a 
 method invocation through the use of futures. However, different synchronisation patterns 
 exist on futures: from strict synchronisation like the \texttt{get} operator if ABS to 
 asynchronous reaction to future fulfilment enabled by future chaining 
