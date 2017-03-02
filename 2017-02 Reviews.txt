@@ -353,8 +353,10 @@ DONE: MOVED AND EXPANDED
 == 2.1 A Brief History of Actor and Active Object Languages ==
 
 Historically, I would argue that ABCL is one of the first languages that combines object oriented programming with asynchronous message passing and thus can be seen as the first active object language. The term "active object" is even coined in [Yonezawa 86]. The main distinction with the four languages discussed in the article is that ABCL implements a "uniform object model" where every object is a concurrent object. This is in contrast with the two-layer model (active vs passive objects) of later active object languages.
+-->>LUDO
 ++ We added a ref to [Yonezawa 86] when introducing active objects in this section.
 ++ Concerning uniform vs. non-uniform, we delay the discussion about this point to the dimension definition, especially the data sharing aspect, and we mentionned the different models at this point.
+TBD
 
 Also, actor languages were originally motivated within a artificial intelligence context. It was only later that it was identified as a general purpose concurrency model [Agha 90] because of the safety and liveness guarantees it provides.
 -->> FRANK: do we want to mention this???
