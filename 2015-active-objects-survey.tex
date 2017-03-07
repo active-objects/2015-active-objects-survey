@@ -1750,22 +1750,24 @@ as normal objects and, instead of interfaces, has a trait system \`a
 la Scala.
 
 \paragraph{Language description}
-\TODO{Page 18: I had problems to understand the language description of Encore. It says: 
-„Active objects encapsulate passive objects, and …“ and later: „In Encore, passive 
-objects may be shared between active objects …“ The wording sounds contradictory to me. I 
-don’t understand what encapsulation of an objects means if it is shared. Maybe the 
+
+\TODO{Addressed. Page 18: I had problems to understand the language description of Encore. It says:
+„Active objects encapsulate passive objects, and …“ and later: „In Encore, passive
+objects may be shared between active objects …“ The wording sounds contradictory to me. I
+don’t understand what encapsulation of an objects means if it is shared. Maybe the
 explanation can be improved.
 	-->> KIKO}
 
 In Encore, active objects have their own thread of control and
-communicate by asynchronous messages. Messages are appended to the
-receiver's message queue and processed one at a time in FIFO order.
-Active objects act like ``plain old Java objects'', except that they
-have an asynchronous interface.  Active objects encapsulate passive
-objects, and operations on passive objects are synchronous.  Each
-active object owns a local heap on which it can allocate passive
-objects.  Ownership in this context means that the actor is
-responsible for keeping track of foreign dependencies on passive
+communicate with each other via asynchronous messages passing.
+Messages are appended to the receiver's message queue and processed
+one at a time in FIFO order. Because of their internal thread of
+control, active objects have an asynchronous interface, meaning method
+calls return immediately with a future. In contrast, passive objects
+do not have internal thread of control; hence, expose synchronous
+interface. Each active object owns a local heap on which passive
+objects are allocated. Ownership in this context means that the actor
+is responsible for keeping track of foreign dependencies on passive
 objects on its local heap, and eventually deallocate them. In Encore,
 passive objects may be \emph{shared} between active objects, and
 concurrent read/write access to these passive objects is supported, by
@@ -1926,26 +1928,30 @@ ordering of operations is handled automatically, and the programmer
 only expresses concurrency from a high-level point of view.
 
 \paragraph{Data sharing}
-\TODO{On Line 51 you write that the "trait provides the interface-like feeling of OOP 
-languages [..]" The usage of OOP here is not entirely appropriate: the comparison breaks 
-down immediately when talking about prototype-based OOP languages like JavaScript. 
-Therefore, the formulation should be adjusted to be more careful, and perhaps talk about 
+
+\TODO{Addressed. On Line 51 you write that the "trait provides the interface-like feeling of OOP
+languages [..]" The usage of OOP here is not entirely appropriate: the comparison breaks
+down immediately when talking about prototype-based OOP languages like JavaScript.
+Therefore, the formulation should be adjusted to be more careful, and perhaps talk about
 "the interface-like feeling of statically-typed, Java-like OOP languages".\\
 -->  KIKO\\
-Note: Just  provide a careful formulation, I do not want a fight here even if the comment 
+Note: Just  provide a careful formulation, I do not want a fight here even if the comment
 is perhaps not very adequate
 }
+
 In Encore, active objects are protected by their own thread of control
 while passive objects are protected by a \textit{capability} type.
-Encore's type system sees passive objects as resources that
-are protected by a capability that governs the permitted kind of
-access to the object \cite{ref:encore}. 
-A capability is built from a trait and a \textit{kind}. The trait provides the interface-like
-feeling of OOP languages while the \textit{kind} states the ``protection'' that
-the interface provides. By changing a keyword, the \textit{kind}, the interface
-changes the protection level. For instance, by changing the \textit{kind} from \textit{exclusive}
-to \textit{lock-free}, the interface changes the protection from an actor-like to a 
-lock-free implementation. Like in RebecaSys, this creates controlled data sharing.
+Encore's type system sees passive objects as resources that are
+protected by a capability that governs the permitted kind of access to
+the object \cite{ref:encore}. A capability is built from a trait and a
+\textit{kind}. The trait provides the interface-like feeling of
+statically-typed, Java-like OOP languages while the \textit{kind}
+states the ``protection'' that the interface provides. By changing a
+keyword, the \textit{kind}, the interface changes the protection
+level. For instance, by changing the \textit{kind} from
+\textit{exclusive} to \textit{lock-free}, the interface changes the
+protection from an actor-like to a lock-free implementation. Like in
+RebecaSys, this creates controlled data sharing.
 
 The Encore capabilities form the hierarchy  in
 Fig.~\ref{fig:capa-tree}. \emph{Exclusive capabilities} are local to
@@ -2798,23 +2804,21 @@ and the communication rate is high.
 The Encore implementation consists of two major components, a
 source-to-source compiler (from Encore to C) implemented in Haskell,
 and the runtime system, implemented in C.  The Encore runtime stack
-(Fig.~\ref{fig:encore:stack}) is built around the runtime used by the \TODO{KIKO: Cite 
- \cite{ClebschDBM15}???}
-Pony language (PonyRT), which includes an actor library and a fully
-concurrent garbage collector~\cite{DBLP:conf/oopsla/ClebschD13}.  The
-Encore runtime (EncoreRT) extends the PonyRT with new features such
-as futures, the \parT{} abstraction, a task library, and the notion of
-\emph{encore threads} (explained below). These features are part of
-the runtime and are therefore written in C.  On top of these libraries
-rests the Encore Standard Library, which is written in Encore itself.
+(Fig.~\ref{fig:encore:stack}) is built around the runtime used by the
+\TODO{Addressed. KIKO: Cite \cite{ClebschDBM15}???} Pony language
+(PonyRT), which includes an actor library and garbage collection for
+both active objects (actors)~\cite{DBLP:conf/oopsla/ClebschD13} and
+passive objects~\cite{clebsch2015ownership}. The Encore runtime
+(EncoreRT) extends the PonyRT with new features such as futures, the
+\parT{} abstraction, a task library, and the notion of \emph{encore
+threads} (explained below). These features are part of the runtime and
+are therefore written in C.  On top of these libraries rests the
+Encore Standard Library, which is written in Encore itself.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=2in, trim=0 4in 7in 0]{pictures/encore-stack}
-  \caption{\label{fig:encore:stack} Encore Runtime stack \TODO{Page 29, Fig. 11: 
-  "Operative System" -> "Operating System"\\
-  	When printed, figure 11 is hardly readable.\\
-  		-->>  KIKO}}
+  \includegraphics[width=2.5in, trim=0 4in 7in 0]{pictures/encore-stack}
+  \caption{\label{fig:encore:stack} Encore Runtime stack}
 \end{figure}
 
 
