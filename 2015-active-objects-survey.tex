@@ -1928,26 +1928,30 @@ ordering of operations is handled automatically, and the programmer
 only expresses concurrency from a high-level point of view.
 
 \paragraph{Data sharing}
-\TODO{On Line 51 you write that the "trait provides the interface-like feeling of OOP 
-languages [..]" The usage of OOP here is not entirely appropriate: the comparison breaks 
-down immediately when talking about prototype-based OOP languages like JavaScript. 
-Therefore, the formulation should be adjusted to be more careful, and perhaps talk about 
+
+\TODO{On Line 51 you write that the "trait provides the interface-like feeling of OOP
+languages [..]" The usage of OOP here is not entirely appropriate: the comparison breaks
+down immediately when talking about prototype-based OOP languages like JavaScript.
+Therefore, the formulation should be adjusted to be more careful, and perhaps talk about
 "the interface-like feeling of statically-typed, Java-like OOP languages".\\
 -->  KIKO\\
-Note: Just  provide a careful formulation, I do not want a fight here even if the comment 
+Note: Just  provide a careful formulation, I do not want a fight here even if the comment
 is perhaps not very adequate
 }
+
 In Encore, active objects are protected by their own thread of control
 while passive objects are protected by a \textit{capability} type.
-Encore's type system sees passive objects as resources that
-are protected by a capability that governs the permitted kind of
-access to the object \cite{ref:encore}. 
-A capability is built from a trait and a \textit{kind}. The trait provides the interface-like
-feeling of OOP languages while the \textit{kind} states the ``protection'' that
-the interface provides. By changing a keyword, the \textit{kind}, the interface
-changes the protection level. For instance, by changing the \textit{kind} from \textit{exclusive}
-to \textit{lock-free}, the interface changes the protection from an actor-like to a 
-lock-free implementation. Like in RebecaSys, this creates controlled data sharing.
+Encore's type system sees passive objects as resources that are
+protected by a capability that governs the permitted kind of access to
+the object \cite{ref:encore}. A capability is built from a trait and a
+\textit{kind}. The trait provides the interface-like feeling of
+statically-typed, Java-like OOP languages while the \textit{kind}
+states the ``protection'' that the interface provides. By changing a
+keyword, the \textit{kind}, the interface changes the protection
+level. For instance, by changing the \textit{kind} from
+\textit{exclusive} to \textit{lock-free}, the interface changes the
+protection from an actor-like to a lock-free implementation. Like in
+RebecaSys, this creates controlled data sharing.
 
 The Encore capabilities form the hierarchy  in
 Fig.~\ref{fig:capa-tree}. \emph{Exclusive capabilities} are local to
