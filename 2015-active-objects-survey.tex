@@ -1929,7 +1929,7 @@ only expresses concurrency from a high-level point of view.
 
 \paragraph{Data sharing}
 
-\TODO{On Line 51 you write that the "trait provides the interface-like feeling of OOP
+\TODO{Addressed. On Line 51 you write that the "trait provides the interface-like feeling of OOP
 languages [..]" The usage of OOP here is not entirely appropriate: the comparison breaks
 down immediately when talking about prototype-based OOP languages like JavaScript.
 Therefore, the formulation should be adjusted to be more careful, and perhaps talk about
@@ -2804,15 +2804,16 @@ and the communication rate is high.
 The Encore implementation consists of two major components, a
 source-to-source compiler (from Encore to C) implemented in Haskell,
 and the runtime system, implemented in C.  The Encore runtime stack
-(Fig.~\ref{fig:encore:stack}) is built around the runtime used by the \TODO{KIKO: Cite 
- \cite{ClebschDBM15}???}
-Pony language (PonyRT), which includes an actor library and a fully
-concurrent garbage collector~\cite{DBLP:conf/oopsla/ClebschD13}.  The
-Encore runtime (EncoreRT) extends the PonyRT with new features such
-as futures, the \parT{} abstraction, a task library, and the notion of
-\emph{encore threads} (explained below). These features are part of
-the runtime and are therefore written in C.  On top of these libraries
-rests the Encore Standard Library, which is written in Encore itself.
+(Fig.~\ref{fig:encore:stack}) is built around the runtime used by the
+\TODO{Addressed. KIKO: Cite \cite{ClebschDBM15}???} Pony language
+(PonyRT), which includes an actor library and garbage collection for
+both active objects (actors)~\cite{DBLP:conf/oopsla/ClebschD13} and
+passive objects~\cite{clebsch2015ownership}. The Encore runtime
+(EncoreRT) extends the PonyRT with new features such as futures, the
+\parT{} abstraction, a task library, and the notion of \emph{encore
+threads} (explained below). These features are part of the runtime and
+are therefore written in C.  On top of these libraries rests the
+Encore Standard Library, which is written in Encore itself.
 
 \begin{figure}[t]
   \centering
