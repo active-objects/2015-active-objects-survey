@@ -1750,22 +1750,24 @@ as normal objects and, instead of interfaces, has a trait system \`a
 la Scala.
 
 \paragraph{Language description}
-\TODO{Page 18: I had problems to understand the language description of Encore. It says: 
-„Active objects encapsulate passive objects, and …“ and later: „In Encore, passive 
-objects may be shared between active objects …“ The wording sounds contradictory to me. I 
-don’t understand what encapsulation of an objects means if it is shared. Maybe the 
+
+\TODO{Addressed. Page 18: I had problems to understand the language description of Encore. It says:
+„Active objects encapsulate passive objects, and …“ and later: „In Encore, passive
+objects may be shared between active objects …“ The wording sounds contradictory to me. I
+don’t understand what encapsulation of an objects means if it is shared. Maybe the
 explanation can be improved.
 	-->> KIKO}
 
 In Encore, active objects have their own thread of control and
-communicate by asynchronous messages. Messages are appended to the
-receiver's message queue and processed one at a time in FIFO order.
-Active objects act like ``plain old Java objects'', except that they
-have an asynchronous interface.  Active objects encapsulate passive
-objects, and operations on passive objects are synchronous.  Each
-active object owns a local heap on which it can allocate passive
-objects.  Ownership in this context means that the actor is
-responsible for keeping track of foreign dependencies on passive
+communicate with each other via asynchronous messages passing.
+Messages are appended to the receiver's message queue and processed
+one at a time in FIFO order. Because of their internal thread of
+control, active objects have an asynchronous interface, meaning method
+calls return immediately with a future. In contrast, passive objects
+do not have internal thread of control; hence, expose synchronous
+interface. Each active object owns a local heap on which passive
+objects are allocated. Ownership in this context means that the actor
+is responsible for keeping track of foreign dependencies on passive
 objects on its local heap, and eventually deallocate them. In Encore,
 passive objects may be \emph{shared} between active objects, and
 concurrent read/write access to these passive objects is supported, by
