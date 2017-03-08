@@ -315,35 +315,23 @@ context. It was only later that it was identified as a general purpose concurren
 The development of high-level programming languages is generally
 driven by the quest for suitable abstractions of the low-level
 implementation details of the specific underlying hardware
-architectures, i.e., the machine instructions.  The basic abstraction of
-the machine instructions for reading from and writing to memory
-locations which underlies imperative programming is the
-assignment. The low-level flow of control is further abstracted by
-means of high-level structuring mechanisms which allow the
-construction of a program in a compositional manner, e.g., sequential
-composition, choice and iterative constructs.
+architectures.  
+%The basic abstraction of
+%the machine instructions for reading from and writing to memory
+%locations which underlies imperative programming is the
+%assignment. The low-level flow of control is further abstracted by
+%means of high-level structuring mechanisms which allow the
+%construction of a program in a compositional manner, e.g., sequential
+%composition, choice and iterative constructs.
 
-One of the first major high-level imperative programming languages is
-ALGOL (short for ALGOrithmic Language) \cite{backus63cacm} which
-features procedural and functional abstractions of data and control.
-The resulting general abstraction level allows for a compositional
-construction and analysis of mainly the flow of control.  A major
-advance in the development of high-level programming languages which
-gave rise to the paradigm of object-orientation is the compositional
-construction of programs in terms of modules.  Modules are used to
-model abstract data types and as such provide a powerful abstraction
-which fully integrates data and control.  In the object-oriented
-programming paradigm, modules are generalized to classes.  Classes can
-be characterized as modules from which objects can be dynamically
-instantiated and referred to by unique identifiers (generated at
-runtime).  The concepts of classes and objects were introduced in
-Simula 67 \cite{dahl66cacm}, the first object-oriented
-language. Whereas Simula was a sequential language with a single
-thread of control, it was developed to simulate real-world
-(concurrent) systems and already featured the concept of
-\emph{coroutines} \cite{dahl68simula}.
+%One of the first major high-level imperative programming languages is
+%ALGOL (short for ALGOrithmic Language) \cite{backus63cacm} which
+%features procedural and functional abstractions of data and control.
+%The resulting general abstraction level allows for a compositional
+%construction and analysis of mainly the flow of control.  
 
-A major remaining challenge in the development of high-level
+
+A major  challenge in the development of high-level
 programming languages is the high-level specification of concurrent
 and parallel threads of control and their synchronization.  In process
 calculi like CSP \cite{Hoare85} and CCS \cite{Milner89} independent
@@ -375,12 +363,15 @@ setting.
 
 The Actor model of computation \cite{hewitt73,Agha86-book} departs
 from the synchronous communication mechanisms described above and is
-based on loosely coupled processes as well as asynchronous message
+based on loosely coupled processes which interact via  asynchronous message
 passing.  Actors integrate and encapsulate both data and a single
 thread of control, and communicate without transfer of
 control. Message delivery is guaranteed but messages may arrive out of
 order.  This loose coupling makes Actor languages conceptually
-attractive for distributed programming.  Erlang~\cite{Erlang-book} is
+attractive for parallel and distributed programming, e.g.,
+in  \cite{Hewitt:1973} the Actor model of computation originated from the need \emph{to
+efficiently run the coming generation of PLANNER-like  artificial intelligence languages including those requiring a  high degree of parallelism} (quote from \cite{Hewitt:1973}).
+ Erlang~\cite{Erlang-book} is
 one of the most successful actor languages, especially because of its
 adoption by programmers in the industry, and because of its massively
 parallel execution model supporting a huge number of independent
@@ -393,21 +384,42 @@ with original actor model? [Hewitt 73] or [Agha 86]? During the late 70s and ear
 number of variations on the actor model were developed, each with wide varying semantics.
 -->> FRANK}
 	
-Active object languages integrate the basic Actor model with
-object-oriented concepts. This integration was first proposed in 
+In the above mentioned original Actor models of computation the interpretation and processing of the messages are confined to and part of the overall internal behavior of an acor. This however does not allow for a clear separation of concerns between communication and computation, and as such does not support a ``programming to interfaces'' discipline.
+A major
+advance in the development of high-level programming languages which
+gave rise to the paradigm of object-orientation is the compositional
+construction of programs in terms of modules and their interfaces.  Modules are used to
+model abstract data types and as such provide a powerful abstraction
+which fully integrates data and control.  In the object-oriented
+programming paradigm, modules are generalized to classes.  Classes can
+be characterized as modules from which objects can be dynamically
+instantiated and referred to by unique identifiers (generated at
+runtime).  The concepts of classes and objects were introduced in
+Simula 67 \cite{dahl66cacm}, the first object-oriented
+language. Whereas Simula was a sequential language with a single
+thread of control, it was developed to simulate real-world
+(concurrent) systems and already featured the concept of
+\emph{coroutines} \cite{dahl68simula}.
+
+Active (or concurrent) object languages integrate the basic Actor model with
+object-oriented concepts and as such do support interface abstractions of implementation details.   This integration was first proposed in 
 ABCL~\cite{Yonezawa:1986:OCP:28697.28722}. It can be realized by modeling
 a message as an asynchronous method call, thus fixing the
-interpretation of a message by a corresponding method definition.  In
-Rebeca
+interpretation of a message by a corresponding method definition. 
+As in the actor-based language Rebeca,
 \cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/jucs/SirjaniBM05}
-methods are run to completion without any further synchronization
-mechanism and do not return values. Like in the original Actor model,
 returning values from a method call can be modeled by another
-asynchronous message; in Rebeca the
-order of messages between any two actors is preserved.
+asynchronous message.
+%In
+%Rebeca
+%\cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/jucs/SirjaniBM05}
+%methods are run to completion without any further synchronization
+%mechanism and do not return values. 
+%; in Rebeca the
+%order of messages between any two actors is preserved.
 
 Pushing the notion of method calls further by directly supporting
-return values leads to the notion of future variables.  Futures were
+return values, while maintaining a loose coupling between actors, leads to the notion of future variables.  Futures were
 originally discovered by Baker and Hewitt in the
 1970s~\cite{BakerHH77}, later rediscovered by Liskov and Shrira as
 promises in Argus~\cite{Liskov88}, by Halstead in
@@ -2214,9 +2226,9 @@ article.\\
 	significant set of implementations of Active objects (you can include local ProActive 
 	here)
 	\\
-	Error handling and garbage collection are two dimensions that are not discussed for 
-	the Java 8 backend.\\
-	-->> VLAD\\
+%	Error handling and garbage collection are two dimensions that are not discussed for 
+%	the Java 8 backend.\\
+%	-->> VLAD\\
 }
 
 New features of Java 8 allow method calls to be wrapped into
@@ -2291,11 +2303,11 @@ once released, the continuations would execute and maintain the correct logic of
 In the Java 8 backend for ABS objects are organized into COGs, each
 running on one thread. When objects are created, they are assigned to a
 new or existing COG. All invocations on the object are executed on
-the thread of the COG to which the object is assigned. Data that
-is shared among distributed objects is passed through lambda
+the thread of the COG to which the object is assigned. 
+Data that is shared among distributed objects is passed through lambda
 expressions that are sent as serialized messages between the objects,
 hence all data passed in a distributed system must be
-serializable. When COGs reside on the same machine, for example
+serializable. With COGs residing on the same machine, for example
 applications that run on a multi-core machine, all data is passed as
 arguments to lambda expressions or synchronous method calls in
 Java~8. Objects can keep references to any other object in any COG as
@@ -2304,6 +2316,23 @@ be transferred between distributed objects. Furthermore, the generated
 classes will be automatically loaded on all machines that require an
 object of a particular type, such that remote objects can invoke
 methods on serialized references they receive.
+
+\paragraph{Error handling}
+In the Java 8 backend, all software errors are handled by Java's exception
+handling mechanism. All the exception definitions that ABS provides 
+can directly be translated into extensions of the Exception class in Java.
+Furthermore the error handling syntax that ABS provides to 
+pattern matching exceptions can directly be translated to Java's 
+try-catch mechanisms at compile time.
+
+\paragraph{Garbage Collection}
+Garbage collection in the Java 8 backend requires only bookkeeping futures
+that lock messages on actors from separate COG's, such that an actor 
+responsible for completing a future can notify the awaiting actors to resume execution.
+Once this notification is completed these references are deleted and 
+the process of freeing memory is handled completely by 
+the Java's garbage collector.
+
 
 \paragraph{Example and experiments}
 
@@ -3179,13 +3208,14 @@ these two  frameworks show the practical usability of the active object programm
 and its adequacy to program large scale industrial software.
 
 \paragraph{Akka}
-\TODO{CRYSTAL}
 Akka~\cite{haller2009scala,AkkaBook} is an actor-based message-driven runtime for managing concurrency, elasticity and resilience on the Java Virtual Machine with support for both Java and Scala. 
 %It is an open core development platform for Akka distributed systems runtime, play web framework, lagom microservices framework, and Apache Spark in-memory compute engine for Java and Scala. 
 Everything in Akka is designed to work in a distributed setting: all interactions of actors use purely message passing and everything is asynchronous. 
-Programmers need to provide a pattern match for all messages that it can accept. To be able to handle unknown messages, a default case is required. 
+Programmers need to provide a pattern match for all messages that it can accept. 
+%To be able to handle unknown messages, a default case is required. 
+The way actors interact is the same whether they are on the same host or separate hosts, communicating directly or through routing facilities, running on a few threads or many threads, etc. Such details may be altered at deployment time through a configuration mechanism, allowing a program to make use of more (powerful) servers without modification.
 Akka is ideally suited for hybrid cloud architectures and the elastic scaling of cloud platforms. In an experiment with Google, it only took 4 minutes to start a 1000 node Akka cluster on Google Compute Engine (GCE), which included the time to start the GCE instances. 
-Actors in Akka form a tree with actors being parents to the actors they've created. As a parent, the actor is responsible for handling its children's failures (supervision), forming a chain of responsibility. 
+In Akka, actors form a tree with actors being parents to the actors they've created. As a parent, the actor is responsible for handling its children's failures (supervision), forming a chain of responsibility. 
 Accordingly, Akka embraces the reality of unplanned errors and adopts a pragmatic ``Let It Crash'' philosophy using supervision and self-healing to ensure impacted components are reset to a stable state and restarted upon failure.
 
 \paragraph{Orleans}
