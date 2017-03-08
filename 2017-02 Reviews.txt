@@ -9,6 +9,7 @@ X = DONE
 
 -->> GLOBAL TODOS (address several points and/or are major changes
 	{1} Add more precise comparison with akka (practical aspects) -->> REINER
+	-->> CRYSTAL
 
 	{2} Add precise comparison with Orleans -->> LUDO: DONE
 @InProceedings{BykovGKLPT11,
@@ -369,7 +370,7 @@ X ”unlike the original Actor model, in Rebeca the order of messages between an
 The concurrency model of AmbientTalk is based on the E Programming Language [Miller 2005] which implements a communicating event-loop (CEL) actor model. Other than asynchronous futures (called promises in E) its most distinguishing feature is that objects are passed by eventual reference between actors rather then by copy. This helps support a POLA (principle of least authority) style of programming, by facilitating the creation of many small, object-level interfaces (each eventual reference acts as a new entry point to the actor), rather than a single large actor-level interface. AmbientTalk's concurrency model remains faithful to the communicating event-loop model of E but was designed as an ambient-oriented programming (AmOP) language. It adds to the CEL model a number of new primitives to handle disconnecting and reconnecting nodes in a network where connections are volatile.
 -->> what are we supposed to do? copy-paste?
 -->> REINER
-
+++ DONE: I merged the old text with the new content which I shortened. Also added the referece to E.
 
 == 2.2 Dimensions of Comparison between Languages ==
 

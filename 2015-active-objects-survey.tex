@@ -487,35 +487,43 @@ the active object approach.  JAC~\cite{ref:jac} stands for Java
 Annotations for Concurrency. It provides Java annotations that allow
 the programmer to specify the kind of parallelism that can occur
 inside a Java object from a relatively high-level perspective. It is
-possible to encode versions of actors in
-JAC. AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349} provides
-actors with fully asynchronous futures: they do not provide a
-synchronization pattern, but instead a call on a future triggers an
-asynchronous invocation that will be executed when the future is
-available. In Panini \cite{LinRajan13} concurrent behavior is
-specified by composing modules (called ``capsules'') that by
-themselves behave sequentially. The granularity of concurrency is more
-coarse-grained than in active object languages and there are no
-explicit synchronization statements. Akka~\cite{haller2009scala,AkkaBook} 
-is a scalable library for implementing
-actors on top of Java and Scala.
+possible to encode versions of actors in JAC.
+%
+The concurrency model of
+AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349} is based on the E
+Programming Language~\cite{Miller05concurrencyamong} which implements
+a communicating event-loop actor model with fully asynchronous futures
+(called promises): calls on futures trigger an asynchronous invocation
+that will be executed when the future is available and objects are
+passed by eventual reference between actors rather than by copy. This
+facilitates the creation of many small, object-level interfaces (each
+eventual reference acts as a new entry point to the actor), rather
+than a single large actor-level interface. AmbientTalk adds new
+primitives to handle disconnecting and reconnecting nodes in a network
+to support ambient-oriented programming.
+%
+In Panini \cite{LinRajan13} concurrent behavior is specified by
+composing modules (called ``capsules'') that by themselves behave
+sequentially. The granularity of concurrency is more coarse-grained
+than in active object languages and there are no explicit
+synchronization statements. Akka~\cite{haller2009scala,AkkaBook} is a
+scalable library for implementing actors on top of Java and Scala.
 
-
-\TODO{
-	The concurrency model of AmbientTalk is based on the E Programming Language [Miller 
-	2005] which implements a communicating event-loop (CEL) actor model. Other than 
-	asynchronous futures (called promises in E) its most distinguishing feature is that 
-	objects are passed by eventual reference between actors rather then by copy. This 
-	helps support a POLA (principle of least authority) style of programming, by 
-	facilitating the creation of many small, object-level interfaces (each eventual 
-	reference acts as a new entry point to the actor), rather than a single large 
-	actor-level interface. AmbientTalk's concurrency model remains faithful to the 
-	communicating event-loop model of E but was designed as an ambient-oriented 
-	programming (AmOP) language. It adds to the CEL model a number of new primitives to 
-	handle disconnecting and reconnecting nodes in a network where connections are 
-	volatile.\\
-	-->>[LUDO] what are we supposed to do? copy-paste?\\
-	-->> REINER}
+% \TODO{
+% 	The concurrency model of AmbientTalk is based on the E Programming Language [Miller 
+% 	2005] which implements a communicating event-loop (CEL) actor model. Other than 
+% 	asynchronous futures (called promises in E) its most distinguishing feature is that 
+% 	objects are passed by eventual reference between actors rather then by copy. This 
+% 	helps support a POLA (principle of least authority) style of programming, by 
+% 	facilitating the creation of many small, object-level interfaces (each eventual 
+% 	reference acts as a new entry point to the actor), rather than a single large 
+% 	actor-level interface. AmbientTalk's concurrency model remains faithful to the 
+% 	communicating event-loop model of E but was designed as an ambient-oriented 
+% 	programming (AmOP) language. It adds to the CEL model a number of new primitives to 
+% 	handle disconnecting and reconnecting nodes in a network where connections are 
+% 	volatile.\\
+% 	-->>[LUDO] what are we supposed to do? copy-paste?\\
+% 	-->> REINER}
 
 % \TODO{ do we add a smallnote on: Kilim, Go?}
 % Reiner: rather obscure, there is not even a paper on it:
