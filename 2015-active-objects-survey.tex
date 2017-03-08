@@ -410,24 +410,23 @@ As in the actor-based language Rebeca,
 \cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/jucs/SirjaniBM05}
 returning values from a method call can be modeled by another
 asynchronous message.
-%In
-%Rebeca
-%\cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/jucs/SirjaniBM05}
-%methods are run to completion without any further synchronization
-%mechanism and do not return values. 
-%; in Rebeca the
-%order of messages between any two actors is preserved.
+% In Rebeca
+% \cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/jucs/SirjaniBM05}
+% methods are run to completion without any further synchronization
+% mechanism and do not return values.  ; in Rebeca the order of
+% messages between any two actors is preserved.
 
 Pushing the notion of method calls further by directly supporting
-return values, while maintaining a loose coupling between actors, leads to the notion of future variables.  Futures were
-originally discovered by Baker and Hewitt in the
-1970s~\cite{BakerHH77}, later rediscovered by Liskov and Shrira as
-promises in Argus~\cite{Liskov88}, by Halstead in
+return values, while maintaining a loose coupling between actors,
+leads to the notion of future variables.  Futures were originally
+discovered by Baker and Hewitt in the 1970s~\cite{BakerHH77}, later
+rediscovered by Liskov and Shrira as promises in
+Argus~\cite{Liskov88}, by Halstead in
 MultiLisp~\cite{Halstead:1985:MLC:4472.4478}, before finding their way
 into object-oriented languages such as
 Concurrent\-Smalltalk~\cite{Yokote87},
 ABCL~\cite{Yonezawa:1986:OCP:28697.28722},
-Eiffel$/\!/$~\cite{Caromel96}, and CJava~\cite{Cugola97}. 
+Eiffel$/\!/$~\cite{Caromel96}, and CJava~\cite{Cugola97}.
 
 A future can be pictured as a mailbox that will eventually contain the
 return value from a method call. Hence, the calling method may proceed
@@ -1402,9 +1401,9 @@ used to postpone detailed design decisions while still permitting
 analysis of those aspects of a model that are fully specified.  In ABS
 the user may allow the interleaving of the tasks by explicitly
 introducing task release points using \lstinline{release} and
-\lstinline{await}. Using these features, he is exposed to the notion
+\lstinline{await}. Using these features, the user is exposed to the notion
 of asynchronous vs.\ synchronous calls, futures, and thread
-interleaving, but he still remains within a compositional proof theory
+interleaving, but the language still retains a compositional proof theory
 \cite{SDE:BoerCJ07}.
 
 \paragraph{Degree of data sharing}
@@ -3063,11 +3062,133 @@ each actor. %It uses general garbage collection
 %In memory pressure, all of the Rebeca actors are analyzed to this aim as they are 
 %long-lived large processes.
 
+% Einar
 \section{Discussion}\label{sec-discussion}
 The four languages reviewed here start out from the same
 programming model, the active object paradigm, but they address
 different challenges, motivated in the context of different design
 goals. We review below the different trade-offs that have been made in their design.
+
+\noindent
+{\small \sf
+\begin{tabular}{|p{15mm}|p{25.5mm}|p{25.5mm}|p{25.5mm}|p{25.5mm}|}
+\hline
+& \textbf{Rebeca} & \textbf{ABS} & \textbf{ASP/ProActive} & \textbf{Encore}\\\hline
+Objective&$\bullet$ Actor-based mo\-deling language\newline $\bullet$
+           Simple computation and communication model\newline
+           $\bullet$ No dynamic object creation&$\bullet$ Active object-based
+                                                 modeling
+                                                 language
+                                                 \newline $\bullet$
+                                                 Concurrent object
+                                                 groups \newline
+                                                 $\bullet$ Combines
+                                                 functional and
+                                                 imperative features
+                                                 \newline $\bullet$ 
+                                                 Advanced
+                                                 communication
+                                                 model&$\bullet$  Active object
+                                                        programming
+                                                        language\newline
+                                                 $\bullet$ Multiactive objects \newline
+                                                                                $\bullet$
+  Designed for distribution&$\bullet$  Active object
+                                                        programming
+                                                        language
+                                                                                \newline
+                                                                                $\bullet$
+  Designed for scalability\\\hline 
+Degree of synchronization&$\bullet$ Asynchronous message
+                           passing\newline $\bullet$ No
+                           synchronization\newline \newline
+                                                          $\bullet$
+                           Single-threaded run-to-completion of
+                           requests per actor&$\bullet$ Asynchronous
+                                            method calls with first-class
+                                            futures \newline
+                                            $\bullet$ Advanced
+                                            synchronization\newline
+                                            $\bullet$ Cooperative
+                                            scheduling interleaves
+                                               requests per concurrent
+                                               object group &$\bullet$
+                                                              Implicit
+                                                              futures
+                                                              \newline
+                                                              $\bullet$
+                                                              Wait by
+                                                              necessity
+                                                          synchronization\newline
+                                                          $\bullet$
+                                                              Multiactive
+                                                          objects
+                                                              allow
+                                                              parallel
+                                                          treatment of
+                                                          requests&$\bullet$
+  ABS-like cooperative scheduling \newline $\bullet$ Future chaining
+\newline $\bullet$ Multiactive
+                                                          objects
+                                                                    using
+                                                                    parallel
+                                                                    combinators
+                                                                    for
+                                                                    data parallelism                                                              
+  \\\hline 
+Degree of transparency&$\bullet$ Hides asynchronous message
+                        passing\newline $\bullet$ Hides scheduling and message queues&$\bullet$ Hides object representation,
+                         scheduling, and message queues
+                  \newline $\bullet$ Exposes
+                         futures and 
+                         release points&$\bullet$ Hides futures and distribution
+                                         \newline $\bullet$
+                                         Exposes parallel treatment of
+                                 requests&$\bullet$ Hides scheduling
+                                           and low-level
+                                           parallelism \newline $\bullet$ Exposes
+                         futures,
+                         release points, and parallel data flow\\\hline 
+Degree of data sharing&$\bullet$ No shared values\newline $\bullet$
+                        All arguments passed by copy, even actor
+                        references&$\bullet$ Functional terms passed
+                                    by copy \newline $\bullet$ No
+                                    shared values \newline $\bullet$ Objects
+                                 passed by reference\newline $\bullet$
+                                    Fields are private&$\bullet$ No
+                                                        shared
+                                                        values\newline
+                                                          $\bullet$ Active
+                                                        objects passed
+                                                          by
+                                                        reference\newline 
+                                                        $\bullet$ Passive
+                                                        objects passed
+                                                          by
+                                                        copy&$\bullet$
+                                                              Active
+                                                              objects
+                                                              are
+                                                              passed
+                                                              by
+                                                              reference\newline
+                                                              $\bullet$
+  Capability types control data sharing for passive objects\\\hline 
+Implemen\-tation and tooling support&$\bullet$ Model checking&$\bullet$
+                                                             Simulation\newline
+                                                             $\bullet$ Wide
+                                                   range of analysis
+                                                   tools\newline $\bullet$  Code generation&
+                                                          $\bullet$
+                                                        Implemented as
+                                                          a Java
+                                                                                             library\newline
+                                                                                             $\bullet$
+                                                          Supports
+                                                                                             distributed
+                                                                                             architectures&$\bullet$
+  Runtime system written in C\newline $\bullet$ Supports multicore architectures\\\hline 
+\end{tabular}}
 
 \TODO{TBD: table???, I could add one with: scheduling, futures, activation model, 
 communication and service ordering}
