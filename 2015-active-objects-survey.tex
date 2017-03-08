@@ -459,7 +459,7 @@ active ones).  Unlike ASP, passive objects are passed by reference and
 are data race-free thanks to a capability type
 system~\cite{encore:kappa}.
 
-\paragraph{Selection of representative languages.}
+\paragraph{Selection of representative languages}
 In the remaining article we discuss these four representative active object
 languages in detail. Our selection strives to cover different aspects:
 modelling languages designed for analysis (ABS, Rebeca) vs.\ languages
@@ -620,19 +620,6 @@ automatically. However, for complex programs, the benefits of
 transparency are weaker, because exposing the programming abstractions
 can make programming, debugging, or optimization easier.
 
-Data sharing occurs between threads and is related to the question of which objects 
-are active.
-The first active object models were \emph{uniform} active object models where all objects 
-were active with their own thread and only communicating by asynchronous method 
-invocations. Later on, active object models were designed with more focus on efficient 
-access to objects. Two additional models were proposed. First, \emph{non-uniform} active 
-object 
-models, where some objects are full-fledge active object with their own threads, and 
-others are passive objects, i.e. standard objects. Second, concurrent object groups 
-provide a different alternative where all objects are accessible from anywhere but the 
-objects in the same group share the same thread and are synchronously accessible.
-\TODO{LUDO: mention this categorisation in the languages if we agree TBD}
-	
 \paragraph{Degree of data sharing} 
 Data sharing is a crucial aspect of concurrent and distributed
 programming. Depending on the target application domain and the
@@ -660,6 +647,19 @@ favoring data copies with very few globally known and shared entities.
 % Encore is probably the richest language from this point of view,
 % aiming at a precise control of data sharing including entities that
 % can explicitly be shared between different actors.
+
+Data sharing occurs between threads and is related to the question of which objects 
+are active.
+The first active object models were \emph{uniform} active object models where all objects 
+were active with their own thread and only communicating by asynchronous method 
+invocations. Later on, active object models were designed with more focus on efficient 
+access to objects. Two additional models were proposed. First, \emph{non-uniform} active 
+object 
+models, where some objects are full-fledge active object with their own threads, and 
+others are passive objects, i.e. standard objects. Second, concurrent object groups 
+provide a different alternative where all objects are accessible from anywhere but the 
+objects in the same group share the same thread and are synchronously accessible.
+\TODO{LUDO: mention this categorisation in the languages if we agree TBD}
 
 \paragraph{Formal semantics} 
 To establish formal properties of a language as well as for formal
