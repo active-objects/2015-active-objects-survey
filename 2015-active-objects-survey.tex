@@ -2226,9 +2226,9 @@ article.\\
 	significant set of implementations of Active objects (you can include local ProActive 
 	here)
 	\\
-	Error handling and garbage collection are two dimensions that are not discussed for 
-	the Java 8 backend.\\
-	-->> VLAD\\
+%	Error handling and garbage collection are two dimensions that are not discussed for 
+%	the Java 8 backend.\\
+%	-->> VLAD\\
 }
 
 New features of Java 8 allow method calls to be wrapped into
@@ -2303,11 +2303,11 @@ once released, the continuations would execute and maintain the correct logic of
 In the Java 8 backend for ABS objects are organized into COGs, each
 running on one thread. When objects are created, they are assigned to a
 new or existing COG. All invocations on the object are executed on
-the thread of the COG to which the object is assigned. Data that
-is shared among distributed objects is passed through lambda
+the thread of the COG to which the object is assigned. 
+Data that is shared among distributed objects is passed through lambda
 expressions that are sent as serialized messages between the objects,
 hence all data passed in a distributed system must be
-serializable. When COGs reside on the same machine, for example
+serializable. With COGs residing on the same machine, for example
 applications that run on a multi-core machine, all data is passed as
 arguments to lambda expressions or synchronous method calls in
 Java~8. Objects can keep references to any other object in any COG as
@@ -2316,6 +2316,23 @@ be transferred between distributed objects. Furthermore, the generated
 classes will be automatically loaded on all machines that require an
 object of a particular type, such that remote objects can invoke
 methods on serialized references they receive.
+
+\paragraph{Error handling}
+In the Java 8 backend, all software errors are handled by Java's exception
+handling mechanism. All the exception definitions that ABS provides 
+can directly be translated into extensions of the Exception class in Java.
+Furthermore the error handling syntax that ABS provides to 
+pattern matching exceptions can directly be translated to Java's 
+try-catch mechanisms at compile time.
+
+\paragraph{Garbage Collection}
+Garbage collection in the Java 8 backend requires only bookkeeping futures
+that lock messages on actors from separate COG's, such that an actor 
+responsible for completing a future can notify the awaiting actors to resume execution.
+Once this notification is completed these references are deleted and 
+the process of freeing memory is handled completely by 
+the Java's garbage collector.
+
 
 \paragraph{Example and experiments}
 
