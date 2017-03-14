@@ -198,7 +198,10 @@ I believe you intended to refer to line 4 (byte selectedServer = ?(1, 2, 3);) in
 Section 2.3.3, page 15:
 
 In the first ProActive program that is shown I was wondering how generic types are handled. For instance, assuming class "O" has a generic type parameter, how would the creation of a new active object look like in that case?
---> JUSTINE
+++ ADDED: The transparent creation of proxies 
+ involves some restrictions: the  active 
+objects and futures cannot be of a primitive type or a generic type. If a future cannot 
+be created the call to an active object is performed synchronously.
 
 Section 2.3.3, page 16:
 

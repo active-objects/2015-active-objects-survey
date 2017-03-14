@@ -1486,7 +1486,7 @@ supported tools for ABS\footnote{ABS tools are at
 
 
 \subsubsection{ProActive and ASP}
-\TODO{JUSTINE OR LUDO about generics???}
+
 \paragraph{General presentation and objective of the language}
 ASP~\cite{CH-book} is an active object programming language specifically designed for
 programming and deploying distributed systems. ProActive is a Java library implementing the semantics
@@ -1566,7 +1566,10 @@ implicit future.
 When the future value is needed to continue execution, such as in
 \code{v.foobar()}, wait-by-necessity synchronization automatically
 occurs if the future is not resolved. In ProActive, proxies are used
-to handle active objects and futures transparently.
+to handle active objects and futures transparently. The transparent creation of proxies 
+ involves some practical restrictions: the  active 
+objects and futures cannot be of a primitive type or a generic type. If a future cannot 
+be created the call to an active object is performed synchronously.
 % In ProActive, when an active object is created, it is registered in the
 % RMI registry delivered with Java. A local reference to this active object is also created: 
 % a proxy that delegates invocations to the active object.
@@ -2866,8 +2869,8 @@ The Encore implementation consists of two major components, a
 source-to-source compiler (from Encore to C) implemented in Haskell,
 and the runtime system, implemented in C.  The Encore runtime stack
 (Fig.~\ref{fig:encore:stack}) is built around the runtime used by the
-\TODO{Addressed. KIKO: Cite \cite{ClebschDBM15}???} Pony language
-(PonyRT), which includes an actor library and garbage collection for
+ Pony language
+(PonyRT) \cite{ClebschDBM15}, which includes an actor library and garbage collection for
 both active objects (actors)~\cite{DBLP:conf/oopsla/ClebschD13} and
 passive objects~\cite{clebsch2015ownership}. The Encore runtime
 (EncoreRT) extends the PonyRT with new features such as futures, the
@@ -3215,8 +3218,6 @@ Implemen\-tation and tooling support&$\bullet$ Model checking&$\bullet$
   Runtime system written in C\newline $\bullet$ Supports multicore architectures\\\hline 
 \end{tabular}}
 
-\TODO{TBD: table???, I could add one with: scheduling, futures, activation model, 
-communication and service ordering}
 
 \paragraph{Degree of synchronisation}
 The degree of synchronisation is  a design choice that is central to the 
