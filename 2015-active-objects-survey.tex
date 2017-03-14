@@ -493,34 +493,35 @@ different languages.
 % also been applied for the distributed setting.
 
 \paragraph{Other high-level concurrent languages}
+A discussion of other hight-level concurrent languages can be found in Section~\ref{sec-discussion}. 
 
-There are several other programming languages that introduce
-high-level abstractions for concurrent programming that deviate from
-the active object approach.  JAC~\cite{ref:jac} stands for Java
-Annotations for Concurrency. It provides Java annotations that allow
-the programmer to specify the kind of parallelism that can occur
-inside a Java object from a relatively high-level perspective. It is
-possible to encode versions of actors in JAC.
-%
-The concurrency model of
-AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349} is based on the E
-Programming Language~\cite{Miller05concurrencyamong} which implements
-a communicating event-loop actor model with fully asynchronous futures
-(called promises): calls on futures trigger an asynchronous invocation
-that will be executed when the future is available and objects are
-passed by eventual reference between actors rather than by copy. This
-facilitates the creation of many small, object-level interfaces (each
-eventual reference acts as a new entry point to the actor), rather
-than a single large actor-level interface. AmbientTalk adds new
-primitives to handle disconnecting and reconnecting nodes in a network
-to support ambient-oriented programming.
-%
-In Panini \cite{LinRajan13} concurrent behavior is specified by
-composing modules (called ``capsules'') that by themselves behave
-sequentially. The granularity of concurrency is more coarse-grained
-than in active object languages and there are no explicit
-synchronization statements. Akka~\cite{haller2009scala,AkkaBook} is a
-scalable library for implementing actors on top of Java and Scala.
+%There are several other programming languages that introduce
+%high-level abstractions for concurrent programming that deviate from
+%the active object approach.  JAC~\cite{ref:jac} stands for Java
+%Annotations for Concurrency. It provides Java annotations that allow
+%the programmer to specify the kind of parallelism that can occur
+%inside a Java object from a relatively high-level perspective. It is
+%possible to encode versions of actors in JAC.
+%%
+%The concurrency model of
+%AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349} is based on the E
+%Programming Language~\cite{Miller05concurrencyamong} which implements
+%a communicating event-loop actor model with fully asynchronous futures
+%(called promises): calls on futures trigger an asynchronous invocation
+%that will be executed when the future is available and objects are
+%passed by eventual reference between actors rather than by copy. This
+%facilitates the creation of many small, object-level interfaces (each
+%eventual reference acts as a new entry point to the actor), rather
+%than a single large actor-level interface. AmbientTalk adds new
+%primitives to handle disconnecting and reconnecting nodes in a network
+%to support ambient-oriented programming.
+%%
+%In Panini \cite{LinRajan13} concurrent behavior is specified by
+%composing modules (called ``capsules'') that by themselves behave
+%sequentially. The granularity of concurrency is more coarse-grained
+%than in active object languages and there are no explicit
+%synchronization statements. Akka~\cite{haller2009scala,AkkaBook} is a
+%scalable library for implementing actors on top of Java and Scala.
 
 % \TODO{
 % 	The concurrency model of AmbientTalk is based on the E Programming Language [Miller 
@@ -3342,28 +3343,60 @@ backend for ABS, illustrating the possibility to cross-translate an active objec
 language into another one.
 
 
+\subsection*{Other high-level concurrent languages}
 
+There are several other programming languages that introduce
+high-level abstractions for concurrent programming that deviate from
+the active object approach.  JAC~\cite{ref:jac} stands for Java
+Annotations for Concurrency. It provides Java annotations that allow
+the programmer to specify the kind of parallelism that can occur
+inside a Java object from a relatively high-level perspective. It is
+possible to encode versions of actors in JAC.
+%
+The concurrency model of
+AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349} is based on the E
+Programming Language~\cite{Miller05concurrencyamong} which implements
+a communicating event-loop actor model with fully asynchronous futures
+(called promises): calls on futures trigger an asynchronous invocation
+that will be executed when the future is available and objects are
+passed by eventual reference between actors rather than by copy. This
+facilitates the creation of many small, object-level interfaces (each
+eventual reference acts as a new entry point to the actor), rather
+than a single large actor-level interface. AmbientTalk adds new
+primitives to handle disconnecting and reconnecting nodes in a network
+to support ambient-oriented programming.
+%
+In Panini \cite{LinRajan13} concurrent behavior is specified by
+composing modules (called ``capsules'') that by themselves behave
+sequentially. The granularity of concurrency is more coarse-grained
+than in active object languages and there are no explicit
+synchronization statements. 
 
-\subsection*{Active object languages with industrial support: Akka and Orleans}
-Based on the overview presented in this paper, it seems interesting to focus on two 
-modern industrial languages based on the active object paradigm. We review the two 
-frameworks 
-Akka and Orleans, from the point of view of the languages presented here. The success of 
-these two  frameworks show the practical usability of the active object programming model 
-and its adequacy to program large scale industrial software.
-
-\paragraph{Akka}
-Akka~\cite{haller2009scala,AkkaBook} is an actor-based message-driven runtime for managing concurrency, elasticity and resilience on the Java Virtual Machine with support for both Java and Scala. 
+Akka~\cite{haller2009scala,AkkaBook} is a
+scalable library for implementing actors on top of Java and Scala.
+%
+%\subsubsection*{Active object languages with industrial support: Akka and Orleans}
+%Based on the overview presented in this paper, it seems interesting to focus on two 
+%modern industrial languages based on the active object paradigm. We review the two 
+%frameworks 
+%Akka and Orleans, from the point of view of the languages presented here. The success of 
+%these two  frameworks show the practical usability of the active object programming model 
+%and its adequacy to program large scale industrial software.
+%
+%\paragraph{Akka}
+%Akka~\cite{haller2009scala,AkkaBook} is an actor-based message-driven runtime for managing concurrency, elasticity and resilience on the Java Virtual Machine with support for both Java and Scala. 
 %It is an open core development platform for Akka distributed systems runtime, play web framework, lagom microservices framework, and Apache Spark in-memory compute engine for Java and Scala. 
-Everything in Akka is designed to work in a distributed setting: all interactions of actors use purely message passing and everything is asynchronous. 
+All interactions of actors in Akka use purely message passing and everything is asynchronous. 
 Programmers need to provide a pattern match for all messages that it can accept. 
 %To be able to handle unknown messages, a default case is required. 
-The way actors interact is the same whether they are on the same host or separate hosts, communicating directly or through routing facilities, running on a few threads or many threads, etc. Such details may be altered at deployment time through a configuration mechanism, allowing a program to make use of more (powerful) servers without modification.
+The way actors interact is the same whether they are on the same host or separate hosts, communicating directly or through routing facilities, running on a few threads or many threads, etc. Such details may be altered at deployment time through a configuration mechanism, allowing a program to make use of more (powerful) servers without modification. 
 Akka is ideally suited for hybrid cloud architectures and the elastic scaling of cloud platforms. In an experiment with Google, it only took 4 minutes to start a 1000 node Akka cluster on Google Compute Engine (GCE), which included the time to start the GCE instances. 
-In Akka, actors form a tree with actors being parents to the actors they've created. As a parent, the actor is responsible for handling its children's failures (supervision), forming a chain of responsibility. 
-Accordingly, Akka embraces the reality of unplanned errors and adopts a pragmatic ``Let It Crash'' philosophy using supervision and self-healing to ensure impacted components are reset to a stable state and restarted upon failure.
+%In Akka, actors form a tree with actors being parents to the actors they've created. As a parent, the actor is responsible for handling its children's failures (supervision), forming a chain of responsibility. 
+%Accordingly, 
+Besides, Akka supports error handling. 
+It embraces the reality of unplanned errors and adopts a pragmatic ``Let It Crash'' philosophy using supervision and self-healing to ensure impacted components are reset to a stable state and restarted upon failure.
 
-\paragraph{Orleans}
+%\paragraph{Orleans}
 Orleans~\cite{BykovGKLPT11,BernsteinB16} is an actor framework developed by Microsoft 
 research and used in several 
 Microsoft products including online games relying on a Cloud infrastructure. The 
@@ -3378,7 +3411,7 @@ no primitive for strictly waiting for a future. Consequently the programmer has 
 systematically handle 
 the modification of the object state between the \emph{await} and the future access. This 
 semantics for future access is similar to the way futures are handled in general in Akka. 
-
+%
 The runtime support provided by the Orleans framework is impressive. In particular the 
 support for the creation, activation, and deactivation of active objects depending on the 
 application needs is one of the original contribution of the Orleans runtime. This is why 
