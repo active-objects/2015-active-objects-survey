@@ -480,7 +480,9 @@ ABS, ProActive/ASP) vs.\ targeted at multi\-core platforms (Encore);
 code generation (ABS) vs.\ runtime environment (Encore,
 ProActive/ASP). We have also made sure that the four languages
 discussed in detail have left the experimental stage and are available
-in stable, public distributions.
+in stable, public distributions. Those four language also have a formally defined 
+semantics allowing us to precisely compare the behaviour of the programs written in the 
+different languages.
 
 % All these languages have drawn attention on different areas.
 % %
@@ -599,7 +601,7 @@ checking whether a future is resolved or not. This breaks the
 sequential processing of a message (call), but also allows programs to
 be more efficient and less deadlock-prone.
 
-Another synchronisation constraint that exist in some languages is related to message 
+Another synchronisation constraint that exists  is related to message 
 ordering~\cite{CMT-DisComp96}. Ensuring an order of message reception, like 
 point-to-point FIFO adds some synchronisation and can lead to a loss of efficiency. The 
 counterpart is the gain in program properties. Indeed, message ordering allows the 
@@ -609,7 +611,7 @@ especially when the messages reach a stateful object. Ensuring by explicit
 synchronisations that the 
 operations are done in the correct order is more costly and more constraining than 
 relying on a message ordering property.
-\TODO{LUDO?-->> ALSO ADD classification to language presentation}
+
 
 \paragraph{Degree of transparency} 
 This aspect concerns the number and complexity of the programming
@@ -670,7 +672,7 @@ models, where some objects are full-fledge active object with their own threads,
 others are passive objects, i.e. standard objects. Second, concurrent object groups 
 provide a different alternative where all objects are accessible from anywhere but the 
 objects in the same group share the same thread and are synchronously accessible.
-\TODO{LUDO: mention this categorisation in the languages if we agree TBD}
+
 
 \paragraph{Formal semantics} 
 To establish formal properties of a language as well as for formal
@@ -948,20 +950,24 @@ all the extensions of Rebeca.  In Timed Rebeca and Probabilistic Timed
 Rebeca, the message queue is changed into a message bag with
 time-stamped messages, nevertheless, the transparency is unchanged.
 
-\paragraph{Degree of data sharing}
+\paragraph{Degree of data sharing} Rebeca is a typical \emph{uniform active object} 
+language and 
+as such guarantees at the same time absence of data sharing and of  copy of data.
 There are no shared variables among actors in Rebeca. Parameters in
 messages sent among actors are passed by value.  This is even the case
 if a reference to an actor is passed as a parameter; the sent
 reference is created as a shallow copy of the original reference,
 i.e., avoiding the creation of a new actor (e.g.,
-Fig.~\ref{fig:rebeca-example}, Line \ref{line:rebec:reqForMovieEnd}).
-\TODO{"avoiding the creation of a new actor (e.g., Fig. 1, line 8)" => Is the correct 
-line referenced? I am not sure why that line specifically illustrates why no new actor is 
-created. I am assuming the creation of new actors is avoided because when passing a 
-reference to a rebec the active object and its associated runtime are not copied. Rather 
-a shallow copy of the reference is made.
-	-->>MARJAN
-}
+Fig.~\ref{fig:rebeca-example}, Line 
+\ref{line:rebec:reqForMovieStart}-\ref{line:rebec:reqForMovieEnd}).
+%\TODO{"avoiding the creation of a new actor (e.g., Fig. 1, line 8)" => Is the correct 
+%line referenced? I am not sure why that line specifically illustrates why no new actor 
+%is 
+%created. I am assuming the creation of new actors is avoided because when passing a 
+%reference to a rebec the active object and its associated runtime are not copied. Rather 
+%a shallow copy of the reference is made.
+%	-->>MARJAN
+%}
 In RebecaSys, global variables can be defined and used in a controlled
 manner for wait statements as explained above.
 
@@ -1388,9 +1394,12 @@ explicit. In addition, ABS comes with an automated deadlock analysis
 tool \cite{CGM:SoSym2014} that detects potential deadlocks.  An
 important point is that between explicit synchronization points
 (\lstinline{release}, \lstinline{await}) no data races can occur and
-computations are, therefore, deterministic. (Obviously, execution in
+computations are, therefore, deterministic. 
+Communication is asynchronous in ABS, and no particular ordering has to be ensured on 
+request communication and service.
+Obviously, execution in
 general is non-deterministic unless the scheduling of service requests
-is also controlled.)
+is also controlled.
 
 
 \paragraph{Degree of transparency}
@@ -1406,8 +1415,8 @@ of asynchronous vs.\ synchronous calls, futures, and thread
 interleaving, but the language still retains a compositional proof theory
 \cite{SDE:BoerCJ07}.
 
-\paragraph{Degree of data sharing}
-There is no designated active object in a COG, all objects may be
+\paragraph{Degree of data sharing} There is no designated active object in a COG, all 
+objects may be
 accessed remotely. Thus, values from the functional language of ABS
 are passed by copy with a method call whereas all objects are passed
 by reference (i.e., the pointer is copied), independent of whether the
@@ -1415,6 +1424,9 @@ called object is local or remote.  All objects in ABS have strictly
 private visibility, that is, they can only access their own fields
 directly. The fields of any other object must be accessed via explicit
 method calls.
+ABS features a \emph{concurrent object-group}  model where objects in the same group can 
+safely be invoked directly because they are manipulated by a single thread, invocation 
+between different COGs is by nature asynchronous.
 
 \paragraph{Formal semantics}
 
@@ -1642,7 +1654,12 @@ by using multi-active objects especially with no limit or a soft limit
 of the number of threads. Specifically, when a thread enters
 wait-by-necessity, it is not counted in the soft thread limit of the
 active object anymore, so the wait-by-necessity event potentially
-causes the start of another request.
+causes the start of another request. 
+
+Communication in ASP is causally-ordered and requests are served in a FIFO order.  
+Overall, this restraints a bit more the communication ordering than a simple FIFO 
+guarantee, thus providing more properties to the programmer at the expense of an 
+additional delay during request emission.
 
 \paragraph{Degree of transparency}
 In ASP the programmer is not exposed at all to the notion of a future
@@ -1655,7 +1672,10 @@ with multi-active objects, the programmer is exposed to the notion of
 parallel treatment of requests. In this case the programming model
 becomes more explicit concerning concurrency aspects.
 
-\paragraph{Degree of data sharing}
+\paragraph{Degree of data sharing} ASP is a typical example of a \emph{non-uniform active 
+object model}, 
+where some objects are active and the others are passive, and copied when transmitted 
+between activities.
 ASP follows a strict policy of absence of sharing between active objects. Objects that are 
 not active objects are passed by copy between activities (as request parameters or request 
 results). Of course, this  applies also to objects that are referenced by passed 
@@ -1770,12 +1790,13 @@ la Scala.
 
 \paragraph{Language description}
 
-\TODO{Addressed. Page 18: I had problems to understand the language description of Encore. It says:
-„Active objects encapsulate passive objects, and …“ and later: „In Encore, passive
-objects may be shared between active objects …“ The wording sounds contradictory to me. I
-don’t understand what encapsulation of an objects means if it is shared. Maybe the
-explanation can be improved.
-	-->> KIKO}
+%\TODO{Addressed. Page 18: I had problems to understand the language description of 
+%Encore. It says:
+%„Active objects encapsulate passive objects, and …“ and later: „In Encore, passive
+%objects may be shared between active objects …“ The wording sounds contradictory to me. I
+%don’t understand what encapsulation of an objects means if it is shared. Maybe the
+%explanation can be improved.
+%	-->> KIKO}
 
 In Encore, active objects have their own thread of control and
 communicate with each other via asynchronous messages passing.
@@ -1922,7 +1943,6 @@ provide the same control over futures as in ABS: the former blocks the
 active object until the future is resolved and the latter releases the
 current thread of execution if the future is not resolved, so that the
 same active object can continue processing other messages.
-%
 Furthermore, Encore provides the \emph{future chaining} operator
 ($\rightsquigarrow$), which registers a callback (as an anonymous
 function, aka lambda) to the future and continues processing the rest
@@ -1934,6 +1954,7 @@ AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349}, except that it
 is more explicit and easier to control for the programmer. It is also
 a way to mimic transparent first-class futures of ASP, except that the
 callback request is only created when the future is resolved.
+Communication in Encore is asynchronous but requests are served in a FIFO order.
 
 \paragraph{Degree of transparency}
 
@@ -1947,16 +1968,19 @@ ordering of operations is handled automatically, and the programmer
 only expresses concurrency from a high-level point of view.
 
 \paragraph{Data sharing}
-
-\TODO{Addressed. On Line 51 you write that the "trait provides the interface-like feeling of OOP
-languages [..]" The usage of OOP here is not entirely appropriate: the comparison breaks
-down immediately when talking about prototype-based OOP languages like JavaScript.
-Therefore, the formulation should be adjusted to be more careful, and perhaps talk about
-"the interface-like feeling of statically-typed, Java-like OOP languages".\\
--->  KIKO\\
-Note: Just  provide a careful formulation, I do not want a fight here even if the comment
-is perhaps not very adequate
-}
+Encore relies at the same time on a \emph{concurrent object group} model and on a 
+\emph{non-uniform active object} model where some objects are active and some others are 
+passive.
+%\TODO{Addressed. On Line 51 you write that the "trait provides the interface-like 
+%feeling of OOP
+%languages [..]" The usage of OOP here is not entirely appropriate: the comparison breaks
+%down immediately when talking about prototype-based OOP languages like JavaScript.
+%Therefore, the formulation should be adjusted to be more careful, and perhaps talk about
+%"the interface-like feeling of statically-typed, Java-like OOP languages".\\
+%-->  KIKO\\
+%Note: Just  provide a careful formulation, I do not want a fight here even if the comment
+%is perhaps not very adequate
+%}
 
 In Encore, active objects are protected by their own thread of control
 while passive objects are protected by a \textit{capability} type.
@@ -1964,7 +1988,7 @@ Encore's type system sees passive objects as resources that are
 protected by a capability that governs the permitted kind of access to
 the object \cite{ref:encore}. A capability is built from a trait and a
 \textit{kind}. The trait provides the interface-like feeling of
-statically-typed, Java-like OOP languages while the \textit{kind}
+statically-typed, Java-like, OOP languages while the \textit{kind}
 states the ``protection'' that the interface provides. By changing a
 keyword, the \textit{kind}, the interface changes the protection
 level. For instance, by changing the \textit{kind} from

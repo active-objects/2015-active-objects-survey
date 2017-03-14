@@ -118,11 +118,13 @@ X Page 12 midle: … the same heap. line 18 —> Line 18
 
 X Page 14: The citation of the URL for the installation would be better placed in a footnote.
 
-Page 18: I had problems to understand the language description of Encore. It says: „Active objects encapsulate passive objects, and …“ and later: „In Encore, passive objects may be shared between active objects …“ The wording sounds contradictory to me. I don’t understand what encapsulation of an objects means if it is shared. Maybe the explanation can be improved.
+X Page 18: I had problems to understand the language description of Encore. It says: „Active objects encapsulate passive objects, and …“ and later: „In Encore, passive objects may be shared between active objects …“ The wording sounds contradictory to me. I don’t understand what encapsulation of an objects means if it is shared. Maybe the explanation can be improved.
 -->> ALBERT AND KIKO
+IMPROVED
+++ see the new first paragraph of encore language description
 
 -->> LUDO check coherency with ASP passive objects
-
+OK
 XPage 20: „The implementation … can be from scratch …“: please improve formulation
 
 XPage 21, middle: „Here there is …“
@@ -205,11 +207,13 @@ X On line 36 you write that "future references can safely be transmitted between
 ++ DONE: we have our own implementation of futures with our serialization procedure
 ++ The ProActive middleware handles transparently the future value transmission~\cite{HKRZ:Coregrid:2010}.
 
-Section 2.3.4, page 19:
+X Section 2.3.4, page 19:
 
 On line 51 you write that the "trait provides the interface-like feeling of OOP languages [..]" The usage of OOP here is not entirely appropriate: the comparison breaks down immediately when talking about prototype-based OOP languages like JavaScript. Therefore, the formulation should be adjusted to be more careful, and perhaps talk about "the interface-like feeling of statically-typed, Java-like OOP languages".
 --> KIKO
 Note: Just  provide a careful formulation, I do not want a fight here even if the comment is perhaps not very adequate
+++ clarified the explanation by explicitly referring to statically typed OO languages
+
 
 Section 3.1, page 21:
 
@@ -225,7 +229,7 @@ X Page 21, line 41: "because of the serialization time, but fastens the request 
 
 X Page 22: "Annotations allow to define custom" -> "Annotations allow defining custom"
 
-Page 29, Fig. 11: "Operative System" -> "Operating System"
+X Page 29, Fig. 11: "Operative System" -> "Operating System"
 -->> KIKO
 
 Additional Questions:
@@ -291,9 +295,9 @@ editor =	"Elisa Gonzalez Boix and Philipp Haller and Alessandro
 ISBN = 	"978-1-4503-3901-8",
 pages =	"1--12",
 }
--->> KIKO
+-> KIKO
+DONE
 Note: I added the entry in the .bib, please check that this ref is adequate
-
 Should anything be deleted from or condensed in the paper?: No
 
 If so, please explain: 
@@ -393,6 +397,7 @@ Table I gives a good overview of the different variations of the Rebeca language
 
 "avoiding the creation of a new actor (e.g., Fig. 1, line 8)" => Is the correct line referenced? I am not sure why that line specifically illustrates why no new actor is created. I am assuming the creation of new actors is avoided because when passing a reference to a rebec the active object and its associated runtime are not copied. Rather a shallow copy of the reference is made.
 -->>MARJAN
+DONE BY LUDO: all lines 6-8 could be cited here , this is what we did
 
 == 3. Implementation of Active Objects ==
 
@@ -426,6 +431,7 @@ X ”acting like standard references types" => acting like standard reference ty
 
 When printed, figure 11 is hardly readable.
 --> KIKO
+IMPROVED
 == 4. Lessons Learned and Conclusion ==
 
 The conclusion states that it is essential to understand the trade-offs involved in the design and implementation of active object languages. However, similar to the introduction, I feel these are not adequately highlighted here. If I were to design a novel active object language, how do I best navigate the design space presented in the article? What are the lessons learned? I feel all the different puzzle pieces are there but the bigger picture is missing.
