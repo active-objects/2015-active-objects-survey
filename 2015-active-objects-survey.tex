@@ -2270,8 +2270,9 @@ and only creating a physical thread once they have a method to execute inside th
 and
 the \texttt{ExecutorService} has a thread available in its pool. Finally, when all messages are
 blocked or the active object's queue is empty the thread is ended and released back to the pool
-of the \texttt{ExecutorService}.
- The only drawback is that if a method call contains a
+of the \texttt{ExecutorService}. The impact of this approach will be evaluated in an ABS example that will compare the 
+performance of the Java 8 bcakend with the ProActive backend for ABS discussed in Section \ref{subsec:proactive-backend-abs}.  
+The only drawback is that if a method call contains a
 recursive stack of synchronous calls, this stack needs to be saved
 upon encountering an \texttt{await} statement, which cannot be realized with lambda
 expressions. To solve this problem, such a call stack would be modeled as continuation 
@@ -2363,44 +2364,44 @@ the process of freeing memory is handled completely by
 the Java's garbage collector.
 
 
-\paragraph{Example and experiments}
+%\paragraph{Example and experiments}
 
-To measure the improvement provided by Java 8 features, we benchmark a
-simple example that is illustrated in Fig.~\ref{abs8:sf}. In the
-example we have one COG containing an object which receives a large
-number of messages stored in its queue. This message recursively calls
-a function that creates a large stack frame after which a message is
-sent to a different COG to run in parallel a CPU-intensive
-trigonometric function. The object is then suspended to await the
-result of this function, resulting in a large stack frame that needs
-to be saved in order to allow the next message from the queue to run
-on the COG.  We varied the number of recursive calls, the total number
-of messages in the object's queue, and the complexity of the function
-to compare performance with the previous Java backend that mapped each
-ABS method call to a separate Java thread. The results are shown in
-Fig.~\ref{abs8:ex}. The performance figures presented are for one
-object that is running 10--10000 method invocations, each with a
-varying stack frame (1--1000 recursive calls) and awaits the
-completion of a trigonometric function that reiterates a random number
-(1--1000 times) before completing. Finally we tested the backend in terms of scalability 
-and performance using a Map Reduce example which will be presented in Section \ref{sec:implem-proactive},
-together with the ProActive backend for ABS.
+%To measure the improvement provided by Java 8 features, we benchmark a
+%simple example that is illustrated in Fig.~\ref{abs8:sf}. In the
+%example we have one COG containing an object which receives a large
+%number of messages stored in its queue. This message recursively calls
+%a function that creates a large stack frame after which a message is
+%sent to a different COG to run in parallel a CPU-intensive
+%trigonometric function. The object is then suspended to await the
+%result of this function, resulting in a large stack frame that needs
+%to be saved in order to allow the next message from the queue to run
+%on the COG.  We varied the number of recursive calls, the total number
+%of messages in the object's queue, and the complexity of the function
+%to compare performance with the previous Java backend that mapped each
+%ABS method call to a separate Java thread. The results are shown in
+%Fig.~\ref{abs8:ex}. The performance figures presented are for one
+%object that is running 10--10000 method invocations, each with a
+%varying stack frame (1--1000 recursive calls) and awaits the
+%completion of a trigonometric function that reiterates a random number
+%(1--1000 times) before completing. Finally we tested the backend in terms of scalability 
+%and performance using a Map Reduce example which will be presented in Section \ref{sec:implem-proactive},
+%together with the ProActive backend for ABS.
 
-\begin{figure}
-\centering
-\begin{minipage}{.53\textwidth}
-  \centering
-	\includegraphics[scale=0.35]{pictures/scenarioj8.png}
-	\caption{Cooperative Scheduling Test Scenario}
-	\label{abs8:sf}
-\end{minipage}
-\begin{minipage}{.46\textwidth}
-  \centering
-   	\includegraphics[scale=0.40]{./pictures/absj8t.png}
-	\caption{Old vs Java 8 Backend for ABS}
-	\label{abs8:ex}
-\end{minipage}
-\end{figure}
+%\begin{figure}
+%\centering
+%\begin{minipage}{.53\textwidth}
+%  \centering
+%	\includegraphics[scale=0.35]{pictures/scenarioj8.png}
+%	\caption{Cooperative Scheduling Test Scenario}
+%	\label{abs8:sf}
+%\end{minipage}
+%\begin{minipage}{.46\textwidth}
+%  \centering
+%   	\includegraphics[scale=0.40]{./pictures/absj8t.png}
+%	\caption{Old vs Java 8 Backend for ABS}
+%	\label{abs8:ex}
+%\end{minipage}
+%\end{figure}
 
 %\RH{Please get rid of white space in Fig.~\ref{abs8:ex} and reduce
 %  distance between data points to shrink it horizontally, and also
@@ -2430,15 +2431,15 @@ together with the ProActive backend for ABS.
 %	\caption{Perfomance figures of the Two Java Backends for Cooperative Scheduling}
 %\end{figure}
 
-When running on the previous Java backend, a series of 10000 calls on
-the same object requires immediate creation of a corresponding number
-of threads, resulting in the program running out of memory. This makes
-ABS unusable for HPC and Big Data applications that want to benefit
-from cooperative scheduling. While the Java 8 backend clearly performs
-better by minimizing the number of live threads at runtime, the
-challenge to handle cooperative scheduling of a large number of
-messages that are suspended and \emph{not} released remains an open
-research question.
+%When running on the previous Java backend, a series of 10000 calls on
+%the same object requires immediate creation of a corresponding number
+%of threads, resulting in the program running out of memory. This makes
+%ABS unusable for HPC and Big Data applications that want to benefit
+%from cooperative scheduling. While the Java 8 backend clearly performs
+%better by minimizing the number of live threads at runtime, the
+%challenge to handle cooperative scheduling of a large number of
+%messages that are suspended and \emph{not} released remains an open
+%research question.
 
 \subsection{ProActive}
 \label{sec:implem-proactive}
@@ -2843,7 +2844,7 @@ backends for the application ranging from 2 to 50 workers, using from
 1 to 25 physical machines with ProActive.  The execution times of the
 ProActive backend are sharply decreasing for the first few added
 machines and then decrease at a slower rate. The first instance added in the Java 8 
-backend also improve significantly the performance of the program and the Java 8 backend 
+backend also improves significantly the performance of the program and the Java 8 backend 
 performs better with one or two workers. Then, thanks to the 
 efficient thread management of the Java 8 backend, the performance stays stable until 30 
 workers. Finally with a high number of instances the degree of parallelism becomes 
