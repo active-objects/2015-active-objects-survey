@@ -1092,9 +1092,10 @@ language family are summarized in Table~\ref{tab::Rebecacomparison}.
 The \emph{A}bstract \emph{B}ehavioral \emph{S}pecification language
 (ABS) \cite{JHSSS10} is an object-oriented, concurrent modeling
 language developed since 2009 in a series of EC-funded research
-projects.\footnote{For information about  HATS see
-  \url{www.hats-project.eu}, and for Envisage see
-  \url{www.envisage-project.eu}.} Its ancestors include Creol
+projects. %\footnote{For information about  HATS see
+ % \url{www.hats-project.eu}, and for Envisage see
+ % \url{www.envisage-project.eu}.}
+ Its ancestors include Creol
 \cite{Einar2006} and JCoBox \cite{SchaeferP10b}.
 
 In contrast to design-oriented or architectural languages, ABS code is
@@ -1460,8 +1461,7 @@ for ABS and integrates most tools. An alternative is the web-based ABS
 collaboratory that runs in a browser and permits to try out most ABS
 tools. It can be used either as a service or installed
 locally. Here is a list of currently
-supported tools for ABS\footnote{ABS tools are at
-	\url{http://abs-models.org/installation/}.}:
+supported tools for ABS:
 
 \begin{itemize}
 \item An editor with syntax highlighting and integrated build system,
@@ -1780,7 +1780,8 @@ ProActive/GCM code corresponding to the designed system.
 
 Encore \cite{ref:encore} is a general purpose parallel language based
 on active objects developed since 2014 in the EC funded \Upscale
-project.\footnote{For information about \Upscale see \url{www.upscale-project.eu}.}  The language has been designed to excel
+project. %\footnote{For information about \Upscale see \url{www.upscale-project.eu}.} 
+ The language has been designed to excel
 at scalability and rests on four pillar concepts: \textit{parallel by
   default} using the active object paradigm for coarse-grained
 parallelism, \textit{independent local heaps} to promote data
@@ -2221,6 +2222,7 @@ environment. The challenge is to generate real memory structures and
 execution instances, while being aware of the possible resource
 limitations, communication bottlenecks, latencies and performance
 issues, as these issues are not easily observable at a modeling level.
+\TODO{VLAD: ADD ABS repository?}
 
 \paragraph{Thread creation and scheduling}
 
@@ -2441,7 +2443,8 @@ research question.
 \subsection{ProActive}
 \label{sec:implem-proactive}
 
-The ProActive library is completely written in standard Java and provides an
+The ProActive library\footnote{Available at \url{https://github.com/scale-proactive}} is 
+completely written in standard Java and provides an
 implementation for the ASP programming model.  By default, it uses 
  Java's remote method invocation package to implement the communication
 layer between active objects, although other communication protocols
@@ -2553,7 +2556,9 @@ between active objects~\cite{CCH:Middleware07}.
 \subsection{ProActive Backend for ABS}
 \label{subsec:proactive-backend-abs}
 
-The ProActive backend for ABS generates ProActive code corresponding
+The ProActive backend for ABS\footnote{Available at: 
+\url{https://bitbucket.org/justinerochas/absfrontend-to-proactive}} generates ProActive 
+code corresponding
 to an ABS program~\cite{rochas:hal-01065072}. The goal of the
 ProActive backend is to provide a fully working execution of ABS
 models in distributed environments, with less optimization than
@@ -2877,7 +2882,8 @@ passive objects~\cite{clebsch2015ownership}. The Encore runtime
 \parT{} abstraction, a task library, and the notion of \emph{encore
 threads} (explained below). These features are part of the runtime and
 are therefore written in C.  On top of these libraries rests the
-Encore Standard Library, which is written in Encore itself.
+Encore Standard Library, which is written in Encore itself.\TODO{add a ref to encore 
+public repository}
 
 \begin{figure}[t]
   \centering

@@ -195,7 +195,7 @@ You write: "which is used to model the nondeterminism in the behavior of a messa
 I believe you intended to refer to line 4 (byte selectedServer = ?(1, 2, 3);) instead, since on line 5 begins a switch statement.
 --> MARJAN (duplicate with Reviewer 1)
 
-Section 2.3.3, page 15:
+X Section 2.3.3, page 15:
 
 In the first ProActive program that is shown I was wondering how generic types are handled. For instance, assuming class "O" has a generic type parameter, how would the creation of a new active object look like in that case?
 ++ ADDED: The transparent creation of proxies 
