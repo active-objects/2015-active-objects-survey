@@ -3106,48 +3106,46 @@ goals. We review below the different trade-offs that have been made in their des
 
 \noindent
 {\small \sf
-\begin{tabular}{|p{15mm}|p{25.5mm}|p{25.5mm}|p{25.5mm}|p{25.5mm}|}
+\begin{tabular}[t]{|@{\,\,}p{15mm}@{\,\,}|@{\,\,}p{27mm}@{\,\,}|@{\,\,}p{29mm}@{\,\,}|@{\,\,}p{29mm}@{\,\,}|@{\,\,}p{28.5mm}@{\,\,}|}
 \hline
 & \textbf{Rebeca} & \textbf{ABS} & \textbf{ASP/ProActive} & \textbf{Encore}\\\hline
-Objective&$\bullet$ Actor-based mo\-deling language\newline $\bullet$
-           Simple computation and communication model\newline
-           $\bullet$ No dynamic object creation&$\bullet$ Active object-based
+\textbf{Objective}&$\bullet$ Actor-based  modeling  language\newline $\bullet$
+           Simple compu\-tation and communication model\newline
+           $\bullet$ No dynamic\newline object creation&$\bullet$ Active object\newline
                                                  modeling
                                                  language
                                                  \newline $\bullet$
-                                                 Concurrent object
-                                                 groups \newline
+                                                 COGs \newline
                                                  $\bullet$ Combines
                                                  functional and
                                                  imperative features
                                                  \newline $\bullet$ 
                                                  Advanced
                                                  communication
-                                                 model&$\bullet$  Active object
-                                                        programming
+                                                 model&$\bullet$  Active object\newline 
+                                                        programming\newline 
                                                         language\newline
                                                  $\bullet$ Multiactive objects \newline
                                                                                 $\bullet$
-  Designed for distribution&$\bullet$  Active object
-                                                        programming
+  Designed for\newline  distribution&$\bullet$  Active object\newline 
+                                                        programming\newline 
                                                         language
                                                                                 \newline
                                                                                 $\bullet$
-  Designed for scalability\\\hline 
-Degree of synchronization&$\bullet$ Asynchronous message
+  Designed for\newline  scalability\\\hline 
+\textbf{Degree of\newline synchro\-nization}&$\bullet$ Asynchronous \newline message
                            passing\newline $\bullet$ No
-                           synchronization\newline \newline
+                           synchro-\newline nization\newline 
                                                           $\bullet$
                            Single-threaded run-to-completion of
-                           requests per actor&$\bullet$ Asynchronous
-                                            method calls with first-class
+                           requests per\newline  actor&$\bullet$ Asynchronous \newline
+                                            method calls with \newline first-class
                                             futures \newline
-                                            $\bullet$ Advanced
+                                            $\bullet$ Advanced\newline 
                                             synchronization\newline
-                                            $\bullet$ Cooperative
-                                            scheduling interleaves
-                                               requests per concurrent
-                                               object group &$\bullet$
+                                            $\bullet$ Cooperative 
+                                            sche\-duling interleaves
+                                               requests per COG &$\bullet$
                                                               Implicit
                                                               futures
                                                               \newline
@@ -3160,69 +3158,72 @@ Degree of synchronization&$\bullet$ Asynchronous message
                                                           objects
                                                               allow
                                                               parallel
-                                                          treatment of
+                                                          treat-
+                                                                  \newline ment of
                                                           requests&$\bullet$
   ABS-like cooperative scheduling \newline $\bullet$ Future chaining
-\newline $\bullet$ Multiactive
+\newline $\bullet$ Multiactive\newline
                                                           objects
                                                                     using
                                                                     parallel
                                                                     combinators
-                                                                    for
+                                                                    for\newline
                                                                     data parallelism                                                              
   \\\hline 
-Degree of transparency&$\bullet$ Hides asynchronous message
-                        passing\newline $\bullet$ Hides scheduling and message queues&$\bullet$ Hides object representation,
-                         scheduling, and message queues
+\textbf{Degree of\newline transpa\-rency}&$\bullet$ Hides\newline
+                                           asynchronous message
+                        passing\newline $\bullet$ Hides\newline scheduling and\newline message queues&$\bullet$ Hides object\newline  representation,
+                         scheduling, and\newline  message queues
                   \newline $\bullet$ Exposes
-                         futures and 
-                         release points&$\bullet$ Hides futures and distribution
+                         futures\newline and 
+                         release points&$\bullet$ Hides futures and\newline distribution
                                          \newline $\bullet$
-                                         Exposes parallel treatment of
+                                         Exposes parallel\newline treatment of\newline
                                  requests&$\bullet$ Hides scheduling
-                                           and low-level
+                                           and low-level\newline 
                                            parallelism \newline $\bullet$ Exposes
                          futures,
-                         release points, and parallel data flow\\\hline 
-Degree of data sharing&$\bullet$ No shared values\newline $\bullet$
-                        All arguments passed by copy, even actor
-                        references&$\bullet$ Functional terms passed
-                                    by copy \newline $\bullet$ No
+                         release  points, and parallel data flow\\\hline 
+\textbf{Degree of\newline data sharing}&$\bullet$ No shared values\newline $\bullet$
+                        All arguments\newline  passed by copy,\newline  even actor
+                        refer-\newline ences&$\bullet$ No
                                     shared values \newline $\bullet$ Objects
-                                 passed by reference\newline $\bullet$
-                                    Fields are private&$\bullet$ No
+                                 passed by\newline reference\newline
+                                              $\bullet$ Functional
+                                              values\newline passed
+                                    by  copy \newline $\bullet$
+                                    Private fields&$\bullet$ No
                                                         shared
                                                         values\newline
                                                           $\bullet$ Active
-                                                        objects passed
+                                                        objects pas\-sed
                                                           by
                                                         reference\newline 
                                                         $\bullet$ Passive
-                                                        objects passed
+                                                        objects\newline passed
                                                           by
                                                         copy&$\bullet$
                                                               Active
                                                               objects
-                                                              are
-                                                              passed
+                                                              pas\-sed
                                                               by
                                                               reference\newline
                                                               $\bullet$
-  Capability types control data sharing for passive objects\\\hline 
-Implemen\-tation and tooling support&$\bullet$ Model checking&$\bullet$
+  Capability types\newline control data sharing\newline for passive objects\\\hline 
+\textbf{Implemen\-tation and\newline tooling support}&$\bullet$ Model checking&$\bullet$
                                                              Simulation\newline
                                                              $\bullet$ Wide
-                                                   range of analysis
+                                                   range of\newline  analysis
                                                    tools\newline $\bullet$  Code generation&
                                                           $\bullet$
                                                         Implemented as
-                                                          a Java
+                                                          a\newline  Java
                                                                                              library\newline
                                                                                              $\bullet$
                                                           Supports
-                                                                                             distributed
+                                                                                             distri-\newline buted
                                                                                              architectures&$\bullet$
-  Runtime system written in C\newline $\bullet$ Supports multicore architectures\\\hline 
+  Runtime system\newline  written in C\newline $\bullet$ Supports multi-\newline core architectures\\\hline 
 \end{tabular}}
 
 
