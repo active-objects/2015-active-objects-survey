@@ -3385,18 +3385,20 @@ The way actors interact is the same whether they are on the same host or separat
 Akka is ideally suited for hybrid cloud architectures and the elastic scaling of cloud platforms. In an experiment with Google, it only took 4 minutes to start a 1000 node Akka cluster on Google Compute Engine (GCE), which included the time to start the GCE instances. 
 %In Akka, actors form a tree with actors being parents to the actors they've created. As a parent, the actor is responsible for handling its children's failures (supervision), forming a chain of responsibility. 
 %Accordingly, 
-Besides, Akka supports error handling. 
-It embraces the reality of unplanned errors and adopts a pragmatic ``Let It Crash'' philosophy using supervision and self-healing to ensure impacted components are reset to a stable state and restarted upon failure.
+%Besides, Akka supports error handling. 
+%It embraces the reality of unplanned errors and adopts a pragmatic ``Let It Crash'' philosophy using supervision and self-healing to ensure impacted components are reset to a stable state and restarted upon failure.
 
 %\paragraph{Orleans}
 Orleans~\cite{BykovGKLPT11,BernsteinB16} is an actor framework developed by Microsoft 
 research and used in several 
 Microsoft products including online games relying on a Cloud infrastructure. The 
 strength of the framework is the runtime 
-support for the creation, execution, and state management of actors. From a language 
-point of view, Orleans does not provide a publicly available formal semantics 
-nor an exhaustive and precise description of the behaviour of the programming 
-primitives. Orleans relies on a non-uniform active object model with copies of 
+support for the creation, execution, and state management of actors. 
+%From a language 
+%point of view, Orleans does not provide a publicly available formal semantics 
+%nor an exhaustive and precise description of the behaviour of the programming 
+%primitives. 
+Orleans relies on a non-uniform active object model with copies of 
 transmitted passive objects, like ASP. The semantics of future is based on continuations 
 and relies on an \emph{await} statement similar to the one of ABS and Encore but there is 
 no primitive for strictly waiting for a future. Consequently the programmer has to 
@@ -3413,8 +3415,9 @@ also focuses on the efficient execution of active objects including optimised
 serialisation 
 for efficiently transmitting data between actors, and support for scaling both in terms 
 of distribution and in terms of the number of active objects that can interact within a 
-single application. The Orleans runtime also supports the application in the management 
-of resources, storage, errors, failures, and recovery.
+single application. 
+%The Orleans runtime also supports the application in the management 
+%of resources, storage, errors, failures, and recovery.
 
 \section{Lessons Learned and Conclusion}\label{sec-conclusion}
 
