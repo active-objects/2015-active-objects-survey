@@ -754,31 +754,22 @@ Following the strategy of ``pay for what you need'', while core Rebeca
 is kept simple, the language is extended in different dimensions,
 creating the Rebeca family, to support modeling and analysis of a
 wider variety of application domains (see
-Table~\ref{tab::Rebecacomparison}).  Extended Rebeca
-\cite{DBLP:conf/acsd/SirjaniBMS05,DBLP:journals/jucs/SirjaniBM05},
-RebecaSys \cite{DBLP:journals/tecs/RazaviBSKSS10}, Variable Rebeca
-\cite{DBLP:journals/jucs/SabouriK13}, Broadcasting Rebeca
-\cite{DBLP:conf/fsen/YousefiGK15}, and Wireless Rebeca are examples of
-these extensions for modeling and analysis of globally
-asynchronous-locally synchronous systems, hardware/software co-design
-(or system-level design), product line of actors, message broadcasting
-abilities, and mobile ad-hoc actors, respectively.  In these
-extensions, the core Java-like syntax of Rebeca is preserved and only
-a minimal set of statements and keywords is added to support the
-requirements of each application domain.  Timed Rebeca
-\cite{DBLP:journals/corr/abs-1108-0228,DBLP:journals/scp/ReynissonSACJIS14}
-extends Rebeca to capture real-time behavior and is supported by
-customized efficient analysis tools. Finally, probabilistic behavior
-can be modeled with Probabilistic Timed Rebeca
-\cite{DBLP:journals/eceasst/JafariKSH14} and analyzed using back-end
-tools.
-\TODO{Table I gives a good overview of the different variations of the Rebeca language. 
-However, some of the individual extensions are not properly motivated. Are the different 
-extensions orthogonal to each other or can they be combined? What are the trade-offs of 
-each design and how to they fit within the larger picture?
-	-->> MARJAN see how you can handle this without spending half a page presenting all 
-	the languages
-}
+Table~\ref{tab::Rebecacomparison}).  
+
+%
+Extended Rebeca~\cite{DBLP:conf/acsd/SirjaniBMS05,DBLP:journals/jucs/SirjaniBM05} promotes the idea of actors being grouped in components, where we have globally asynchronous communication among components, and within a component we may have locally synchronous communication.
+%
+RebecaSys is developed to support hardware/software co-design (or system-level design) \cite{DBLP:journals/tecs/RazaviBSKSS10}. In RebecaSys the full asynchrony of Rebeca is jeopardise by adding the wait statement in order to be faithful to the target design language, SystemC. Global variables are added, but can only be used in a controlled manner.
+%
+In Variable Rebeca, the modeller can use annotation to model variable behaviours and hence define a product line of actors with different computations \cite{DBLP:journals/jucs/SabouriK13}. In Variable Rebeca the semantics of Rebeca is fully preserved. All the other members of Rebeca family can be extended by the annotation mechanism that is used in Variable Rebeca.
+%
+In Broadcasting Rebeca \cite{DBLP:conf/fsen/YousefiGK15} and Wireless Rebeca \cite{DBLP:journals/corr/YousefiGK16} the focus are on modelling and verifying of different network protocols, and hence they provide alternative message passing mechanisms, like broadcasting  and multi-casting among actors, respectively.
+
+
+Timed Rebeca \cite{DBLP:journals/corr/abs-1108-0228,DBLP:journals/scp/ReynissonSACJIS14} extends Rebeca by adding a few keywords to the syntax of Rebeca in order to model real-time behaviour and is supported by customised efficient analysis
+tools. Probabilistic Timed Rebeca \cite{DBLP:journals/eceasst/JafariKSH14} extends Timed Rebeca to capture probabilistic behavior and as for now can only be analyzed using back-end tools.
+%
+Extending Rebeca with time and probability is orthogonal to other extensions, and where the core semantics of Rebeca is preserved these extensions can be added on top of other extensions. More specifically, Variable Rebeca, and Broadcasting and Wireless Rebeca can be extended by time and probability in the same way as in Probabilistic Timed Rebeca.
 
 \paragraph{Language description} 
 We describe Rebeca using an example of a Media Service system,
@@ -788,8 +779,7 @@ non-deterministically redirects requests to media servers.  The Rebeca
 model of Media Service consists of a number of \emph{reactive
   classes}, which are \texttt{Server}, \texttt{Dispatcher}, and
 \texttt{Client}, each describing the type of a certain number of
-\emph{actors} (also called \emph{rebecs} in Rebeca). A reactive class
-may declare \emph{state variables} (Line \ref{line:rebec:statevar}).
+\emph{actors} (also called \emph{rebecs} in Rebeca). A reactive class specifies the size of its message queue (Line 1) and may declare \emph{state variables} (Line \ref{line:rebec:statevar}).
 Each actor has a set of known actors to which it can send
 messages. For example, an actor of type \texttt{Dispatcher} knows
 three actors of type \texttt{Server} (Line
@@ -808,15 +798,11 @@ Rebeca do not have a return value and their declaration starts with
 keyword \texttt{msgsrv}.  A message server is executed upon receiving
 its corresponding message. Its body may include assignments,
 conditionals (Lines
-\ref{line:rebec:switchStart}--\ref{line:rebec:switchEnd}), and message
+\ref{line:rebec:switchStart}--\ref{line:rebec:switchEnd}), loop statements, and message
 sending statements (Lines \ref{line:rebec:send:receiveMovie},
-\ref{line:rebec:send:reqForMovie}).  Loops and periodic behavior are
+\ref{line:rebec:send:reqForMovie}). In Rebeca, periodic behavior of a system is
 modeled by sending messages to oneself (Line
 \ref{line:rebec:send:self}). 
-\TODO{"Loops and periodic behavior are modeled by sending messages to oneself" => The 
-downside of using selfsending to implement loops is that these messages can be 
-interleaved with other messages from active objects not participating in the loop.
-	-->>MARJAN}
 Since communication is asynchronous,
 each actor has a \emph{message queue} from which it takes the next
 message to serve. The ordering of the messages in the message queues
@@ -826,9 +812,8 @@ non-preemptively, and then takes the next message. The actor stays
 idle only if there is no other message in the queue.  A message server
 may include a \emph{non-deterministic assignment} statement which is
 used to model the nondeterminism in the behavior of a message server
-(Line \ref{line:rebec:switchStart}).\TODO{MARJAN Page 8, line -3: … a message server 
-(line 5). —> line 4 ??
-}  Finally, the \texttt{main} block
+(Line \ref{line:rebec:non-det}).
+Finally, the \texttt{main} block
 instantiates the actors of the model. In the Media Service model,
 seven actors are created, receiving their known actors and the
 parameters' values of their constructors (Lines
@@ -871,7 +856,7 @@ parameters' values of their constructors (Lines
 reactiveclass Dispatcher (5) {
 	|\label{line:rebec:knownrebecs}|knownrebecs { Server m1, m2, m3; }
 	msgsrv reqForMovie(Client client) {
-		byte selectedServer = ?(1, 2, 3);
+		|\label{line:rebec:non-det}|byte selectedServer = ?(1, 2, 3);
 		|\label{line:rebec:switchStart}|switch (selectedServer) {
 			|\label{line:rebec:reqForMovieStart}|case 1: m1.reqForMovie(client);
 			case 2: m2.reqForMovie(client);
@@ -901,9 +886,6 @@ main {
 	|\label{line:rebec:mainEnd}|Client c1(di):(),c2(di):(),c3(di):();
 }
 \end{lstlisting}  
-\TODO{MARJAN Page 8, Fig. 1: I couldn’t find an explanation of the number in parentheses 
-in the first line of a reactive class declaration. 
-}
 \caption{A simple Rebeca model}
 \label{fig:rebeca-example}
 \end{figure}
@@ -958,9 +940,8 @@ There are no shared variables among actors in Rebeca. Parameters in
 messages sent among actors are passed by value.  This is even the case
 if a reference to an actor is passed as a parameter; the sent
 reference is created as a shallow copy of the original reference,
-i.e., avoiding the creation of a new actor (e.g.,
-Fig.~\ref{fig:rebeca-example}, Line 
-\ref{line:rebec:reqForMovieStart}-\ref{line:rebec:reqForMovieEnd}).
+e.g., in Fig.~\ref{fig:rebeca-example} Line \ref{line:rebec:reqForMovieEnd} \texttt{Dispatcher} sends a request to the server \texttt{m3} and passes the reference to the client to \texttt{m3} as a parameter instead of passing a fresh copy of the client actor.
+
 %\TODO{"avoiding the creation of a new actor (e.g., Fig. 1, line 8)" => Is the correct 
 %line referenced? I am not sure why that line specifically illustrates why no new actor 
 %is 
