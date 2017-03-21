@@ -95,10 +95,10 @@ Comments on the text
 ====================
 X Page 2, Abstract: trough -> through
 
-Page 3, beginning of 2.1: This is a too broad presentation starting by high-level languages in general and ALGOL etc. Focus the history on the relevant concepts.
+X Page 3, beginning of 2.1: This is a too broad presentation starting by high-level languages in general and ALGOL etc. Focus the history on the relevant concepts.
 -->> FRANK
 NOTE: Reviewer 2 likes it this way ;-)
-
+DONE: shortened
 
 Page 4, 5th paragraph: The mentioning of Rebeca here is a bit unmotivated. The conceptual structure of the following paragraphs can be improved.
 -->> FRANK
@@ -346,9 +346,10 @@ Detailed review:
 X Overall I think the introduction is lacking in giving a general direction to the article. Why are active object languages becoming important today? What will I learn from reading this article regarding the situation of active object languages in the current state of the art? How do the four languages under analysis fit within the larger community of active object languages or actor languages in general?
 -->> EINAR: Done.
 
-"We start with Rebeca, which is closest to the original actor model" => What do you mean with original actor model? [Hewitt 73] or [Agha 86]? During the late 70s and early 80s a number of variations on the actor model were developed, each with wide varying semantics.
+X ”We start with Rebeca, which is closest to the original actor model" => What do you mean with original actor model? [Hewitt 73] or [Agha 86]? During the late 70s and early 80s a number of variations on the actor model were developed, each with wide varying semantics.
 -->> FRANK
 NOTE: related to remark of Review 1
+IMPROVED but we should be careful about “original actor model”
 
 X ”each of them implements replies to asynchronous method calls in the form of futures" => Forward reference to section 2.1 for readers that do not know futures.
 
