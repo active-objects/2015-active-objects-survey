@@ -493,7 +493,9 @@ different languages.
 % also been applied for the distributed setting.
 
 \paragraph{Other high-level concurrent languages}
-A discussion of other hight-level concurrent languages can be found in Section~\ref{sec-discussion}. 
+
+A discussion of other hight-level concurrent languages can be found in
+Section~\ref{sec:other-high-level}.
 
 %There are several other programming languages that introduce
 %high-level abstractions for concurrent programming that deviate from
@@ -754,31 +756,22 @@ Following the strategy of ``pay for what you need'', while core Rebeca
 is kept simple, the language is extended in different dimensions,
 creating the Rebeca family, to support modeling and analysis of a
 wider variety of application domains (see
-Table~\ref{tab::Rebecacomparison}).  Extended Rebeca
-\cite{DBLP:conf/acsd/SirjaniBMS05,DBLP:journals/jucs/SirjaniBM05},
-RebecaSys \cite{DBLP:journals/tecs/RazaviBSKSS10}, Variable Rebeca
-\cite{DBLP:journals/jucs/SabouriK13}, Broadcasting Rebeca
-\cite{DBLP:conf/fsen/YousefiGK15}, and Wireless Rebeca are examples of
-these extensions for modeling and analysis of globally
-asynchronous-locally synchronous systems, hardware/software co-design
-(or system-level design), product line of actors, message broadcasting
-abilities, and mobile ad-hoc actors, respectively.  In these
-extensions, the core Java-like syntax of Rebeca is preserved and only
-a minimal set of statements and keywords is added to support the
-requirements of each application domain.  Timed Rebeca
-\cite{DBLP:journals/corr/abs-1108-0228,DBLP:journals/scp/ReynissonSACJIS14}
-extends Rebeca to capture real-time behavior and is supported by
-customized efficient analysis tools. Finally, probabilistic behavior
-can be modeled with Probabilistic Timed Rebeca
-\cite{DBLP:journals/eceasst/JafariKSH14} and analyzed using back-end
-tools.
-\TODO{Table I gives a good overview of the different variations of the Rebeca language. 
-However, some of the individual extensions are not properly motivated. Are the different 
-extensions orthogonal to each other or can they be combined? What are the trade-offs of 
-each design and how to they fit within the larger picture?
-	-->> MARJAN see how you can handle this without spending half a page presenting all 
-	the languages
-}
+Table~\ref{tab::Rebecacomparison}).  
+
+%
+Extended Rebeca~\cite{DBLP:conf/acsd/SirjaniBMS05,DBLP:journals/jucs/SirjaniBM05} promotes the idea of actors being grouped in components, where we have globally asynchronous communication among components, and within a component we may have locally synchronous communication.
+%
+RebecaSys is developed to support hardware/software co-design (or system-level design) \cite{DBLP:journals/tecs/RazaviBSKSS10}. In RebecaSys the full asynchrony of Rebeca is jeopardise by adding the wait statement in order to be faithful to the target design language, SystemC. Global variables are added, but can only be used in a controlled manner.
+%
+In Variable Rebeca, the modeller can use annotation to model variable behaviours and hence define a product line of actors with different computations \cite{DBLP:journals/jucs/SabouriK13}. In Variable Rebeca the semantics of Rebeca is fully preserved. All the other members of Rebeca family can be extended by the annotation mechanism that is used in Variable Rebeca.
+%
+In Broadcasting Rebeca \cite{DBLP:conf/fsen/YousefiGK15} and Wireless Rebeca \cite{DBLP:journals/corr/YousefiGK16} the focus are on modelling and verifying of different network protocols, and hence they provide alternative message passing mechanisms, like broadcasting  and multi-casting among actors, respectively.
+
+
+Timed Rebeca \cite{DBLP:journals/corr/abs-1108-0228,DBLP:journals/scp/ReynissonSACJIS14} extends Rebeca by adding a few keywords to the syntax of Rebeca in order to model real-time behaviour and is supported by customised efficient analysis
+tools. Probabilistic Timed Rebeca \cite{DBLP:journals/eceasst/JafariKSH14} extends Timed Rebeca to capture probabilistic behavior and as for now can only be analyzed using back-end tools.
+%
+Extending Rebeca with time and probability is orthogonal to other extensions, and where the core semantics of Rebeca is preserved these extensions can be added on top of other extensions. More specifically, Variable Rebeca, and Broadcasting and Wireless Rebeca can be extended by time and probability in the same way as in Probabilistic Timed Rebeca.
 
 \paragraph{Language description} 
 We describe Rebeca using an example of a Media Service system,
@@ -788,8 +781,7 @@ non-deterministically redirects requests to media servers.  The Rebeca
 model of Media Service consists of a number of \emph{reactive
   classes}, which are \texttt{Server}, \texttt{Dispatcher}, and
 \texttt{Client}, each describing the type of a certain number of
-\emph{actors} (also called \emph{rebecs} in Rebeca). A reactive class
-may declare \emph{state variables} (Line \ref{line:rebec:statevar}).
+\emph{actors} (also called \emph{rebecs} in Rebeca). A reactive class specifies the size of its message queue (Line 1) and may declare \emph{state variables} (Line \ref{line:rebec:statevar}).
 Each actor has a set of known actors to which it can send
 messages. For example, an actor of type \texttt{Dispatcher} knows
 three actors of type \texttt{Server} (Line
@@ -808,15 +800,11 @@ Rebeca do not have a return value and their declaration starts with
 keyword \texttt{msgsrv}.  A message server is executed upon receiving
 its corresponding message. Its body may include assignments,
 conditionals (Lines
-\ref{line:rebec:switchStart}--\ref{line:rebec:switchEnd}), and message
+\ref{line:rebec:switchStart}--\ref{line:rebec:switchEnd}), loop statements, and message
 sending statements (Lines \ref{line:rebec:send:receiveMovie},
-\ref{line:rebec:send:reqForMovie}).  Loops and periodic behavior are
+\ref{line:rebec:send:reqForMovie}). In Rebeca, periodic behavior of a system is
 modeled by sending messages to oneself (Line
 \ref{line:rebec:send:self}). 
-\TODO{"Loops and periodic behavior are modeled by sending messages to oneself" => The 
-downside of using selfsending to implement loops is that these messages can be 
-interleaved with other messages from active objects not participating in the loop.
-	-->>MARJAN}
 Since communication is asynchronous,
 each actor has a \emph{message queue} from which it takes the next
 message to serve. The ordering of the messages in the message queues
@@ -826,9 +814,8 @@ non-preemptively, and then takes the next message. The actor stays
 idle only if there is no other message in the queue.  A message server
 may include a \emph{non-deterministic assignment} statement which is
 used to model the nondeterminism in the behavior of a message server
-(Line \ref{line:rebec:switchStart}).\TODO{MARJAN Page 8, line -3: … a message server 
-(line 5). —> line 4 ??
-}  Finally, the \texttt{main} block
+(Line \ref{line:rebec:non-det}).
+Finally, the \texttt{main} block
 instantiates the actors of the model. In the Media Service model,
 seven actors are created, receiving their known actors and the
 parameters' values of their constructors (Lines
@@ -871,7 +858,7 @@ parameters' values of their constructors (Lines
 reactiveclass Dispatcher (5) {
 	|\label{line:rebec:knownrebecs}|knownrebecs { Server m1, m2, m3; }
 	msgsrv reqForMovie(Client client) {
-		byte selectedServer = ?(1, 2, 3);
+		|\label{line:rebec:non-det}|byte selectedServer = ?(1, 2, 3);
 		|\label{line:rebec:switchStart}|switch (selectedServer) {
 			|\label{line:rebec:reqForMovieStart}|case 1: m1.reqForMovie(client);
 			case 2: m2.reqForMovie(client);
@@ -901,9 +888,6 @@ main {
 	|\label{line:rebec:mainEnd}|Client c1(di):(),c2(di):(),c3(di):();
 }
 \end{lstlisting}  
-\TODO{MARJAN Page 8, Fig. 1: I couldn’t find an explanation of the number in parentheses 
-in the first line of a reactive class declaration. 
-}
 \caption{A simple Rebeca model}
 \label{fig:rebeca-example}
 \end{figure}
@@ -958,9 +942,8 @@ There are no shared variables among actors in Rebeca. Parameters in
 messages sent among actors are passed by value.  This is even the case
 if a reference to an actor is passed as a parameter; the sent
 reference is created as a shallow copy of the original reference,
-i.e., avoiding the creation of a new actor (e.g.,
-Fig.~\ref{fig:rebeca-example}, Line 
-\ref{line:rebec:reqForMovieStart}-\ref{line:rebec:reqForMovieEnd}).
+e.g., in Fig.~\ref{fig:rebeca-example} Line \ref{line:rebec:reqForMovieEnd} \texttt{Dispatcher} sends a request to the server \texttt{m3} and passes the reference to the client to \texttt{m3} as a parameter instead of passing a fresh copy of the client actor.
+
 %\TODO{"avoiding the creation of a new actor (e.g., Fig. 1, line 8)" => Is the correct 
 %line referenced? I am not sure why that line specifically illustrates why no new actor 
 %is 
@@ -2216,7 +2199,7 @@ The ABS language allows several programming paradigms and design
 patterns offering both a functional model as well as an
 object-oriented model.  Annotations allow  defining custom schedulers
 to ease the development of batch systems and workflows. The main goal
-of the Java~8 backend for ABS is to translate these models into
+of the Java~8 backend for ABS \footnote{Available at \url{https://github.com/vlad-serbanescu/abs-api-cwi/tree/LocalOnly}} is to translate these models into
 production code to be executed in a parallel or distributed
 environment. The challenge is to generate real memory structures and
 execution instances, while being aware of the possible resource
@@ -3099,55 +3082,57 @@ each actor. %It uses general garbage collection
 
 % Einar
 \section{Discussion}\label{sec-discussion}
-The four languages reviewed here start out from the same
-programming model, the active object paradigm, but they address
-different challenges, motivated in the context of different design
-goals. We review below the different trade-offs that have been made in their design.
+
+\subsection{Design Trade-Offs in Active Object Languages}
+\label{sec:design-trade-offs}
+
+The four languages reviewed here start out from the same programming
+model, the active object paradigm, but address different challenges,
+motivated in the context of different design goals. We review the
+different design trade-offs.
 
 \noindent
 {\small \sf
-\begin{tabular}{|p{15mm}|p{25.5mm}|p{25.5mm}|p{25.5mm}|p{25.5mm}|}
+\begin{tabular}[t]{|@{\,\,}p{15mm}@{\,\,}|@{\,\,}p{27mm}@{\,\,}|@{\,\,}p{29mm}@{\,\,}|@{\,\,}p{29mm}@{\,\,}|@{\,\,}p{28.5mm}@{\,\,}|}
 \hline
 & \textbf{Rebeca} & \textbf{ABS} & \textbf{ASP/ProActive} & \textbf{Encore}\\\hline
-Objective&$\bullet$ Actor-based mo\-deling language\newline $\bullet$
-           Simple computation and communication model\newline
-           $\bullet$ No dynamic object creation&$\bullet$ Active object-based
+\textbf{Objective}&$\bullet$ Actor-based  modeling  language\newline $\bullet$
+           Simple compu\-tation and communication model\newline
+           $\bullet$ No dynamic\newline object creation&$\bullet$ Active object\newline
                                                  modeling
                                                  language
                                                  \newline $\bullet$
-                                                 Concurrent object
-                                                 groups \newline
+                                                 COGs \newline
                                                  $\bullet$ Combines
                                                  functional and
                                                  imperative features
                                                  \newline $\bullet$ 
                                                  Advanced
                                                  communication
-                                                 model&$\bullet$  Active object
-                                                        programming
+                                                 model&$\bullet$  Active object\newline 
+                                                        programming\newline 
                                                         language\newline
                                                  $\bullet$ Multiactive objects \newline
                                                                                 $\bullet$
-  Designed for distribution&$\bullet$  Active object
-                                                        programming
+  Designed for\newline  distribution&$\bullet$  Active object\newline 
+                                                        programming\newline 
                                                         language
                                                                                 \newline
                                                                                 $\bullet$
-  Designed for scalability\\\hline 
-Degree of synchronization&$\bullet$ Asynchronous message
+  Designed for\newline  scalability\\\hline 
+\textbf{Degree of\newline synchro\-nization}&$\bullet$ Asynchronous \newline message
                            passing\newline $\bullet$ No
-                           synchronization\newline \newline
+                           synchro-\newline nization\newline 
                                                           $\bullet$
                            Single-threaded run-to-completion of
-                           requests per actor&$\bullet$ Asynchronous
-                                            method calls with first-class
+                           requests per\newline  actor&$\bullet$ Asynchronous \newline
+                                            method calls with \newline first-class
                                             futures \newline
-                                            $\bullet$ Advanced
+                                            $\bullet$ Advanced\newline 
                                             synchronization\newline
-                                            $\bullet$ Cooperative
-                                            scheduling interleaves
-                                               requests per concurrent
-                                               object group &$\bullet$
+                                            $\bullet$ Cooperative 
+                                            sche\-duling interleaves
+                                               requests per COG &$\bullet$
                                                               Implicit
                                                               futures
                                                               \newline
@@ -3160,69 +3145,72 @@ Degree of synchronization&$\bullet$ Asynchronous message
                                                           objects
                                                               allow
                                                               parallel
-                                                          treatment of
+                                                          treat-
+                                                                  \newline ment of
                                                           requests&$\bullet$
   ABS-like cooperative scheduling \newline $\bullet$ Future chaining
-\newline $\bullet$ Multiactive
+\newline $\bullet$ Multiactive\newline
                                                           objects
                                                                     using
                                                                     parallel
                                                                     combinators
-                                                                    for
+                                                                    for\newline
                                                                     data parallelism                                                              
   \\\hline 
-Degree of transparency&$\bullet$ Hides asynchronous message
-                        passing\newline $\bullet$ Hides scheduling and message queues&$\bullet$ Hides object representation,
-                         scheduling, and message queues
+\textbf{Degree of\newline transpa\-rency}&$\bullet$ Hides\newline
+                                           asynchronous message
+                        passing\newline $\bullet$ Hides\newline scheduling and\newline message queues&$\bullet$ Hides object\newline  representation,
+                         scheduling, and\newline  message queues
                   \newline $\bullet$ Exposes
-                         futures and 
-                         release points&$\bullet$ Hides futures and distribution
+                         futures\newline and 
+                         release points&$\bullet$ Hides futures and\newline distribution
                                          \newline $\bullet$
-                                         Exposes parallel treatment of
+                                         Exposes parallel\newline treatment of\newline
                                  requests&$\bullet$ Hides scheduling
-                                           and low-level
+                                           and low-level\newline 
                                            parallelism \newline $\bullet$ Exposes
                          futures,
-                         release points, and parallel data flow\\\hline 
-Degree of data sharing&$\bullet$ No shared values\newline $\bullet$
-                        All arguments passed by copy, even actor
-                        references&$\bullet$ Functional terms passed
-                                    by copy \newline $\bullet$ No
+                         release  points, and parallel data flow\\\hline 
+\textbf{Degree of\newline data sharing}&$\bullet$ No shared values\newline $\bullet$
+                        All arguments\newline  passed by copy,\newline  even actor
+                        refer-\newline ences&$\bullet$ No
                                     shared values \newline $\bullet$ Objects
-                                 passed by reference\newline $\bullet$
-                                    Fields are private&$\bullet$ No
+                                 passed by\newline reference\newline
+                                              $\bullet$ Functional
+                                              values\newline passed
+                                    by  copy \newline $\bullet$
+                                    Private fields&$\bullet$ No
                                                         shared
                                                         values\newline
                                                           $\bullet$ Active
-                                                        objects passed
+                                                        objects pas\-sed
                                                           by
                                                         reference\newline 
                                                         $\bullet$ Passive
-                                                        objects passed
+                                                        objects\newline passed
                                                           by
                                                         copy&$\bullet$
                                                               Active
                                                               objects
-                                                              are
-                                                              passed
+                                                              pas\-sed
                                                               by
                                                               reference\newline
                                                               $\bullet$
-  Capability types control data sharing for passive objects\\\hline 
-Implemen\-tation and tooling support&$\bullet$ Model checking&$\bullet$
+  Capability types\newline control data sharing\newline for passive objects\\\hline 
+\textbf{Implemen\-tation and\newline tooling support}&$\bullet$ Model checking&$\bullet$
                                                              Simulation\newline
                                                              $\bullet$ Wide
-                                                   range of analysis
+                                                   range of\newline  analysis
                                                    tools\newline $\bullet$  Code generation&
                                                           $\bullet$
                                                         Implemented as
-                                                          a Java
+                                                          a\newline  Java
                                                                                              library\newline
                                                                                              $\bullet$
                                                           Supports
-                                                                                             distributed
+                                                                                             distri-\newline buted
                                                                                              architectures&$\bullet$
-  Runtime system written in C\newline $\bullet$ Supports multicore architectures\\\hline 
+  Runtime system\newline  written in C\newline $\bullet$ Supports multi-\newline core architectures\\\hline 
 \end{tabular}}
 
 
@@ -3351,7 +3339,8 @@ backend for ABS, illustrating the possibility to cross-translate an active objec
 language into another one.
 
 
-\subsection*{Other high-level concurrent languages}
+\subsection{Other High-level Concurrent Languages}
+\label{sec:other-high-level}
 
 There are several other programming languages that introduce
 high-level abstractions for concurrent programming that deviate from
@@ -3378,61 +3367,82 @@ In Panini \cite{LinRajan13} concurrent behavior is specified by
 composing modules (called ``capsules'') that by themselves behave
 sequentially. The granularity of concurrency is more coarse-grained
 than in active object languages and there are no explicit
-synchronization statements. 
+synchronization statements.
 
-
-Akka~\cite{haller2009scala,AkkaBook}  is a
-scalable library for implementing actors on top of Java and Scala. 
-Akka Typed Actors is an implementation of the Active Objects pattern. 
+Akka~\cite{haller2009scala,AkkaBook} is a scalable library for
+implementing actors on top of Java and Scala.  Akka Typed Actors is an
+implementation of the Active Objects pattern.
 %
 %\subsubsection*{Active object languages with industrial support: Akka and Orleans}
-%Based on the overview presented in this paper, it seems interesting to focus on two 
-%modern industrial languages based on the active object paradigm. We review the two 
-%frameworks 
-%Akka and Orleans, from the point of view of the languages presented here. The success of 
-%these two  frameworks show the practical usability of the active object programming model 
-%and its adequacy to program large scale industrial software.
+%Based on the overview presented in this paper, it seems interesting
+% to focus on two modern industrial languages based on the active
+% object paradigm. We review the two frameworks Akka and Orleans, from
+% the point of view of the languages presented here. The success of
+% these two frameworks show the practical usability of the active
+% object programming model and its adequacy to program large scale
+% industrial software.
 %
 %\paragraph{Akka}
-%Akka~\cite{haller2009scala,AkkaBook} is an actor-based message-driven runtime for managing concurrency, elasticity and resilience on the Java Virtual Machine with support for both Java and Scala. 
-%It is an open core development platform for Akka distributed systems runtime, play web framework, lagom microservices framework, and Apache Spark in-memory compute engine for Java and Scala. 
-All interactions of actors in Akka use purely message passing and everything is asynchronous. 
-%Programmers need to provide a pattern match for all messages that it can accept. 
-%To be able to handle unknown messages, a default case is required. 
-The way actors interact is the same whether they are on the same host or separate hosts, communicating directly or through routing facilities, running on a few threads or many threads, etc. Such details may be altered at deployment time through a configuration mechanism, allowing a program to make use of more (powerful) servers without modification. 
-Akka is ideally suited for hybrid cloud architectures and the elastic scaling of cloud platforms. In an experiment with Google, it only took 4 minutes to start a 1000 node Akka cluster on Google Compute Engine (GCE), which included the time to start the GCE instances. 
-%In Akka, actors form a tree with actors being parents to the actors they've created. As a parent, the actor is responsible for handling its children's failures (supervision), forming a chain of responsibility. 
-%Accordingly, 
-Besides, Akka supports error handling. 
-It embraces the reality of unplanned errors and adopts a pragmatic ``Let It Crash'' philosophy using supervision and self-healing to ensure impacted components are reset to a stable state and restarted upon failure.
+%Akka~\cite{haller2009scala,AkkaBook} is an actor-based message-driven
+% runtime for managing concurrency, elasticity and resilience on the
+% Java Virtual Machine with support for both Java and Scala.  It is an
+% open core development platform for Akka distributed systems runtime,
+% play web framework, lagom microservices framework, and Apache Spark
+% in-memory compute engine for Java and Scala.
+All interactions of actors in Akka use only message passing and all
+communication is asynchronous.
+% Programmers need to provide a pattern match for all messages that it
+% can accept.  To be able to handle unknown messages, a default case
+% is required.
+Actors interact identically, regardless whether they are on the same
+or separate hosts, communicating directly or through routing
+facilities, running on a few threads or many threads, etc. Such
+details may be altered at deployment time through a configuration
+mechanism, allowing a program to make use of more (powerful) servers
+without modification.  Akka is ideally suited for hybrid cloud
+architectures and the elastic scaling of cloud platforms. In one
+experiment it only took four minutes to start a 1000-node Akka cluster
+on Google Compute Engine (GCE), including the time to start the GCE
+instances.
+% In Akka, actors form a tree with actors being parents to the actors
+% they've created. As a parent, the actor is responsible for handling
+% its children's failures (supervision), forming a chain of
+% responsibility.  Accordingly, Besides, Akka supports error handling.
+% It embraces the reality of unplanned errors and adopts a pragmatic
+% ``Let It Crash'' philosophy using supervision and self-healing to
+% ensure impacted components are reset to a stable state and restarted
+% upon failure.
 
 %\paragraph{Orleans}
-Orleans~\cite{BykovGKLPT11,BernsteinB16} is an actor framework developed by Microsoft 
-research and used in several 
-Microsoft products including online games relying on a Cloud infrastructure. The 
-strength of the framework is the runtime 
-support for the creation, execution, and state management of actors. From a language 
-point of view, Orleans does not provide a publicly available formal semantics 
-nor an exhaustive and precise description of the behaviour of the programming 
-primitives. Orleans relies on a non-uniform active object model with copies of 
-transmitted passive objects, like ASP. The semantics of future is based on continuations 
-and relies on an \emph{await} statement similar to the one of ABS and Encore but there is 
-no primitive for strictly waiting for a future. Consequently the programmer has to 
-systematically handle 
-the modification of the object state between the \emph{await} and the future access. This 
-semantics for future access is similar to the way futures are handled in general in Akka. 
+Orleans~\cite{BykovGKLPT11,BernsteinB16} is an actor framework
+developed at Microsoft research and used in several Microsoft
+products, including online games relying on a cloud
+infrastructure. Its strength is the runtime support for the creation,
+execution, and state management of actors.
+% From a language point of view, Orleans does not provide a publicly
+% available formal semantics nor an exhaustive and precise description
+% of the behaviour of the programming primitives.
+Orleans relies on a non-uniform active object model with copies of
+transmitted passive objects, like ASP. The semantics of futures is
+based on continuations and relies on an \ec{await} statement similar
+to that of ABS and Encore, however, there is no primitive for
+cooperative scheduling. Consequently, the programmer has to take care
+of possible modifications of the object state between the \ec{await}
+and the future access. This semantics for future access is similar to
+the way futures are handled in general in Akka.
 %
-The runtime support provided by the Orleans framework is impressive. In particular the 
-support for the creation, activation, and deactivation of active objects depending on the 
-application needs is one of the original contribution of the Orleans runtime. This is why 
-the model is called a ``\emph{virtual actor model}''.
-Orleans 
-also focuses on the efficient execution of active objects including optimised 
-serialisation 
-for efficiently transmitting data between actors, and support for scaling both in terms 
-of distribution and in terms of the number of active objects that can interact within a 
-single application. The Orleans runtime also supports the application in the management 
-of resources, storage, errors, failures, and recovery.
+There is extensive runtime support in the Orleans
+framework. Importantly, it supports the efficient creation,
+activation, and deactivation of active objects governed by the
+requirements of an application. This is why Orleans is called a
+\emph{virtual actor model}.  Orleans also focuses on efficient
+execution of active objects, including optimized serialization for
+inter-actor data transmission. Both, object management and data
+transmission, scale in terms of distribution and in terms of the
+number of active objects that can interact within a single
+application.
+% The Orleans runtime also supports the application in the management
+% of resources, storage, errors, failures, and recovery.
 
 \section{Lessons Learned and Conclusion}\label{sec-conclusion}
 
@@ -3441,10 +3451,6 @@ of resources, storage, errors, failures, and recovery.
 %}
 
 %\KIKO{
-
-
-
-
 
 With the advent of many-core computers and large-scale cloud
 computing, the active object paradigm evolved out of actor-based
