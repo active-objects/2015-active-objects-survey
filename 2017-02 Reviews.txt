@@ -408,6 +408,8 @@ DONE BY LUDO: all lines 6-8 could be cited here , this is what we did
 Do all languages have support for distribution? I would expect this to have a large impact on the implementation and definitely be a very relevant dimension along which the different languages can be classified.
 --> VLAD
 ++ I agree ; I thought it was already clearly said
+++ we added this as an introduction of the dimensions in the implementation section. It is indeed a good criteria of comparison even if we did not feel a lot of discussion was necessary, or more precisely the impact of distribution on the implementation was already mentioned when necessary we however made sure that the distributed nature of the implementation is clearly mentionned for the implementation we provide.
+++ concerning the design of the language, the support for distribution is not a dimension of conception for all the languages: typically the semantics of ABS is supposed to be independent of the distributed nature ; of course this is not the case of ASP and somehow this aspect has a consequence but it might be difficult to express it as a dimension of comparison of the languages.
 
 "The implementation of a programming language can be from scratch with a full compiler tool chain or it can be implemented as an API inside an established language. A third way to implement an active object language is to cross-translate it to another language with a code generation backend" => this is another implementation dimension that is hidden in the text and might be made explicit in the discussion.
 -->> {4}

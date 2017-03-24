@@ -2102,16 +2102,27 @@ implementations.
 Whenever meaningful, we show experiments illustrating under which
 conditions an implementation outperforms existing solutions.
 
-
-\TODO{Do all languages have support for distribution? I would expect this to have a large 
-impact on the implementation and definitely be a very relevant dimension along which the 
-different languages can be classified.\\
---> VLAD (also check what was there ; not sure this should be cited as a new dimension 
-but it could be part of data sharing and object referencing)\\
-To the best of my knowledge : Encore and Rebeca has no support for distribution ; 
-ProActive has ; ABS is a bit more complicated depending on the backend}
+%
+%\TODO{Do all languages have support for distribution? I would expect this to have a 
+%large 
+%impact on the implementation and definitely be a very relevant dimension along which the 
+%different languages can be classified.\\
+%--> VLAD (also check what was there ; not sure this should be cited as a new dimension 
+%but it could be part of data sharing and object referencing)\\
+%To the best of my knowledge : Encore and Rebeca has no support for distribution ; 
+%ProActive has ; ABS is a bit more complicated depending on the backend}
 
 \subsection{Dimensions of Comparison between Implementations}
+
+The fact that an implementation has support for distribution or not has a strong 
+influence on the different dimensions, for example concerning the possibility to share 
+data between active objects, but also concerning garbage collection. An active object 
+being an independent entity  from the point of view of thread existence and scheduling, 
+it is in several language considered as the unit of distribution. Among the languages 
+presented here, ASP is clearly targeting distributed implementations, and some 
+distributed implementations of ABS exist. Rebeca and Encore implementations do not 
+support distribution for the moment.
+
 
 \paragraph{Thread creation and scheduling}
 
@@ -2164,6 +2175,7 @@ information between active objects is an open challenge and different
 kinds of data sharing strategies have been proposed in active object
 implementations.
 
+
 \paragraph{Error handling} 
 
 % Among non-functional features an active object implementation can
@@ -2204,8 +2216,9 @@ production code to be executed in a parallel or distributed
 environment. The challenge is to generate real memory structures and
 execution instances, while being aware of the possible resource
 limitations, communication bottlenecks, latencies and performance
-issues, as these issues are not easily observable at a modeling level.
-\TODO{VLAD: ADD ABS repository?}
+issues, as these issues are not easily observable at a modeling level. The version of the 
+Java 8 backend for ABS presented below does not support distributed execution.
+
 
 \paragraph{Thread creation and scheduling}
 
@@ -2227,21 +2240,22 @@ performance of previous Java backends for ABS.
 
 \paragraph{Cooperative scheduling of active objects using Java 8}
 
-\TODO{The comparison between the Java 8 backend and the old Java backend feels out of 
-place. From the text I gather that the Java 8 backend seems to be a strict upgrade to the 
-old Java backend. The performance comparison between both does not seem relevant to this 
-article.\\
-	The comparison between the Java 8 and ProActive backend for ABS seems much more 
-	relevant as it highlights another design trade-off.\\
-	-->> VLAD\\
-	Note: I would rather  explain why the old Java backend is representative of a 
-	significant set of implementations of Active objects (you can include local ProActive 
-	here)
-	\\
-%	Error handling and garbage collection are two dimensions that are not discussed for 
-%	the Java 8 backend.\\
+%\TODO{The comparison between the Java 8 backend and the old Java backend feels out of 
+%place. From the text I gather that the Java 8 backend seems to be a strict upgrade to 
+%the 
+%old Java backend. The performance comparison between both does not seem relevant to this 
+%article.\\
+%	The comparison between the Java 8 and ProActive backend for ABS seems much more 
+%	relevant as it highlights another design trade-off.\\
 %	-->> VLAD\\
-}
+%	Note: I would rather  explain why the old Java backend is representative of a 
+%	significant set of implementations of Active objects (you can include local ProActive 
+%	here)
+%	\\
+%%	Error handling and garbage collection are two dimensions that are not discussed for 
+%%	the Java 8 backend.\\
+%%	-->> VLAD\\
+%}
 
 New features of Java 8 allow method calls to be wrapped into
 lightweight lambda expressions such that they can be put into a
@@ -2429,7 +2443,8 @@ the Java's garbage collector.
 
 The ProActive library\footnote{Available at \url{https://github.com/scale-proactive}} is 
 completely written in standard Java and provides an
-implementation for the ASP programming model.  By default, it uses 
+implementation for the ASP programming model targeting distributed applications.  By 
+default, it uses 
  Java's remote method invocation package to implement the communication
 layer between active objects, although other communication protocols
 are possible.  This fact accounts for most of the implementation
@@ -2856,7 +2871,8 @@ and the communication rate is high.
 
 The Encore implementation consists of two major components, a
 source-to-source compiler (from Encore to C) implemented in Haskell,
-and the runtime system, implemented in C.  The Encore runtime stack
+and the runtime system, implemented in C. The runtime provides efficient parallel 
+execution but has no support for distribution.  The Encore runtime stack
 (Fig.~\ref{fig:encore:stack}) is built around the runtime used by the
  Pony language
 (PonyRT) \cite{ClebschDBM15}, which includes an actor library and garbage collection for
@@ -2866,7 +2882,8 @@ passive objects~\cite{clebsch2015ownership}. The Encore runtime
 \parT{} abstraction, a task library, and the notion of \emph{encore
 threads} (explained below). These features are part of the runtime and
 are therefore written in C.  On top of these libraries rests the
-Encore Standard Library, which is written in Encore itself.\TODO{add a ref to encore 
+Encore Standard Library, which is written in Encore itself.
+\TODO{add a ref to encore 
 public repository}
 
 \begin{figure}[t]
