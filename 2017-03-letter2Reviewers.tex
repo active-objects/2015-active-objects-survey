@@ -1,0 +1,256 @@
+\documentclass{article}
+\usepackage{a4wide}
+\title{Reply to reviewers\\
+ACM CSUR-2016-0577 Manuscript: \\"A Survey of Active Object Languages" }
+
+\begin{document}
+
+\maketitle
+\noindent
+Dear Editor,
+
+Please find the revision of our submission, according to the minor comments made by the 
+anonymous reviewers.
+
+We would first like ot thank the reviewers for their analysis of our paper, and the 
+advices that they made to us
+
+We detail below the major changes that we made in this revision. After this, we will 
+review in the next pages the comments of the reviewers and explain how we addressed them. 
+\emph{Comments that could be addressed trivially and exactly as suggested by the 
+reviewers are omitted}.
+\bigskip
+
+In this new version, you will find the major improvements below:
+\begin{itemize}
+\item A discussion section has been added to the paper, it features: Feedback on the 
+comparative study of the languages, a table summarizing the features of the different 
+languages.
+\item Reviewers mentioned the following points missing to the dimensions of comparison: 
+\begin{itemize}
+\item uniform versus non-uniform models: this has been integrated to the ``degree of data 
+sharing'' aspect.
+\item Message ordering: this has been integrated with synchronisation aspects as it is 
+related to the synchronisation that occurs during communications.
+\item Distribution: We added this aspect in the discussion on implementation, as a 
+prerequisite to the implementation choices. We did not want to put this criteria as a 
+generic dimension because it influences the design of some languages like ASP but some 
+others like ABS have both local and distributed implementations.
+\item The implementation of a programming language can be from scratch with a full 
+compiler tool chain or it can be implemented as an API: we agree that this is a major 
+point of comparison, it was already mentioned but not highlighted enough. We discuss this 
+point in detail in the last paragraph of the new section 4.1. We discuss this aspect here 
+because we believe that it is a point where it is really interesting to compare the 
+different approaches even if it could also be added as a normal dimension.
+\end{itemize}
+\item Discussion on  related languages that were not mentioned for historical reasons has 
+now be moved to Section 4.2. As suggested by the reviewers, Akka and Orleans are 
+discussed in details now, in this new Section 4.2.
+\item Comparison between Java8 and the previous Java backend for ABS has been removed, we 
+focus now on the comparison between ProActive and Java8 backends.
+\item Introduction of Section 2.1 has been refocused and greatly shortened.
+
+\end{itemize}
+
+
+\noindent
+Best regards,
+\newline
+\noindent
+Frank de Boer, Vlad Serbanescu,
+	Reiner H\"ahnle,
+	Ludovic Henrio, Justine Rochas,
+	Crystal Chang Din, Einar Broch Johnsen,
+	Marjan Sirjani,
+	Ehsan Khamespanah,
+	Kiko Fernandez-Reyes, and Albert Mingkun Yang.
+
+\newpage
+\section*{Annex 1: response to first reviewers' comments}
+As explained above, we only quote and reply to text requiring changes that we did not 
+address in a straightforward manner:
+
+\begin{quote}
+This is a well-structured, readable paper on an interesting topic. Languages and language 
+concepts for concurrent and distributed systems are an important research area. In 
+general, the paper does a good and structured job to introduce the different languages. 
+Less structured is the implementation section (Section 3) that — on the other hand — 
+sketches interesting technical aspects.
+\end{quote}
+Implementation section is indeed a bit more complex to organise, however we tried to 
+improve its readability and we believe that the fact that the old versus new java 
+experiment was removed makes this section easier to read.
+
+\begin{quote}
+The paper compares relatively similar languages. This is good for readers that want to 
+engineer another language in that class or get a high-level overview. The presentation is 
+less suitable for readers that are interested in comparing these (research) languages to 
+programming languages or libraries that are already in wider practical use, like e.g. 
+Erlang or the Akka library. A more practical oriented reader would also benefit from 
+information about experiences that were made with the languages.
+\end{quote}
+The new Section 4.2 is specifically focused on such comparison. We think that the 
+background on research languages gives us an interesting and formally defined point of 
+view to analysed those languages.
+
+\begin{quote}
+Treating the languages one after the other, and for each language the aspects of 
+comparison, has the advantage that the reader gets a fairly clear introduction into the 
+languages. However, this way, the comparison between the languages remains a bit shallow 
+in the sense of „this language does it this way, the other language does it this way“. A 
+„deeper“ language comparison of the style „what can I do with this language, that I can’t 
+do with another one“ or „how complex is it to express a certain program pattern in 
+language X that can easily be expressed in language Y“ is missing. 
+\end{quote}
+The new section 4.1 better compares the languages
+
+\begin{quote}
+	In general, the citations are precise and relevant. For a survey paper, however, a 
+	more 
+substantial related work section would be advisable that provides a more comprehensive 
+overview of languages with similar features. This applies both to programming languages 
+as well as to papers on formal analysis (e.g. the book „A discipline of multiprogramming“ 
+by Jayadev Misra is closely related to the topic, but not mentioned as a point of 
+comparison in the missing related work section. 
+\end{quote}
+TODO TODO
+
+\begin{quote}
+ Page 3, beginning of 2.1: This is a too broad presentation starting by high-level 
+languages in general and ALGOL etc. Focus the history on the relevant concepts.
+\end{quote}
+We reduced the 2 first paragraphs into a couple of introductory sentences.
+
+
+\begin{quote}
+Page 12: It took me some time to understand the concurrency model of ABS. It is 
+explained fairly low-level. Shouldn’t one first say that COGs process concurrently and 
+communicate via messages (like actors) and then talk about the concurrency within COGs 
+based on preemptively scheduled tasks. Starting the explanation with references to 
+interleaving semantics (page 12 top) was misleading to me. 
+\end{quote}
+Indeed, we rewrote this part adopting this approach. See the beginning of the language 
+description.
+
+\begin{quote} Page 18: I had problems to understand the language description of Encore. 
+It says: 
+„Active objects encapsulate passive objects, and …“ and later: „In Encore, passive 
+objects may be shared between active objects …“ The wording sounds contradictory to me. I 
+don’t understand what encapsulation of an objects means if it is shared. Maybe the 
+explanation can be improved.
+\end{quote}
+We explain this point in detail now.
+See the new first paragraph of encore language description.
+
+
+\begin{quote}
+ A related work section going beyond the compared languages would be advisable.
+\end{quote}
+This is now the purpose of the new section 4.2.
+
+\section*{Annex 2: response to second reviewers' comments}
+
+
+Section 2.1, page 5:
+
+You write: "We have also made sure that the four languages discussed in detail have left 
+the experimental stage and are available in stable, public distributions"
+
+I was unable to find a stable, public distribution of the Encore language online. 
+Moreover, the present paper does not provide a URL pointing to such a distribution.
+-->> KIKO
+TODO TODO TODO
+
+
+\begin{quote}
+	Section 2.3.3, page 15:
+In the first ProActive program that is shown I was wondering how generic types are 
+handled. For instance, assuming class "O" has a generic type parameter, how would the 
+creation of a new active object look like in that case?
+\end{quote}
+In fact, ProActive does not support the creation of futures or active objects for generic 
+types (they should be embedded in another object for example). We clarified this poitn by 
+adding the following text: ``The transparent creation of proxies 
+involves some restrictions: the  active 
+objects and futures cannot be of a primitive type or a generic type. If a future cannot 
+be created the call to an active object is performed synchronously.''
+
+\begin{quote}
+	Section 2.3.3, page 16:
+X On line 36 you write that "future references can safely be transmitted between 
+activities". However, it is not clear whether this also holds for remote activities. 
+Futures as they are implemented in Java, for example, are not serializable.
+\end{quote}
+ProActive has its own implementation of futures (implemented before the adoption of 
+futures by Java) with our own serialization procedure, this allows us to implement 
+transparently first-class futures. We added the following text for clarification:
+``The ProActive middleware handles transparently the 
+future value transmission~\cite{HKRZ:Coregrid:2010} (a ProActive future is 
+serializable).''
+
+\begin{quote}
+	Section 2.3.4, page 19:
+On line 51 you write that the "trait provides the interface-like feeling of OOP languages 
+[..]" The usage of OOP here is not entirely appropriate: the comparison breaks down 
+immediately when talking about prototype-based OOP languages like JavaScript. Therefore, 
+the formulation should be adjusted to be more careful, and perhaps talk about "the 
+interface-like feeling of statically-typed, Java-like OOP languages".
+\end{quote}
+We clarified this explanation by explicitly referring to statically typed OO languages.
+
+\begin{quote}
+	 A discussion of Orleans, an important and 
+influential active object language is missing, including a citation of the following main 
+references:
+
+@InProceedings\{BykovGKLPT11,
+\ldots
+\}
+
+@Article\{BernsteinB16,
+\ldots
+\}
+
+
+If not, what important details/ideas/analyses are missing?: One of the most important and 
+influential active object languages, Orleans from Microsoft, which was originally started 
+as a research project in Microsoft Research, is not discussed. This is definitely an 
+important discussion that is currently missing.
+
+Orleans is also significantly more mature compared to other discussed languages like 
+Encore. Orleans has been used to build a number of production services, including the 
+back-end services of popular games such as Halo and Gears of War. Also, Orleans has been 
+available as open source since January 2015.
+
+Moreover, Orleans presents a unique point in the design space of active object languages, 
+by virtualizing actors, and thereby simplifying distributed resource management. None of 
+the presented active object languages in the paper is similar to Orleans in this respect.
+
+For these reasons I believe that Orleans is much better suited as a representative active 
+object language compared to Encore; Encore is such a recent project that I was unable to 
+find a publicly accessible distribution.
+
+\end{quote}
+WE agree that Orleans is a language that should be mentioned in this paper and that we 
+should have provided a precise description of its features.
+We thus added a presentation of Orleans in the new section on related languages 
+(Section 4.2).
+
+We chose to present Encore for mainly two reasons. First it 
+features interesting new features for an active object language from a program language 
+semantic point of view: future chaining, parallel combinators, and the 
+non-uniform object model is handled in an interesting manner (by the capabilities). The 
+second reason is that 
+Encore features a formally defined operational semantics. 
+In this paper we choose to focus on languages with a precisely defined (formal) semantics 
+and on the  semantics of the programming language, in this context we believe 
+that Encore is more adapted here. 
+
+
+Additionally,  the publicly available repository of Encore is now referred in the 
+text.
+
+
+
+\end{document}
+

@@ -1638,7 +1638,8 @@ the future value is actually needed and, in particular, future
 references can safely be transmitted between activities without
 requiring any additional synchronization, which limits blocking
 synchronization leading to deadlocks. The ProActive middleware handles transparently the 
-future value transmission~\cite{HKRZ:Coregrid:2010}. Deadlocks can also be removed
+future value transmission~\cite{HKRZ:Coregrid:2010} (a ProActive future is serializable). 
+Deadlocks can also be removed
 by using multi-active objects especially with no limit or a soft limit
 of the number of threads. Specifically, when a thread enters
 wait-by-necessity, it is not counted in the soft thread limit of the
