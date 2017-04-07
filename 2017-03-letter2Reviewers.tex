@@ -151,13 +151,14 @@ This is now the purpose of the new section 4.2.
 \section*{Annex 2: response to second reviewers' comments}
 
 
-Section 2.1, page 5:
-
+\begin{quote}
+	Section 2.1, page 5:
 You write: "We have also made sure that the four languages discussed in detail have left 
 the experimental stage and are available in stable, public distributions"
 
 I was unable to find a stable, public distribution of the Encore language online. 
 Moreover, the present paper does not provide a URL pointing to such a distribution.
+\end{quote}
 -->> KIKO
 TODO TODO TODO
 
@@ -249,6 +250,271 @@ that Encore is more adapted here.
 
 Additionally,  the publicly available repository of Encore is now referred in the 
 text.
+
+\section*{Annex 3: response to second reviewers' comments}
+
+
+\begin{quote}
+	This article gives an overview of a number of active object languages and compares 
+	them 
+with respect to a number of design and implementation dimensions. The article starts of 
+by giving a brief history of the different active object and actor languages that served 
+as the foundation of the active object model. It then focusses on four languages that are 
+representative of the active object family, namely Rebeca, ABS, ASP and Encore. These 
+four languages are then described in detail according to a number of relevant design 
+dimensions, their formal semantics and tool support. Afterwards their implementations are 
+evaluated according to a another set of dimensions. 
+
+
+Point in favour:
+- The paper provides a detailed report on the different design choices made by the four 
+active object languages under discussion and classifies them along a number of relevant 
+dimensions. As a survey, this article is highly relevant as reference material for future 
+development of the active object paradigm.
+
+Point against:
+- I mostly agree with the presentation of the different design dimensions that are used 
+to classify the four different active object languages. However, I feel that the 
+trade-offs of the different design points along this plane are not always adequately 
+discussed. The paper often reads as a factual record of the four presented active object 
+languages with little discussion afterwards. More specifically, I was missing a section 
+with a summary table of the different design and implementation dimensions presented in 
+the article accompanied by a comparison of the different trade-offs of each of the design 
+choices.
+\end{quote}
+This has now been added in Section 4.1. This section contains both a discussion of the 
+different trade-offs and a table summarising the aspects of the different languages
+
+\begin{quote}
+	Overall I think the introduction is lacking in giving a general direction to the 
+article. Why are active object languages becoming important today? What will I learn from 
+reading this article regarding the situation of active object languages in the current 
+state of the art? How do the four languages under analysis fit within the larger 
+community of active object languages or actor languages in general?
+\end{quote}
+Indeed, we greatly improved the two first paragraphs of the introduction to address those 
+points, we also explained more carefully why we have chosen those languages.
+
+ \begin{quote}
+	”We start with Rebeca, which is closest to the original actor model" => What do you 
+mean with original actor model? [Hewitt 73] or [Agha 86]? During the late 70s and early 
+80s a number of variations on the actor model were developed, each with wide varying 
+semantics.
+\end{quote}
+We tried to be more specific now when referring to the classical/original actor models, 
+here we referred to the classical actor model [Agha 86] which we think is closer to 
+Rebeca.
+
+\begin{quote}
+	”It is interesting to notice that both of them (and, to a certain extent also ABS) 
+allow the programmer to depart from the pure actor model by providing local 
+multi-threading" => I definitely think this is an interesting point that could be 
+explored further. How does local multi-threading impact the safety guarantees provided by 
+the original model? However, I feel that this is a bit out of place in the introduction.
+\end{quote}
+We moved it to the discussion section (4.1) and expanded the discussion on this point.
+
+
+== 2. Active Object Languages ==
+== 2.1 A Brief History of Actor and Active Object Languages ==
+
+Historically, I would argue that ABCL is one of the first languages that combines object 
+oriented programming with asynchronous message passing and thus can be seen as the first 
+active object language. The term "active object" is even coined in [Yonezawa 86]. The 
+main distinction with the four languages discussed in the article is that ABCL implements 
+a "uniform object model" where every object is a concurrent object. This is in contrast 
+with the two-layer model (active vs passive objects) of later active object languages.
+-->>LUDO
+++ We added a ref to [Yonezawa 86] when introducing active objects in this section.
+++ Concerning uniform vs. non-uniform, we delay the discussion about this point to the 
+dimension definition, especially the data sharing aspect, and we mentionned the different 
+models at this point.
+TBD
+
+Also, actor languages were originally motivated within a artificial intelligence context. 
+It was only later that it was identified as a general purpose concurrency model [Agha 90] 
+because of the safety and liveness guarantees it provides.
+-->> FRANK: do we want to mention this???
+
+X ”unlike the original Actor model, in Rebeca the order of messages between any two 
+actors is preserved" => Again, what is the original actor model in this case? What does 
+it mean for the order to be preserved?
+++ DONE: removed the “Unlike”
+
+== Other high-level concurrent languages ==
+
+The concurrency model of AmbientTalk is based on the E Programming Language [Miller 2005] 
+which implements a communicating event-loop (CEL) actor model. Other than asynchronous 
+futures (called promises in E) its most distinguishing feature is that objects are passed 
+by eventual reference between actors rather then by copy. This helps support a POLA 
+(principle of least authority) style of programming, by facilitating the creation of many 
+small, object-level interfaces (each eventual reference acts as a new entry point to the 
+actor), rather than a single large actor-level interface. AmbientTalk's concurrency model 
+remains faithful to the communicating event-loop model of E but was designed as an 
+ambient-oriented programming (AmOP) language. It adds to the CEL model a number of new 
+primitives to handle disconnecting and reconnecting nodes in a network where connections 
+are volatile.
+-->> what are we supposed to do? copy-paste?
+-->> REINER
+++ DONE: I merged the old text with the new content which I shortened. Also added the 
+referece to E.
+
+== 2.2 Dimensions of Comparison between Languages ==
+
+I agree with the different design dimension presented in this section. I think they 
+provide a good basis along which active object languages can be classified. Two minor 
+things I am missing is what the message ordering guarantees and the message delivery 
+guarantees are for each individual language.
+
+-->> [LUDO] Even if it is not crucial here, I agree . I suggest to add “message ordering” 
+as a subpart of Synchronization, and a small sentence saying that all language guarantee 
+message delivery at least in their specification
+-->> ALSO ADD classification to language presentation
+
+== 2.3 Representative Examples of Active Object Languages ==
+
+I would have liked to see a summary table outlining the different design dimensions for 
+each of the discussed programming languages at the end of this section. This would also 
+be an ideal place to discuss the different trade-offs of these design choices.
+-->> {4}
+== 2.3.1 Rebeca ==
+Table I gives a good overview of the different variations of the Rebeca language. 
+However, some of the individual extensions are not properly motivated. Are the different 
+extensions orthogonal to each other or can they be combined? What are the trade-offs of 
+each design and how to they fit within the larger picture?
+-->> MARJAN see how you can handle this without spending half a page presenting all the 
+languages
+
+
+"Loops and periodic behavior are modeled by sending messages to oneself" => The downside 
+of using selfsending to implement loops is that these messages can be interleaved with 
+other messages from active objects not participating in the loop.
+-->>MARJAN
+
+"avoiding the creation of a new actor (e.g., Fig. 1, line 8)" => Is the correct line 
+referenced? I am not sure why that line specifically illustrates why no new actor is 
+created. I am assuming the creation of new actors is avoided because when passing a 
+reference to a rebec the active object and its associated runtime are not copied. Rather 
+a shallow copy of the reference is made.
+-->>MARJAN
+DONE BY LUDO: all lines 6-8 could be cited here , this is what we did
+
+== 3. Implementation of Active Objects ==
+
+Do all languages have support for distribution? I would expect this to have a large 
+impact on the implementation and definitely be a very relevant dimension along which the 
+different languages can be classified.
+--> VLAD
+++ I agree ; I thought it was already clearly said
+++ we added this as an introduction of the dimensions in the implementation section. It 
+is indeed a good criteria of comparison even if we did not feel a lot of discussion was 
+necessary, or more precisely the impact of distribution on the implementation was already 
+mentioned when necessary we however made sure that the distributed nature of the 
+implementation is clearly mentionned for the implementation we provide.
+++ concerning the design of the language, the support for distribution is not a dimension 
+of conception for all the languages: typically the semantics of ABS is supposed to be 
+independent of the distributed nature ; of course this is not the case of ASP and somehow 
+this aspect has a consequence but it might be difficult to express it as a dimension of 
+comparison of the languages.
+
+"The implementation of a programming language can be from scratch with a full compiler 
+tool chain or it can be implemented as an API inside an established language. A third way 
+to implement an active object language is to cross-translate it to another language with 
+a code generation backend" => this is another implementation dimension that is hidden in 
+the text and might be made explicit in the discussion.
+-->> {4}
+
+== 3.1 Dimensions of Comparison between Implementations ==
+
+X ”data race conditions" => Either "data races" or "race conditions".
+
+== 3.2 Java 8 Backend for ABS ==
+
+The comparison between the Java 8 backend and the old Java backend feels out of place. 
+From the text I gather that the Java 8 backend seems to be a strict upgrade to the old 
+Java backend. The performance comparison between both does not seem relevant to this 
+article.
+The comparison between the Java 8 and ProActive backend for ABS seems much more relevant 
+as it highlights another design trade-off.
+-->> VLAD
+[LUDO]Note: I would rather  explain why the old Java backend is representative of a 
+significant set of implementations of Active objects (you can include local ProActive 
+here)
+Else we could just remove the experiment if we feel this is better
+
+Error handling and garbage collection are two dimensions that are not discussed for the 
+Java 8 backend.
+-->> VLAD
+
+== 3.3 ProActive ==
+
+X ”acting like standard references types" => acting like standard reference types
+
+== 3.5 Encore ==
+
+When printed, figure 11 is hardly readable.
+--> KIKO
+IMPROVED
+== 4. Lessons Learned and Conclusion ==
+
+The conclusion states that it is essential to understand the trade-offs involved in the 
+design and implementation of active object languages. However, similar to the 
+introduction, I feel these are not adequately highlighted here. If I were to design a 
+novel active object language, how do I best navigate the design space presented in the 
+article? What are the lessons learned? I feel all the different puzzle pieces are there 
+but the bigger picture is missing.
+-->> {4}
+
+Additional Questions:
+Review's recommendation for paper type: Tutorial/ survey paper
+
+Should this paper be considered for a best paper award?: No
+
+Does this paper present innovative ideas or material?: No
+
+In what ways does this paper advance the field?: The paper provides a taxonomy along 
+which different active object languages can be evaluated in terms of design and 
+implementation. The paper gives a detailed overview of four languages that are 
+representative of the active object family, namely Rebeca, ABS, ASP and Encore, and 
+classifies them according to the presented taxonomy. As a survey, this paper is highly 
+relevant as reference material for future development of the active object paradigm.
+
+Is the information in the paper sound, factual, and accurate?: Yes
+
+If not, please explain why: 
+
+Rate how well the ideas are presented (very difficult to understand=1), very easy to 
+understand=5): 4
+
+Rate the overall quality of the writing (very poor=1), (excellent=5): 4
+
+Does this paper cite and use appropriate references?: Yes
+
+If not, what important references are missing?: 
+
+Should anything be deleted from or condensed in the paper?: Yes
+
+If so, please explain: The comparison between the Java 8 backend and the old Java backend 
+for ABS feels out of place. From the text I gather that the Java 8 backend seems to be a 
+strict upgrade to the old Java backend. The performance comparison between both does not 
+seem relevant to this article.
+
+Is the treatment of the subject complete?: No
+
+If not, what important details/ideas/analyses are missing?: I mostly agree with the 
+presentation of the different design dimensions that are used to classify the four 
+different active object languages. However, I feel that the trade-offs of the different 
+design points along this plane are not always adequately discussed. The paper often reads 
+as a factual record of the four presented active object languages with little discussion 
+afterwards. More specifically, I was missing a section with a summary table of the 
+different design and implementation dimensions presented in the article accompanied by a 
+comparison of the different trade-offs of each of the design choices.
+-->>{4}
+Please help ACM create a more efficient time-to-publication process: Using your best 
+judgment, what amount of copy editing do you think this paper needs?: Light
+
+Most ACM journal papers are researcher-oriented. Is this paper of potential interest to 
+developers and engineers?: Maybe
 
 
 
