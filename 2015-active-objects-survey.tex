@@ -572,7 +572,7 @@ There is a close relation between the design of a concurrent
 programming language and the degree of synchronization that can be
 expressed in it. Each language has a different set of synchronization
 primitives, even though for active object languages the choices are
-limited. In some languages (e.g. Rebeca), inspired by pure actors, there is no
+limited. In some languages, inspired by pure actors, there is no
 synchronization primitive: concurrent entities evolve in a completely
 asynchronous manner and there is no particular instruction waiting for
 some event to happen. The only synchronization between processes is
@@ -590,10 +590,9 @@ In active object languages, futures represent the result of
 asynchronous invocations. Usually a future access is a synchronization
 point. This kind of synchronization can make concurrent
 programming easier, as it ensures a sequential workflow upon which the
-programmer can rely. Synchronisation on futures can be explicit (e.g. ABS, Encore) or 
-implicit (e.g. ASP).
+programmer can rely. 
 
-Several active object languages support cooperative scheduling (e.g. ABS, Encore): a
+Several active object languages support cooperative scheduling: a
 thread can be suspended to handle another message\footnote{The terms
   \emph{message} and \emph{method call} are used interchangeably in
   the literature on active object languages, depending on the
@@ -606,7 +605,7 @@ be more efficient and less deadlock-prone.
 
 Another synchronisation constraint that exists  is related to message 
 ordering~\cite{CMT-DisComp96}. Ensuring an order of message reception, like 
-point-to-point FIFO (like in Rebeca) adds some synchronisation and can lead to a loss of 
+point-to-point FIFO adds some synchronisation and can lead to a loss of 
 efficiency. The 
 counterpart is the gain in program properties. Indeed, message ordering allows the 
 programmer to rely on some order of message delivery which simplifies programming. Often 
@@ -621,7 +620,7 @@ relying on a message ordering property.
 This aspect concerns the number and complexity of the programming
 abstractions a programmer has to know.  Some abstractions are made
 explicitly visible in the program and some are transparent (i.e.,
-hidden to the programmer). For example, if futures are transparent (like in ASP),
+hidden to the programmer). For example, if futures are transparent,
 then variables pointing to futures are not explicitly distinguished
 from other variables by a static type and 
 no explicit instruction is provided to access a future: the access is
@@ -667,16 +666,15 @@ favoring data copies with very few globally known and shared entities.
 
 Data sharing occurs between threads and is related to the question of which objects 
 are active.
-The first active object models were \emph{uniform} active object models (e.g. Rebeca) 
+The first active object models were \emph{uniform} active object models
 where all objects 
 were active with their own thread and only communicating by asynchronous method 
 invocations. Later on, active object models were designed with more focus on efficient 
 access to objects. Two additional models were proposed. First, \emph{non-uniform} active 
 object 
-models (e.g.ASP), where some objects are full-fledge active object with their own 
+models, where some objects are full-fledge active object with their own 
 threads, and 
-others are passive objects, i.e. standard objects. Second, concurrent object groups (e.g. 
-ABS)
+others are passive objects, i.e. standard objects. Second, concurrent object groups
 provide a different alternative where all objects are accessible from anywhere but the 
 objects in the same group share the same thread and are synchronously accessible.
 
@@ -3146,8 +3144,9 @@ different design trade-offs.
                            synchro-\newline nization\newline 
                                                           $\bullet$
                            Single-threaded run-to-completion of
-                           requests per\newline  actor&$\bullet$ Explicit 
-                           futures\newline$\bullet$ Asynchronous \newline
+                           requests per\newline  actor&$\bullet$ Asynchronous \newline
+                           method calls with \newline first-class
+                           futures \newline$\bullet$ Asynchronous \newline
                                             method calls with \newline first-class
                                             futures \newline
                                             $\bullet$ Advanced\newline 
@@ -3169,8 +3168,7 @@ different design trade-offs.
                                                               parallel
                                                           treat-
                                                                   \newline ment of
-                                                          requests&$\bullet$ Explicit 
-                                                          futures\newline$\bullet$
+                                                          requests&$\bullet$
   ABS-like cooperative scheduling \newline $\bullet$ Future chaining
 \newline $\bullet$ Multiactive\newline
                                                           objects
