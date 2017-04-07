@@ -572,14 +572,13 @@ There is a close relation between the design of a concurrent
 programming language and the degree of synchronization that can be
 expressed in it. Each language has a different set of synchronization
 primitives, even though for active object languages the choices are
-limited. In some languages, inspired by pure actors, there is no
+limited. In some languages (e.g. Rebeca), inspired by pure actors, there is no
 synchronization primitive: concurrent entities evolve in a completely
 asynchronous manner and there is no particular instruction waiting for
 some event to happen. The only synchronization between processes is
 due to the causal dependency created by the flow of messages.
 % In this case, a forged synchronization can be obtained by choosing
 % the set of messages an actor can handle at a given point in time.
-
 Many active object languages use futures as a synchronization
 mechanism.  A future represents a result that has not been computed
 yet. Once the result has been computed, it can be made available automatically
@@ -589,9 +588,10 @@ also block waiting for a future to be resolved.
 %
 In active object languages, futures represent the result of
 asynchronous invocations. Usually a future access is a synchronization
-point. This kind of explicit synchronization can make concurrent
+point. This kind of synchronization can make concurrent
 programming easier, as it ensures a sequential workflow upon which the
-programmer can rely.
+programmer can rely. Synchronisation on futures can be explicit (e.g. ABS, Encore) or 
+implicit (e.g. ASP).
 
 Several active object languages support cooperative scheduling (e.g. ABS, Encore): a
 thread can be suspended to handle another message\footnote{The terms
@@ -3146,7 +3146,8 @@ different design trade-offs.
                            synchro-\newline nization\newline 
                                                           $\bullet$
                            Single-threaded run-to-completion of
-                           requests per\newline  actor&$\bullet$ Asynchronous \newline
+                           requests per\newline  actor&$\bullet$ Explicit 
+                           futures\newline$\bullet$ Asynchronous \newline
                                             method calls with \newline first-class
                                             futures \newline
                                             $\bullet$ Advanced\newline 
@@ -3168,7 +3169,8 @@ different design trade-offs.
                                                               parallel
                                                           treat-
                                                                   \newline ment of
-                                                          requests&$\bullet$
+                                                          requests&$\bullet$ Explicit 
+                                                          futures\newline$\bullet$
   ABS-like cooperative scheduling \newline $\bullet$ Future chaining
 \newline $\bullet$ Multiactive\newline
                                                           objects
