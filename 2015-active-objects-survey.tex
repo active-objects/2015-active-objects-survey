@@ -593,7 +593,7 @@ point. This kind of explicit synchronization can make concurrent
 programming easier, as it ensures a sequential workflow upon which the
 programmer can rely.
 
-Several active object languages support cooperative scheduling: a
+Several active object languages support cooperative scheduling (e.g. ABS, Encore): a
 thread can be suspended to handle another message\footnote{The terms
   \emph{message} and \emph{method call} are used interchangeably in
   the literature on active object languages, depending on the
@@ -606,7 +606,8 @@ be more efficient and less deadlock-prone.
 
 Another synchronisation constraint that exists  is related to message 
 ordering~\cite{CMT-DisComp96}. Ensuring an order of message reception, like 
-point-to-point FIFO adds some synchronisation and can lead to a loss of efficiency. The 
+point-to-point FIFO (like in Rebeca) adds some synchronisation and can lead to a loss of 
+efficiency. The 
 counterpart is the gain in program properties. Indeed, message ordering allows the 
 programmer to rely on some order of message delivery which simplifies programming. Often 
 some order of message delivery is necessary for the execution of the application, 
@@ -620,7 +621,7 @@ relying on a message ordering property.
 This aspect concerns the number and complexity of the programming
 abstractions a programmer has to know.  Some abstractions are made
 explicitly visible in the program and some are transparent (i.e.,
-hidden to the programmer). For example, if futures are transparent,
+hidden to the programmer). For example, if futures are transparent (like in ASP),
 then variables pointing to futures are not explicitly distinguished
 from other variables by a static type and 
 no explicit instruction is provided to access a future: the access is
@@ -666,13 +667,16 @@ favoring data copies with very few globally known and shared entities.
 
 Data sharing occurs between threads and is related to the question of which objects 
 are active.
-The first active object models were \emph{uniform} active object models where all objects 
+The first active object models were \emph{uniform} active object models (e.g. Rebeca) 
+where all objects 
 were active with their own thread and only communicating by asynchronous method 
 invocations. Later on, active object models were designed with more focus on efficient 
 access to objects. Two additional models were proposed. First, \emph{non-uniform} active 
 object 
-models, where some objects are full-fledge active object with their own threads, and 
-others are passive objects, i.e. standard objects. Second, concurrent object groups 
+models (e.g.ASP), where some objects are full-fledge active object with their own 
+threads, and 
+others are passive objects, i.e. standard objects. Second, concurrent object groups (e.g. 
+ABS)
 provide a different alternative where all objects are accessible from anywhere but the 
 objects in the same group share the same thread and are synchronously accessible.
 
