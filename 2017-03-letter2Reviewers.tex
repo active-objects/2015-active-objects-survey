@@ -395,26 +395,44 @@ be an ideal place to discuss the different trade-offs of these design choices.
 \end{quote}
 Section 4.1 now presents a summary table and discusses the different trade-offs
 
-== 2.3.1 Rebeca ==
-Table I gives a good overview of the different variations of the Rebeca language. 
+\begin{quote}
+	Table I gives a good overview of the different variations of the Rebeca language. 
 However, some of the individual extensions are not properly motivated. Are the different 
 extensions orthogonal to each other or can they be combined? What are the trade-offs of 
 each design and how to they fit within the larger picture?
--->> MARJAN see how you can handle this without spending half a page presenting all the 
-languages
+\end{quote}
+
+We added a paragraph in Section 2.3.1 to make clear the characteristics of each 
+extension. We also addressed the relation among extensions and illustrated orthogonal 
+extensions.
 
 
+\begin{quote}
 "Loops and periodic behavior are modeled by sending messages to oneself" => The downside 
 of using selfsending to implement loops is that these messages can be interleaved with 
 other messages from active objects not participating in the loop.
--->>MARJAN
+\end{quote}
+This is correct.  The new release of Rebeca supports "for" and "while" loop statements, 
+we removed this sentence from the paper.
 
-"avoiding the creation of a new actor (e.g., Fig. 1, line 8)" => Is the correct line 
+
+\begin{quote}
+	"avoiding the creation of a new actor (e.g., Fig. 1, line 8)" => Is the correct line 
 referenced? I am not sure why that line specifically illustrates why no new actor is 
 created. I am assuming the creation of new actors is avoided because when passing a 
 reference to a rebec the active object and its associated runtime are not copied. Rather 
 a shallow copy of the reference is made.
--->>MARJAN
+\end{quote}
+
+In that sentence, we wanted to make clear that in sending a message which has a parameter 
+of actor types, a copy of reference to that actor is sent. In this case, sending-by-value 
+does not mean a new copy of that actor is created and sent as the parameter.
+We changed that sentence to the following sentence to make it more understandable: 
+"Parameters in messages sent among actors are passed by value. This is even the case if a 
+reference to an actor is passed as a parameter; the sent reference is created as a 
+shallow copy of the original reference, e.g., in Fig. 1 Line 8 Dispatcher sends a request 
+to the server m3 and passes the reference to the client to m3 as a parameter instead of 
+passing a fresh copy of the client actor."
 
 
 \begin{quote}
