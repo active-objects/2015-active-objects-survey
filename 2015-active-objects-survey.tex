@@ -2724,7 +2724,7 @@ This work highlights the differences between the two languages,
 especially regarding futures. In ProActive the synchronization is
 \emph{data-flow oriented} as futures are transparently accessed and
 updated, and wait-by-necessity can only be released upon access to
-some data. In ABS synchronization on future is \emph{control-flow
+some data. In ABS synchronization on futures is \emph{control-flow
   oriented}: a future access succeeds upon request
 termination. However, in most programs a future access is used to
 retrieve information and the control-flow synchronization of ABS
@@ -2812,7 +2812,7 @@ model~\cite{Dean:2008:MSD:1327452.1327492}. The case study is
 computation-intensive and relies less on active object communication
 than the experiment reported in Section~\ref{sec:implem-java-8}. As
 ProActive relies on physical threads for active objects and data
-copying occurs in each communication, ProActive is better suited for
+copying occurs in each communication, Pro\-Active is better suited for
 computation-intensive scenarios than for communication-intensive ones.
 We compared performance of the code generated with the ProActive
 backend~\cite{rochas:hal-report} for ABS run in distributed mode, the
@@ -2847,18 +2847,18 @@ the code the Java 8 backend produces.
 \end{figure}
 
 Fig.~\ref{fig:bench-usecase} shows the execution times of both ABS
-backends for the application ranging from 2 to 50 workers, using from
+backends for the application ranging from 2 to 50 workers, and
 1 to 25 physical machines with ProActive.  The execution times of the
 ProActive backend are sharply decreasing for the first few added
-machines and then decrease at a slower rate. The first instance added in the Java 8
-backend also improves significantly the performance of the program and the Java 8 backend
-performs better with one or two workers. Then, thanks to the
-efficient thread management of the Java 8 backend, the performance stays stable until 30
-workers. Finally with a high number of instances the degree of parallelism becomes
-harmful.  In contrast to
-this, increasing the degree of parallelism for the ProActive backend
-results in a linear speedup, because it balances the load between
-machines and benefits from distribution.
+machines and then decrease at a slower rate. The first instance added
+in the Java 8 backend also improves significantly the performance of
+the program and the Java 8 backend performs better with one or two
+workers. Thanks to the efficient thread management of the Java 8
+backend, the performance stays stable until 30 workers. With a high
+number of instances, the degree of parallelism becomes harmful.  In
+contrast, increasing the degree of parallelism for the ProActive
+backend results in a linear speedup, because it balances the load
+between machines and benefits from distribution.
 
 Figure~\ref{fig:bench-native} compares the performance of the
 generated ProActive code to a hand-written version.
@@ -2869,7 +2869,7 @@ generated ProActive code to a hand-written version.
 % and~\ref{fig:bench-native}, there is an order of magnitude of
 % difference depending on the types used; fixing this is
 % on-going~\cite{ref:ABS-Java-translate}.}
-The overhead introduced by the translation performed by the ProActive
+The overhead introduced by the translation performed by the Pro\-Active
 backend is very low ($<10$\%), except when many machines are involved
 and the communication rate is high.
 % At the biggest stage, the application translated with the ProActive
@@ -2878,16 +2878,18 @@ and the communication rate is high.
 
 \subsection{Encore}\label{encore-implem}
 
-The Encore implementation \footnote{Available at \url{https://github.com/parapluu/encore}}  consists of two major components, a
-source-to-source compiler (from Encore to C) implemented in Haskell,
-and the runtime system, implemented in C. The runtime provides efficient parallel
-execution but has no support for distribution.  The Encore runtime stack
-(Fig.~\ref{fig:encore:stack}) is built around the runtime used by the
- Pony language
-(PonyRT) \cite{ClebschDBM15}, which includes an actor library and garbage collection for
-both active objects (actors)~\cite{DBLP:conf/oopsla/ClebschD13} and
-passive objects~\cite{clebsch2015ownership}. The Encore runtime
-(EncoreRT) extends the PonyRT with new features such as futures, the
+The Encore implementation\footnote{Available at
+  \url{https://github.com/parapluu/encore}} consists of two major
+components, a source-to-source compiler (from Encore to C) implemented
+in Haskell, and the runtime system, implemented in C. The runtime
+provides efficient parallel execution but has no support for
+distribution.  The Encore runtime stack (Fig.~\ref{fig:encore:stack})
+is built around the runtime used by the Pony language (PonyRT)
+\cite{ClebschDBM15}, which includes an actor library and garbage
+collection for both active objects
+(actors)~\cite{DBLP:conf/oopsla/ClebschD13} and passive
+objects~\cite{clebsch2015ownership}. The Encore runtime (EncoreRT)
+extends the PonyRT with new features such as futures, the
 \parT{} abstraction, a task library, and the notion of \emph{encore
 threads} (explained below). These features are part of the runtime and
 are therefore written in C.  On top of these libraries rests the
@@ -3116,25 +3118,25 @@ motivated in the context of different design goals. We review the
 different design trade-offs.
 
 \noindent
-{\small \sf
+{\scriptsize
 \begin{tabular}[t]{|@{\,\,}p{15mm}@{\,\,}|@{\,\,}p{27mm}@{\,\,}|@{\,\,}p{29mm}@{\,\,}|@{\,\,}p{29mm}@{\,\,}|@{\,\,}p{28.5mm}@{\,\,}|}
 \hline
 & \textbf{Rebeca} & \textbf{ABS} & \textbf{ASP/ProActive} & \textbf{Encore}\\\hline
 \textbf{Objective}&$\bullet$ Actor-based  modeling  language\newline $\bullet$
-           Simple compu\-tation and communication model\newline
-           $\bullet$ No dynamic\newline object creation&$\bullet$ Active object\newline
-                                                 modeling
+           Simple computation and communication\newline model\newline
+           $\bullet$ No dynamic object\newline creation&$\bullet$ Active object
+                                                 modeling\newline
                                                  language
                                                  \newline $\bullet$
                                                  COGs \newline
                                                  $\bullet$ Combines
-                                                 functional and
+                                                 functional\newline and
                                                  imperative features
                                                  \newline $\bullet$
                                                  Advanced
                                                  communication
                                                  model&$\bullet$  Active object\newline
-                                                        programming\newline
+                                                        programming
                                                         language\newline
                                                  $\bullet$ Multiactive objects \newline
                                                                                 $\bullet$
@@ -3145,12 +3147,12 @@ different design trade-offs.
                                                                                 $\bullet$
   Designed for\newline  scalability\\\hline
 \textbf{Degree of\newline synchro\-nization}&$\bullet$ Asynchronous \newline message
-                           passing\newline $\bullet$ No
-                           synchro-\newline nization\newline
+                           passing only\newline $\bullet$ No
+                           synchronization\newline
                                                           $\bullet$
-                           Single-threaded run-to-completion of
-                           requests per\newline  actor&$\bullet$ Asynchronous \newline
-                                            method calls with \newline first-class
+                           Single-threaded\newline run-to-completion of
+                           requests per  actor&$\bullet$ 
+                                               Explicit
                                             futures \newline
                                             $\bullet$ Advanced\newline
                                             synchronization\newline
@@ -3162,42 +3164,41 @@ different design trade-offs.
                                                               \newline
                                                               $\bullet$
                                                               Wait by
-                                                              necessity
+                                                              necessity\newline
                                                           synchronization\newline
                                                           $\bullet$
                                                               Multiactive
-                                                          objects
+                                                          objects\newline
                                                               allow
                                                               parallel
                                                           treat-
                                                                   \newline ment of
                                                           requests&$\bullet$
-  ABS-like cooperative scheduling \newline $\bullet$ Future chaining
-\newline $\bullet$ Multiactive\newline
-                                                          objects
-                                                                    using
+  ABS-like cooperative\newline scheduling \newline $\bullet$ Future chaining
+\newline $\bullet$ Multiactive  objects\newline
+                                                                    with
                                                                     parallel
                                                                     combinators
-                                                                    for\newline
+                                                                    for
                                                                     data parallelism
   \\\hline
-\textbf{Degree of\newline transpa\-rency}&$\bullet$ Hides\newline
+\textbf{Degree of\newline transpa\-rency}&$\bullet$ Hides
                                            asynchronous message
-                        passing\newline $\bullet$ Hides\newline scheduling and\newline message queues&$\bullet$ Hides object\newline  representation,
-                         scheduling, and\newline  message queues
+                        passing\newline $\bullet$ Hides scheduling and\newline message queues&$\bullet$ Hides object representation,
+                         scheduling, and\newline message queues
                   \newline $\bullet$ Exposes
-                         futures\newline and
+                         futures and\newline
                          release points&$\bullet$ Hides futures and\newline distribution
                                          \newline $\bullet$
-                                         Exposes parallel\newline treatment of\newline
+                                         Exposes parallel\newline treatment of
                                  requests&$\bullet$ Hides scheduling
-                                           and low-level\newline
+                                           and low-level
                                            parallelism \newline $\bullet$ Exposes
-                         futures,
-                         release  points, and parallel data flow\\\hline
+                         futures,\newline
+                         release  points, and\newline parallel data flow\\\hline
 \textbf{Degree of\newline data sharing}&$\bullet$ No shared values\newline $\bullet$
-                        All arguments\newline  passed by copy,\newline  even actor
-                        refer-\newline ences&$\bullet$ No
+                        All arguments passed by copy,  even actor \newline
+                        references&$\bullet$ No
                                     shared values \newline $\bullet$ Objects
                                  passed by\newline reference\newline
                                               $\bullet$ Functional
@@ -3211,12 +3212,12 @@ different design trade-offs.
                                                           by
                                                         reference\newline
                                                         $\bullet$ Passive
-                                                        objects\newline passed
+                                                        objects passed\newline
                                                           by
                                                         copy&$\bullet$
                                                               Active
                                                               objects
-                                                              pas\-sed
+                                                              passed\newline
                                                               by
                                                               reference\newline
                                                               $\bullet$
@@ -3232,9 +3233,9 @@ different design trade-offs.
                                                                                              library\newline
                                                                                              $\bullet$
                                                           Supports
-                                                                                             distri-\newline buted
+                                                                                             distributed\newline
                                                                                              architectures&$\bullet$
-  Runtime system\newline  written in C\newline $\bullet$ Supports multi-\newline core architectures\\\hline
+  Runtime system\newline  written in C\newline $\bullet$ Supports multicore\newline architectures\\\hline
 \end{tabular}}
 
 
