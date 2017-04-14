@@ -1101,10 +1101,10 @@ encapsulation. It retains, however, modeling features that are
 essential in realistic applications, for example, aliasing and
 unbounded object creation.
 
-The main design goal of ABS was to create a language that permits to
-specify complex behavior of concurrent objects in a concise, natural
-manner, while keeping automated analysis of that behavior feasible and
-scalable.
+The main design goal of ABS was to create a language that permits the
+complex behavior of concurrent objects to be specified in a concise,
+natural manner, while keeping automated analysis of that behavior
+feasible and scalable.
 
 There are extensions of ABS to model product variability
 \cite{HHJLSSW12} as well as time and other resources
@@ -1194,14 +1194,14 @@ s!process(fd); %\label{abs:main:end}%
 The language layers of ABS are displayed in Fig.~\ref{fig:layer}.
 Based on parametric (first-order) abstract data types, a simple, pure,
 first-order functional language with pattern matching and strict
-evaluation is defined. On top of that are objects and a standard
-imperative layer. So far, this is very much like Scala-light.  The
-central issue for achieving automated, scalable analysis is the design
-of the concurrency model.
+evaluation is defined. On top of this functional layer, there are
+objects and a standard imperative layer. So far, this is very much
+like Scala-light.  The central issue for achieving automated, scalable
+analysis is the design of the concurrency model.
 
-The concurrency model of ABS combines asynchronous
-communication from the Actor model with cooperative concurrency.
-We explain this concurrency model with help from the code in
+The concurrency model of ABS combines asynchronous communication from
+the Actor model with cooperative concurrency.  We explain this
+concurrency model by means of the code in
 Fig.~\ref{fig:abs-simple}. The unit of distribution in ABS is a
 \emph{concurrent object group} (COG), which can be thought of as a set
 of tasks that share a common heap and a single processor. Tasks in
@@ -1230,11 +1230,11 @@ object may implement several interfaces, so each pointer to the object
 is typed by an interface controlling the methods available on that
 pointer. Fields are not accessible via interfaces.  Asynchronous calls
 do not interrupt the caller, so the statement following the call is
-immediately executed. Therefore, we need a handle that we can use to
+executed immediately. Therefore, we need a handle that we can use to
 retrieve the result of an asynchronous call once its result has been
 computed. In ABS, the type of such handles has a future annotation. As
-can be seen in Line~\ref{abs:main:end}, it is possible to pass futures
-as parameters. This makes it possible to use the result of an
+can be seen in Line~\ref{abs:main:end}, futures can be passed as
+parameters. This makes it possible to use the result of an
 asynchronous call in different places without copying it (for example,
 for barrier synchronization or delegation).
 
@@ -1247,14 +1247,13 @@ does not determine which of \lstinline{init()} and
 \lstinline{process()} is started first. In fact, ABS can be
 parameterized with different scheduling strategies, which can be
 programmed at the functional layer \cite{bjork13isse}.  The semantics
-leaves scheduling open, so the static analyzers of ABS take all
+leaves scheduling open, so the static analyzers for ABS take all
 possible scheduling sequences into account.
 
 ABS introduces \emph{cooperative concurrency} internally in COGs.
-%
-This means that no task is preempted (interrupted) unless
-its modeler explicitly allows to do that. There are two expressions in
-ABS that explicitly release control: \lstinline{release} and
+This means that no task is preempted (interrupted) unless its modeler
+explicitly allows this to happen. Two expressions in ABS
+explicitly release control: \lstinline{release} and
 \lstinline{await}. The former is unconditional while the latter has a
 Boolean argument and can be used to synchronize with another task. In
 particular, synchronization can depend on the resolution of futures;
@@ -1264,11 +1263,11 @@ values from asynchronous method calls.
 In the example, a first synchronization point is reached at
 Line~\ref{abs:process:awaitd} in the body of \lstinline{process()}. It
 ensures that the value of the future \lstinline{fd} is available. If
-\lstinline{init()} had not been scheduled before, it will be now. Once
-the value of \lstinline{fd} is available, it is retrieved with a
-\lstinline{get} expression. Note that \lstinline{rd} and \lstinline{d}
-might well be aliased. The standard ABS idiom for asynchronous method
-calls in ABS is as follows:
+\lstinline{init()} has not been already scheduled, it will be
+scheduled now. Once the value of \lstinline{fd} is available, it is
+retrieved with a \lstinline{get} expression. Note that \lstinline{rd}
+and \lstinline{d} might well be aliased. The standard ABS idiom for
+asynchronous method calls in ABS is as follows:
 
 \begin{center}
   \lstinline{Fut<T> fx = o!m(); ... ; await fx?; T x = fx.get;}
@@ -1282,27 +1281,28 @@ situation the abbreviation
 \end{center}
 is provided, which avoids the declaration of an explicit future.
 
-Line~\ref{abs:process:sync} contains a synchronous call which is also
-supported in ABS. It results in a stack-like behavior, i.e., it yields
-the processor to the callee and blocks the caller until it
-returns. Obviously, here we are interested only in the side effect
-that \lstinline{modify()} has. Synchronous calls are only permitted inside
-the COG of the caller object, in which case the caller may decide
-whether to call a method synchronously or asynchronously.  Note that the entire
-stack will be suspended in the case of a processor release.
+Synchronous calls are also supported in ABS. Synchronous calls result
+in a stack-like behavior, i.e., the call yields the processor to the
+callee and blocks the caller until it returns. In
+Line~\ref{abs:process:sync}, we are only interested in the side effect
+of the \lstinline{modify()} method. Synchronous calls are only
+permitted inside the COG of the caller object, and the caller may
+decide whether to call any local method synchronously or
+asynchronously.  Note that the entire stack will be suspended in the
+case of a processor release.
 
 The concurrency model of ABS is designed to make formal analysis
 feasible.  While formal analysis of multi-threaded languages with
 interleaving semantics, such as Java, is possible in principle
 \cite{abraham05tcs,BlomHuisman14}, such analysis is highly complex and
-seems to be out of scope at the moment for relaxed memory consistency
-models.  The concurrency model of ABS carefully restricts the possible
-interactions between concurrent tasks by means of cooperative
-concurrency, while still allowing to describe complex, realistic
-behavior of asynchronous systems.  Analysis in this setting has been
-shown to be compositional \cite{AlbertAFGGMPR14,SDE:BoerCJ07} and
-scalable \cite{DinTHJ15}.  Section~\ref{sec:implem-java-8} discusses a
-possible implementation of cooperative scheduling for ABS.
+currently out of scope for relaxed memory consistency models.  The
+concurrency model of ABS carefully restricts the possible interactions
+between concurrent tasks by means of cooperative concurrency, while
+still allowing the complex, realistic behavior of asynchronous systems
+to be described.  Analysis in this setting has been shown to be
+compositional \cite{AlbertAFGGMPR14,SDE:BoerCJ07} and scalable
+\cite{DinTHJ15}.  Section~\ref{sec:implem-java-8} discusses a possible
+implementation of cooperative scheduling for ABS.
 
 
 % \TODO{Page 12: It took me some time to understand the concurrency model of ABS. It is
@@ -1386,11 +1386,11 @@ deadlocks can be prevented in this manner. In practice, however,
 deadlocks are easy to avoid, because synchronization points are
 explicit. In addition, ABS comes with an automated deadlock analysis
 tool \cite{CGM:SoSym2014} that detects potential deadlocks.  An
-important point is that between explicit synchronization points
-(\lstinline{release}, \lstinline{await}) no data races can occur and
-computations are, therefore, deterministic.  Communication is
-asynchronous in ABS, and no particular ordering has to be ensured on
-request communication and service.  Obviously, execution in general is
+important point is that no data races can occur between explicit
+synchronization points (\lstinline{release}, \lstinline{await}), which
+makes computations deterministic.  Communication is asynchronous in
+ABS, and no particular ordering has to be ensured on request
+communication and service.  Obviously, execution in general is
 non-deterministic unless the scheduling of service requests is also
 controlled.
 
@@ -1401,12 +1401,11 @@ including scheduling, message queueing, and object representation are
 hidden from the modeler. Abstract data types and interfaces can be
 used to postpone detailed design decisions while still permitting
 analysis of those aspects of a model that are fully specified.  In ABS
-the user may allow the interleaving of the tasks by explicitly
-introducing task release points using \lstinline{release} and
-\lstinline{await}. Using these features, the user is exposed to the
-notion of asynchronous vs.\ synchronous calls, futures, and thread
-interleaving, but the language still retains a compositional proof
-theory \cite{SDE:BoerCJ07}.
+the user may allow task interleaving by explicitly introducing task
+release points using \lstinline{release} and \lstinline{await}. Using
+these features, the user is exposed to the notion of asynchronous vs.\
+synchronous calls, futures, and thread interleaving, but the language
+still retains a compositional proof theory \cite{SDE:BoerCJ07}.
 
 \paragraph{Degree of data sharing} There is no designated active
 object in a COG, all objects may be accessed remotely. Thus, values
@@ -1416,9 +1415,9 @@ copied), independent of whether the called object is local or remote.
 All objects in ABS have strictly private visibility, that is, they can
 only access their own fields directly. The fields of any other object
 must be accessed via explicit method calls.  ABS features a
-\emph{concurrent object-group} model where objects in the same group
+\emph{concurrent object group} model where objects in the same group
 can safely be invoked directly because they are manipulated by a
-single thread, invocation between different COGs is by nature
+single thread, invocations between different COGs are by nature
 asynchronous.
 
 \paragraph{Formal semantics}
@@ -1426,8 +1425,8 @@ asynchronous.
 ABS has a small step operational semantics \cite{JHSSS10,hats-d1.2}
 that permits to prove soundness theorems for the various analyses that
 are available for ABS. This semantics is directly expressed in terms
-of rewrite rules in Maude format \cite{ClavelDELMMT07} which yields a
-sound interpreter for ABS.
+of rewrite rules in the Maude format \cite{ClavelDELMMT07}, which
+yields a sound interpreter for ABS.
 
 In addition there is an axiomatic semantics in the form of a program
 logic~\cite{ref:key}. The behavior of interfaces and classes can be
@@ -1435,24 +1434,23 @@ specified by invariants over the histories of symbolic states as
 contracts between processes.  Because preemption is excluded in ABS it
 is sufficient to establish invariants upon object creation, at
 explicit synchronization points and upon the termination of methods.
-It is possible to prove a composition theorem for ABS about the
-relation between local and global invariants \cite{Din14fac}. This
-makes it possible to prove global behavioral properties of an ABS
-model by (method-)local reasoning.
+A composition theorem for ABS about the relation between local and
+global invariants has been established \cite{Din14fac}, which makes it
+possible to prove global behavioral properties of an ABS model by
+(method-)local reasoning.
 
 \paragraph{Implementation and tooling support}
 
 As ABS has been developed with the goal of being analysable, there is
 a wide range of tools available. Most of them support the full ABS
 language and are fully automatic. An overview of several of the tools
-is available as \cite{BFH14,WongAMPSS12}.
-
+is available \cite{BFH14,WongAMPSS12}.
 There is an Eclipse plug-in that provides a development environment
 for ABS and integrates most tools. An alternative is the web-based ABS
-collaboratory that runs in a browser and permits to try out most ABS
-tools. It can be used either as a service or installed
-locally. Here is a list of currently
-supported tools for ABS:
+collaboratory \cite{domenech17fase} that runs in a browser and permits
+to try out most ABS tools. The collaboratory can be used either as a
+service or installed locally. Here is a list of currently supported
+tools for ABS:
 
 \begin{itemize}
 \item An editor with syntax highlighting and integrated build system,
@@ -1465,14 +1463,14 @@ supported tools for ABS:
   8~\cite{serbanescuNABN14a}.
 \item A glass box test case generator for \emph{concurrent} models
   \cite{AlbertAGM15}
-\item A sound deadlock analysis \cite{CGM:SoSym2014}
+\item A sound deadlock analysis tool \cite{CGM:SoSym2014}
 \item A worst-case resource analysis tool that can be parameterized
   with a cost model for execution time, memory consumption,
   transmission size, peak cost and various other cost categories
   \cite{AlbertAFGGMPR14}
 \item A deductive verification tool to prove  expressive, history-based
   properties \cite{ref:key,DinTHJ15} for models with an
-  \emph{unbounded} number of objects and tasks
+  \emph{unbounded} number of objects and tasks.
 \end{itemize}
 
 
