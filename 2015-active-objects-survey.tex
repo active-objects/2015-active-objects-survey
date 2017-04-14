@@ -1767,20 +1767,20 @@ ProActive/GCM code corresponding to the designed system.
 
 \paragraph{General presentation}
 
-Encore \cite{ref:encore} is a general purpose parallel programming language based
-on active objects developed since 2014 in the EC funded \Upscale
-project. %\footnote{For information about \Upscale see \url{www.upscale-project.eu}.}
- The language has been designed to excel
-at scalability and rests on four pillar concepts: \textit{parallel by
-  default} using the active object paradigm for coarse-grained
-parallelism, \textit{independent local heaps} to promote data
-locality, \textit{type-based synchronization directives} provided by a
-novel capability system and \textit{coordination of parallel
-  computations and low-level data parallelism} via parallel
-combinators.  On top of these key ingredients, Encore stays within the
-object-oriented paradigm where active objects and futures can be seen
-as normal objects and, instead of interfaces, has a trait system \`a
-la Scala.
+Encore \cite{ref:encore} is a general purpose parallel programming
+language based on active objects developed since 2014 in the EC funded
+\Upscale project.
+%\footnote{For information about \Upscale see \url{www.upscale-project.eu}.}
+The language has been designed to excel at scalability and rests on
+four pillar concepts: \textit{parallel by default} using the active
+object paradigm for coarse-grained parallelism, \textit{independent
+  local heaps} to promote data locality, \textit{type-based
+  synchronization directives} provided by a novel capability system
+and \textit{coordination of parallel computations and low-level data
+  parallelism} via parallel combinators.  On top of these key
+ingredients, Encore stays within the object-oriented paradigm where
+active objects and futures can be seen as normal objects and, instead
+of interfaces, has a trait system \`a la Scala.
 
 \paragraph{Language description}
 
@@ -1798,13 +1798,13 @@ Messages are appended to the receiver's message queue and processed
 one at a time in FIFO order. Because of their internal thread of
 control, active objects have an asynchronous interface, meaning method
 calls return immediately with a future. In contrast, passive objects
-do not have internal thread of control; hence, expose synchronous
+do not have an internal thread of control and expose a synchronous
 interface. Each active object owns a local heap on which passive
 objects are allocated. Ownership in this context means that the actor
 is responsible for keeping track of foreign dependencies on passive
 objects on its local heap, and eventually deallocate them. In Encore,
-passive objects may be \emph{shared} between active objects, and
-concurrent read/write access to these passive objects is supported, by
+passive objects may be \emph{shared} between active objects and
+concurrent read/write access to passive objects is supported, by
 using the aforementioned capability system.
 
 Encore is \emph{parallel by default}. On coarse-grained parallelism,
@@ -1812,8 +1812,8 @@ different active objects could run concurrently, while within the same
 active object, the execution is sequential. Fine-grained parallel
 computations can be created via the notion of tasks, for example, the
 code (\ec{async \{ e \}}) contains a body \verb|e| that is
-asynchronously executed and returns a future type value
-immediately. Tasks are more lightweight than actors (memory-wise) and
+asynchronously executed and immediately returns with a future type
+value. Tasks are more lightweight than actors (memory-wise) and
 increase the degree of asynchrony in a system.
 
 Unlike ProActive, values resulting from method calls on active objects
@@ -1824,15 +1824,15 @@ below.
 
 \paragraph{Cooperative scheduling of active objects}
 
-Encore supports ABS' three operators for cross-message control flow,
+Encore supports ABS' operators for cross-message control flow,
 namely \ec{suspend} (\ec{suspend :: void -> void}), \ec{get} (\ec{get :: Fut[t]
 -> t}), and \ec{await} (\ec{await :: Fut[t] -> void}).
 %
-Encore's \ec{await} statement only supports awaiting on the resolution
-of a future, unlike ABS which supports awaiting on general Boolean
+Encore's \ec{await} statement only supports waiting for the resolution
+of a future, unlike ABS which supports waiting on general Boolean
 conditions (Section~\ref{sec:abs-lang}). Encore's support for future
 chaining however makes \ec{await} less useful as chaining allows
-triggering arbitrary operations on the resolved futures. Encore
+triggering arbitrary operations on the resolved futures. Encore's
 scheduling of requests is explained in details in
 Section~\ref{encore-implem}.
 
@@ -1841,19 +1841,20 @@ Section~\ref{encore-implem}.
 \newcommand{\bind}[0]{\ensuremath{\gg\!\!=}}
 \newcommand{\prune}[0]{\ensuremath{\ll}}
 
-Active objects provide coarse-grained parallelism via futures but do not offer
-high-level language constructs for low-level coordination of parallel computations.
- To express complex coordination workflows, such as pipeline and
-speculative parallelism, Encore incorporates
+Active objects provide coarse-grained parallelism via futures but do
+not offer high-level language constructs for low-level coordination of
+parallel computations.  To express complex coordination workflows,
+such as pipelines and speculative parallelism, Encore incorporates
 \parT{} collections and associated parallel combinators~\cite{ref:encore,party-coordination}.
-A \parT{} collection is an abstraction that can contain asynchronous computations
+A \parT{} collection is an abstraction for asynchronous computations
 and values; it is controlled via parallel combinators.
 \parT{} computations have type \ec{Par[t]} (\ec{t} is a polymorphic type).
 
-We explain the \parT{} combinators with the example from Fig.~\ref{fig:encore:factorisation}.
-It first computes the LU and Cholesky factorisation in parallel,
-spawning tasks (Lines \ref{line:encore:flu}, \ref{line:encore:chl}).
-The resulting futures are lifted
+We explain the \parT{} combinators with the example from
+Fig.~\ref{fig:encore:factorisation}.  It first computes the LU and
+Cholesky factorisation in parallel, spawning tasks (Lines
+\ref{line:encore:flu}, \ref{line:encore:chl}).  The resulting futures
+are lifted
 %(lift :: Fut t $\to$ Par t)
 (\ec{lift :: Fut[t] -> Par[t]})
 %
@@ -1907,17 +1908,18 @@ The types of the functions are
 \ec{getDiagonalMtx :: Fut[Maybe[Mtx]] -> Par[Mtx]}.}
 \end{figure}
 
-The \parT{} collection and its combinators have been designed to perform
-operations asynchronously, without stopping the current thread of execution.
+The \parT{} collection and its combinators have been designed to
+perform operations asynchronously, without stopping the current thread
+of execution.
 %
-\parT{} integrates well in the active object model, as it
-provides a uniform interface, via parallel combinators,
-to manipulate a collection of asynchronous values
-and can express complex coordination workflows.
+\parT{} integrates well in the active object model, as it provides a
+uniform interface, via parallel combinators, to manipulate a
+collection of asynchronous values and can express complex coordination
+workflows.
 %
 %This creates a collection that never blocks and executes operations on demand,
 %when the values are available.
-We have highlighted the most important combinators, others are
+We have here highlighted the most important combinators, others are
 discussed in Brandauer et al.~\citeyear{ref:encore}.
 %
 %\parT{} integrates well in the active object model, as it
@@ -1932,38 +1934,39 @@ discussed in Brandauer et al.~\citeyear{ref:encore}.
 
 \paragraph{Degree of synchronization}
 In Encore, the synchronization constructs \ec{get} and \ec{await}
-provide the same control over futures as in ABS: the former blocks the
+provide similar control over futures as in ABS: the former blocks the
 active object until the future is resolved and the latter releases the
-current thread of execution if the future is not resolved, so that the
-same active object can continue processing other messages.
-Furthermore, Encore provides the \emph{future chaining} operator
+current thread of execution if the future is not resolved, so the
+active object can continue processing other messages.  Furthermore,
+Encore provides a \emph{future chaining} operator
 ($\rightsquigarrow$), which registers a callback (as an anonymous
 function, aka lambda) to the future and continues processing the rest
 of the message. The callback is executed when the future is resolved,
 using the result of the future as the argument to the callback. This
 construct allows chaining operations on futures without creating
 synchronization, similar to the default behavior of futures in
-AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349}, except that it
+AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349}, but it
 is more explicit and easier to control for the programmer. It is also
 a way to mimic transparent first-class futures of ASP, except that the
 callback request is only created when the future is resolved.
-Communication in Encore is asynchronous but requests are served in a FIFO order.
+Communication in Encore is asynchronous but requests are served in a
+FIFO order.
 
 \paragraph{Degree of transparency}
 
 In Encore, regular and future variables are distinguished statically
-(e.g., \ec{int} vs.\ \ec{Fut[int]}).  The \ec{get} operation explicitly
-extracts the content from the future type.  Both in future management
-and with parallel combinators, the programmer is exposed to the
-concurrent computations being handled in Encore. However, especially
-when using future chaining or parallel combinators, the scheduling and
-ordering of operations is handled automatically, and the programmer
-only expresses concurrency from a high-level point of view.
+(e.g., \ec{int} vs.\ \ec{Fut[int]}).  The \ec{get} operation
+explicitly extracts the content from a future.  Both in future
+management and with parallel combinators, the programmer is exposed to
+the on-going concurrent computations. However, especially with future chaining and
+parallel combinators, the scheduling and ordering of operations is
+automatic and the programmer only expresses concurrency from a
+high-level point of view.
 
 \paragraph{Data sharing}
-Encore relies at the same time on a \emph{concurrent object group} model and on a
-\emph{non-uniform active object} model where some objects are active and some others are
-passive.
+Encore combines a \emph{concurrent object group} model with a
+\emph{non-uniform active object} model where some objects are active
+and other objects are passive.
 %\TODO{Addressed. On Line 51 you write that the "trait provides the interface-like
 %feeling of OOP
 %languages [..]" The usage of OOP here is not entirely appropriate: the comparison breaks
@@ -1977,21 +1980,21 @@ passive.
 
 In Encore, active objects are protected by their own thread of control
 while passive objects are protected by a \textit{capability} type.
-Encore's type system sees passive objects as resources that are
-protected by a capability that governs the permitted kind of access to
-the object \cite{ref:encore}. A capability is built from a trait and a
+Encore's type system sees passive objects as resources protected by a
+capability governing the permitted kind of access to the object
+\cite{ref:encore}. A capability is built from a trait and a
 \textit{kind}. The trait provides the interface-like feeling of
-statically-typed, Java-like, OOP languages while the \textit{kind}
-states the ``protection'' that the interface provides. By changing a
-keyword, the \textit{kind}, the interface changes the protection
-level. For instance, by changing the \textit{kind} from
-\textit{exclusive} to \textit{lock-free}, the interface changes the
-protection from an actor-like to a lock-free implementation. Like in
-RebecaSys, this creates controlled data sharing.
+statically-typed, Java-like OOP languages while the \textit{kind}
+expresses the ``protection'' provided by the interface. By changing
+the \textit{kind}, the interface changes its protection level. For
+instance, by changing the \textit{kind} from \textit{exclusive} to
+\textit{lock-free}, the interface changes the protection from an
+actor-like to a lock-free implementation. Like in RebecaSys, this
+creates controlled data sharing.
 
-The Encore capabilities form the hierarchy  in
+Encore's capabilities form the hierarchy in
 Fig.~\ref{fig:capa-tree}. \emph{Exclusive capabilities} are local to
-one thread and linear capabilities may be transferred between
+one thread and \emph{linear capabilities} may be transferred between
 concurrent computations without data races by dynamic means of
 concurrency control.
 %
@@ -2004,9 +2007,8 @@ capabilities} like locks and actors serialize computation;
 parallel operations, but use a roll-back schema when
 conflicts arise.
 %
-\emph{Immutable} and \emph{read-only capabilities} are
-always safe to access concurrently because of the absence of
-writes.
+\emph{Immutable} and \emph{read-only capabilities} are always safe to
+access concurrently, because of the absence of writes.
 %
 Finally, \emph{subordinate capabilities} allow constructing aggregates
 of objects whose data race-freedom stems from their proper
