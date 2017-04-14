@@ -1755,7 +1755,7 @@ ProActive/GCM code corresponding to the designed system.
   morecomment=[l]{//},
   morecomment=[s]{/*}{*/},
   escapeinside=??,
-  morekeywords={assert,exclusive,stable,atomic,immutable,locked,lockfree,unsafe,trait,require,async,finish,def,consume,finish,async,J,S,var,val,shared,safe,subordinate,I,let,in,excl,then,else,wlock,wlocked,rlock,rlocked,read,thread,synchronize,linear,unpack,pack,subord,sync,bound,as,encaps,active,passive,requires,Fut,Par,Maybe,suspend,await,get}
+  morekeywords={assert,exclusive,stable,atomic,immutable,locked,lockfree,unsafe,trait,require,async,finish,def,consume,finish,async,J,S,var,val,shared,safe,subordinate,I,let,in,excl,then,else,wlock,wlocked,rlock,rlocked,read,thread,synchronize,linear,unpack,pack,subord,sync,bound,as,encaps,active,passive,requires,Fut,Par,Maybe,suspend,await,get, end}
 }
 
 \lstnewenvironment{ecode}{\lstset{style=encore}}{}
@@ -1817,16 +1817,16 @@ immediately. Tasks are more lightweight than actors (memory-wise) and
 increase the degree of asynchrony in a system.
 
 Unlike ProActive, values resulting from method calls on active objects
-and spawning of tasks have the explicit future type \ec{Fut
-  t}. Futures support future chaining as well as \ec{get} and
+and spawning of tasks have the explicit future type \ec{Fut[t]}. 
+Futures support future chaining as well as \ec{get} and
 \ec{await} operations similar to ABS. This is explained in detail
 below.
 
 \paragraph{Cooperative scheduling of active objects}
 
 Encore supports ABS' three operators for cross-message control flow,
-namely \ec{suspend} (\ec{suspend :: void -> void}), \ec{get} (\ec{get :: Fut t
--> t}), and \ec{await} (\ec{await :: Fut t -> void}).
+namely \ec{suspend} (\ec{suspend :: void -> void}), \ec{get} (\ec{get :: Fut[t]
+-> t}), and \ec{await} (\ec{await :: Fut[t] -> void}).
 %
 Encore's \ec{await} statement only supports awaiting on the resolution
 of a future, unlike ABS which supports awaiting on general Boolean
@@ -1848,26 +1848,24 @@ speculative parallelism, Encore incorporates
 \parT{} collections and associated parallel combinators~\cite{ref:encore,party-coordination}.
 A \parT{} collection is an abstraction that can contain asynchronous computations
 and values; it is controlled via parallel combinators.
-\parT{} computations have type \ec{Par t} (\ec{t} is a polymorphic type).
+\parT{} computations have type \ec{Par[t]} (\ec{t} is a polymorphic type).
 
 We explain the \parT{} combinators with the example from Fig.~\ref{fig:encore:factorisation}.
 It first computes the LU and Cholesky factorisation in parallel,
 spawning tasks (Lines \ref{line:encore:flu}, \ref{line:encore:chl}).
 The resulting futures are lifted
 %(lift :: Fut t $\to$ Par t)
-(\ec{lift :: Fut t -> Par t})
+(\ec{lift :: Fut[t] -> Par[t]})
 %
 and grouped within the same \parT{} collection
 % ($\| :: Par \;t \to Par \;t \to Par \;t$),
-(\ec{|| :: Par t -> Par t -> Par t}),
+(\ec{||| :: Par[t] -> Par[t] -> Par[t]}),
 %
 Line \ref{line:encore:par}.
 Then an inversion of the matrix is performed asynchronously, using the
-\ec{>>=}
-%\bind{}
-combinator
+\ec{bind} combinator
 % ($\bind \ :: Par \ t \to (t \to Par\ t') \to Par\ t'$),
-(\ec{>>=:: Par t -> (t -> Par t') ->} \ec{Par t'}),
+(\ec{bind :: Par[t] -> (t -> Par[t']) ->} \ec{Par[t']}),
 %
 Line \ref{line:encore:pipe}, which receives a function (second argument)
 that is applied asynchronously to the items in the \parT{} collection, creating pipeline parallelism.
@@ -1875,7 +1873,7 @@ With the \ec{<<}
 % \prune{}
 combinator
 % ($\prune \ :: (Fut \;(Maybe \;t) \to Par \;t') \to Par \;t \to Par \;t'$),
-(\ec{<< :: (Fut (Maybe t) -> Par t') ->} \ec{Par t -> Par t'}),
+(\ec{<< :: (Fut[Maybe[t]] -> Par[t']) ->} \ec{Par[t] -> Par[t']}),
 %
 Line \ref{line:encore:pipe},
 the \verb|getDiagonalMtx| function is applied to the first computation that returns the inverted matrix,
@@ -1887,13 +1885,14 @@ stopping the remaining computations, i.e., safely stopping speculative work.
 \begin{lstlisting}[style=encore,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]
 class Mtx
   ...
-  def computeFastestDiagonal(): Par Mtx
-    let mtx = this.getMtx()
-        %\label{line:encore:flu}%fLU = async luFact(mtx)
-        %\label{line:encore:chl}%ffChlsk = async choleskyFact(mtx)
-        %\label{line:encore:par}%par = (lift fLU) || (lift fChlsk)
-    in
-        %\label{line:encore:pipe}%getDiagonalMtx <<  (par >>= mtvInv)
+  def computeFastestDiagonal(): Par[Mtx]
+    mtx = this.getMtx()
+    %\label{line:encore:flu}%fLU = async luFact(mtx)
+    %\label{line:encore:chl}%ffChlsk = async choleskyFact(mtx)
+    %\label{line:encore:par}%par = (lift fLU) ||| (lift fChlsk)
+    %\label{line:encore:pipe}%getDiagonalMtx <<  bind(mtvInv, par)
+  end
+end
 \end{lstlisting}
 
 \caption{\label{fig:encore:factorisation}Data pipeline and speculative parallelism in matrix factorisation.
@@ -1904,8 +1903,8 @@ The types of the functions are
 % $\mathit{getDiagonalMtx :: Fut\!<\!\!Maybe [Mtx] \!\!> \to Par\; Mtx}$.
 \ec{getMtx :: Mtx}, \ec{luFact :: Mtx -> [Factor]},
 \ec{choleskyFact :: Mtx -> [Factor]},
-\ec{mtxInv :: [Factor] -> Par [Mtx]} and
-\ec{getDiagonalMtx :: Fut<Maybe [Mtx]> -> Par Mtx}.}
+\ec{mtxInv :: [Factor] -> Par[Mtx]} and
+\ec{getDiagonalMtx :: Fut[Maybe[Mtx]] -> Par[Mtx]}.}
 \end{figure}
 
 The \parT{} collection and its combinators have been designed to perform
@@ -1953,7 +1952,7 @@ Communication in Encore is asynchronous but requests are served in a FIFO order.
 \paragraph{Degree of transparency}
 
 In Encore, regular and future variables are distinguished statically
-(e.g., \ec{int} vs.\ \ec{Fut int}).  The \ec{get} operation explicitly
+(e.g., \ec{int} vs.\ \ec{Fut[int]}).  The \ec{get} operation explicitly
 extracts the content from the future type.  Both in future management
 and with parallel combinators, the programmer is exposed to the
 concurrent computations being handled in Encore. However, especially
