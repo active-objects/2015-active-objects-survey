@@ -223,7 +223,7 @@ tools. This article focuses on one family of concurrent programming
 languages that tries to mitigate this problem: active object
 languages.  The first and most important characteristic of this family
 of languages is inherited from the actor paradigm. It relies on
-organising the program in terms of well-defined entities called
+organizing the program in terms of well-defined entities called
 actors. Each actor is an independent entity that behaves autonomously
 and that communicates with other actors through asynchronous
 messages. Actors execute concurrently and communicate asynchronously,
@@ -270,11 +270,11 @@ synchronization between the active objects.
 
 The languages presented here come with strong support for formal
 methods and verification techniques; Rebeca and ABS even make this
-their main focus, having been conceived as modelling languages: actors
+their main focus, having been conceived as modeling languages: actors
 do not merely offer a convenient programming abstraction but also
 greatly simplify static program analysis by naturally structuring
 programs in entities that can serve as the basis for compositional
-analyses.  ASP and Encore instead put the focus on highly optimised,
+analyses.  ASP and Encore instead put the focus on highly optimized,
 efficient implementations. Whereas these languages all fit inside the
 category of active object languages, they propose different solutions
 for how they support synchronization and for how much internal
@@ -394,7 +394,7 @@ terms of modules and their interfaces, which gave rise to the
 object-oriented programming paradigm.  Modules are used to model
 abstract data types and as such provide a powerful abstraction which
 fully integrates data and control.  In the object-oriented paradigm,
-modules are generalised to classes.  Classes can be characterized as
+modules are generalized to classes.  Classes can be characterized as
 modules from which objects can be dynamically instantiated and
 referred to by unique identifiers (generated at runtime).  The
 concepts of classes and objects were introduced in Simula 67
@@ -407,7 +407,7 @@ Active (or concurrent) object languages integrate the basic Actor
 model with object-oriented concepts and as such do support interface
 abstractions of implementation details.  This integration was first
 proposed in ABCL~\cite{Yonezawa:1986:OCP:28697.28722}. It can be
-realised by modeling a message as an asynchronous method call, thus
+realized by modeling a message as an asynchronous method call, thus
 fixing the interpretation of a message by a corresponding method
 definition.  As in the actor-based language Rebeca
 \cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/jucs/SirjaniBM05},
@@ -447,7 +447,7 @@ control. Cooperative scheduling permits a compositional proof theory
 
 Java's multi-threaded concurrency model can be integrated with active
 objects on the basis of cooperative scheduling. In the Abstract
-Behavioural Specification (ABS) language \cite{JHSSS10}, Creol's
+Behavioral Specification (ABS) language \cite{JHSSS10}, Creol's
 cooperative scheduling is combined with the structuring mechanism of
 concurrent object groups \cite{SchaeferP10b}, originally developed for
 Java.  A group of active objects has a thread pool with threads
@@ -477,8 +477,8 @@ system~\cite{encore:kappa,encore-lolcat}.
 \paragraph{Selection of representative languages}
 In the remaining article we discuss these four representative active
 object languages in detail. Our selection strives to cover different
-aspects: modelling languages designed for analysis (ABS, Rebeca) vs.\
-languages optimised for efficient execution (Encore, ProActive/ASP);
+aspects: modeling languages designed for analysis (ABS, Rebeca) vs.\
+languages optimized for efficient execution (Encore, ProActive/ASP);
 close to the classical actor model and distributed systems (Rebeca,
 partially ABS, ProActive/ASP) vs.\ targeted at multi\-core platforms
 (Encore); code generation (ABS) vs.\ runtime environment (Encore,
@@ -486,7 +486,7 @@ ProActive/ASP). We have also made sure that the four languages
 discussed in detail have left the experimental stage and are available
 in stable, public distributions. Those four language also have a
 formally defined semantics allowing us to precisely compare the
-behaviour of the programs written in the different languages.
+behavior of the programs written in the different languages.
 
 % All these languages have drawn attention on different areas.
 % %
@@ -652,7 +652,7 @@ copies.  Shared data access makes data consistency easier to obtain,
 but creates additional communication about the shared memory,
 additional synchronization, and delays. In practice, active object and
 actor languages with distributed runtime systems often use a ``no
-shared memory'' approach favouring data copies with very few globally
+shared memory'' approach favoring data copies with very few globally
 known and shared entities.
 
 Data sharing occurs between threads and relates to the question of
@@ -666,7 +666,7 @@ full-fledged active objects with their own threads, and others are
 passive objects (i.e., standard objects). Second, concurrent object
 groups provide a different alternative where all objects are
 accessible from anywhere but the objects in the same group share the
-same thread and their access is synchronised.
+same thread and their access is synchronized.
 
 
 \paragraph{Formal semantics}
@@ -688,8 +688,8 @@ of language comparison concerns the provided tool suite. Some
 active object languages have been designed with certain tool support
 in mind, which can explain some of the design decisions that were
 taken.  The tool support around a programming language ranges from
-utilities to help the programmer in designing, writing, analysing,
-optimising, and verifying their programs to utilities to support the
+utilities to help the programmer in designing, writing, analyzing,
+optimizing, and verifying their programs to utilities to support the
 deployment and execution of these programs.
 % Reiner : I don't understand this:
 % LUDO: not sure what it meant neither - it does not add anything anyway
@@ -733,7 +733,7 @@ asynchronous message passing; there is no blocking send or receive
 statement.  Therefore, learning Rebeca is easy and using model checking
 tools requires far less expertise than deduction-based analyses.
 %
-The semantics of Rebeca helps analysability as follows: Rebeca actors
+The semantics of Rebeca helps analyzability as follows: Rebeca actors
 are isolated and hence various abstractions, as well as modular and
 compositional verification become more feasible.  Rebeca offers
 natural modeling capabilities and efficient model checking tools for
@@ -759,23 +759,23 @@ system-level design) \cite{DBLP:journals/tecs/RazaviBSKSS10} and adds
 a wait statement to be faithful to the target design language,
 SystemC. Global variables are added, but their use is controlled.
 %
-In Variable Rebeca, the modeller can use annotation to model variable
-behaviours and hence define a product line of actors with different
+In Variable Rebeca, the modeler can use annotation to model variable
+behaviors and hence define a product line of actors with different
 computations \cite{DBLP:journals/jucs/SabouriK13}. Variable Rebeca
 preserves the semantics of Rebeca and all members of Rebeca family can
 be extended by the annotation mechanism used in Variable Rebeca.
 %
 Broadcasting Rebeca \cite{DBLP:conf/fsen/YousefiGK15} and Wireless
-Rebeca \cite{DBLP:journals/corr/YousefiGK16} focus on modelling and
+Rebeca \cite{DBLP:journals/corr/YousefiGK16} focus on modeling and
 verifying of network protocols, and provide broadcasting and
 multi-casting message passing, respectively.
 %
 Timed Rebeca
 \cite{DBLP:journals/corr/abs-1108-0228,DBLP:journals/scp/ReynissonSACJIS14}
-addresses real-time behaviour and is supported by customised efficient
+addresses real-time behavior and is supported by customized efficient
 analysis tools. Probabilistic Timed Rebeca
 \cite{DBLP:journals/eceasst/JafariKSH14} extends Timed Rebeca to
-capture probabilistic behavior and can only be analysed using back-end
+capture probabilistic behavior and can only be analyzed using back-end
 tools.
 %
 These extensions are orthogonal to other language extensions which
@@ -904,7 +904,7 @@ FIFO point-to-point message ordering, guaranteeing some execution
 order.  Extended Rebeca
 \cite{DBLP:conf/acsd/SirjaniBMS05,DBLP:journals/jucs/SirjaniBM05} adds
 tightly coupled component to Rebeca; actors inside a component can be
-synchronised by a handshake communication mechanism guaranteeing a
+synchronized by a handshake communication mechanism guaranteeing a
 causal message ordering.  RebecaSys adds \textit{wait} statements to
 the syntax and a block of shared \textit{global variables} to the
 model. All actors can read from and write to global variables. Waiting
@@ -915,8 +915,8 @@ expression to become true.
 
 Broadcasting Rebeca adds a broadcast statement to Rebeca, but there
 are no known actors, so sending a message directly to an actor is
-impossible.  Wireless Rebeca adds support for multicast to neighbours
-and unicast to the sender to Broadcasting Rebeca. Neighbours of an
+impossible.  Wireless Rebeca adds support for multicast to neighbors
+and unicast to the sender to Broadcasting Rebeca. Neighbors of an
 actor are those actors that sent a message to it.  There is no
 additional synchronization between two given actors in Broadcasting
 and Wireless Rebeca.
@@ -958,7 +958,7 @@ In RebecaSys, global variables can be defined and used in a controlled
 manner for wait statements as explained above.
 
 \paragraph{Formal semantics}
-To support analysability and develop formal verification tools, Rebeca
+To support analyzability and develop formal verification tools, Rebeca
 and its extensions all have formal semantics.  The model checking
 toolset of Rebeca is developed based on Rebeca's semantics
 \cite{DBLP:journals/fuin/SirjaniMSB04}.
@@ -1070,7 +1070,7 @@ stand-alone tools:
 \end{itemize}
 
 The dimensions of comparison for members of the Rebeca
-language family are summarised in Table~\ref{tab::Rebecacomparison}.
+language family are summarized in Table~\ref{tab::Rebecacomparison}.
 
 \subsubsection{ABS}\label{sec:abs-lang}
 
@@ -1078,7 +1078,7 @@ language family are summarised in Table~\ref{tab::Rebecacomparison}.
     implements, await, get, new, local,release, suspend} }
 
 \paragraph{General presentation and objective of the language}
-The \emph{A}bstract \emph{B}ehavioural \emph{S}pecification language
+The \emph{A}bstract \emph{B}ehavioral \emph{S}pecification language
 (ABS) \cite{JHSSS10} is an object-oriented, concurrent modeling
 language developed since 2009 in a series of EC-funded research
 projects. %\footnote{For information about  HATS see
@@ -1216,7 +1216,7 @@ in the current COG. Without \lstinline{local}, a new COG would be
 created together with the object. The next line declares and creates a
 data object (note that interface \lstinline{Data} must be imported) in
 the same COG. Hence, \lstinline{s} and \lstinline{d} share the same
-heap. Line~\ref{abs:main:init} calls an initialisation method
+heap. Line~\ref{abs:main:init} calls an initialization method
 (implementation not shown) on the data. The notation ``\lstinline{!}''
 denotes an asynchronous call; its effect is to create a new task in
 the COG of \lstinline{d} that executes the code of \lstinline{init()}.
@@ -1244,7 +1244,7 @@ does not determine which of \lstinline{init()} and
 \lstinline{process()} is started first. In fact, ABS can be
 parameterized with different scheduling strategies, which can be
 programmed at the functional layer \cite{bjork13isse}.  The semantics
-leaves scheduling open, so the static analysers for ABS take all
+leaves scheduling open, so the static analyzers for ABS take all
 possible scheduling sequences into account.
 
 ABS introduces \emph{cooperative concurrency} internally in COGs.
@@ -1433,7 +1433,7 @@ is sufficient to establish invariants upon object creation, at
 explicit synchronization points and upon the termination of methods.
 A composition theorem for ABS about the relation between local and
 global invariants has been established \cite{Din14fac}, which makes it
-possible to prove global behavioural properties of an ABS model by
+possible to prove global behavioral properties of an ABS model by
 (method-)local reasoning.
 
 \paragraph{Implementation and tooling support}
@@ -1625,7 +1625,7 @@ number of threads or a soft limit that only counts threads not
 involved in wait-by-necessity synchronization.  Additionally, threads
 can be limited per group.
 
-To summarise, ASP and ProActive are based on the multi-active object
+To summarize, ASP and ProActive are based on the multi-active object
 programming model.  This model is suitable for non-experts, because it
 provides high-level features for distribution and safe concurrency.
 
@@ -1639,7 +1639,7 @@ between activities without requiring additional synchronization, which
 limits the blocking synchronization leading to deadlocks. The
 ProActive middleware transparently handles future value
 transmission~\cite{HKRZ:Coregrid:2010} (a ProActive future is
-serialisable).  Deadlocks can also be removed by using multi-active
+serializable).  Deadlocks can also be removed by using multi-active
 objects with no limit or a soft limit on the number of
 threads. Specifically, when a thread enters wait-by-necessity, it is
 not counted in the soft thread limit of the active object anymore, so
@@ -1689,11 +1689,11 @@ of ASP and prove determinacy properties. In particular, they prove
 that the order of future updates has no influence on the execution and
 that the only source of non-determinacy in mono-threaded ASP is when
 two activities can send a request to the same destination.
-A functional fragment of the calculus has been formalised in
+A functional fragment of the calculus has been formalized in
 Isabelle/HOL~\cite{HKL:SCP11}. A specific semantics has been designed
 to evaluate a functional ASP program without risk of deadlock; the
 absence of deadlocks is proved in Isabelle/HOL.  The full semantics of
-ASP with multi-active objects is formalised by Henrio et
+ASP with multi-active objects is formalized by Henrio et
 al~\citeyear{HHI2013:mao}.
 
 
@@ -1714,12 +1714,12 @@ design choices of the programming language typically target  high
 performance for distributed ProActive applications.  To deploy active
 objects on distributed infrastructures, ProActive has a
 deployment specification mechanism which makes the physical
-deployment independent from the deployment logic. This is realised by
+deployment independent from the deployment logic. This is realized by
  binding virtual node names, used in the source code,
  to machine addresses or names. In practice, this binding is
 implemented in XML configuration files. Since the binding is happens at
 \emph{deployment time}, changing infrastructure for a ProActive
-application is localised in few files and does not require 
+application is localized in few files and does not require 
 recompilation.  Several machines can be aggregated under a single
 virtual node name in the deployment logic, for example, to provide the
 virtual node with certain properties or non-functional deployment
@@ -1998,7 +1998,7 @@ concurrency control.
 \emph{Shared capabilities} may be shared across
 concurrent computations, because they encapsulate
 a means of protection against concurrent access: \emph{pessimistic
-capabilities} like locks and actors serialise computation;
+capabilities} like locks and actors serialize computation;
 %
 \emph{optimistic capabilities} like STM and lock-free capabilities allow
 parallel operations, but use a roll-back schema when
@@ -2056,8 +2056,8 @@ constrained active object topologies.
 \end{figure}
 
 \paragraph{Formal semantics}
-The Encore concurrency model is formalised \cite{ref:encore} using a
-small step operational semantics. Parallel combinators are formalised
+The Encore concurrency model is formalized \cite{ref:encore} using a
+small step operational semantics. Parallel combinators are formalized
 as well, including a soundness proof with the implicit task
 parallelism model
 \cite{encore:parallel-combinators-thesis,party-coordination}.  The
@@ -2067,7 +2067,7 @@ race-freedom \cite{encore:kappa}.
 \paragraph{Implementation and tooling support}
 Encore is a relatively new programming language and there is limited
 tooling support. However, the Encore compiler can emit readable C code
-which can be analysed and debugged using any available tool that works
+which can be analyzed and debugged using any available tool that works
 with the C11 standard.  The currently supported Encore tools are:
 
 \begin{itemize}
@@ -2087,14 +2087,15 @@ active object languages are as important as their design. Their
 discussion exhibits a number of difficult, partially unsolved,
 research questions. They constitute an essential part of this survey.
 
-The implementation of a programming language can be done in a standalone manner with
-a full compiler tool chain or it can be implemented as an API inside
-an established language. A third way to implement an active object
-language is to cross-translate it to another language with a code
-generation backend, i.e., a translator that captures the semantics of
-the source language. The advantage of the latter solution is that
-several backends can be supported, targeting different execution
-platforms, optimised for different needs.
+The implementation of a programming language can be done in a
+standalone manner with a full compiler tool chain or it can be
+implemented as an API inside an established language. A third way to
+implement an active object language is to cross-translate it to
+another language with a code generation backend, i.e., a translator
+that captures the semantics of the source language. The advantage of
+the latter solution is that several backends can be supported,
+targeting different execution platforms, optimized for different
+needs.
 
 Similar to Section~\ref{sec:dimensions}, the following subsection
 establishes dimensions of comparison regarding the runtime system and
@@ -2140,7 +2141,7 @@ when the goal of an active object language is to scale to a large
 number of active objects located on the same machine, or to cope with
 cooperative multi-threading when tasks can be interrupted.  It is a
 challenge to implement this behavior in programming languages that do
-not support thread serialisation, like Java.  Concerning this
+not support thread serialization, like Java.  Concerning this
 dimension, the following questions are raised in general: how are
 active objects and requests mapped to threads?  Should the thread be a
 physical or virtual?
@@ -2159,7 +2160,7 @@ exchanged between active objects, and objects that can be shared
 safely (e.g., immutable objects).  Accessing objects in another entity
 might cause communication overhead and delay the treatment of
 requests. Copying objects might lengthen the initial request
-invocation, because of the serialisation time, but accelerates request
+invocation, because of the serialization time, but accelerates request
 treatment. Handling copies also involves coherency issues.
 % Different languages take different choices on which objects are
 % copied and how the copy and the referencing of objects is handled.
@@ -2278,7 +2279,7 @@ performance of the Java 8 backend with the ProActive backend for ABS
 discussed in Section~\ref{subsec:proactive-backend-abs}.  The only
 drawback is that if a method call contains a recursive stack of
 synchronous calls, this stack needs to be saved when encountering an
-\texttt{await} statement, which cannot be realised with lambda
+\texttt{await} statement, which cannot be realized with lambda
 expressions. To solve this problem, such a call stack can be modeled
 by continuation functions and then saved as lambda expressions. These
 lambda expressions are ordered such that, once released, the
@@ -2340,17 +2341,17 @@ running on one thread. When objects are created, they are assigned to a
 new or existing COG. All invocations on the object are executed on
 the thread of the COG to which the object is assigned.
 Data shared among distributed objects is passed through lambda
-expressions that are sent as serialised messages between the objects,
+expressions that are sent as serialized messages between the objects,
 so all data passed in a distributed system must be
-serialisable. With COGs residing on the same machine, for example
+serializable. With COGs residing on the same machine, for example
 applications that run on a multi-core machine, all data is passed as
 arguments to lambda expressions or synchronous method calls in
 Java~8. Objects can keep references to any other object in any COG as
-inner fields. Similar to data sharing, objects must be serialisable to
+inner fields. Similar to data sharing, objects must be serializable to
 be transferred between distributed objects. Furthermore, the generated
 classes will automatically be loaded on all machines that require an
 object of a particular type, such that remote objects can invoke
-methods on serialised references they receive.
+methods on serialized references they receive.
 
 \paragraph{Error handling}
 In the Java 8 backend, software errors are handled by Java's exception
@@ -2468,7 +2469,7 @@ But as ProActive features multi-active objects, this number can be
 higher, as the active object scheduler can create Java threads on the
 fly to process a compatible request.  Since Java threads are rather
 heavy, the ProActive scheduler implementation makes a particular
-effort in optimising thread usage.  First, a thread pool is
+effort in optimizing thread usage.  First, a thread pool is
 instantiated at active object startup to ensure a basic thread reuse
 policy.  Second, when the number of threads is limited at the
 application level (through multi-active object annotations), that
@@ -2476,7 +2477,7 @@ limit literally maps to Java threads, such that fine performance
 tuning can be achieved at the application level.  In addition, threads
 waiting for a future can be temporarily reused to process the request
 that will indirectly resolve the awaited future. This can be done
-during wait-by-necessity.  To summarise, in ProActive thread creation
+during wait-by-necessity.  To summarize, in ProActive thread creation
 and thread scheduling are almost completely exposed to the programmer,
 allowing him to have far ranging control over the performance of
 ProActive applications.
@@ -2495,10 +2496,10 @@ of ProActive.  Of course, data is shared between the several threads
 of a multi-active objects.
 
 This sharing pattern is implemented using RMI and Java
-serialisation performing a deep copy of the parameters transmitted
+serialization performing a deep copy of the parameters transmitted
 between objects. Future and active objects are implemented by a proxy
-that can be passed by reference and is serialised as a reference
-(without any copy of other referenced objects). The serialisation
+that can be passed by reference and is serialized as a reference
+(without any copy of other referenced objects). The serialization
 mechanism is also used to track multiple references to the same future
 and to implement efficient future update
 strategies~\cite{HKRZ:Coregrid:2010}.
@@ -2511,7 +2512,7 @@ active objects in ProActive are referenced in the RMI registry and can
 be accessed in this way from any other object through the adapted
 protocol.  For non-active objects, traditional Java object references
 are used as they are only referenced within the same active object.
-To summarise, two types of object references exist in ProActive:
+To summarize, two types of object references exist in ProActive:
 global references, retrievable from the RMI registry, and local
 references, acting like standard reference types.
 
@@ -2676,7 +2677,7 @@ annotations that ensures at most one request is progressing at a
 time. This strategy avoids continuations which are difficult to
 implement in Java, because of JVM restrictions. Finally, the Java 8
 backend shares a thread pool for many COGs whereas in the ProActive
-backend each COG has its own thread pool.  To summarise, the ProActive
+backend each COG has its own thread pool.  To summarize, the ProActive
 backend has to handle more idle threads than the Java 8 backend.
 
 % We explain below in more details how we implement ABS preemption
@@ -3261,7 +3262,7 @@ programming languages we presented allow programs to synchronise on
 the result of a method invocation through the use of futures. However,
 different synchronisation patterns exist on futures: from strict
 synchronisation like the \texttt{get} operator of ABS to asynchronous
-reaction to future fulfilment enabled by future chaining in
+reaction to future fulfillment enabled by future chaining in
 Encore. Two synchronisation patterns on futures presented in this
 article feature an interesting compromise: the \texttt{await}
 operation of ABS and Encore enables \emph{cooperative multi-threading}
@@ -3329,7 +3330,7 @@ that no data-race can exist between two different actors.
 It is noteworthy that all four languages are equipped with a \emph{formal
 semantics}, which is the basis for unambiguous implementations and for
 far reaching tool support in terms of static analysis tools, test
-generators, optimisers, etc. For several of the languages discussed
+generators, optimizers, etc. For several of the languages discussed
 here meta properties of the formal semantics were proven, such as type
 safety or data race-freedom.
 
@@ -3477,7 +3478,7 @@ particular, it supports the efficient creation, activation, and
 deactivation of active objects governed by the requirements of an
 application. This is why Orleans is called a \emph{virtual actor
   model}.  Orleans also focuses on efficient execution of active
-objects, including optimised serialisation for inter-actor data
+objects, including optimized serialization for inter-actor data
 transmission. Both object management and data transmission scale in
 terms of distribution and in terms of the number of active objects
 that can interact within a single application.
@@ -3486,17 +3487,10 @@ that can interact within a single application.
 
 \section{Lessons Learned and Conclusion}\label{sec-conclusion}
 
-%\JS{There is an increased parallelism in new active object programming languages.
-%
-%}
-
-%\KIKO{
-
 With the advent of many-core computers and large-scale cloud
 computing, the active object paradigm evolved out of actor-based
 concurrency as one of the most promising candidates to model
 asynchronously parallel and distributed computations in a safe manner.
-%
 We retraced the unfolding of the active object paradigm during the
 past fifteen years by focusing on four representative active object
 languages. We are convinced that active object concepts will
@@ -3505,18 +3499,16 @@ adoption of an actor system in Scala is a first indicator). Therefore,
 it is essential to understand the trade-offs involved in their design
 and implementation.
 
-
-
-In Section~\ref{sec-implementation} it was shown how the semantics of
+In this paper, we discuss and compare design decisions for four active
+object languages and show
+% In Section~\ref{sec-implementation} it was shown 
+how the semantics of
 each language influenced its implementation, how different design
 decisions create new challenges, how these have been addressed, and
 which limitations remain.  One important dimension along which the
 languages can be distinguished is how they handle efficient data
 sharing, and how each language finds a balance between copying and
 safe shared memory.
-
-
-
 We hope that the trade-offs and options discussed in this survey can
 serve as a future reference for designers and implementors of
 programming languages that make use of the active object paradigm.
