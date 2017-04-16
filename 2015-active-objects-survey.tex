@@ -3022,8 +3022,10 @@ mutable passive object so that multiple active objects could work on
 different parts of the same passive object, concurrently. This would
 be safe as well.
 %
-However, the capability system is work in progress and not yet
-available in the compiler.
+The integration such shared passive objects with capability types is
+currently work in progress.
+% However, the capability system is work in progress and not yet
+% available in the compiler.
 
 \paragraph{Error handling}
 
@@ -3037,7 +3039,7 @@ Encore borrows the garbage collector from PonyRT with the necessary
 extension to accommodate future values. Garbage collection consists of
 two parts, collecting active objects, which is covered by Clebsch and
 Drossopoulou~\citeyear{DBLP:conf/oopsla/ClebschD13}, and collecting
-passive objects.
+passive objects~\cite{clebsch2015ownership}.
 
 \subsection{Erlang Backend for Rebeca}
 
@@ -3051,21 +3053,30 @@ language constructs \cite{DBLP:journals/scp/ReynissonSACJIS14}.
 
 \paragraph{Thread creation and scheduling}
 
-Actors, as the only concurrent elements of Rebeca models, are mapped to processes in
-Erlang, concurrently executing elements that are very much lighter than OS-level threads
-(more than 100,000 of them can be run on a single computer) \cite{Erlang-book}. The
-programming facilities of Erlang for developing concurrent applications (i.e., spawn,
-``!'', and receive) allow processes to create new processes and to communicate through
-asynchronous message passing. These capabilities are used to translate Rebeca models to
-Erlang code without the need for modification. The generated processes are scheduled
-by the default scheduler of Erlang, the so-called reduction-based scheduler.
-%To model the actors scheduler of Rebeca, reduction-based scheduler of Erlang is used. Using reduction-based scheduler, an Erlang process is allowed to execute for a time slice of approximately 2000 reductions before a context switch occurs. A reduction corresponds to the execution of one of the Erlang's built-in functions.% So, a single reduction is not a constant value.
+Actors, as the only concurrent elements of Rebeca models, are mapped
+to processes in Erlang, which are
+% concurrently executing elements that are very
+much lighter than OS-level threads (more than 100,000 of them can be
+run on a single computer \cite{Erlang-book}). The programming
+facilities of Erlang for developing concurrent applications (i.e.,
+spawn, ``!'', and receive) allow processes to create new processes and
+to communicate through asynchronous message passing. These
+capabilities are used to translate Rebeca models to Erlang code
+without the need for modification. The generated processes are
+scheduled by the default, reduction-based Erlang scheduler of Erlang.
+% To model the actors scheduler of Rebeca, reduction-based scheduler
+% of Erlang is used. Using reduction-based scheduler, an Erlang
+% process is allowed to execute for a time slice of approximately 2000
+% reductions before a context switch occurs. A reduction corresponds
+% to the execution of one of the Erlang's built-in
+% functions.% So, a single reduction is not a constant value.
 
 \paragraph{Data sharing and object referencing}
 
-Reserving a dedicated memory space for each process in Erlang avoids the need for shared
-objects among processes. When object communication happens, the sent message and its parameters must be
-stored in the message bag of the receiver actor which is located in its dedicated memory
+Reserving a dedicated memory space for each process in Erlang avoids
+sharing objects between processes. When object communication
+happens, the sent message and its parameters are stored in the
+receiver actor's message bag, located in its dedicated memory
 space. %So, a copy of the parameters is stored in the receiver's memory space. %This
 %%mechanism is called copying message passing of Erlang.
 %\LUDO{the end is not clear to me}
