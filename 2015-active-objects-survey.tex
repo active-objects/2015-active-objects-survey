@@ -3386,15 +3386,15 @@ one.
 
 There are several other programming languages that introduce
 high-level abstractions for concurrent programming that deviate from
-the active object approach.  JAC~\cite{ref:jac} stands for Java
-Annotations for Concurrency. It provides Java annotations that allow
-the programmer to specify the kind of parallelism that can occur
-inside a Java object from a relatively high-level perspective. It is
-possible to encode versions of actors in JAC.
+the active object approach.  Java Annotations for Concurrency
+(JAC)~\cite{ref:jac} supports annotations to specify the kind of
+parallelism that can occur inside a Java object from a relatively
+high-level perspective. It is possible to encode versions of actors in
+JAC.
 %
 The concurrency model of
 AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349} is based on the E
-Programming Language~\cite{Miller05concurrencyamong} which implements
+programming language~\cite{Miller05concurrencyamong} which implements
 a communicating event-loop actor model with fully asynchronous futures
 (called promises): calls on futures trigger an asynchronous invocation
 that will be executed when the future is available and objects are
@@ -3431,21 +3431,20 @@ implementation of the Active Objects pattern.
 % open core development platform for Akka distributed systems runtime,
 % play web framework, lagom microservices framework, and Apache Spark
 % in-memory compute engine for Java and Scala.
-All interactions of actors in Akka use only message passing and all
+Interactions between actors in Akka only use message passing and all
 communication is asynchronous.
 % Programmers need to provide a pattern match for all messages that it
 % can accept.  To be able to handle unknown messages, a default case
 % is required.
-Actors interact identically, regardless whether they are on the same
-or separate hosts, communicating directly or through routing
-facilities, running on a few threads or many threads, etc. Such
-details may be altered at deployment time through a configuration
-mechanism, allowing a program to make use of more (powerful) servers
-without modification.  Akka is ideally suited for hybrid cloud
-architectures and the elastic scaling of cloud platforms. In one
-experiment it only took four minutes to start a 1000-node Akka cluster
-on Google Compute Engine (GCE), including the time to start the GCE
-instances.
+Actors interact in the same way, regardless whether they are on the
+same or separate hosts, communicate directly or through routing
+facilities, run on a few threads or many threads, etc. Such details
+may be altered at deployment time through a configuration mechanism,
+allowing a program to make use of more (powerful) servers without
+modification.  Akka is well suited for hybrid cloud architectures and
+the elastic scaling of cloud platforms. In one experiment it only took
+four minutes to start a 1000-node Akka cluster on Google Compute
+Engine (GCE), including the time to start the GCE instances.
 % In Akka, actors form a tree with actors being parents to the actors
 % they've created. As a parent, the actor is responsible for handling
 % its children's failures (supervision), forming a chain of
@@ -3459,7 +3458,7 @@ instances.
 Orleans~\cite{BykovGKLPT11,BernsteinB16} is an actor framework
 developed at Microsoft research and used in several Microsoft
 products, including online games relying on a cloud
-infrastructure. Its strength is the runtime support for the creation,
+infrastructure. Its strength is the runtime support for creation,
 execution, and state management of actors.
 % From a language point of view, Orleans does not provide a publicly
 % available formal semantics nor an exhaustive and precise description
@@ -3473,16 +3472,15 @@ of possible modifications of the object state between the \ec{await}
 and the future access. This semantics for future access is similar to
 the way futures are handled in general in Akka.
 %
-There is extensive runtime support in the Orleans
-framework. Importantly, it supports the efficient creation,
-activation, and deactivation of active objects governed by the
-requirements of an application. This is why Orleans is called a
-\emph{virtual actor model}.  Orleans also focuses on efficient
-execution of active objects, including optimised serialisation for
-inter-actor data transmission. Both, object management and data
-transmission, scale in terms of distribution and in terms of the
-number of active objects that can interact within a single
-application.
+There is extensive runtime support in the Orleans framework; in
+particular, it supports the efficient creation, activation, and
+deactivation of active objects governed by the requirements of an
+application. This is why Orleans is called a \emph{virtual actor
+  model}.  Orleans also focuses on efficient execution of active
+objects, including optimised serialisation for inter-actor data
+transmission. Both object management and data transmission scale in
+terms of distribution and in terms of the number of active objects
+that can interact within a single application.
 % The Orleans runtime also supports the application in the management
 % of resources, storage, errors, failures, and recovery.
 
