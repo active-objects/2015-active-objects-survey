@@ -112,17 +112,17 @@ Kiko FERNANDEZ-REYES and Albert Mingkun YANG
 %conclusions. The title need not be repeated. Because abstracts are extracted and used
 %separately, do not use the first person, do not display mathematics, and do not use
 %citation reference numbers. Try to avoid starting with the words "This paper ..."
-\begin{abstract} % 92 words/100
+\begin{abstract} % 94 words/100
   To program parallel systems efficiently and easily, a wide range of
   programming models have been proposed, each with different choices
   concerning synchronization and communication between parallel
   entities. Among them, the actor model is based on loosely coupled
   parallel entities that communicate by means of asynchronous messages
   and mailboxes.  Some actor languages provide a strong integration
-  with the object-oriented concepts; these are often called active
-  object languages. This paper reviews four major actor and active
-  object languages and compares them according to well-chosen
-  dimensions that cover the programming paradigms and their
+  with object-oriented concepts; these are often called active object
+  languages. This paper reviews four major actor and active object
+  languages and compares them according to carefully chosen dimensions
+  that cover central aspects of the programming paradigms and their
   implementation.
 \end{abstract}
 \category{D.3.2}{Programming languages}{Language Classifications}[Concurrent,
@@ -237,11 +237,11 @@ than explicit in the programs.
 Within actor-based languages we focus in this survey on one specific
 category that uses asynchronous method calls as its communication
 paradigm. Languages in this category are often called \emph{active
-  object} languages. Whereas messages sent to actor are generally
+  object} languages. Whereas messages sent to an actor are generally
 selected by pattern matching over the message queue, asynchronous
 method calls restrict the communication between active objects to
-messages which trigger method activations. Consequently messages to an
-actor can be indefinitely ignored if the actor never switches to an
+messages which trigger method activations. Consequently, messages to
+an actor can be indefinitely ignored if the actor never switches to an
 appropriate state, whereas it can be statically guaranteed that
 asynchronous method calls to an active object are understood.  The
 basic unit of concurrency is the same in all actor languages, and the
@@ -252,9 +252,9 @@ differences regarding the expressiveness of the different languages,
 it causes considerable differences in terms of the abstractions
 offered to the programmer. By supporting \emph{communication by
   asynchronous method calls}, the programming model of active object
-languages is tightly integrated with the object-oriented programming
-paradigm and its programming abstractions, which are familiar to most
-programmers.
+languages is tightly integrated with the \emph{object-oriented}
+programming paradigm and its programming abstractions, which are
+familiar to most programmers.
 
 We start this survey by giving the historical context that led to the
 existence of active object languages and that justifies their
@@ -285,16 +285,16 @@ compared with respect to a number of \emph{dimensions} in the design
 space of active object languages: the degree of synchronization, the
 degree of transparency, and the degree of data sharing.
 
-
 This paper is organized as follows. Section~\ref{AOlanguages} presents
 an overview of the actor and active object languages; it first adopts
 a historical perspective, and then focuses on the four chosen
-languages, presenting their design principles, the approach they
-advocate, and the tools they offer.  Section~\ref{sec-implementation}
-focuses on the implementation and runtime support for the presented
+languages, justifying their choice, presenting their design
+principles, the approach they advocate, and the tools they offer.
+Section~\ref{sec-implementation} focuses on the implementation and
+runtime support for the presented
 languages. Section~\ref{sec-discussion} discusses design aspects of
-active object languages and other related languages, and
-Section~\ref{sec-conclusion} concludes the paper.
+active object and related languages, and Section~\ref{sec-conclusion}
+concludes the paper.
 
 \section{Active Object Languages}
 \label{AOlanguages}
@@ -383,25 +383,25 @@ supporting a huge number of independent actors.
 %number of variations on the actor model were developed, each with wide varying semantics.
 %-->> FRANK}
 
-In the original Actor models above mentioned, the interpretation and
-processing of messages are confined to and part of the overall
-internal behavior of an actor. However, this does not allow a clear
-separation of concerns between communication and computation, and as
-such does not support a ``programming to interfaces'' discipline
-\cite{Meyer92}.  A major advance in the development of high-level
-programming languages is the compositional construction of programs in
-terms of modules and their interfaces, which gave rise to the
-object-oriented programming paradigm.  Modules are used to model
-abstract data types and as such provide a powerful abstraction which
-fully integrates data and control.  In the object-oriented paradigm,
-modules are generalized to classes.  Classes can be characterized as
-modules from which objects can be dynamically instantiated and
-referred to by unique identifiers (generated at runtime).  The
-concepts of classes and objects were introduced in Simula 67
-\cite{dahl66cacm}, the first object-oriented language. Whereas Simula
-was a sequential language with a single thread of control, it was
-developed to simulate real-world (concurrent) systems and already
-featured the concept of \emph{coroutines} \cite{dahl68simula}.
+In the original Actor models mentioned above, the interpretation and
+processing of messages is confined to and part of the overall internal
+behavior of an actor. However, this does not allow a clear separation
+of concerns between communication and computation, and as such does
+not support a ``programming to interfaces'' discipline \cite{Meyer92}.
+A major advance in the development of high-level programming languages
+is the compositional construction of programs in terms of modules and
+their interfaces, which gave rise to the object-oriented programming
+paradigm.  Modules are used to model abstract data types and as such
+provide a powerful abstraction which fully integrates data and
+control.  In the object-oriented paradigm, modules are generalized to
+classes.  Classes can be characterized as modules from which objects
+can be dynamically instantiated and referred to by unique identifiers
+(generated at runtime).  The concepts of classes and objects were
+introduced in Simula 67 \cite{dahl66cacm}, the first object-oriented
+language. Whereas Simula was a sequential language with a single
+thread of control, it was developed to simulate real-world
+(concurrent) systems and already featured the concept of
+\emph{coroutines} \cite{dahl68simula}.
 
 Active (or concurrent) object languages integrate the basic Actor
 model with object-oriented concepts and as such do support interface
@@ -409,10 +409,10 @@ abstractions of implementation details.  This integration was first
 proposed in ABCL~\cite{Yonezawa:1986:OCP:28697.28722}. It can be
 realized by modeling a message as an asynchronous method call, thus
 fixing the interpretation of a message by a corresponding method
-definition.  As in the actor-based language Rebeca
+definition.  Returning values from a method call can be modeled by
+another asynchronous message, as done in the actor-based language
+Rebeca
 \cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/jucs/SirjaniBM05},
-returning values from a method call can be modeled by another
-asynchronous message.
 % In Rebeca
 % \cite{DBLP:conf/csicc/SirjaniMM01,DBLP:journals/jucs/SirjaniBM05}
 % methods are run to completion without any further synchronization
@@ -421,8 +421,8 @@ asynchronous message.
 
 The notion of method calls can be further integrated by directly
 supporting return values while maintaining a loose coupling between
-actors; this leads to the notion of future variables.  Futures were
-originally discovered by Baker and Hewitt in the
+actors; this leads to the notion of future variables.  \emph{Futures}
+were originally discovered by Baker and Hewitt in the late
 1970s~\cite{BakerHH77}, later rediscovered by Liskov and Shrira as
 promises in Argus~\cite{Liskov88}, by Halstead in
 MultiLisp~\cite{Halstead:1985:MLC:4472.4478}, before finding their way
@@ -475,18 +475,18 @@ be passed by reference, due to a capability type
 system~\cite{encore:kappa,encore-lolcat}.
 
 \paragraph{Selection of representative languages}
-In the remaining article we discuss these four representative active
-object languages in detail. Our selection strives to cover different
-aspects: modeling languages designed for analysis (ABS, Rebeca) vs.\
-languages optimized for efficient execution (Encore, ProActive/ASP);
-close to the classical actor model and distributed systems (Rebeca,
-partially ABS, ProActive/ASP) vs.\ targeted at multi\-core platforms
-(Encore); code generation (ABS) vs.\ runtime environment (Encore,
-ProActive/ASP). We have also made sure that the four languages
-discussed in detail have left the experimental stage and are available
-in stable, public distributions. Those four language also have a
-formally defined semantics allowing us to precisely compare the
-behavior of the programs written in the different languages.
+In the remaining article we discuss these four active object languages
+in detail: Rebeca, ABS, ASP, Encore. Our selection intends to cover
+different aspects: modeling languages designed for analysis (ABS,
+Rebeca) vs.\ languages optimized for efficient execution (Encore,
+ProActive/ASP); close to the classical actor model and distributed
+systems (Rebeca, partially ABS, ProActive/ASP) vs.\ targeted at
+multi\-core platforms (Encore); code generation (ABS) vs.\ runtime
+environment (Encore, ProActive/ASP). We have also made sure that the
+four languages discussed in detail have left the experimental stage
+and are available in stable, public distributions. All four language
+have a formally defined semantics allowing us to precisely compare the
+behavior of the programs written in them.
 
 % All these languages have drawn attention on different areas.
 % %
@@ -498,8 +498,8 @@ behavior of the programs written in the different languages.
 
 \paragraph{Other high-level concurrent languages}
 
-A discussion of other high-level concurrent languages can be found in
-Section~\ref{sec:other-high-level}.
+A detailed discussion of other high-level concurrent languages can be
+found in Section~\ref{sec:other-high-level}.
 
 %There are several other programming languages that introduce
 %high-level abstractions for concurrent programming that deviate from
@@ -560,9 +560,9 @@ their design.
 \paragraph{Objective of the language}
 Identifying the objective of the language, for which purpose it was
 created, is crucial to understand the design of a programming language
-and the trade-offs that have been taken between different aspects.
-For example, the performance of the language can be a crucial factor
-for which another aspect can be given less priority, such as the
+and the trade-offs that have been made between different aspects.  For
+example, the performance of the language can be a crucial factor for
+which another aspect can be given less priority, such as the
 accessibility of the language to non-experts.
 % Also, a high expressiveness can be expected for a language targeting
 % several platforms.  Having a precise objective for a language
@@ -585,39 +585,38 @@ due to the causal dependency created by the flow of messages.
 % the set of messages an actor can handle at a given point in time.
 Many active object languages use futures as a synchronization
 mechanism.  A future represents a result that has not been computed
-yet. Once the result has been computed, it can be made available automatically
-or be explicitly retrieved, depending on the language design;
-in each case we say that the future is \emph{resolved}.  A process can
-also block waiting for a future to be resolved.
+yet. Once the result has been computed, it can be made available
+automatically or be explicitly retrieved, depending on the language
+design; in each case we say the future is \emph{resolved}.  A process
+can also block while waiting for a future to be resolved.
 %
 In active object languages, futures represent the result of
 asynchronous invocations. Usually a future access is a synchronization
-point. This kind of synchronization can make concurrent
-programming easier, as it ensures a sequential workflow upon which the
-programmer can rely.
+point. This kind of synchronization can make concurrent programming
+easier, as it ensures a sequential workflow upon which the programmer
+can rely.
 
-Several active object languages support cooperative scheduling: a
-thread can be suspended to handle another message\footnote{The terms
+Some active object languages support cooperative scheduling: a thread
+can be suspended to handle another message\footnote{The terms
   \emph{message} and \emph{method call} are used interchangeably in
   the literature on active object languages, depending on the
-  tradition that influenced language development.  Here we adopt
-  the terminology that is standard for the language under
-  discussion.} and resumed later.  Suspension can be triggered when
-checking if a future has been resolved. This breaks the
-sequential processing of a message (call), but allows programs to
-be more efficient and less deadlock-prone.
+  tradition that influenced language development.  Here we adopt the
+  terminology that is standard for the language under discussion.} and
+resumed later.  Suspension can be triggered when checking whether a
+future was resolved. This breaks the sequential processing of a
+message, but can make program execution more efficient and less
+deadlock-prone.
 
 Another synchronisation constraint is related to message
 ordering~\cite{CMT-DisComp96}. Ensuring an order of message reception,
-like point-to-point FIFO, adds some synchronisation which can lead to
-a loss of efficiency and a gain in program properties. The programmer
-to rely on some order of message delivery, which simplifies
+like point-to-point FIFO, adds synchronisation which can lead to a
+loss of efficiency and a gain in program properties. The programmer
+can rely on some order of message delivery, which simplifies
 programming. Often some order of message delivery is necessary for the
 execution of the application, especially when the messages reach a
 stateful object. Ensuring that the operations are done in the correct
-order by explicit synchronisations, is more costly and more
-constraining than relying on a message ordering property.
-
+order by explicit synchronisation is more costly and more constraining
+than relying on a message ordering property.
 
 \paragraph{Degree of transparency}
 This aspect concerns the number and complexity of the programming
@@ -634,7 +633,7 @@ programs, because the programmer does not need to know the specifics
 of the concurrency model and parallelism is provided
 automatically. However, for complex programs, the benefits of
 transparency are weaker, because exposing the programming abstractions
-can make programming, debugging, or optimisation easier.
+can make programming, debugging, or optimization easier.
 
 \paragraph{Degree of data sharing}
 Data sharing is a crucial aspect of concurrent and distributed
@@ -647,7 +646,7 @@ is often more efficient, as it avoids communication overhead.
 
 Efficiency aside, the complexity of the language implementation varies
 with the degree of data sharing. Copying data raises the problem of
-data consistency, as data modifications may not be reflected on all
+data consistency, as data modifications may not be reflected in all
 copies.  Shared data access makes data consistency easier to obtain,
 but creates additional communication about the shared memory,
 additional synchronization, and delays. In practice, active object and
@@ -667,7 +666,6 @@ passive objects (i.e., standard objects). Second, concurrent object
 groups provide a different alternative where all objects are
 accessible from anywhere but the objects in the same group share the
 same thread and their access is synchronized.
-
 
 \paragraph{Formal semantics}
 To establish formal properties of a language as well as for formal
