@@ -745,6 +745,56 @@ core Rebeca can be extended in different dimensions, creating
 the Rebeca family, to support modeling and analysis of a wider variety
 of application domains (see Table~\ref{tab::Rebecacomparison}).
 
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}m{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+\begin{table}
+  \tbl{Summary of dimensions of comparison for  members of Rebeca family
+    \label{tab::Rebecacomparison}}{%
+    \scriptsize
+    \begin{tabular}{|L{1.8cm}@{\,}|L{1.8cm}@{\,}|L{1.2cm}|L{2.4cm}@{\,}|L{1.1cm}|L{1.3cm}@{\,}|L{1.6cm}|}
+      \hline
+      & \textbf{Objective} & \textbf{Synchro\-nization} & \textbf{Transparency} &
+      \textbf{Data Sharing} & \textbf{Formal Semantics} & \textbf{Tool Support} \\
+      \hline
+      \textbf{Rebeca} & Modeling and verification of distributed, concurrent
+                            systems & None & (Full) message queues and  interleaving of execution  &
+                                                                                                     None & SOS, ACP & Afra integrated tool, various backends \\
+      \hline
+      \textbf{Extended Rebeca} &  Globally asynchronous-locally synchronous
+                                      systems & Locally synchro\-nous messages & As in Rebeca & None & SOS & None \\
+      \hline
+      \textbf{RebecaSys} & Hardware/ software co-design & Wait statement & As
+                                                                                in Rebeca + synchronization over global variables & Global variables & LTS &
+                                                                                                                                                             Model Checking, Simulation \\
+      \hline
+      \textbf{Variable Rebeca} & Product lines of actors & None & As in Rebeca
+                                                                       + feature inclusion for selected product & None & SOS & Rebeca tool (after manual mapping to Rebeca)
+                                                                       \\
+      \hline
+      \textbf{Broadcasting Rebeca} & Actors with broadcasting abilities & None
+                                                      & As in Rebeca + broadcasting to all actors mechanism & None & SOS & Model
+                                                                                                                           Checking \\
+      \hline
+      \textbf{Wireless Rebeca} & Ad-hoc mobile networks & None & As in BR
+                                                                      + handling
+                                                                      connectivity of
+                                                                      nodes +
+                                                                      multi-casting &
+                                                                      None & SOS & Model
+                                                                                                                                          Checking \\
+      \hline
+      \textbf{Timed Rebeca} & Realtime actors & Delay statement & As in Rebeca
+                                                                       + Progress of time  & None & SOS,\newline RT Maude, Timed Automata, FTTS & Afra
+                                                                                                                                          integrated tool, various backends \\
+      \hline
+      \textbf{Probabilistic Timed Rebeca} & Probabilistic real-time actors &
+                                                                                  As in TRebeca & As in TR & None & SOS & Backends IMCA and Prism \\
+      \hline
+    \end{tabular}
+  }
+\end{table}
+
 %
 Extended
 Rebeca~\cite{DBLP:conf/acsd/SirjaniBMS05,DBLP:journals/jucs/SirjaniBM05}
@@ -793,7 +843,7 @@ message queue (Line 1) and may declare \emph{state variables} (Line
 \ref{line:rebec:statevar}).  Each actor has a set of known actors to
 which it can send messages. For example, an actor of type
 \texttt{Dispatcher} knows three actors of type \texttt{Server} (Line
-\ref{line:rebec:knownrebecs}), to which it can send
+\ref{line:rebec:knownrebecs}), to which it can send a
 \texttt{reqForMovie} message (Lines
 \ref{line:rebec:reqForMovieStart}--\ref{line:rebec:reqForMovieEnd}). Each
 reactive class in Rebeca may have a constructor. Constructors have the
@@ -901,7 +951,7 @@ only communicate by asynchronous message passing, but Rebeca ensures a
 FIFO point-to-point message ordering, guaranteeing some execution
 order.  Extended Rebeca
 \cite{DBLP:conf/acsd/SirjaniBMS05,DBLP:journals/jucs/SirjaniBM05} adds
-tightly coupled component to Rebeca; actors inside a component can be
+tightly coupled components; actors inside a component can be
 synchronized by a handshake communication mechanism guaranteeing a
 causal message ordering.  RebecaSys adds \textit{wait} statements to
 the syntax and a block of shared \textit{global variables} to the
@@ -918,7 +968,6 @@ and unicast to the sender to Broadcasting Rebeca. Neighbors of an
 actor are those actors that sent a message to it.  There is no
 additional synchronization between two given actors in Broadcasting
 and Wireless Rebeca.
-
 
 \paragraph{Degree of transparency}
 In Rebeca, programmers are not exposed to asynchronous communication
@@ -939,7 +988,7 @@ sharing.  There are no shared variables among actors in
 Rebeca. Parameters in messages sent among actors are passed by value.
 This is even the case if a reference to an actor is passed as a
 parameter; the sent reference is created as a shallow copy of the
-original reference, e.g., in Fig.~\ref{fig:rebeca-example} Line
+original reference, e.g., in Fig.~\ref{fig:rebeca-example}, Line
 \ref{line:rebec:reqForMovieEnd} \texttt{Dispatcher} sends a request to
 the server \texttt{m3} and passes the reference to the client to
 \texttt{m3} as a parameter instead of passing a fresh copy of the
@@ -974,59 +1023,10 @@ Formal semantics of Probabilistic Timed Rebeca is defined in terms of
 Timed Markov Decision Processes in
 \cite{DBLP:journals/eceasst/JafariKSH14}.
 
-\newcolumntype{L}[1]{>{\raggedright\arraybackslash}m{#1}}
-\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
-\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
-\begin{table}
-  \tbl{Summary of dimensions of comparison for  members of Rebeca family
-    \label{tab::Rebecacomparison}}{%
-    \scriptsize
-    \begin{tabular}{|L{1.8cm}@{\,}|L{1.8cm}@{\,}|L{1.2cm}|L{2.4cm}@{\,}|L{1.1cm}|L{1.3cm}@{\,}|L{1.6cm}|}
-      \hline
-      & \textbf{Objective} & \textbf{Synchro\-nization} & \textbf{Transparency} &
-      \textbf{Data Sharing} & \textbf{Formal Semantics} & \textbf{Tool Support} \\
-      \hline
-      \textbf{Rebeca} & Modeling and verification of distributed, concurrent
-                            systems & None & (Full) message queues and  interleaving of execution  &
-                                                                                                     None & SOS, ACP & Afra integrated tool, various backends \\
-      \hline
-      \textbf{Extended Rebeca} &  Globally asynchronous-locally synchronous
-                                      systems & Locally synchro\-nous messages & As in Rebeca & None & SOS & None \\
-      \hline
-      \textbf{RebecaSys} & Hardware/ software co-design & Wait statement & As
-                                                                                in Rebeca + synchronization over global variables & Global variables & LTS &
-                                                                                                                                                             Model Checking, Simulation \\
-      \hline
-      \textbf{Variable Rebeca} & Product lines of actors & None & As in Rebeca
-                                                                       + feature inclusion for selected product & None & SOS & Rebeca tool (after manual mapping to Rebeca)
-                                                                       \\
-      \hline
-      \textbf{Broadcasting Rebeca} & Actors with broadcasting abilities & None
-                                                      & As in Rebeca + broadcasting to all actors mechanism & None & SOS & Model
-                                                                                                                           Checking \\
-      \hline
-      \textbf{Wireless Rebeca} & Ad-hoc mobile networks & None & As in BR
-                                                                      + handling
-                                                                      connectivity of
-                                                                      nodes +
-                                                                      multi-casting &
-                                                                      None & SOS & Model
-                                                                                                                                          Checking \\
-      \hline
-      \textbf{Timed Rebeca} & Realtime actors & Delay statement & As in Rebeca
-                                                                       + Progress of time  & None & SOS,\newline RT Maude, Timed Automata, FTTS & Afra
-                                                                                                                                          integrated tool, various backends \\
-      \hline
-      \textbf{Probabilistic Timed Rebeca} & Probabilistic real-time actors &
-                                                                                  As in TRebeca & As in TR & None & SOS & Backends IMCA and Prism \\
-      \hline
-    \end{tabular}
-  }
-\end{table}
-
 \paragraph{Implementation and tooling support}
-There is a wide range of analysis and mapping tool sets for Rebeca family models:\footnote{These are
-accessible from the Rebeca home page, see \url{http://rebeca-lang.org}}
+There is a wide range of analysis and mapping tool sets for Rebeca
+family models:\footnote{These are accessible from the Rebeca home
+  page, see \url{http://rebeca-lang.org}}
 \begin{itemize}
 \item Eclipse-based editor with syntax highlighting for writing models and  properties
 \item Compiler and build system integrated with the error location mechanism of Eclipse
@@ -1040,35 +1040,36 @@ accessible from the Rebeca home page, see \url{http://rebeca-lang.org}}
 \end{itemize}
 
 % The majority 
-Most of these tools and libraries are part of Afra,
-the modeling and model checking IDE for Rebeca family models, but
-there are aslo some
+Most of these tools and libraries are part of Afra, the modeling and
+model checking IDE for Rebeca family models, but there are some
 % Additionally, there are various 
-stand-alone tools:
+stand-alone tools as well:
 %  for the analysis of Rebeca models:
 \begin{itemize}
 \item Simulator backend for Rebeca and Timed Rebeca in Erlang
   \cite{DBLP:journals/scp/ReynissonSACJIS14}
-
-\item Analysis backend for Timed Rebeca in Real-Time Maude \cite{DBLP:journals/scp/Sabahi-KavianiK15}
-
-\item Model checking tool chain for  Probabilistic Timed Rebeca \cite{DBLP:journals/eceasst/JafariKSH14} using PRISM and IMCA
-
-\item SysFier: model checking tool for SystemC designs  \cite{DBLP:journals/tecs/RazaviBSKSS10}
-
-\item Sarir:  $\mu$CRL2 model checker for Rebeca \cite{DBLP:conf/acsd/HojjatSMG07}
-
-\item Distributed model checking tool for Rebeca models \cite{DBLP:journals/eceasst/KhamespanahSMSR15}
-
-\item Model checking tool for Broadcasting Rebeca \cite{DBLP:conf/fsen/YousefiGK15}
-
-\item Bounded Rational LTL model checker of Rebeca  \cite{DBLP:conf/fsen/BehjatiSA09}
-
-\item Guided search engine for deadlock detection \cite{DBLP:conf/facs2/SigurdarsonSBR12}
+\item Analysis backend for Timed Rebeca in Real-Time Maude
+  \cite{DBLP:journals/scp/Sabahi-KavianiK15}
+\item Model checking tool chain for Probabilistic Timed Rebeca
+  \cite{DBLP:journals/eceasst/JafariKSH14} using PRISM and IMCA
+\item SysFier: model checking tool for SystemC designs
+  \cite{DBLP:journals/tecs/RazaviBSKSS10}
+\item Sarir: $\mu$CRL2 model checker for Rebeca
+  \cite{DBLP:conf/acsd/HojjatSMG07}
+\item Distributed model checking tool for Rebeca models
+  \cite{DBLP:journals/eceasst/KhamespanahSMSR15}
+\item Model checking tool for Broadcasting Rebeca
+  \cite{DBLP:conf/fsen/YousefiGK15}
+\item Bounded Rational LTL model checker of Rebeca
+  \cite{DBLP:conf/fsen/BehjatiSA09}
+\item Guided search engine for deadlock detection
+  \cite{DBLP:conf/facs2/SigurdarsonSBR12}
 \end{itemize}
 
-The dimensions of comparison for members of the Rebeca
-language family are summarized in Table~\ref{tab::Rebecacomparison}.
+% This is redundant (RH):
+%
+% The dimensions of comparison for members of the Rebeca language family
+% are summarized in Table~\ref{tab::Rebecacomparison}.
 
 \subsubsection{ABS}\label{sec:abs-lang}
 
@@ -1078,8 +1079,8 @@ language family are summarized in Table~\ref{tab::Rebecacomparison}.
 \paragraph{General presentation and objective of the language}
 The \emph{A}bstract \emph{B}ehavioral \emph{S}pecification language
 (ABS) \cite{JHSSS10} is an object-oriented, concurrent modeling
-language developed since 2009 in a series of EC-funded research
-projects. %\footnote{For information about  HATS see
+language developed since 2009. % in a series of EC-funded research projects. 
+%\footnote{For information about  HATS see
  % \url{www.hats-project.eu}, and for Envisage see
  % \url{www.envisage-project.eu}.}
  Its ancestors include Creol
@@ -1088,14 +1089,14 @@ projects. %\footnote{For information about  HATS see
 In contrast to design-oriented or architectural languages, ABS code is
 fully executable. There is a simulator as well as several code
 generation backends (at the moment, for Java, Haskell, and Erlang). At
-the same time, ABS abstracts from features that make automatic
+the same time, ABS abstracts away from features that make automatic
 analysis difficult in mainstream programming languages. For example,
 ABS has an object model, but it does not support code inheritance and
 it enforces programming to interfaces as well as strong
 encapsulation. It retains, however, modeling features that are
-essential in realistic applications, for example, aliasing and
+essential for real-world applications, for example, aliasing and
 unbounded object creation.
-
+%
 The main design goal of ABS was to create a language that permits the
 complex behavior of concurrent objects to be specified in a concise,
 natural manner, while keeping automated analysis of that behavior
@@ -1104,8 +1105,8 @@ feasible and scalable.
 There are extensions of ABS to model product variability
 \cite{HHJLSSW12} as well as time and other resources
 \cite{johnsen15jlamp} which have been used to, e.g., model and analyse
-industrial applications deployed on the cloud \cite{ABHJSTW13}, but
-these extensions are considered to be out of scope of the present article.
+industrial software deployed on the cloud \cite{ABHJSTW13}, but these
+extensions are considered to be out of scope of the present article.
 
 \begin{figure}
 \centering
@@ -1115,7 +1116,7 @@ these extensions are considered to be out of scope of the present article.
 \node[rectangle,
           ,shading=axis,shading angle=180,top color=white,bottom color=black!25, line width=2pt,
           minimum width=7.4cm, minimum height=.6cm, draw] (ass) at (0,4.5)
-          {History-Based Behavioural Interface Specification};
+          {Behavioural Interface Specification};
 
 \node[rectangle,
           ,shading=axis,shading angle=180,top color=white,bottom color=brown!20, line width=2pt,
@@ -1187,7 +1188,7 @@ s!process(fd); %\label{abs:main:end}%
 
 \paragraph{Language description}
 The language layers of ABS are displayed in Fig.~\ref{fig:layer}.
-Based on parametric (first-order) abstract data types, a simple, pure,
+Based on parametric (first-order) abstract data types, a pure,
 first-order functional language with pattern matching and strict
 evaluation is defined. On top of this functional layer, there are
 objects and a standard imperative layer. So far, this is very much
@@ -1255,22 +1256,22 @@ particular, synchronization can depend on the resolution of futures;
 i.e., cooperative scheduling can depend on the presence of return
 values from asynchronous method calls.
 %
-In the example, a first synchronization point is reached at
+In the example, a synchronization point is reached at
 Line~\ref{abs:process:awaitd} in the body of \lstinline{process()}. It
 ensures that the value of the future \lstinline{fd} is available. If
-\lstinline{init()} has not been already scheduled, it will be
+\lstinline{init()} had not been already scheduled, it will be
 scheduled now. Once the value of \lstinline{fd} is available, it is
 retrieved with a \lstinline{get} expression. Note that \lstinline{rd}
 and \lstinline{d} might well be aliased. The standard ABS idiom for
 asynchronous method calls in ABS is as follows:
-
+%
 \begin{center}
   \lstinline{Fut<T> fx = o!m(); ... ; await fx?; T x = fx.get;}
 \end{center}
 
 In many cases of simple control flow, \lstinline{await} and
-\lstinline{get} follow an asynchronous call directly. For this common
-situation the abbreviation
+\lstinline{get} follow an asynchronous call directly, without
+intervening code. For this common situation the abbreviation
 \begin{center}
   \lstinline{T x = await o!m();}
 \end{center}
@@ -1298,7 +1299,6 @@ to be described.  Analysis in this setting has been shown to be
 compositional \cite{AlbertAFGGMPR14,SDE:BoerCJ07} and scalable
 \cite{DinTHJ15}.  Section~\ref{sec:implem-java-8} discusses a possible
 implementation of cooperative scheduling for ABS.
-
 
 % \TODO{Page 12: It took me some time to understand the concurrency model of ABS. It is
 % explained fairly low-level. Shouldn’t one first say that COGs process concurrently and
@@ -1370,25 +1370,22 @@ implementation of cooperative scheduling for ABS.
 %   s!consume();
 % }
 
-
 \paragraph{Degree of synchronization}
 If one attempts to retrieve a future value that is not yet ready, this
 results in the blockage of its COG until the value becomes
 available. Obviously, this can easily lead to deadlocks. Many
 deadlocks can be avoided by guarding \lstinline{get} expressions with
-an \lstinline{await} (Line~\ref{abs:process:awaitd}). Clearly, not all
-deadlocks can be prevented in this manner. In practice, however,
-deadlocks are easy to avoid, because synchronization points are
-explicit. In addition, ABS comes with an automated deadlock analysis
-tool \cite{CGM:SoSym2014} that detects potential deadlocks.  An
-important point is that no data races can occur between explicit
-synchronization points (\lstinline{release}, \lstinline{await}), which
-makes computations deterministic.  Communication is asynchronous in
-ABS, and no particular ordering has to be ensured on request
-communication and service.  Obviously, execution in general is
-non-deterministic unless the scheduling of service requests is also
-controlled.
-
+an \lstinline{await} (Line~\ref{abs:process:awaitd}), however, not all
+deadlocks can be prevented in this manner. In practice, deadlocks are
+easy to avoid, because synchronization points are explicit. In
+addition, ABS comes with automated deadlock detection tools
+\cite{CGM:SoSym2014,AGI16}.  An important point is that no data races
+can occur between explicit synchronization points
+(\lstinline{release}, \lstinline{await}), which makes computations
+deterministic.  Communication is asynchronous in ABS, and no
+particular ordering has to be ensured on request communication and
+service.  Obviously, execution in general is non-deterministic unless
+the scheduling of service requests is also controlled.
 
 \paragraph{Degree of transparency}
 ABS is an abstract language and implementation-specific aspects
@@ -1400,7 +1397,7 @@ the user may allow task interleaving by explicitly introducing task
 release points using \lstinline{release} and \lstinline{await}. Using
 these features, the user is exposed to the notion of asynchronous vs.\
 synchronous calls, futures, and thread interleaving, but the language
-still retains a compositional proof theory \cite{SDE:BoerCJ07}.
+still retains a compositional proof theory \cite{Din14fac}.
 
 \paragraph{Degree of data sharing} There is no designated active
 object in a COG, all objects may be accessed remotely. Thus, values
@@ -1437,15 +1434,16 @@ possible to prove global behavioral properties of an ABS model by
 \paragraph{Implementation and tooling support}
 
 As ABS has been developed with the goal of being analysable, there is
-a wide range of tools available. Most of them support the full ABS
-language and are fully automatic. An overview of several of the tools
-is available \cite{BFH14,WongAMPSS12}.
-There is an Eclipse plug-in that provides a development environment
-for ABS and integrates most tools. An alternative is the web-based ABS
-collaboratory \cite{domenech17fase} that runs in a browser and permits
-to try out most ABS tools. The collaboratory can be used either as a
-service or installed locally. Here is a list of currently supported
-tools for ABS:
+a wide range of tools available.\footnote{These are accessible from
+  the ABS home page, see \url{http://abs-models.org}} Most of them
+support the full ABS language and are fully automatic, see the
+overviews \cite{BFH14,WongAMPSS12}.  There is an Eclipse plug-in that
+provides a development environment for ABS and integrates most
+tools. An alternative is the web-based ABS collaboratory
+\cite{domenech17fase} that runs in a browser and permits to try out
+most ABS tools. The collaboratory can be used either as a service or
+installed locally. Here is a list of currently supported tools for
+ABS:
 
 \begin{itemize}
 \item An editor with syntax highlighting and integrated build system,
@@ -1458,7 +1456,7 @@ tools for ABS:
   8~\cite{serbanescuNABN14a}.
 \item A glass box test case generator for \emph{concurrent} models
   \cite{AlbertAGM15}
-\item A sound deadlock analysis tool \cite{CGM:SoSym2014}
+\item Sound deadlock analysis tools \cite{CGM:SoSym2014,AGI16}
 \item A worst-case resource analysis tool that can be parameterized
   with a cost model for execution time, memory consumption,
   transmission size, peak cost and various other cost categories
@@ -1467,7 +1465,6 @@ tools for ABS:
   properties \cite{ref:key,DinTHJ15} for models with an
   \emph{unbounded} number of objects and tasks
 \end{itemize}
-
 
 \subsubsection{ProActive and ASP}
 
@@ -1484,12 +1481,12 @@ distributed infrastructures such as clusters, grids and
 clouds. Several choices for the design of the language can be
 explained by these practical concerns.
 
-A design choice for ASP and ProActive is to ensure maximal
+One design choice for ASP and ProActive is to ensure maximal
 transparency for the programmer: active objects and futures are
 used like usual Java objects. The ProActive middleware
 automatically triggers asynchronous remote invocations and
 performs blocking synchronization when needed. ProActive
-is thus particularly intended for Java programmers that are not
+is thus particularly useful for Java programmers that are not
 experts in concurrent and distributed programming.
 
 A further design choice is that active objects are coarse-grained
@@ -1498,8 +1495,8 @@ with a quite heavy machinery for managing each object and
 communicating between them. This machinery fully ensures the
 distributed nature of the computation. As a consequence, using the
 ProActive library, it is not possible to instantiate thousands of
-active objects on the same core. Of course the number of passive
-objects is not specially restricted.
+active objects on the same core. Of course, the number of passive
+objects is not restricted in this way.
 
 Since 2010, ASP features \emph{multi-active
   objects}~\cite{HHI2013:mao} meaning that in each active object,
@@ -1535,6 +1532,7 @@ automatically updated at all locations.
 ProActive offers an API to create active objects, and a runtime for
 handling ASP features. The following is an example of a ProActive
 program: 
+
 \lstset{ emph={parameters,node}, emphstyle=\itshape }
 \begin{lstlisting}[numbers=none,xleftmargin=3ex]
 O o = PAActiveObject.newActive(O.class, parameters, node);
@@ -1543,6 +1541,7 @@ V v = t.bar(); // implicit asynchronous method call
 o.foo(v);       // v can be passed without blocking
 v.foobar();     // potential wait-by-necessity on v
 \end{lstlisting}
+
 An active object is created using \code{newActive}, instead of the
 \code{new} command of Java.  The \code{newActive} primitive takes as
 parameters the class to instantiate, the parameters of the
@@ -1568,6 +1567,7 @@ compatible requests in parallel.  In ProActive, multi-active object
 features can be used through a meta language, based on Java
 annotations. The following is an example of multi-active object
 annotations in ProActive:
+
 \lstset{morekeywords={DefineGroups,Compatible,DefineRules,Group,MemberOf}
 }
 \begin{lstlisting}[numbers=none,xleftmargin=3ex]
@@ -1582,35 +1582,36 @@ public class MyClass {
   public ... method2(...) { ... }
 }
 \end{lstlisting}
-This example defines two groups of requests, with one
-method each.  The two groups are declared to be compatible (and so are
-their methods, by extension). The \code{selfCompatible} parameter
-defines whether two different requests of the same group are allowed
-to run in parallel. At runtime, a ready request is automatically
-executed if it is compatible (i) with requests that are already
-executing and (ii) with older requests in the queue. The first
-condition prevents data races. The second condition preserves the
-ordering of incompatible requests and prevents starvation, which would
-arise when requests of a group $G$ that are merely compatible with
-currently executing requests are continuously overtaking requests of
-another group $G'$ with which they are incompatible.
 
-Without any annotations, a multi-active object is a mono-threaded
-active object without any local parallelism nor any possible race
+This example defines two request groups, with one method each.  The
+two groups are declared to be compatible (and so are their methods, by
+extension). The \code{selfCompatible} parameter defines whether two
+different requests of the same group are allowed to run in
+parallel. At runtime, a ready request is automatically executed if it
+is compatible (i) with requests that are already executing and (ii)
+with older requests in the queue. The first condition prevents data
+races. The second condition preserves the ordering of incompatible
+requests and prevents starvation, which would arise when requests of a
+group $G$ that are merely compatible with currently executing requests
+are continuously overtaking requests of another group $G'$ with which
+they are incompatible.
+
+Without annotations, a multi-active object is a mono-threaded active
+object without any local parallelism nor any possible race
 condition. Programming a mono-threaded active object-based application
 with ProActive is thus extremely simple. If some local parallelism is
 desired, a compatibility should be declared between requests that can
 be safely interleaved and for which execution order does not matter.
 
-To define compatibility between two requests, the programmer can also
-use runtime information such as the request parameters or the object's
+To define compatibility between two requests, the programmer can use
+runtime information such as the request parameters or the object's
 state. Programming a multi-active object-based application with
-ProActive is thus somewhat more difficult than programming
-mono-threaded ProActive active objects, but it is far less complex
-than programming with raw threads and low-level synchronization
-mechanisms while, at the same time, providing a considerable degree of
-parallelism.  If even more parallelism is required, beyond what is possible with
-request compatibility, then the programmer can define
+ProActive is thus slightly more difficult than programming
+mono-threaded ProActive active objects, but far less complex than
+programming with raw threads and low-level synchronization mechanisms
+while, at the same time, providing a considerable degree of
+parallelism.  If even more parallelism is required, beyond what is
+possible with request compatibility, then the programmer can define
 further requests as compatible and prevent undesired behavior with
 traditional low-level Java synchronization primitives. Such a mixed
 approach goes beyond the traditional active object model.
@@ -1650,7 +1651,8 @@ simple FIFO guarantee, providing more properties to the programmer at
 the expense of additional delay during request emission.
 
 \paragraph{Degree of transparency}
-In ASP the programmer is not exposed to the notion of a future and in
+As pointed out above, transparency is a central design goal of ASP.
+The programmer is not exposed to the notion of a future and merely in
 a limited manner to that of an active object (at object creation time
 only). The syntax is as for sequential programming, there is no
 specific construct for awaiting a future value or for performing an
@@ -1675,14 +1677,14 @@ treatment, because there is no need to contact another activity to
 obtain the value of the request parameters. Note that active object
 and future references are passed by reference.
 
-Coherency between different copies of a passive object is not
+Coherence between different copies of a passive object is not
 guaranteed.  If a user wants to ensure that an object has a unique
 coherent state, he should not transmit it by copy: transmitting it as
 an active object reference would then be the best choice.
 
 \paragraph{Formal semantics}
 
-Caromel et al.~\citeyear{CHS:POPL04} formalise the mono-threaded part
+Caromel et al.~\citeyear{CHS:POPL04} formalize the mono-threaded part
 of ASP and prove determinacy properties. In particular, they prove
 that the order of future updates has no influence on the execution and
 that the only source of non-determinacy in mono-threaded ASP is when
@@ -1703,26 +1705,24 @@ is created for each of them. Proxies encapsulate all code required to
 perform asynchronous, remote method invocations and wait-by-necessity
 synchronization.
 
-Whenever an active object or a future is given as a call parameter to an
-active object, it is in fact their proxy that is copied. Hence, all
+Whenever an active object or a future is given as a call parameter to
+an active object, it is in fact their proxy that is copied. Hence, all
 copies of a proxy of an active object/future point to the same active
 object/future.  A further aspect of ProActive deals with the
 deployment of ASP active objects on distributed infrastructures. The
-design choices of the programming language typically target  high
+design choices of the programming language typically target high
 performance for distributed ProActive applications.  To deploy active
-objects on distributed infrastructures, ProActive has a
-deployment specification mechanism which makes the physical
-deployment independent from the deployment logic. This is realized by
- binding virtual node names, used in the source code,
- to machine addresses or names. In practice, this binding is
-implemented in XML configuration files. Since the binding is happens at
-\emph{deployment time}, changing infrastructure for a ProActive
-application is localized in few files and does not require 
-recompilation.  Several machines can be aggregated under a single
-virtual node name in the deployment logic, for example, to provide the
-virtual node with certain properties or non-functional deployment
-options (e.g., fault tolerance or logging).
-
+objects on distributed infrastructures, ProActive has a deployment
+specification mechanism which makes the physical deployment
+independent from the deployment logic. This is realized by binding
+virtual node names, used in the source code, to machine addresses or
+names. In practice, this binding is implemented in XML configuration
+files. Since binding happens at \emph{deployment time}, changes of the
+infrastructure for a ProActive application are localized in few files
+and do not require recompilation.  Several machines can be aggregated
+under a single virtual node name in the deployment logic, for example,
+to provide the virtual node with certain properties or non-functional
+deployment options (e.g., fault tolerance or logging).
 
 Active objects provide a convenient programming model for
 component-based composition of distributed applications
@@ -1763,8 +1763,7 @@ ProActive/GCM code corresponding to the designed system.
 \paragraph{General presentation}
 
 Encore \cite{ref:encore} is a general purpose parallel programming
-language based on active objects developed since 2014 in the EC funded
-\Upscale project.
+language based on active objects developed since 2014. % in the EC funded \Upscale project.
 %\footnote{For information about \Upscale see \url{www.upscale-project.eu}.}
 The language has been designed to excel at scalability and rests on
 four pillar concepts: \textit{parallel by default} using the active
@@ -1820,7 +1819,7 @@ below.
 \paragraph{Cooperative scheduling of active objects}
 
 Encore supports ABS' operators for cross-message control flow,
-namely \ec{suspend} (\ec{suspend :: void -> void}), \ec{get} (\ec{get :: Fut[t]
+i.e.\ \ec{suspend} (\ec{suspend :: void -> void}), \ec{get} (\ec{get :: Fut[t]
 -> t}), and \ec{await} (\ec{await :: Fut[t] -> void}).
 %
 Encore's \ec{await} statement only supports waiting for the resolution
@@ -1828,7 +1827,7 @@ of a future, unlike ABS which supports waiting on general Boolean
 conditions (Section~\ref{sec:abs-lang}). Encore's support for future
 chaining however makes \ec{await} less useful as chaining allows
 triggering arbitrary operations on the resolved futures. Encore's
-scheduling of requests is explained in details in
+scheduling of requests is explained in detail in
 Section~\ref{encore-implem}.
 
 \paragraph{Parallelism inside active objects}
@@ -1884,23 +1883,22 @@ class Mtx
   def computeFastestDiagonal(): Par[Mtx]
     mtx = this.getMtx()
     %\label{line:encore:flu}%fLU = async luFact(mtx)
-    %\label{line:encore:chl}%ffChlsk = async choleskyFact(mtx)
+    %\label{line:encore:chl}%fChlsk = async choleskyFact(mtx)
     %\label{line:encore:par}%par = (lift fLU) ||| (lift fChlsk)
     %\label{line:encore:pipe}%getDiagonalMtx <<  bind(mtvInv, par)
   end
 end
 \end{lstlisting}
 
-\caption{\label{fig:encore:factorisation}Data pipeline and speculative parallelism in matrix factorisation.
-The types of the functions are
+\caption{\label{fig:encore:factorisation}Data pipeline and speculative parallelism in matrix factorisation. The
+ types of the functions are
 % $\mathit{getMtx :: Mtx}$, $\mathit{luFact :: Mtx \to [Factor]}$,\\
 % $\mathit{choleskyFact :: Mtx \to [Factor]}$,
 % $\mathit{mtxInv :: [Factor] \to Par [Mtx]}$ and
 % $\mathit{getDiagonalMtx :: Fut\!<\!\!Maybe [Mtx] \!\!> \to Par\; Mtx}$.
-\ec{getMtx :: Mtx}, \ec{luFact :: Mtx -> [Factor]},
-\ec{choleskyFact :: Mtx -> [Factor]},
-\ec{mtxInv :: [Factor] -> Par[Mtx]} and
-\ec{getDiagonalMtx :: Fut[Maybe[Mtx]] -> Par[Mtx]}.}
+ \ec{getMtx :: Mtx}, \ec{luFact :: Mtx -> [Factor]}, \ec{choleskyFact
+   :: Mtx -> [Factor]}, \ec{mtxInv :: [Factor] -> Par[Mtx]}, and
+ \ec{getDiagonalMtx :: Fut[Maybe[Mtx]] -> Par[Mtx]}.}
 \end{figure}
 
 The \parT{} collection and its combinators have been designed to
