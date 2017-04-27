@@ -1860,9 +1860,9 @@ Line \ref{line:encore:par}.
 Then an inversion of the matrix is performed asynchronously, using the
 \ec{bind} combinator
 % ($\bind \ :: Par \ t \to (t \to Par\ t') \to Par\ t'$),
-(\ec{bind :: Par[t] -> (t -> Par[t']) ->} \ec{Par[t']}),
+(\ec{bind :: (t -> Par[t']) -> Par[t] ->} \ec{Par[t']}),
 %
-Line \ref{line:encore:pipe}, which receives a function (second argument)
+Line \ref{line:encore:pipe}, which receives a function (first argument)
 that is applied asynchronously to the items in the \parT{} collection, creating pipeline parallelism.
 With the \ec{<<}
 % \prune{}
