@@ -124,7 +124,9 @@ as well as to papers on formal analysis (e.g. the book „A discipline of multip
 by Jayadev Misra is closely related to the topic, but not mentioned as a point of 
 comparison in the missing related work section. 
 \end{quote}
-
+We added a reference to this book and to the Scoop language as the only two references 
+outside the actor/active object world (except from the historical part). We know that the 
+choice of which languages to mention or not is a difficult one, and is a bit arbitrary.
 
 \begin{quote}
  Page 3, beginning of 2.1: This is a too broad presentation starting by high-level 
@@ -180,10 +182,10 @@ creation of a new active object look like in that case?
 \end{quote}
 In fact, ProActive does not support the creation of futures or active objects for generic 
 types (they should be embedded in another object for example). We clarified this poitn by 
-adding the following text: ``The transparent creation of proxies 
-involves some restrictions: the  active 
-objects and futures cannot be of a primitive type or a generic type. If a future cannot 
-be created the call to an active object is performed synchronously.''
+adding the following text: ``The transparent creation of proxies has some
+practical restrictions: the active objects and futures cannot be of a
+primitive or generic type. If a future cannot be created, the call to
+an active object is performed synchronously.''
 
 \begin{quote}
 	Section 2.3.3, page 16:
@@ -194,9 +196,9 @@ Futures as they are implemented in Java, for example, are not serializable.
 ProActive has its own implementation of futures (implemented before the adoption of 
 futures by Java) with our own serialization procedure, this allows us to implement 
 transparently first-class futures. We added the following text for clarification:
-``The ProActive middleware handles transparently the 
-future value transmission~\cite{HKRZ:Coregrid:2010} (a ProActive future is 
-serializable).''
+``The ProActive middleware transparently handles future value
+transmission~[HKRZ:Coregrid:2010] (a ProActive future has its own serialization 
+procedure).''
 
 \begin{quote}
 	Section 2.3.4, page 19:
@@ -252,7 +254,7 @@ semantic point of view: future chaining, parallel combinators, and the
 non-uniform object model is handled in an interesting manner (by the capabilities). The 
 second reason is that 
 Encore features a formally defined operational semantics. 
-In this paper we choose to focus on languages with a precisely defined (formal) semantics 
+In this paper we choose to focus on languages with a precisely defined formal semantics 
 and on the  semantics of the programming language, in this context we believe 
 that Encore is more adapted here. 
 
@@ -275,13 +277,13 @@ dimensions, their formal semantics and tool support. Afterwards their implementa
 evaluated according to a another set of dimensions. 
 
 
-Point in favour:
+Point in favour:\\
 - The paper provides a detailed report on the different design choices made by the four 
 active object languages under discussion and classifies them along a number of relevant 
 dimensions. As a survey, this article is highly relevant as reference material for future 
 development of the active object paradigm.
 
-Point against:
+Point against:\\
 - I mostly agree with the presentation of the different design dimensions that are used 
 to classify the four different active object languages. However, I feel that the 
 trade-offs of the different design points along this plane are not always adequately 
@@ -292,7 +294,7 @@ the article accompanied by a comparison of the different trade-offs of each of t
 choices.
 \end{quote}
 This has now been added in Section 4.1. This section contains both a discussion of the 
-different trade-offs and a table summarising the aspects of the different languages
+different trade-offs and a table summarizing the aspects of the different languages
 
 \begin{quote}
 	Overall I think the introduction is lacking in giving a general direction to the 
@@ -305,12 +307,13 @@ Indeed, we greatly improved the two first paragraphs of the introduction to addr
 points, we also explained more carefully why we have chosen those languages.
 
  \begin{quote}
-	”We start with Rebeca, which is closest to the original actor model" => What do you 
+	”We start with Rebeca, which is closest to the original actor model" $\Rightarrow$ 
+	What do you 
 mean with original actor model? [Hewitt 73] or [Agha 86]? During the late 70s and early 
 80s a number of variations on the actor model were developed, each with wide varying 
 semantics.
 \end{quote}
-We tried to be more specific now when referring to the classical/original actor models, 
+We are more specific now when referring to the classical/original actor models, 
 here we referred to the classical actor model [Agha 86] which we think is closer to 
 Rebeca.
 
@@ -322,7 +325,8 @@ be
 explored further. How does local multi-threading impact the safety guarantees provided by 
 the original model? However, I feel that this is a bit out of place in the introduction.
 \end{quote}
-We moved it to the discussion section (4.1) and expanded the discussion on this point.
+We moved this point to the discussion section (4.1) and expanded the discussion on this 
+point. See second paragraph on ``Data sharing and data access''
 
 
 
@@ -353,11 +357,11 @@ because of the safety and liveness guarantees it provides.
 \end{quote}
 We now explicitly refer to the artificial intelligence context in Section 2.1:
 ``This loose coupling makes Actor languages conceptually
-attractive for parallel and distributed programming, e.g.,
-in  [Hewitt:1973] the Actor model of computation originated from the need \emph{to
-	efficiently run the coming generation of PLANNER-like  artificial intelligence 
-	languages including those requiring a  high degree of parallelism} (quote from 
-	[Hewitt:1973]).''
+attractive for parallel and distributed programming; in fact, 
+the Actor model originated from the need ``to efficiently run the
+coming generation of PLANNER-like artificial intelligence languages
+including those requiring a high degree of parallelism''
+[Hewitt:1973].''
 
 
 \begin{quote}
@@ -376,7 +380,7 @@ primitives to handle disconnecting and reconnecting nodes in a network where con
 are volatile.
 \end{quote}
 We improved the description of AmbientTalk based on the comment from the reviewer, in 
-particular with an explicit reference to E.
+particular with an explicit reference to E. This is now in Section 4.2.
 
 \begin{quote}
 	== 2.2 Dimensions of Comparison between Languages ==
@@ -386,7 +390,7 @@ provide a good basis along which active object languages can be classified. Two 
 things I am missing is what the message ordering guarantees and the message delivery 
 guarantees are for each individual language.
 \end{quote}
-We agree that this si also a point of comparison that is important.
+We agree that this is also an important point of comparison.
 We added this as a sub-part of ``Degree of synchronization'' and explicitly mentioned 
 this aspect in the description of the languages.
 
@@ -448,10 +452,11 @@ different languages can be classified.
 \end{quote}
 This is clearly relevant and  we added this as an introduction of the dimensions in the 
 implementation section. It 
-is indeed a good criteria of comparison even if we believe that the impact of 
+is indeed a good criteria of comparison even if the impact of 
 distribution on the implementation was already 
-mentioned when necessary, Additionally we made sure that the distributed nature of the 
-implementation is clearly mentioned for the implementations we provide.
+mentioned at the most crucial points. Additionally we made sure that the distributed 
+nature of the 
+implementation is clearly stated for the implementations we provide.
 
 %++ concerning the design of the language, the support for distribution is not a 
 %dimension 
@@ -484,7 +489,7 @@ The comparison between the Java 8 and ProActive backend for ABS seems much more 
 as it highlights another design trade-off.
 \end{quote}
 This comparison has now been removed and we focus on the comparison between Java 8 and 
-ProActive abckends
+ProActive backends.
 
 \begin{quote}
 	== 4. Lessons Learned and Conclusion ==
@@ -496,7 +501,8 @@ novel active object language, how do I best navigate the design space presented 
 article? What are the lessons learned? I feel all the different puzzle pieces are there 
 but the bigger picture is missing.
 \end{quote}
-We believe that this issue has now been addressed in the new Section 4.1.
+We believe that this issue has now been addressed in the new Section 4.1. We wrote this 
+new paragraph with these questions in mind and we expect it answers them adequately.
 
 
 \begin{quote}
