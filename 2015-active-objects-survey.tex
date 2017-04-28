@@ -1495,8 +1495,9 @@ with a quite heavy machinery for managing each object and
 communicating between them. This machinery fully ensures the
 distributed nature of the computation. As a consequence, using the
 ProActive library, it is not possible to instantiate thousands of
-active objects on the same core. Of course, the number of passive
-objects is not restricted in this way.
+active objects on the same core. 
+In ASP not all the objects are active and in ProActive passive objects 
+are standard (Java) objects, consequently their number is not particularly limited.
 
 Since 2010, ASP features \emph{multi-active
   objects}~\cite{HHI2013:mao} meaning that in each active object,
@@ -1670,7 +1671,7 @@ active objects. Objects that are not active are passed by copy between
 activities (as request parameters or request results). This also
 applies to objects that are referenced by passed objects: when objects
 are transmitted between activities, a deep-copy mechanism ensures that
-they are copied together with all their dependents to the destination
+they are copied together with all their dependencies to the destination
 side. This mechanism, also used by RMI, slows down request invocation,
 because of the time spent to transmit data, but it accelerates request
 treatment, because there is no need to contact another activity to
@@ -1890,7 +1891,8 @@ class Mtx
 end
 \end{lstlisting}
 
-\caption{\label{fig:encore:factorisation}Data pipeline and speculative parallelism in matrix factorisation. The
+\caption{\label{fig:encore:factorisation}Data pipeline and speculative parallelism in 
+matrix factorization The
  types of the functions are
 % $\mathit{getMtx :: Mtx}$, $\mathit{luFact :: Mtx \to [Factor]}$,\\
 % $\mathit{choleskyFact :: Mtx \to [Factor]}$,
@@ -2713,7 +2715,7 @@ termination. However, in most programs a future access is used to
 retrieve information and the control-flow synchronization of ABS
 corresponds to a data-flow synchronization. Nevertheless, it is
 possible to write programs that do not perform data-flow
-synchronisation and behave differently.  We have formally
+synchronization and behave differently.  We have formally
 proven~\cite{rochas:hal-01065072} that all ABS programs are faithfully
 simulated by the ProActive backend.
 % This has been said already (RH):
@@ -3290,8 +3292,8 @@ paradigm; however, we see that at least some objects can be accessed
 by other objects.  Data sharing plays an especially important role in
 relation to implementation. ASP, designed in close relation to Java
 RMI, because of the ProActive library implementation, features a
-non-uniform active object model where some active objects can
-be invoked from anywhere and others are transmitted by copy. ABS was
+non-uniform active object model where  active objects can
+be invoked from anywhere and other objects are transmitted by copy. ABS was
 designed as a specification language where each object can be invoked
 by any other object; the first implementations of ABS did not support
 distribution, and the distributed implementations provide a
@@ -3335,7 +3337,7 @@ respectively, and come with ``native'' implementations based on
 extensions of existing frameworks.
 
 Rebeca is probably the language that features the largest variety in
-the languages that can be checked and the different language semantics
+the  different language semantics
 that can be verified. ABS in contrast is equipped with a large variety
 of different analyses based on the same semantics. Both languages show
 the advantage of adopting an active object programming paradigm
@@ -3345,12 +3347,12 @@ support. While powerful verification tools also exist for those
 languages, significant efforts have been put into the efficiency of
 local parallelism in Encore, and to support effective large-scale
 distribution in ProActive. ProActive programs target HPC applications:
-setting up the program environment is complex, but the distributed
-execution is fairly efficient; only a few active objects co-exist in
-an application. The Java 8 backend for ABS provides light threads and
+it makes it easy to deploy an application on a large set of machines, but it reaches 
+maximal efficiency when instantiating only a few active objects per physical core.
+ The Java 8 backend for ABS provides light threads and
 enables the instantiation of many active objects on the same
 machine. It also permits active objects to achieve faster
-communication than in ProActive. At a finer granularity, Encore
+local interaction than in ProActive. At a finer granularity, Encore
 provides optimized constructs for safe and efficient programming at a
 lower level of abstraction.
 
