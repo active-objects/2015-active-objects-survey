@@ -3374,17 +3374,23 @@ restrictions. The ProActive backend for ABS illustrates the
 possibility to cross-translate an active object language into another
 one.
 
-\subsection{Other High-level Concurrent Languages}
+\subsection{Other Actor Languages}
 \label{sec:other-high-level}
 
 There are several other programming languages that introduce
 high-level abstractions for concurrent programming that deviate from
-the active object approach.  Java Annotations for Concurrency
+the active object approach. We focused in this paper on languages based on an active 
+object models, numerous programming models with similar inspirations but not following 
+exactly the actor paradigm exist, like for example Seuss~\cite{Misra-2001}, 
+SCOOP~\cite{SCOOP93}. We give 
+below an overview of the main languages that  adopt, at least partially, the concept of 
+active objects.
+
+ Java Annotations for Concurrency
 (JAC)~\cite{ref:jac} supports annotations to specify the kind of
 parallelism that can occur inside a Java object from a relatively
 high-level perspective. It is possible to encode versions of actors in
 JAC.
-%
 The concurrency model of
 AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349} is based on the E
 programming language~\cite{Miller05concurrencyamong} which implements
