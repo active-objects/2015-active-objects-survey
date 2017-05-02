@@ -9,20 +9,20 @@ ACM CSUR-2016-0577 Manuscript: \\``A Survey of Active Object Languages'' }
 \noindent
 Dear Editor, dear reviewers,
 
-Please find the revision of our submission to ACM computing survey. We improved our 
-article according to the  comments made by the 
+Please find enclosed the revision of our submission to ACM Computing
+Surveys. We improved our article according to the comments made by the
 anonymous reviewers.
 
-We would first like to thank the reviewers for their analysis of our paper, and the 
-advices that they made to us.
+We would first like to thank the reviewers for their analysis of our
+paper, and the advice they gave us.
 
-We detail below the major changes that we made in this revision. After this, we will 
-review in the next pages the comments of the reviewers and explain how we addressed them. 
-\emph{Comments that could be addressed trivially and exactly as suggested by the 
-reviewers are omitted}.
-\bigskip
+We detail below the major changes we made in this revision. After
+this, we will review in the next pages the comments of the reviewers
+and explain how we addressed them.  \emph{Comments that could be
+  addressed trivially and exactly as suggested by the reviewers are
+  omitted}.  \bigskip
 
-In this new version, you will find the major improvements below:
+In this new version, you will find the major improvements listed below:
 \begin{itemize}
 \item A discussion section has been added to the paper (Section 4), it features in 
 Section 4.1: Feedback on the 
@@ -32,35 +32,38 @@ reviewers on the first version of this article.
 \item Discussion on  related languages that do not belong to the historical review of 
 Section 2 has 
 now be moved to Section 4.2. As suggested by the reviewers, Akka and Orleans are 
-discussed in details now, in this new Section 4.2.
-\item Reviewers mentioned the following points missing to the dimensions of comparison: 
+discussed in detail now, in this new Section 4.2.
+\item Reviewers mentioned the following points missing in the dimensions of comparison: 
 \begin{itemize}
-\item uniform versus non-uniform models: this has been integrated to the ``degree of data 
-sharing'' aspect.
-\item Message ordering: this has been integrated with synchronisation aspects as it is 
-related to the synchronisation that occurs during communications.
-\item Distribution: We added this aspect in the discussion on implementation, as a 
-prerequisite to the implementation choices. We did not want to put this criteria as a 
-generic language dimension because it influences the design of some languages like ASP 
-but some 
-others like ABS have both local and distributed implementations.
-\item The implementation of a programming language can be from scratch with a full 
-compiler tool chain or it can be implemented as an API: we agree that this is a major 
-point of comparison, it was already mentioned but not highlighted enough. We discuss this 
-point in detail in the last paragraph of the new section 4.1. We discuss this aspect here 
-because we believe that it is a point where it is really interesting to compare the 
-different approaches even if it could also be added as a normal dimension.
+\item Uniform versus non-uniform models: this has been integrated into
+  the ``degree of data sharing'' aspect.
+\item Message ordering: this has been integrated into synchronization
+  aspects as it is related to the synchronisation that occur during
+  communications.
+\item Distribution: We added this aspect in the discussion on
+  implementation, as a prerequisite to the implementation choices. We
+  did not want to put this criteria as a generic language dimension
+  because it influences the design of some languages like ASP, but
+  others such as ABS have both local and distributed implementations.
+\item The implementation of a programming language can be from scratch
+  with a full compiler tool chain or it can be implemented as an API:
+  we agree that this is a major point of comparison, it was already
+  mentioned but not highlighted enough. We discuss this point in
+  detail in the last paragraph of the new Section 4.1. We discuss this
+  aspect there, because we believe that it is a point where it is
+  really interesting to compare the different approaches, even if it
+  could also be added as a dimension.
 \end{itemize}
 
-\item Comparison between Java8 and the previous Java backend for ABS has been removed, we 
-focus now on the comparison between ProActive and Java8 backends.
+\item Comparison between Java~8 and the previous Java backend for ABS
+  has been removed, we focus now on the comparison between ProActive
+  and Java~8 backends.
 \end{itemize}
 \begin{itemize}
-	\item Introduction of Section 2.1 that presents the historical view on active object 
-	languages has been refocused and greatly shortened.
+\item Introduction to Section 2.1 that presents the historical view on
+  active object languages has been refocused and greatly shortened.
 \item The introduction has also been significantly improved.
 \end{itemize}
-
 
 \noindent
 Best regards,
@@ -87,9 +90,11 @@ general, the paper does a good and structured job to introduce the different lan
 Less structured is the implementation section (Section 3) that — on the other hand — 
 sketches interesting technical aspects.
 \end{quote}
-Implementation section is indeed a bit more complex to organise, however we tried to 
-improve its readability and we believe that the fact that the old versus new Java 
-experiment was removed makes this section easier to read.
+Implementation section is indeed a bit more complex to organize,
+however, we tried to improve its readability and we believe that the
+fact that the old versus new Java experiment was removed makes this
+section easier to read.
+
 
 \begin{quote}
 The paper compares relatively similar languages. This is good for readers that want to 
@@ -99,9 +104,9 @@ programming languages or libraries that are already in wider practical use, like
 Erlang or the Akka library. A more practical oriented reader would also benefit from 
 information about experiences that were made with the languages.
 \end{quote}
-The new Section 4.2 is specifically focused on such comparison. We think that the 
+The new Section 4.2 is specifically focused on such a comparison. We think that the 
 background on research languages gives us an interesting and formally defined point of 
-view to analysed those languages.
+view to analyze those languages.
 
 \begin{quote}
 Treating the languages one after the other, and for each language the aspects of 
@@ -112,8 +117,8 @@ in the sense of „this language does it this way, the other language does it th
 do with another one“ or „how complex is it to express a certain program pattern in 
 language X that can easily be expressed in language Y“ is missing. 
 \end{quote}
-The new section 4.1 better compares the languages, it also contain a table giving a 
-visual comparison of the languages.
+The new Section 4.1 better compares the languages, it also contains a table giving a 
+summary comparison of the languages.
 
 \begin{quote}
 	In general, the citations are precise and relevant. For a survey paper, however, a 
@@ -132,7 +137,7 @@ choice of which languages to mention or not is a difficult one, and is a bit arb
  Page 3, beginning of 2.1: This is a too broad presentation starting by high-level 
 languages in general and ALGOL etc. Focus the history on the relevant concepts.
 \end{quote}
-We reduced the 2 first paragraphs into a couple of introductory sentences.
+We reduced the first two paragraphs to a few introductory sentences.
 
 
 \begin{quote}
@@ -142,7 +147,7 @@ communicate via messages (like actors) and then talk about the concurrency withi
 based on preemptively scheduled tasks. Starting the explanation with references to 
 interleaving semantics (page 12 top) was misleading to me. 
 \end{quote}
-Indeed, we rewrote this part adopting this approach. See the beginning of the language 
+Indeed, we rewrote the part explaining this approach. See the beginning of the language 
 description.
 
 \begin{quote} Page 18: I had problems to understand the language description of Encore. 
@@ -181,7 +186,7 @@ handled. For instance, assuming class "O" has a generic type parameter, how woul
 creation of a new active object look like in that case?
 \end{quote}
 In fact, ProActive does not support the creation of futures or active objects for generic 
-types (they should be embedded in another object for example). We clarified this poitn by 
+types (they should be embedded in another object for example). We clarified this point by 
 adding the following text: ``The transparent creation of proxies has some
 practical restrictions: the active objects and futures cannot be of a
 primitive or generic type. If a future cannot be created, the call to
@@ -256,8 +261,7 @@ second reason is that
 Encore features a formally defined operational semantics. 
 In this paper we choose to focus on languages with a precisely defined formal semantics 
 and on the  semantics of the programming language, in this context we believe 
-that Encore is more adapted here. 
-
+that Encore is more appropriate. 
 
 Additionally,  the publicly available repository of Encore is now referred in the 
 text.
@@ -325,7 +329,7 @@ be
 explored further. How does local multi-threading impact the safety guarantees provided by 
 the original model? However, I feel that this is a bit out of place in the introduction.
 \end{quote}
-We moved this point to the discussion section (4.1) and expanded the discussion on this 
+We moved this point to the discussion Section 4.1 and expanded the discussion on this 
 point. See second paragraph on ``Data sharing and data access''
 
 
@@ -342,11 +346,11 @@ a "uniform object model" where every object is a concurrent object. This is in c
 with the two-layer model (active vs passive objects) of later active object languages.
 \end{quote}
  We added a ref to [Yonezawa 86] when introducing active objects in this section.
-Concerning uniform vs. non-uniform, we chose to delay the discussion about this point to 
+Concerning uniform vs.\ non-uniform, we chose to delay the discussion about this point to 
 the 
 dimension definition, more specifically the data sharing dimension;  we describe the 
 different 
-models at this point.
+models at that point.
 
 
 \begin{quote}
@@ -416,7 +420,7 @@ extensions.
 
 
 \begin{quote}
-"Loops and periodic behavior are modeled by sending messages to oneself" => The downside 
+"Loops and periodic behavior are modeled by sending messages to oneself" \texttt{=>} The downside 
 of using selfsending to implement loops is that these messages can be interleaved with 
 other messages from active objects not participating in the loop.
 \end{quote}
@@ -425,7 +429,7 @@ we removed this sentence from the paper.
 
 
 \begin{quote}
-	"avoiding the creation of a new actor (e.g., Fig. 1, line 8)" => Is the correct line 
+	"avoiding the creation of a new actor (e.g., Fig. 1, line 8)" \texttt{=>} Is the correct line 
 referenced? I am not sure why that line specifically illustrates why no new actor is 
 created. I am assuming the creation of new actors is avoided because when passing a 
 reference to a rebec the active object and its associated runtime are not copied. Rather 
@@ -452,9 +456,9 @@ different languages can be classified.
 \end{quote}
 This is clearly relevant and  we added this as an introduction of the dimensions in the 
 implementation section. It 
-is indeed a good criteria of comparison even if the impact of 
+is indeed a good criterion of comparison, even if the impact of 
 distribution on the implementation was already 
-mentioned at the most crucial points. Additionally we made sure that the distributed 
+mentioned at the most crucial points. Additionally, we made sure that the distributed 
 nature of the 
 implementation is clearly stated for the implementations we provide.
 
@@ -473,8 +477,8 @@ to implement an active object language is to cross-translate it to another langu
 a code generation backend" => this is another implementation dimension that is hidden in 
 the text and might be made explicit in the discussion.
 \end{quote}
-We agree and we discussed in details this aspects in the Section 4.1. We believe that it 
-is nice to discuss this point when discussing about the trade-offs related to language 
+We agree and we discuss in detail these aspects in  Section 4.1. We believe that it 
+is nice to discuss this point together with the trade-offs related to language 
 implementations.
 
 
@@ -524,8 +528,13 @@ afterwards. More specifically, I was missing a section with a summary table of t
 different design and implementation dimensions presented in the article accompanied by a 
 comparison of the different trade-offs of each of the design choices.
 \end{quote}
-We added a Section (4.1) featuring such a summary table and a discussion on the 
+We added  Section 4.1 featuring such a summary table and a discussion on the 
 trade-offs offered by the different presented languages.
 
 \end{document}
 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
