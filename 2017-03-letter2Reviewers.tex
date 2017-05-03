@@ -425,7 +425,9 @@ of using selfsending to implement loops is that these messages can be interleave
 other messages from active objects not participating in the loop.
 \end{quote}
 This is correct.  The new release of Rebeca supports "for" and "while" loop statements, 
-we removed this sentence from the paper.
+we removed the part about "loops" from the sentence: periodic behavior is still 
+modeled as calls to oneself, which is fine, but we do not need it to model loops, which 
+avoids undesired interleaving.
 
 
 \begin{quote}
