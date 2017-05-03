@@ -1,6 +1,13 @@
 Object: Cover letter for paper: “A Survey of Active Object Languages”
 
-Dear editor and reviewers,The article we submit provides a survey of active-object languages, a programming paradigm inspired from the actor programming model. Actors gained interest in the recent years because it makes the programming of concurrent and distributed systems easier. We call “active object” the adaptation of the actor model to the object-oriented paradigm. Our article reviews the languages that are based at the same time on actor and on objects.
+Dear editor and reviewers,
+
+This article is a revision of an article we originally submitted in November 2016.
+The article provides a survey of active-object languages, a programming paradigm inspired 
+from the actor programming model. Actors gained interest in the recent years because it 
+makes the programming of concurrent and distributed systems easier. We call “active 
+object” the adaptation of the actor model to the object-oriented paradigm. Our article 
+reviews the languages that are based at the same time on actor and on objects.
 
 This article gathers the works of several research teams in Europe working in the area, which covers most of the recent results on active objects. Several authors of our article have been designing and implementing active-object for more than 15 years and have a strong experience of the different aspects of design and implementation of programming languages. This article focuses on four of the currently used active-object languages: 
 - Rebeca: the closest to pure actor languages, with rich and diverse program analysis tools
