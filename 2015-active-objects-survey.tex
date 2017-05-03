@@ -3440,7 +3440,10 @@ same or separate hosts, communicate directly or through routing
 facilities, run on a few threads or many threads, etc. Such details
 may be altered at deployment time through a configuration mechanism,
 allowing a program to make use of more (powerful) servers without
-modification.  Akka is well suited for hybrid cloud architectures and
+modification. The scalability of Akka also results from an efficient hierarchical error 
+handling mechanism where actors also play the role of supervisors. Akka is well suited 
+for hybrid 
+cloud architectures and
 the elastic scaling of cloud platforms. In one experiment it only took
 four minutes to start a 1000-node Akka cluster on Google Compute
 Engine (GCE), including the time to start the GCE instances.
