@@ -3002,11 +3002,11 @@ sharing large objects in Encore poses no performance issues.
 %these are mutable by default and, without the use of a proper
 %capability type, could introduce data races.
 %
-Active objects run in an encore
+Active objects run in an Encore
 thread which provides its own thread of control.
 %
 %Passive objects are protected by a capability type; the type system
-%rejects programs were the use of incorrect capabilities could cause data races.
+%rejects programs where the use of incorrect capabilities could cause data races.
 %
 In terms of the capability system, immutable passive objects are
 immune to this problem for obvious reasons.
