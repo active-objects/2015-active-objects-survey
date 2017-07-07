@@ -1879,13 +1879,13 @@ stopping the remaining computations, i.e., safely stopping speculative work.
 \centering
 
 \begin{lstlisting}[style=encore,numbers=left,xleftmargin=4ex,escapechar=\%,basicstyle=\small\tt,columns=fullflexible]
-class Mtx
+read class Mtx
   ...
   def computeFastestDiagonal(): Par[Mtx]
-    mtx = this.getMtx()
-    %\label{line:encore:flu}%fLU = async luFact(mtx)
-    %\label{line:encore:chl}%fChlsk = async choleskyFact(mtx)
-    %\label{line:encore:par}%par = (lift fLU) ||| (lift fChlsk)
+    val mtx = this.getMtx()
+    %\label{line:encore:flu}%val fLU = async luFact(mtx)
+    %\label{line:encore:chl}%val fChlsk = async choleskyFact(mtx)
+    %\label{line:encore:par}%val par = (lift fLU) ||| (lift fChlsk)
     %\label{line:encore:pipe}%getDiagonalMtx <<  bind(mtxInv, par)
   end
 end
@@ -2060,7 +2060,7 @@ as well, including a soundness proof with the implicit task
 parallelism model
 \cite{encore:parallel-combinators-thesis,party-coordination}.  The
 capability type system is formalized with proofs of soundness and data
-race-freedom \cite{encore:kappa}.
+race-freedom \cite{encore:kappa,encore-lolcat}.
 
 \paragraph{Implementation and tooling support}
 Encore is a relatively new programming language and there is limited
@@ -2998,12 +2998,15 @@ opposed to ProActive which performs deep copying of the object
 (Section~\ref{sec:implem-proactive}).  In practice this means that
 sharing large objects in Encore poses no performance issues.
 %
-On the other hand, care must be taken when sharing passive objects, as
-these are mutable by default and, without the use of a proper
-capability type, could introduce data races.
+%On the other hand, care must be taken when sharing passive objects, as
+%these are mutable by default and, without the use of a proper
+%capability type, could introduce data races.
 %
-Active objects are not subject to this problem, they run in an encore
+Active objects run in an encore
 thread which provides its own thread of control.
+%
+%Passive objects are protected by a capability type; the type system
+%rejects programs were the use of incorrect capabilities could cause data races.
 %
 In terms of the capability system, immutable passive objects are
 immune to this problem for obvious reasons.
