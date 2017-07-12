@@ -406,7 +406,7 @@ thread of control, it was developed to simulate real-world
 Active (or concurrent) object languages integrate the basic Actor
 model with object-oriented concepts and as such do support interface
 abstractions of implementation details.  This integration was first
-proposed in ABCL~\cite{Yonezawa:1986:OCP:28697.28722}. It can be
+proposed in ABCL~\cite{Yonezawa86}. It can be
 realized by modeling a message as an asynchronous method call, thus
 fixing the interpretation of a message by a corresponding method
 definition.  Returning values from a method call can be modeled by
@@ -428,7 +428,7 @@ promises in Argus~\cite{Liskov88}, by Halstead in
 MultiLisp~\cite{Halstead:1985:MLC:4472.4478}, before finding their way
 into object-oriented languages such as
 Concurrent\-Smalltalk~\cite{Yokote87},
-ABCL~\cite{Yonezawa:1986:OCP:28697.28722},
+ABCL~\cite{Yonezawa86},
 Eiffel$/\!/$~\cite{Caromel96}, and CJava~\cite{Cugola97}.
 
 A future can be pictured as a mailbox that will eventually contain the
@@ -1941,7 +1941,7 @@ callback is executed when the future is resolved, using the result of
 the future as the argument to the callback. This construct allows
 chaining operations on futures without creating synchronization,
 similar to the default behavior of futures in
-AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349}, but it is more
+AmbientTalk~\cite{dedecker2006ambient}, but it is more
 explicit and easier to control for the programmer. It is also a way to
 mimic transparent first-class futures of ASP, except that the callback
 request is only created when the future is resolved.  Communication in
@@ -3395,7 +3395,7 @@ Java Annotations for Concurrency (JAC)~\cite{ref:jac} supports
 annotations to specify the kind of parallelism that can occur inside a
 Java object from a relatively high-level perspective. It is possible
 to encode versions of actors in JAC.  The concurrency model of
-AmbientTalk~\cite{Dedecker:2006:APA:2171327.2171349} is based on the E
+AmbientTalk~\cite{dedecker2006ambient} is based on the E
 programming language~\cite{Miller05concurrencyamong} which implements
 a communicating event-loop actor model with fully asynchronous futures
 (called promises): calls on futures trigger an asynchronous invocation
